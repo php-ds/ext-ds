@@ -41,7 +41,7 @@ php -d extension=ds.so
 ---
 
 
-You can the `Ds` namespace when using a specific structure:
+You can use the `Ds` namespace when using a specific structure:
 
 ```php
 <?php
@@ -65,7 +65,7 @@ Ds\Set Object
 */
 ```
 
-You can the also use the `ds` static API:
+You can also use the `ds` static API:
 
 ```php
 <?php
