@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+ARG_ENABLE("ds", "enable ds support", "no");
+
+if (PHP_DS != "no") {
+	EXTENSION("ds", "ds.c", PHP_DS_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /I" + configure_module_dirname);
+	ADD_SOURCES("ext/ds/src", "common.c", "ds");
+	ADD_SOURCES("ext/ds/src/internal", "php_deque.c php_vector.c php_htable.c php_set.c php_map.c php_stack.c php_pair.c php_priority_queue.c php_queue.c", "ds");
+	ADD_SOURCES("ext/ds/src/iterators", "php_vector_iterator.c php_deque_iterator.c php_set_iterator.c php_map_iterator.c php_stack_iterator.c php_htable_iterator.c php_priority_queue_iterator.c php_queue_iterator.c", "ds");
+	ADD_SOURCES("ext/ds/src/handlers", "php_vector_handlers.c php_deque_handlers.c php_set_handlers.c php_map_handlers.c php_stack_handlers.c php_pair_handlers.c php_priority_queue_handlers.c php_queue_handlers.c", "ds");
+	ADD_SOURCES("ext/ds/src/classes", "php_ce_hashable.c php_ce_collection.c php_ce_sequence.c php_ce_vector.c php_ce_deque.c php_ce_set.c php_ce_map.c php_ce_stack.c php_ce_pair.c php_ce_priority_queue.c php_ce_queue.c php_ce_ds.c", "ds");
+}
+

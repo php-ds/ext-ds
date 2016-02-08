@@ -1,0 +1,15 @@
+language: php
+php:
+  - 7.0
+  - nightly
+
+before_script:
+  - phpenv config-rm xdebug.ini
+
+script:
+  - phpize
+  - ./configure
+  - make
+  - sudo make install
+  - composer install
+  - php -dextension=ds.so vendor/bin/phpunit

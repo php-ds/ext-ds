@@ -1,0 +1,6 @@
+vendor
+composer.lock
+
+/clean
+/install
+/test

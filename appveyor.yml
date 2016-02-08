@@ -1,0 +1,48 @@
+version: '{branch}.{build}'
+install:
+- cmd: cinst wget
+- cmd: mkdir C:\projects\ds\bin
+- cmd: wget https://getcomposer.org/composer.phar -O C:\projects\ds\bin\composer.phar
+build_script:
+- cmd: >-
+    "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\vcvars32.bat"
+
+    wget http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip
+
+    7z x -y php-sdk-binary-tools-20110915.zip -oC:\projects\php-sdk
+
+    C:\projects\php-sdk\bin\phpsdk_setvars.bat
+
+    git clone https://github.com/php/php-src C:\projects\php-src
+
+    mkdir C:\projects\php-src\ext\ds
+
+    xcopy C:\projects\ds C:\projects\php-src\ext\ds /s /e /y
+
+    wget http://windows.php.net/downloads/php-sdk/deps-7.0-vc14-x86.7z
+
+    7z x -y deps-7.0-vc14-x86.7z -oC:\projects\php-src
+
+    cd C:\projects\php-src
+
+    buildconf.bat
+
+    configure.bat --disable-all --enable-phar --enable-json --enable-hash --enable-ctype --enable-filter --enable-tokenizer --enable-zip --with-iconv --with-openssl --with-dom --with-libxml --enable-cli --enable-zts --enable-ds=shared --with-config-file-scan-dir=C:\projects\ds\bin\modules.d --with-prefix=C:\projects\ds\bin --with-php-build=deps
+
+    nmake
+
+    nmake install
+
+    copy php.ini-development C:\projects\ds\bin\php.ini
+
+    mkdir C:\projects\ds\bin\modules.d
+
+    echo extension=php_ds.dll > C:\projects\ds\bin\modules.d\php.ini
+test_script:
+- cmd: cd C:\projects\ds
+- cmd: C:\projects\ds\bin\php.exe C:\projects\ds\bin\composer.phar install --prefer-source
+- cmd: C:\projects\ds\bin\php.exe vendor\bin\phpunit
+artifacts:
+  - path: bin
+    name: master
+    type: zip
