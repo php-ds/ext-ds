@@ -113,4 +113,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License
 
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
+The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
