@@ -7,8 +7,10 @@
 
 ```bash
 # Dependencies you might need to install
+#
 # sudo apt-get update
 # sudo apt-get install -y build-essential autoconf
+#
 # sudo add-apt-repository ppa:ondrej/php
 # sudo apt-get install -y php7.0-dev
 
