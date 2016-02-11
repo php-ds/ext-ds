@@ -1,13 +1,7 @@
-#
+
 composer.lock
 vendor
 
-#
-/clean
-/install
-/test
-
-#
 *.
 *.gcda
 *.gcno
