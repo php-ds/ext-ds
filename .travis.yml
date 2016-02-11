@@ -1,15 +1,21 @@
 language: php
+
 php:
   - 7.0
   - nightly
 
+before_install:
+    - phpize
+    - ./configure
+    - make
+
+install:
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction
+    - sudo make install
+
 before_script:
-  - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini  # Disable XDebug
 
 script:
-  - phpize
-  - ./configure
-  - make
-  - sudo make install
-  - composer install
-  - php -dextension=ds.so vendor/bin/phpunit
+  - php -dextension=ds.so ./vendor/bin/phpunit

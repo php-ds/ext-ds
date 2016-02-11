@@ -1,108 +1,57 @@
-# Efficient data structures for PHP 7
+# Data structures for PHP 7
 
 [![Build Status](https://travis-ci.org/php-ds/ds.svg?branch=master)](https://travis-ci.org/php-ds/ds)
 [![Build status](https://ci.appveyor.com/api/projects/status/in5p00vw6rk5f27q?svg=true)](https://ci.appveyor.com/project/krakjoe/ds)
 
+[**Blog post**](https://medium.com/@rtheunissen/efficient-data-structures-for-php-7-9dda7af674cd) that covers the behaviour and performance benefits of each data structure.
+
+
 ## Installation
 
+#### Ubuntu
+
 ```bash
-# Dependencies you might need to install
-# sudo apt-get update
-# sudo apt-get install -y build-essentials autoconf
-# sudo add-apt-repository ppa:ondrej/php
-# sudo apt-get install -y php7.0-dev
-
-git clone https://github.com/php-ds/ds "php-ds"
-cd php-ds
-
-# Build and install the extension
-phpize
-./configure
-make
-sudo make install
-
-# Clean up the build files
-phpize --clean
-make clean
+$ ./install/ubuntu.sh
 ```
 
-##### What about Windows?
+#### OS X
 
-Windows will be supported when a stable release is on PECL.
+```bash
+$ ./install/osx.sh
+```
 
 ## Usage
 
 ##### Enabling the extension
 
-```bash
-php -d extension=ds.so 
-```
+The best way to enable the extension is to update your *ini* file by adding `extension=ds.so`.
+You can use `php -i | grep php.ini` to see which *ini* file is being used.
 
 ---
 
+You can also enable the extension from the command line:
 
-You can use the `Ds` namespace when using a specific structure:
-
-```php
-<?php
-
-use Ds\Set;
-
-$set = new Set();
-$set->add('a', 2, new \stdClass());
-
-print_r($set);
-
-/*
-Ds\Set Object
-(
-    [0] => a
-    [1] => 2
-    [2] => stdClass Object
-        (
-        )
-)
-*/
+```bash
+$ php -d extension=ds.so
 ```
 
-You can also use the `ds` static API:
+## Documentation
 
-```php
-<?php
-
-$vector = ds::vector();
-$vector->push('a', 'c', 'd');
-$vector->insert(1, 'b');
-
-print_r($vector);
-
-/*
-Ds\Vector Object
-(
-    [0] => a
-    [1] => b
-    [2] => c
-    [3] => d
-)
-*/
-```
-
-## Docs
-
-See [/php/include](/php/include). 
+See [/php/include](/php/include) for now. Proper documentation is in the works.
 
 ## Testing
 
-`php-ds` comes with a suite of `PHPUnit` tests requiring `composer`:
+There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
 
+#### Running the tests
 ``` bash
-composer install
-./vendor/bin/phpunit
+$ composer install
+$ php -d extension=ds.so ./vendor/bin/phpunit
 ```
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Credits
 
