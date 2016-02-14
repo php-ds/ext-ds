@@ -2,7 +2,7 @@
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
 #include "../classes/php_ce_vector.h"
-#include "php_vector.h"
+#include "ds_vector.h"
 
 static inline bool index_out_of_range(zend_long index, zend_long max)
 {
@@ -31,6 +31,11 @@ ds_vector_t *ds_vector_ex(zend_long capacity)
     vector->size     = 0;
 
     return vector;
+}
+
+ds_vector_t *ds_vector()
+{
+    return ds_vector_ex(DS_VECTOR_MIN_CAPACITY);
 }
 
 static ds_vector_t *ds_vector_from_buffer_ex(
@@ -62,25 +67,6 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long length)
     return ds_vector_from_buffer_ex(buffer, length, capacity);
 }
 
-ds_vector_t *ds_vector()
-{
-    return ds_vector_ex(DS_VECTOR_MIN_CAPACITY);
-}
-
-zend_object *php_ds_vector_ex(ds_vector_t *vector)
-{
-    php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
-    zend_object_std_init(&obj->std, ds_vector_ce);
-    obj->std.handlers = &php_ds_vector_handlers;
-    obj->vector = vector;
-    return &obj->std;
-}
-
-zend_object *php_ds_vector(zend_class_entry *ce)
-{
-    return php_ds_vector_ex(ds_vector());
-}
-
 void ds_vector_user_allocate(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
@@ -107,11 +93,6 @@ ds_vector_t *ds_vector_create_copy(ds_vector_t *vector)
 
         return copy;
     }
-}
-
-zend_object *ds_vector_create_clone(ds_vector_t *vector)
-{
-    return php_ds_vector_ex(ds_vector_create_copy(vector));
 }
 
 static inline void ds_vector_increase_capacity(ds_vector_t *vector)
@@ -202,6 +183,9 @@ void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
     }
 }
 
+/**
+ *
+ */
 void ds_vector_to_array(ds_vector_t *vector, zval *return_value)
 {
     zend_long n = vector->size;
@@ -453,6 +437,7 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
+// This should accept two vectors and return a new vector, not zend.
 void ds_vector_merge(ds_vector_t *vector, zval *values, zval *obj)
 {
     if ( ! values) {
@@ -529,22 +514,7 @@ void ds_vector_reverse(ds_vector_t *vector)
     reverse_zval_range(vector->buffer, vector->buffer + vector->size);
 }
 
-ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
-{
-    zval *src;
-    zval *buf = ALLOC_ZVAL_BUFFER(vector->capacity);
-    zval *dst = buf;
-
-    DS_VECTOR_FOREACH_REVERSED(vector, src) {
-        ZVAL_COPY(dst, src);
-        dst++;
-    }
-    DS_VECTOR_FOREACH_END();
-
-    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
-}
-
-void ds_vector_map(ds_vector_t *vector, zval *obj, FCI_PARAMS)
+ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
     zval *value;
     zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
@@ -562,8 +532,7 @@ void ds_vector_map(ds_vector_t *vector, zval *obj, FCI_PARAMS)
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             efree(buf);
-            ZVAL_NULL(obj);
-            return;
+            return NULL;
         } else {
             ZVAL_COPY(pos, &retval);
         }
@@ -572,14 +541,13 @@ void ds_vector_map(ds_vector_t *vector, zval *obj, FCI_PARAMS)
     }
     DS_VECTOR_FOREACH_END();
 
-    ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(buf, vector->size, vector->capacity));
+    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
 }
 
-void ds_vector_filter(ds_vector_t *vector, zval *obj)
+ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 {
-    if (DS_VECTOR_IS_EMPTY(vector)) {
-        ZVAL_NEW_VECTOR(obj);
-        return;
+    if (VECTOR_IS_EMPTY(vector)) {
+        return ds_vector();
 
     } else {
         zval *value;
@@ -596,44 +564,41 @@ void ds_vector_filter(ds_vector_t *vector, zval *obj)
         }
         DS_VECTOR_FOREACH_END();
 
-        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(buf, size, vector->size));
+        return ds_vector_from_buffer_ex(buf, size, vector->size);
     }
 }
 
-void ds_vector_filter_callback(ds_vector_t *vector, zval *obj, FCI_PARAMS)
+ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 {
-    if (DS_VECTOR_IS_EMPTY(vector)) {
-        ZVAL_NEW_VECTOR(obj);
-        return;
+    if (VECTOR_IS_EMPTY(vector)) {
+        return ds_vector();
 
     } else {
-        zval param;
-        zval retval;
+        zval *value;
+        zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *pos = buf;
 
-        zval *src;
-        zval *ptr = ALLOC_ZVAL_BUFFER(vector->size);
-        zval *pos = ptr;
+        DS_VECTOR_FOREACH(vector, value) {
+            zval param;
+            zval retval;
 
-        DS_VECTOR_FOREACH(vector, src) {
-            ZVAL_COPY_VALUE(&param, src);
+            ZVAL_COPY_VALUE(&param, value);
+
             fci.param_count = 1;
             fci.params      = &param;
             fci.retval      = &retval;
 
             // Catch potential exceptions or other errors during comparison.
-            if (zend_call_function(&fci, &fci_cache) == FAILURE) {
-                efree(ptr);
-                ZVAL_UNDEF(obj);
-                return;
-            }
-
-            // Only push if the value is not falsey.
-            if (zend_is_true(&retval)) {
-                ZVAL_COPY(pos++, src);
+            if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+                efree(buf);
+                return NULL;
+            } else if (zend_is_true(&retval)) {
+                ZVAL_COPY(pos++, value);
             }
         }
         DS_VECTOR_FOREACH_END();
-        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(ptr, (pos - ptr), vector->size));
+
+        return ds_vector_from_buffer_ex(buf, (pos - buf), vector->size);
     }
 }
 
@@ -672,13 +637,12 @@ void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FC
     ZVAL_COPY(return_value, &carry);
 }
 
-void ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length, zval *obj)
+ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length)
 {
     normalize_slice_params(&index, &length, vector->size);
 
     if (length == 0) {
-        ZVAL_NEW_VECTOR(obj);
-        return;
+        return ds_vector();
 
     } else {
         zval *src, *dst, *end;
@@ -692,7 +656,7 @@ void ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length, zva
             ZVAL_COPY(dst, src);
         }
 
-        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer(buffer, length));
+        return ds_vector_from_buffer(buffer, length);
     }
 }
 
@@ -701,69 +665,4 @@ void ds_vector_destroy(ds_vector_t *vector)
     ds_vector_clear(vector);
     efree(vector->buffer);
     efree(vector);
-}
-
-int ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
-{
-    ds_vector_t *vector = Z_DS_VECTOR_P(object);
-
-    php_serialize_data_t serialize_data = (php_serialize_data_t) data;
-    PHP_VAR_SERIALIZE_INIT(serialize_data);
-
-    if (DS_VECTOR_IS_EMPTY(vector)) {
-        SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
-
-    } else {
-        zval *value;
-        smart_str buf = {0};
-
-        DS_VECTOR_FOREACH(vector, value) {
-            php_var_serialize(&buf, value, &serialize_data);
-        }
-        DS_VECTOR_FOREACH_END();
-
-        smart_str_0(&buf);
-        SERIALIZE_SET_ZSTR(buf.s);
-        zend_string_release(buf.s);
-    }
-
-    PHP_VAR_SERIALIZE_DESTROY(serialize_data);
-    return SUCCESS;
-}
-
-int ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
-{
-    ds_vector_t *vector = ds_vector();
-
-    php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
-
-    const unsigned char *pos = buffer;
-    const unsigned char *max = buffer + length;
-
-    PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
-
-    while (*pos != '}') {
-        zval *value = var_tmp_var(&unserialize_data);
-
-        if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
-            var_push_dtor(&unserialize_data, value);
-        } else {
-            goto error;
-        }
-
-        ds_vector_push(vector, value);
-    }
-
-    if (*(++pos) != '\0') {
-        goto error;
-    }
-
-    ZVAL_DS_VECTOR(obj, vector);
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    return SUCCESS;
-
-error:
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    UNSERIALIZE_ERROR();
-    return FAILURE;
 }

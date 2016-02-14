@@ -1,5 +1,6 @@
 #include "common.h"
-#include "internal/php_vector.h"
+#include "internal/ds_vector.h"
+#include "php/php_ds_vector.h"
 
 void normalize_slice_params(zend_long *offset, zend_long *length, const zend_long size)
 {

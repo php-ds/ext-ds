@@ -1,5 +1,5 @@
-#ifndef PHP_DS_HTABLE_H
-#define PHP_DS_HTABLE_H
+#ifndef DS_HTABLE_H
+#define DS_HTABLE_H
 
 #include <stdbool.h>
 #include "php.h"

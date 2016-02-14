@@ -1,5 +1,5 @@
-#ifndef PHP_DS_CE_DS_H
-#define PHP_DS_CE_DS_H
+#ifndef DS_CE_DS_H
+#define DS_CE_DS_H
 
 #include "../common.h"
 

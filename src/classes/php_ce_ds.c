@@ -1,5 +1,5 @@
 #include "../common.h"
-#include "../internal/php_vector.h"
+#include "../internal/ds_vector.h"
 #include "../internal/php_deque.h"
 #include "../internal/php_stack.h"
 #include "../internal/php_queue.h"
@@ -7,6 +7,8 @@
 #include "../internal/php_map.h"
 #include "../internal/php_set.h"
 #include "../internal/php_pair.h"
+
+#include "../php/php_ds_vector.h"
 
 /**
  *
@@ -24,7 +26,7 @@ zend_class_entry *ds_ce;
 /**
  * ds::vector(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_DS(vector, values, ds_vector_t);
+ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(vector, values, Vector);
 METHOD(vector)
 {
     ds_vector_t *vector;
@@ -70,7 +72,7 @@ METHOD(deque)
 /**
  * ds::stack(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, php_ds_stack_t);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, Stack);
 METHOD(stack)
 {
     php_ds_stack_t *stack = php_ds_stack_init();

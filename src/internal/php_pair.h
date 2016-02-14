@@ -1,5 +1,5 @@
-#ifndef PHP_DS_PAIR_H
-#define PHP_DS_PAIR_H
+#ifndef DS_PAIR_H
+#define DS_PAIR_H
 
 #include "php.h"
 #include "zend_exceptions.h"

@@ -1,5 +1,5 @@
-#ifndef PHP_DS_SET_H
-#define PHP_DS_SET_H
+#ifndef DS_SET_H
+#define DS_SET_H
 
 #include "php.h"
 #include "zend_exceptions.h"

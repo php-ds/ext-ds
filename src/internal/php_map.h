@@ -1,5 +1,5 @@
-#ifndef PHP_DS_MAP_H
-#define PHP_DS_MAP_H
+#ifndef DS_MAP_H
+#define DS_MAP_H
 
 #include "../common.h"
 #include "php_htable.h"

@@ -1,5 +1,5 @@
-#ifndef PHP_DS_DEQUE_H
-#define PHP_DS_DEQUE_H
+#ifndef DS_DEQUE_H
+#define DS_DEQUE_H
 
 #include "../common.h"
 

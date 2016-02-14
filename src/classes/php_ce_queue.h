@@ -1,5 +1,5 @@
-#ifndef PHP_DS_CE_QUEUE_H
-#define PHP_DS_CE_QUEUE_H
+#ifndef DS_CE_QUEUE_H
+#define DS_CE_QUEUE_H
 
 #include "../common.h"
 #include "../arginfo.h"

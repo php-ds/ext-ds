@@ -1,5 +1,5 @@
-#ifndef PHP_DS_PRIORITY_QUEUE_ITERATOR_H
-#define PHP_DS_PRIORITY_QUEUE_ITERATOR_H
+#ifndef DS_PRIORITY_QUEUE_ITERATOR_H
+#define DS_PRIORITY_QUEUE_ITERATOR_H
 
 #include "php.h"
 #include "../internal/php_priority_queue.h"

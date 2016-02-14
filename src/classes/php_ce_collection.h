@@ -1,5 +1,5 @@
-#ifndef PHP_DS_CE_COLLECTION_H
-#define PHP_DS_CE_COLLECTION_H
+#ifndef DS_CE_COLLECTION_H
+#define DS_CE_COLLECTION_H
 
 #include "../common.h"
 

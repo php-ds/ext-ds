@@ -7,8 +7,8 @@ if test "$PHP_COLLECTIONS" != "no"; then
   src/common.c                                \
                                               \
 dnl Internal
+  src/internal/ds_vector.c                    \
   src/internal/php_deque.c                    \
-  src/internal/php_vector.c                   \
   src/internal/php_htable.c                   \
   src/internal/php_set.c                      \
   src/internal/php_map.c                      \
@@ -16,6 +16,8 @@ dnl Internal
   src/internal/php_pair.c                     \
   src/internal/php_priority_queue.c           \
   src/internal/php_queue.c                    \
+                                              \
+  src/php/php_ds_vector.c                     \
                                               \
 dnl Iterators
   src/iterators/php_vector_iterator.c         \

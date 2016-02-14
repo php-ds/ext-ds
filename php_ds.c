@@ -82,7 +82,7 @@ zend_module_entry ds_module_entry = {
     PHP_RINIT(ds),
     PHP_RSHUTDOWN(ds),
     PHP_MINFO(ds),
-    PHP_DS_VERSION,
+    DS_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
 

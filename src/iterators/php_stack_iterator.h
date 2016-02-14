@@ -1,5 +1,5 @@
-#ifndef PHP_DS_STACK_ITERATOR_H
-#define PHP_DS_STACK_ITERATOR_H
+#ifndef DS_STACK_ITERATOR_H
+#define DS_STACK_ITERATOR_H
 
 #include "php.h"
 #include "../internal/php_stack.h"

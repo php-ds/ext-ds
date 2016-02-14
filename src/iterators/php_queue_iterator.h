@@ -1,5 +1,5 @@
-#ifndef PHP_DS_QUEUE_ITERATOR_H
-#define PHP_DS_QUEUE_ITERATOR_H
+#ifndef DS_QUEUE_ITERATOR_H
+#define DS_QUEUE_ITERATOR_H
 
 #include "php.h"
 #include "../internal/php_queue.h"

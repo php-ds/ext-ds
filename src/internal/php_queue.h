@@ -1,5 +1,5 @@
-#ifndef PHP_DS_QUEUE_H
-#define PHP_DS_QUEUE_H
+#ifndef DS_QUEUE_H
+#define DS_QUEUE_H
 
 #include "php.h"
 #include "zend_exceptions.h"

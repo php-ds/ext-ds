@@ -1,5 +1,5 @@
-#ifndef PHP_DS_HTABLE_ITERATOR_H
-#define PHP_DS_HTABLE_ITERATOR_H
+#ifndef DS_HTABLE_ITERATOR_H
+#define DS_HTABLE_ITERATOR_H
 
 #include "php.h"
 #include "../internal/php_htable.h"

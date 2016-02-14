@@ -1,5 +1,5 @@
-#ifndef PHP_DS_SET_ITERATOR_H
-#define PHP_DS_SET_ITERATOR_H
+#ifndef DS_SET_ITERATOR_H
+#define DS_SET_ITERATOR_H
 
 #include "php.h"
 #include "../internal/php_set.h"
