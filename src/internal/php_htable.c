@@ -19,6 +19,11 @@ static uint32_t next_power_of_2(uint32_t size)
     return c;
 }
 
+static inline bool htable_is_packed(HTable *table)
+{
+    return table->size == table->next;
+}
+
 static inline HBucket *allocate_buckets(uint32_t capacity)
 {
     return ecalloc(capacity, sizeof(HBucket));
@@ -104,9 +109,7 @@ static void rehash_table(HTable *table)
 
 static void pack_table(HTable *table)
 {
-    // Check if the table is already packed.
-    if (table->next != table->size) {
-
+    if ( ! htable_is_packed(table)) {
         HBucket *end = table->buckets + table->next;
         HBucket *src = table->buckets + table->min_deleted;
         HBucket *dst = src;

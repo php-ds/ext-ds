@@ -19,7 +19,7 @@
 static inline zend_long capacity_for_size(zend_long n)
 {
     // We have to allocate an extra element for the tail.
-    // c--;
+    // n--;
 
     n |= n >> 1;
     n |= n >> 2;
@@ -504,7 +504,6 @@ static inline zend_long deque_find_index(Deque *deque, zval *value)
 
     // Iterate through each item in the list, checking equality as well.
     while (head != tail) {
-
         if (zend_is_identical(value, &deque->buffer[head])) {
             return index;
         }
