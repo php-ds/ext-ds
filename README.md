@@ -19,7 +19,6 @@ git clone https://github.com/php-ds/ds "php-ds"
 cd php-ds
 
 # Build and install the extension
-cd src
 phpize
 ./configure
 make && sudo make install
@@ -27,8 +26,6 @@ make && sudo make install
 # Clean up the build files
 make clean
 phpize --clean
-
-cd ..
 ```
 
 ## Usage
