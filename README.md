@@ -10,10 +10,9 @@
 
 ```bash
 # Dependencies you might need to install
-# sudo apt-get update
-# sudo apt-get install -y build-essential
 # sudo add-apt-repository ppa:ondrej/php
-# sudo apt-get install -y php7.0-dev
+# sudo apt-get update
+# sudo apt-get install git build-essential php7.0-dev
 
 git clone https://github.com/php-ds/ds "php-ds"
 cd php-ds
@@ -21,7 +20,7 @@ cd php-ds
 # Build and install the extension
 phpize
 ./configure
-make && sudo make install
+sudo make install
 
 # Clean up the build files
 make clean
@@ -32,13 +31,14 @@ phpize --clean
 
 ##### Enabling the extension
 
-The best way to enable the extension is to update your *ini* file by adding `extension=ds.so`.
+The best way to enable the extension is to create an *ini* file.
 
 ```bash
-# To see where your INI files are located
-php -i | grep php.ini
+# To see where additional .ini files are located
+php -i | grep "dir for additional .ini files"
 
-echo "extension=ds.so" >> /path/to/php.ini
+# Create a new .ini file for the extension
+echo "extension=ds.so" > /path/to/ini/files/30-ds.ini
 ```
 
 ---
@@ -56,6 +56,8 @@ See [/php/include](/php/include).
 ## Testing
 
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
+
+The extension has to be installed to run the tests.
 
 #### Running the tests
 
