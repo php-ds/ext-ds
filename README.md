@@ -8,16 +8,27 @@
 
 ## Installation
 
-#### Ubuntu
-
 ```bash
-$ ./install/ubuntu.sh
-```
+# Dependencies you might need to install
+# sudo apt-get update
+# sudo apt-get install -y build-essential
+# sudo add-apt-repository ppa:ondrej/php
+# sudo apt-get install -y php7.0-dev
 
-#### OS X
+git clone https://github.com/php-ds/ds "php-ds"
+cd php-ds
 
-```bash
-$ ./install/osx.sh
+# Build and install the extension
+cd src
+phpize
+./configure
+make && sudo make install
+
+# Clean up the build files
+make clean
+phpize --clean
+
+cd ..
 ```
 
 ## Usage
@@ -25,28 +36,35 @@ $ ./install/osx.sh
 ##### Enabling the extension
 
 The best way to enable the extension is to update your *ini* file by adding `extension=ds.so`.
-You can use `php -i | grep php.ini` to see which *ini* file is being used.
+
+```bash
+# To see where your INI files are located
+php -i | grep php.ini
+
+echo "extension=ds.so" >> /path/to/php.ini
+```
 
 ---
 
-You can also enable the extension from the command line:
+You can also enable the extension temporarily using the command line:
 
 ```bash
-$ php -d extension=ds.so
+php -d extension=ds.so
 ```
 
 ## Documentation
 
-See [/php/include](/php/include) for now. Proper documentation is in the works.
+See [/php/include](/php/include).
 
 ## Testing
 
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
 
 #### Running the tests
+
 ``` bash
-$ composer install
-$ php -d extension=ds.so ./vendor/bin/phpunit
+composer install
+./vendor/bin/phpunit
 ```
 
 ## Contributing

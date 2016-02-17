@@ -56,7 +56,7 @@ dnl Classes
   src/classes/php_ce_queue.c                  \
   src/classes/php_ce_ds.c                     \
                                               \
-  ds.c                                        \
+  src/ds.c                                    \
                                               \
   , $ext_shared, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
