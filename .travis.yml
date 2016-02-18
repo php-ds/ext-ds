@@ -4,18 +4,14 @@ php:
   - 7.0
   - nightly
 
-before_install:
+install:
     - phpize
     - ./configure
-    - make
-
-install:
-    - travis_retry composer self-update
-    - travis_retry composer install --no-interaction
-    - sudo make install
+    - make install
 
 before_script:
-  - phpenv config-rm xdebug.ini  # Disable XDebug
+  - phpenv config-rm xdebug.ini
+  - composer install --no-interaction
 
 script:
-  - php -dextension=ds.so ./vendor/bin/phpunit
+  - php -d extension=ds.so ./vendor/bin/phpunit
