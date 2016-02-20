@@ -16,7 +16,7 @@
 #include "zend_smart_str.h"
 #include "json/php_json.h"
 
-#include "../ds.h"
+#include "ds.h"
 #include "parameters.h"
 #include "exceptions.h"
 #include "arginfo.h"

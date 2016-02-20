@@ -1,15 +1,17 @@
 language: php
+
 php:
   - 7.0
   - nightly
 
+install:
+    - phpize
+    - ./configure
+    - make install
+
 before_script:
   - phpenv config-rm xdebug.ini
+  - composer install --no-interaction
 
 script:
-  - phpize
-  - ./configure
-  - make
-  - sudo make install
-  - composer install
-  - php -dextension=ds.so vendor/bin/phpunit
+  - php -d extension=ds.so ./vendor/bin/phpunit

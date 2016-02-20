@@ -3,7 +3,7 @@
 ARG_ENABLE("ds", "enable ds support", "no");
 
 if (PHP_DS != "no") {
-	EXTENSION("ds", "ds.c", PHP_DS_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /I" + configure_module_dirname);
+	EXTENSION("ds", "src\\ds.c", PHP_DS_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /I" + configure_module_dirname);
 	ADD_SOURCES("ext/ds/src", "common.c", "ds");
 	ADD_SOURCES("ext/ds/src/internal", "php_deque.c php_vector.c php_htable.c php_set.c php_map.c php_stack.c php_pair.c php_priority_queue.c php_queue.c", "ds");
 	ADD_SOURCES("ext/ds/src/iterators", "php_vector_iterator.c php_deque_iterator.c php_set_iterator.c php_map_iterator.c php_stack_iterator.c php_htable_iterator.c php_priority_queue_iterator.c php_queue_iterator.c", "ds");

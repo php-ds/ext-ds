@@ -1,16 +1,18 @@
-# Efficient data structures for PHP 7
+# Data structures for PHP 7
 
 [![Build Status](https://travis-ci.org/php-ds/ds.svg?branch=master)](https://travis-ci.org/php-ds/ds)
 [![Build status](https://ci.appveyor.com/api/projects/status/in5p00vw6rk5f27q?svg=true)](https://ci.appveyor.com/project/krakjoe/ds)
+
+[**Blog post**](https://medium.com/@rtheunissen/efficient-data-structures-for-php-7-9dda7af674cd) that covers the behaviour and performance benefits of each data structure.
+
 
 ## Installation
 
 ```bash
 # Dependencies you might need to install
-# sudo apt-get update
-# sudo apt-get install -y build-essentials autoconf
 # sudo add-apt-repository ppa:ondrej/php
-# sudo apt-get install -y php7.0-dev
+# sudo apt-get update
+# sudo apt-get install git build-essential php7.0-dev
 
 git clone https://github.com/php-ds/ds "php-ds"
 cd php-ds
@@ -18,82 +20,46 @@ cd php-ds
 # Build and install the extension
 phpize
 ./configure
-make
 sudo make install
 
 # Clean up the build files
-phpize --clean
 make clean
+phpize --clean
 ```
-
-##### What about Windows?
-
-Windows will be supported when a stable release is on PECL.
 
 ## Usage
 
 ##### Enabling the extension
 
+The best way to enable the extension is to create an *ini* file.
+
 ```bash
-php -d extension=ds.so 
+# To see where additional .ini files are located
+php -i | grep "dir for additional .ini files"
+
+# Create a new .ini file for the extension
+echo "extension=ds.so" > /path/to/ini/files/30-ds.ini
 ```
 
 ---
 
+You can also enable the extension temporarily using the command line:
 
-You can the `Ds` namespace when using a specific structure:
-
-```php
-<?php
-
-use Ds\Set;
-
-$set = new Set();
-$set->add('a', 2, new \stdClass());
-
-print_r($set);
-
-/*
-Ds\Set Object
-(
-    [0] => a
-    [1] => 2
-    [2] => stdClass Object
-        (
-        )
-)
-*/
+```bash
+php -d extension=ds.so
 ```
 
-You can the also use the `ds` static API:
+## Documentation
 
-```php
-<?php
-
-$vector = ds::vector();
-$vector->push('a', 'c', 'd');
-$vector->insert(1, 'b');
-
-print_r($vector);
-
-/*
-Ds\Vector Object
-(
-    [0] => a
-    [1] => b
-    [2] => c
-    [3] => d
-)
-*/
-```
-
-## Docs
-
-See [/php/include](/php/include). 
+See [/php/include](/php/include).
 
 ## Testing
 
-`php-ds` comes with a suite of `PHPUnit` tests requiring `composer`:
+There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
+
+The extension has to be installed to run the tests.
+
+#### Running the tests
 
 ``` bash
 composer install
@@ -102,7 +68,7 @@ composer install
 
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Credits
 
@@ -111,4 +77,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License
 
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
+The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.

@@ -19,10 +19,3 @@ Contributions are accepted via [pull requests](https://github.com/php-ds/ext/pul
 - **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please squash them before submitting.
 
 - **Coding style** - Try to match the style of the rest of the source wherever possible. Your patch won't be accepted if the style is significantly different.
-
-## Running Tests
-
-``` bash
-composer install
-./vendor/bin/phpunit
-```
