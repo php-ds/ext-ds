@@ -7,7 +7,7 @@ final class Set implements Collection
      * Creates a new set using the values of an array or Traversable object.
      * The keys of either will not be preserved.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     public function __construct($values = null) {}
 
@@ -21,7 +21,7 @@ final class Set implements Collection
     /**
      * Adds all values in an array or iterable object to the set.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     public function addAll($values) {}
 

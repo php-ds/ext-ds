@@ -7,7 +7,7 @@ interface Sequence extends Collection
      * Creates a new sequence using the values of either an array or iterable
      * object. The keys of either will not be preserved.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     function __construct($values = null);
 
@@ -140,7 +140,7 @@ interface Sequence extends Collection
     /**
      * Adds all values in an array or iterable object to the sequence.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     function pushAll($values);
 

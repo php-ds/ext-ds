@@ -6,7 +6,7 @@ final class Map implements Collection
     /**
      * Creates an instance using the values of an array or Traversable object.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     public function __construct($values = null) {}
 
@@ -131,7 +131,7 @@ final class Map implements Collection
      * Creates associations for all keys and corresponding values of either an
      * array or iterable object.
      *
-     * @param array|Traversable $values
+     * @param array|\Traversable $values
      */
     public function putAll($values) {}
 
