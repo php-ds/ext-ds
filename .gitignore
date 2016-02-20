@@ -13,6 +13,7 @@
 .deps
 .idea
 .libs
+/include
 acinclude.m4
 aclocal.m4
 autom4te.cache
@@ -29,7 +30,6 @@ config.status
 config.sub
 configure
 configure.in
-include
 install
 install-sh
 libs
