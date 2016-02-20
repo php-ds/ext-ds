@@ -49,4 +49,33 @@ trait union
         $a |= $b;
         $this->assertEquals($expected, $a->toArray());
     }
+
+    /**
+     * @dataProvider unionDataProvider
+     */
+    public function testUnionWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+        $this->assertEquals($initial, $a->union($a)->toArray());
+    }
+
+    /**
+     * @dataProvider unionDataProvider
+     */
+    public function testUnionOperatorWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+        $this->assertEquals($initial, ($a | $a)->toArray());
+    }
+
+    /**
+     * @dataProvider unionDataProvider
+     */
+    public function testUnionOperatorAssignWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+
+        $a |= $a;
+        $this->assertEquals($initial, $a->toArray());
+    }
 }

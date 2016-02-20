@@ -50,4 +50,33 @@ trait intersection
         $a &= $b;
         $this->assertEquals($expected, $a->toArray());
     }
+
+    /**
+     * @dataProvider intersectionDataProvider
+     */
+    public function testIntersectionWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+        $this->assertEquals($initial, $a->intersection($a)->toArray());
+    }
+
+    /**
+     * @dataProvider intersectionDataProvider
+     */
+    public function testIntersectionOperatorWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+        $this->assertEquals($initial, ($a & $a)->toArray());
+    }
+
+    /**
+     * @dataProvider intersectionDataProvider
+     */
+    public function testIntersectionOperatorAssignWithSelf(array $initial, array $values, array $expected)
+    {
+        $a = $this->getInstance($initial);
+
+        $a &= $a;
+        $this->assertEquals($initial, $a->toArray());
+    }
 }

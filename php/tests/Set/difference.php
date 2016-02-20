@@ -50,4 +50,33 @@ trait difference
         $a -= $b;
         $this->assertEquals($expected, $a->toArray());
     }
+
+    /**
+     * @dataProvider differenceDataProvider
+     */
+    public function testDifferenceWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+        $this->assertEquals([], $a->difference($a)->toArray());
+    }
+
+    /**
+     * @dataProvider differenceDataProvider
+     */
+    public function testDifferenceOperatorWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+        $this->assertEquals([], ($a - $a)->toArray());
+    }
+
+    /**
+     * @dataProvider differenceDataProvider
+     */
+    public function testDifferenceOperatorAssignWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+
+        $a -= $a;
+        $this->assertEquals([], $a->toArray());
+    }
 }

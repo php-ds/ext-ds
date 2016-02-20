@@ -48,4 +48,33 @@ trait exclusive
         $a ^= $b;
         $this->assertEquals($expected, $a->toArray());
     }
+
+    /**
+     * @dataProvider exclusiveDataProvider
+     */
+    public function testExclusiveWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+        $this->assertEquals([], $a->exclusive($a)->toArray());
+    }
+
+    /**
+     * @dataProvider exclusiveDataProvider
+     */
+    public function testExclusiveOperatorWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+        $this->assertEquals([], ($a ^ $a)->toArray());
+    }
+
+    /**
+     * @dataProvider exclusiveDataProvider
+     */
+    public function testExclusiveOperatorAssignWithSelf(array $a, array $b, array $expected)
+    {
+        $a = $this->getInstance($a);
+
+        $a ^= $a;
+        $this->assertEquals([], $a->toArray());
+    }
 }
