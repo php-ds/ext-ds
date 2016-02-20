@@ -1,7 +1,3 @@
-
-composer.lock
-vendor
-
 *.
 *.gcda
 *.gcno
@@ -15,11 +11,14 @@ vendor
 *~
 .#*
 .deps
+.idea
 .libs
 acinclude.m4
 aclocal.m4
 autom4te.cache
 build
+clean
+composer.lock
 config.cache
 config.guess
 config.h
@@ -31,6 +30,7 @@ config.sub
 configure
 configure.in
 include
+install
 install-sh
 libs
 libtool
@@ -43,3 +43,5 @@ missing
 mkinstalldirs
 modules
 run-tests.php
+test
+vendor
