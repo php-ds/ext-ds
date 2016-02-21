@@ -202,9 +202,6 @@ void vector_set(Vector *vector, zend_long index, zval *value)
     }
 }
 
-/**
- *
- */
 void vector_to_array(Vector *vector, zval *return_value)
 {
     zend_long n = vector->size;
@@ -309,42 +306,63 @@ void vector_insert(Vector *vector, zend_long index, zval *value)
 void vector_push(Vector *vector, zval *value)
 {
     increase_capacity_if_full(vector);
-    ZVAL_COPY(&vector->buffer[vector->size++], value);
+    ZVAL_COPY(&vector->buffer[vector->size], value);
+    vector->size++;
 }
 
 void vector_push_va(Vector *vector, VA_PARAMS)
 {
     if (argc == 1) {
         vector_push(vector, argv);
-
-    } else if (argc > 0) {
-        vector_ensure_capacity(vector, vector->size + argc);
-
-        do {
-            ZVAL_COPY(&vector->buffer[vector->size++], argv++);
-        } while (--argc != 0);
+        return;
     }
-}
-
-void vector_unshift_va(Vector *vector, VA_PARAMS)
-{
-    vector_ensure_capacity(vector, vector->size + argc);
 
     if (argc > 0) {
-        zval *pos = vector->buffer;
+        zval *src, *dst, *end;
 
-        memmove(pos + argc, pos, vector->size * sizeof(zval));
+        vector_ensure_capacity(vector, vector->size + argc);
+
+        src = argv;
+        dst = &vector->buffer[vector->size];
+        end = dst + argc;
+
+        while (dst != end) {
+            ZVAL_COPY(dst++, src++);
+        }
+
         vector->size += argc;
-
-        do {
-            ZVAL_COPY(pos++, argv++);
-        } while (--argc != 0);
     }
 }
 
 void vector_unshift(Vector *vector, zval *value)
 {
     vector_insert(vector, 0, value);
+}
+
+void vector_unshift_va(Vector *vector, VA_PARAMS)
+{
+    if (argc == 1) {
+        vector_unshift(vector, argv);
+        return;
+    }
+
+    if (argc > 0) {
+        zval *dst, *src, *end;
+
+        vector_ensure_capacity(vector, vector->size + argc);
+
+        src = argv;
+        dst = vector->buffer;
+        end = dst + argc;
+
+        memmove(end, dst, vector->size * sizeof(zval));
+
+        while (dst != end) {
+            ZVAL_COPY(dst++, src++);
+        }
+
+        vector->size += argc;
+    }
 }
 
 void vector_sort_callback(Vector *vector)
