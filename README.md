@@ -14,7 +14,7 @@
 # sudo apt-get update
 # sudo apt-get install git build-essential php7.0-dev
 
-git clone https://github.com/php-ds/ds "php-ds"
+git clone https://github.com/php-ds/extension "php-ds"
 cd php-ds
 
 # Build and install the extension
