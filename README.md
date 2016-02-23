@@ -49,10 +49,6 @@ You can also enable the extension temporarily using the command line:
 php -d extension=ds.so
 ```
 
-## Documentation
-
-See [/php/include](/php/include).
-
 ## Testing
 
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
@@ -63,7 +59,7 @@ The extension has to be installed to run the tests.
 
 ``` bash
 composer install
-./vendor/bin/phpunit
+composer run-script test
 ```
 
 ## Contributing
