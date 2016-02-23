@@ -116,7 +116,7 @@ final class Set implements Collection
      *
      * Note: O(n) if a value has been removed at a position < n, otherwise O(1).
      *
-     * @throws OutOfRangeException
+     * @throws \OutOfRangeException
      */
     public function get(int $position) {}
 

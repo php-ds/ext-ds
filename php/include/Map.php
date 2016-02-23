@@ -83,8 +83,8 @@ final class Map implements Collection
      *
      * @return mixed The associated value or fallback default if provided.
      *
-     * @throws OutOfBoundsException if no default was provided and the key is
-     *                              not associated with a value.
+     * @throws \OutOfBoundsException if no default was provided and the key is
+     *                               not associated with a value.
      */
     public function get($key, $default = null) {}
 
@@ -157,8 +157,8 @@ final class Map implements Collection
      *
      * @return mixed The associated value or fallback default if provided.
      *
-     * @throws OutOfBoundsException if no default was provided and the key is
-     *                              not associated with a value.
+     * @throws \OutOfBoundsException if no default was provided and the key is
+     *                               not associated with a value.
      */
     public function remove($key, $default = null) {}
 
