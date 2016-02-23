@@ -77,7 +77,7 @@ interface Sequence extends Collection
      *
      * @throws \OutOfRangeException if the index is not in the range [0, size-1]
      */
-    function get();
+    function get(int $index);
 
     /**
      * Inserts zero or more values at a given index.
