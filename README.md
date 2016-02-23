@@ -1,6 +1,6 @@
 # Data structures for PHP 7
 
-[![Build Status](https://travis-ci.org/php-ds/ds.svg?branch=master)](https://travis-ci.org/php-ds/ds)
+[![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/in5p00vw6rk5f27q?svg=true)](https://ci.appveyor.com/project/krakjoe/ds)
 
 [**Blog post**](https://medium.com/@rtheunissen/efficient-data-structures-for-php-7-9dda7af674cd) that covers the behaviour and performance benefits of each data structure.
