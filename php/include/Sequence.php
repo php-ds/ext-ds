@@ -64,7 +64,7 @@ interface Sequence extends Collection
      *
      * @return mixed
      *
-     * @throws UnderflowException if the sequence is empty.
+     * @throws \UnderflowException if the sequence is empty.
      */
     function first();
 
@@ -75,7 +75,7 @@ interface Sequence extends Collection
      *
      * @return mixed
      *
-     * @throws OutOfRangeException if the index is not in the range [0, size-1]
+     * @throws \OutOfRangeException if the index is not in the range [0, size-1]
      */
     function get();
 
@@ -107,7 +107,7 @@ interface Sequence extends Collection
      *
      * @return mixed
      *
-     * @throws UnderflowException if the sequence is empty.
+     * @throws \UnderflowException if the sequence is empty.
      */
     function last();
 
@@ -126,7 +126,7 @@ interface Sequence extends Collection
      *
      * @return mixed what was the last value in the sequence.
      *
-     * @throws UnderflowException if the sequence is empty.
+     * @throws \UnderflowException if the sequence is empty.
      */
     function pop();
 
@@ -162,7 +162,7 @@ interface Sequence extends Collection
      *
      * @return mixed the removed value.
      *
-     * @throws OutOfRangeException if the index is not in the range [0, size-1]
+     * @throws \OutOfRangeException if the index is not in the range [0, size-1]
      */
     function remove(int $index);
 
@@ -186,7 +186,7 @@ interface Sequence extends Collection
      * @param int   $index
      * @param mixed $value
      *
-     * @throws OutOfRangeException if the index is not in the range [0, size-1]
+     * @throws \OutOfRangeException if the index is not in the range [0, size-1]
      */
     function set(int $index, $value);
 
@@ -195,7 +195,7 @@ interface Sequence extends Collection
      *
      * @return mixed what was the first value in the sequence.
      *
-     * @throws UnderflowException if the sequence was empty.
+     * @throws \UnderflowException if the sequence was empty.
      */
     function shift();
 
