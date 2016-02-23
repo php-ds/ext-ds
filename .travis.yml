@@ -12,6 +12,7 @@ install:
 before_script:
   - phpenv config-rm xdebug.ini
   - composer install --no-interaction
+  - echo "extension=ds.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
-  - php -d extension=ds.so `which composer` run-script test
+  - composer run-script test
