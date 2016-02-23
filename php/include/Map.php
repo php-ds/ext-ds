@@ -197,7 +197,7 @@ final class Map implements Collection
      * @param callable|null $comparator Accepts two values to be compared.
      *                                  Should return the result of a <=> b.
      *
-     * @return Sequence
+     * @return Map
      */
     public function sort(callable $comparator = null): Map {}
 
