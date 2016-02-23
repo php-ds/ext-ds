@@ -14,4 +14,4 @@ before_script:
   - composer install --no-interaction
 
 script:
-  - php -d extension=ds.so ./vendor/bin/phpunit
+  - php -d extension=ds.so `which composer` run-script test
