@@ -11,6 +11,6 @@
         "php-ds/tests": "dev-master"
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
+        "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
     }
 }
