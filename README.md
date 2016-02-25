@@ -59,7 +59,7 @@ The extension has to be installed to run the tests.
 
 ``` bash
 composer install
-composer run-script test
+composer test
 ```
 
 ## Contributing
