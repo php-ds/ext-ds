@@ -232,6 +232,8 @@ void register_map()
     map_ce->serialize      = map_serialize;
     map_ce->unserialize    = map_unserialize;
 
+    zend_declare_class_constant_long(map_ce, STR_AND_LEN("MIN_CAPACITY"), HTABLE_MIN_CAPACITY);
+
     zend_class_implements(map_ce, 1, collection_ce);
     register_map_handlers();
 }

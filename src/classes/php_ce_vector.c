@@ -243,6 +243,8 @@ void register_vector()
     vector_ce->serialize      = vector_serialize;
     vector_ce->unserialize    = vector_unserialize;
 
+    zend_declare_class_constant_long(vector_ce, STR_AND_LEN("MIN_CAPACITY"), VECTOR_MIN_CAPACITY);
+
     zend_class_implements(vector_ce, 1, sequence_ce);
     register_vector_handlers();
 }

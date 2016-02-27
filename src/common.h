@@ -26,6 +26,8 @@
  */
 #define COLLECTION_NS(cls) "Ds\\" #cls
 
+#define STR_AND_LEN(str) str, sizeof(str) - 1
+
 /**
  * Combined class, name, and arginfo method entry.
  */

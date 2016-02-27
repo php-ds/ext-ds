@@ -241,6 +241,8 @@ void register_deque()
     deque_ce->serialize      = deque_serialize;
     deque_ce->unserialize    = deque_unserialize;
 
+    zend_declare_class_constant_long(deque_ce, STR_AND_LEN("MIN_CAPACITY"), DEQUE_MIN_CAPACITY);
+
     zend_class_implements(deque_ce, 1, sequence_ce);
     register_deque_handlers();
 }
