@@ -83,14 +83,14 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
 
     switch (opcode) {
 
-        // &, intersection which creates a new Set.
+        // &, intersect which creates a new Set.
         case ZEND_BW_AND:
             if (is_set(op2)) {
                 if (op1 == result) {
-                    // &=, intersection which modifies the Set.
-                    set_assign_intersection(set, op2);
+                    // &=, intersect which modifies the Set.
+                    set_assign_intersect(set, op2);
                 } else {
-                    set_intersection(set, op2, result);
+                    set_intersect(set, op2, result);
                 }
                 return SUCCESS;
             }
@@ -112,34 +112,34 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
             }
             break;
 
-        // ^, exclusive which creates a new Set.
+        // ^, xor which creates a new Set.
         case ZEND_BW_XOR:
             if (is_set(op2)) {
-                set_exclusive(set, op2, result);
+                set_xor(set, op2, result);
                 return SUCCESS;
             }
             break;
 
-        // ^=, exclusive which modifies the Set.
+        // ^=, xor which modifies the Set.
         case ZEND_ASSIGN_BW_XOR:
             if (is_set(op2)) {
-                set_assign_exclusive(set, op2);
+                set_assign_xor(set, op2);
                 return SUCCESS;
             }
             break;
 
-        // -, difference which creates a new Set.
+        // -, diff which creates a new Set.
         case ZEND_SUB:
             if (is_set(op2)) {
-                set_difference(set, op2, result);
+                set_diff(set, op2, result);
                 return SUCCESS;
             }
             break;
 
-        // -=, difference which modifies the Set.
+        // -=, diff which modifies the Set.
         case ZEND_ASSIGN_SUB:
             if (is_set(op2)) {
-                set_assign_difference(set, op2);
+                set_assign_diff(set, op2);
                 return SUCCESS;
             }
             break;

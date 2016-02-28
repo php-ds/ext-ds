@@ -49,7 +49,7 @@ void register_pair()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Pair), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Pair), methods);
     pair_ce = zend_register_internal_class(&ce);
 
     pair_ce->ce_flags         |= ZEND_ACC_FINAL;

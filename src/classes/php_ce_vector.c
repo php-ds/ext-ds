@@ -234,7 +234,7 @@ void register_vector()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Vector), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Vector), methods);
 
     vector_ce = zend_register_internal_class(&ce);
     vector_ce->ce_flags      |= ZEND_ACC_FINAL;

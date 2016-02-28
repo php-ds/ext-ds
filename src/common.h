@@ -24,7 +24,7 @@
 /**
  * Default namespace.
  */
-#define COLLECTION_NS(cls) "Ds\\" #cls
+#define DS_NS(cls) "Ds\\" #cls
 
 #define STR_AND_LEN(str) str, sizeof(str) - 1
 

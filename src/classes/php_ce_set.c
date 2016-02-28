@@ -245,7 +245,7 @@ void register_set()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Set), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Set), methods);
 
     set_ce = zend_register_internal_class(&ce);
     set_ce->ce_flags      |= ZEND_ACC_FINAL;

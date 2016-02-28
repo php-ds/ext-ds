@@ -17,7 +17,7 @@ void register_collection()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Collection), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Collection), methods);
     collection_ce = zend_register_internal_interface(&ce);
     zend_class_implements(collection_ce, 3, zend_ce_traversable, spl_ce_Countable, php_json_serializable_ce);
 }

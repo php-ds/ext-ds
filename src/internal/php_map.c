@@ -245,7 +245,7 @@ void map_last(Map *map, zval *return_value)
 
 }
 
-void map_skip(Map *map, zval *return_value)
+void map_skip(Map *map, zend_long position, zval *return_value)
 {
 
 }

@@ -111,7 +111,7 @@ void register_priority_queue()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(PriorityQueue), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(PriorityQueue), methods);
 
     priority_queue_ce = zend_register_internal_class(&ce);
     priority_queue_ce->ce_flags      |= ZEND_ACC_FINAL;

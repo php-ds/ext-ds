@@ -14,6 +14,6 @@ static zend_function_entry hashable_methods[] = {
 void register_hashable()
 {
     zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Hashable), hashable_methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Hashable), hashable_methods);
     hashable_ce = zend_register_internal_interface(&ce);
 }

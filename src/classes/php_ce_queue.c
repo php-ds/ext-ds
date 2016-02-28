@@ -124,7 +124,7 @@ void register_queue()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Queue), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Queue), methods);
 
     queue_ce = zend_register_internal_class(&ce);
     queue_ce->ce_flags      |= ZEND_ACC_FINAL;

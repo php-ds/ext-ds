@@ -124,7 +124,7 @@ void register_stack()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Stack), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Stack), methods);
 
     stack_ce = zend_register_internal_class(&ce);
     stack_ce->ce_flags      |= ZEND_ACC_FINAL;

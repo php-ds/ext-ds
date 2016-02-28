@@ -111,13 +111,6 @@ METHOD(sort)
     }
 }
 
-ARGINFO_DS_RETURN_DS(intersect, Map, Map)
-METHOD(intersect)
-{
-    PARSE_OBJ(obj, map_ce);
-    map_intersect(THIS_MAP(), obj, return_value);
-}
-
 ARGINFO_NONE_RETURN_DS(keys, Set)
 METHOD(keys)
 {
@@ -191,8 +184,7 @@ METHOD(filter)
 ARGINFO_NONE_RETURN_DS(first, Pair)
 METHOD(first)
 {
-    PARSE_NONE;
-    map_first(THIS_MAP(), return_value);
+
 }
 
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
@@ -202,11 +194,17 @@ METHOD(reduce)
     map_reduce(THIS_MAP(), FCI_ARGS, initial, return_value);
 }
 
+ARGINFO_NONE_RETURN_DS(reverse, Map)
+METHOD(reverse)
+{
+    PARSE_NONE;
+    map_reversed(THIS_MAP(), return_value);
+}
+
 ARGINFO_LONG_RETURN_DS(skip, position, Pair)
 METHOD(skip)
 {
-    PARSE_LONG(position);
-    map_skip(THIS_MAP(), position, return_value);
+
 }
 
 ARGINFO_CALLABLE_RETURN_DS(map, callback, Map)
@@ -240,8 +238,7 @@ METHOD(values)
 ARGINFO_DS_RETURN_DS(xor, map, Map, Map)
 METHOD(xor)
 {
-    PARSE_OBJ(obj, map_ce);
-    map_xor(THIS_MAP(), obj, return_value);
+
 }
 
 void register_map()
@@ -258,7 +255,6 @@ void register_map()
         COLLECTION_ME(Map, filter)
         COLLECTION_ME(Map, first)
         COLLECTION_ME(Map, get)
-        COLLECTION_ME(Map, intersect)
         COLLECTION_ME(Map, keys)
         COLLECTION_ME(Map, last)
         COLLECTION_ME(Map, map)
@@ -280,7 +276,7 @@ void register_map()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Map), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Map), methods);
 
     map_ce = zend_register_internal_class(&ce);
     map_ce->ce_flags      |= ZEND_ACC_FINAL;

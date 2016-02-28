@@ -232,7 +232,7 @@ void register_deque()
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, COLLECTION_NS(Deque), methods);
+    INIT_CLASS_ENTRY(ce, DS_NS(Deque), methods);
 
     deque_ce = zend_register_internal_class(&ce);
     deque_ce->ce_flags      |= ZEND_ACC_FINAL;
