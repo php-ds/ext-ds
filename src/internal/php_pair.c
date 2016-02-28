@@ -7,8 +7,10 @@
 void pair_to_array(Pair *pair, zval *array)
 {
     array_init_size(array, 2);
-    add_next_index_zval(array, &pair->key);
-    add_next_index_zval(array, &pair->value);
+
+    add_assoc_zval(array, "key", &pair->key);
+    add_assoc_zval(array, "value", &pair->value);
+
     Z_TRY_ADDREF_P(&pair->key);
     Z_TRY_ADDREF_P(&pair->value);
 }

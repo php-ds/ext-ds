@@ -22,11 +22,6 @@ static zval *set_read_dimension(zval *obj, zval *offset, int type, zval *return_
         return NULL;
     }
 
-    if (type != BP_VAR_R) {
-        ACCESS_BY_REF_NOT_ALLOWED();
-        return NULL;
-    }
-
     return set_get(set, Z_LVAL_P(offset));
 }
 

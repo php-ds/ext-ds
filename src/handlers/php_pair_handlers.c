@@ -5,21 +5,12 @@ zend_object_handlers pair_handlers;
 
 static zval *get_value(Pair *pair, zval *offset)
 {
-    if (offset) {
-        if (Z_TYPE_P(offset) == IS_LONG) {
-            if (Z_LVAL_P(offset) == 0) {
-                return &pair->key;
-            }
-            if (Z_LVAL_P(offset) == 1) {
-                return &pair->value;
-            }
-        } else if (Z_TYPE_P(offset) == IS_STRING) {
-            if (ZVAL_EQUALS_STRING(offset, "key")) {
-                return &pair->key;
-            }
-            if (ZVAL_EQUALS_STRING(offset, "value")) {
-                return &pair->value;
-            }
+    if (offset && Z_TYPE_P(offset) == IS_STRING) {
+        if (ZVAL_EQUALS_STRING(offset, "key")) {
+            return &pair->key;
+        }
+        if (ZVAL_EQUALS_STRING(offset, "value")) {
+            return &pair->value;
         }
     }
 
@@ -29,19 +20,35 @@ static zval *get_value(Pair *pair, zval *offset)
 static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
 {
     Pair *pair = Z_PAIR_P(object);
-    zval *value = get_value(pair, offset);
 
-    if ( ! value) {
-        OFFSET_OUT_OF_BOUNDS();
-        return &EG(uninitialized_zval);
+    if (offset && Z_TYPE_P(offset) == IS_STRING) {
+        if (ZVAL_EQUALS_STRING(offset, "key")) {
+            return &pair->key;
+        }
+        if (ZVAL_EQUALS_STRING(offset, "value")) {
+            return &pair->value;
+        }
     }
 
-    return value;
+    return &EG(uninitialized_zval);
 }
 
 static void pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
 {
-    MUTABILITY_NOT_ALLOWED();
+    Pair *pair = Z_PAIR_P(object);
+
+    if (offset && Z_TYPE_P(offset) == IS_STRING) {
+        if (ZVAL_EQUALS_STRING(offset, "key")) {
+            ZVAL_COPY(&pair->key, value);
+            return;
+        }
+        if (ZVAL_EQUALS_STRING(offset, "value")) {
+            ZVAL_COPY(&pair->value, value);
+            return;
+        }
+    }
+
+    OFFSET_OUT_OF_BOUNDS();
 }
 
 static int pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
@@ -63,40 +70,16 @@ static int pair_has_property(zval *object, zval *offset, int has_set_exists, voi
 
 static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
 {
-    MUTABILITY_NOT_ALLOWED();
-}
-
-static zval *pair_read_dimension(zval *object, zval *offset, int type, zval *return_value)
-{
     Pair *pair = Z_PAIR_P(object);
-    zval *value = get_value(pair, offset);
 
-    if ( ! value) {
-        OFFSET_OUT_OF_BOUNDS();
-        return &EG(uninitialized_zval);
+    if (offset && Z_TYPE_P(offset) == IS_STRING) {
+        if (ZVAL_EQUALS_STRING(offset, "key")) {
+            ZVAL_NULL(&pair->key);
+        }
+        if (ZVAL_EQUALS_STRING(offset, "value")) {
+            ZVAL_NULL(&pair->value);
+        }
     }
-
-    if (type != BP_VAR_R) {
-        ZVAL_MAKE_REF(value);
-    }
-
-    return value;
-}
-
-static void pair_write_dimension(zval *object, zval *offset, zval *value)
-{
-    MUTABILITY_NOT_ALLOWED();
-}
-
-static int pair_has_dimension(zval *object, zval *offset, int check_empty)
-{
-    Pair *pair = Z_PAIR_P(object);
-    return zval_isset(get_value(pair, offset), check_empty);
-}
-
-static void pair_unset_dimension(zval *object, zval *offset)
-{
-    MUTABILITY_NOT_ALLOWED();
 }
 
 static void pair_free_object(zend_object *object)
@@ -148,11 +131,6 @@ void register_pair_handlers()
     pair_handlers.cast_object             = ds_default_cast_object;
     pair_handlers.get_debug_info          = pair_get_debug_info;
     pair_handlers.count_elements          = pair_count_elements;
-
-    pair_handlers.write_dimension         = pair_write_dimension;
-    pair_handlers.read_dimension          = pair_read_dimension;
-    pair_handlers.has_dimension           = pair_has_dimension;
-    pair_handlers.unset_dimension         = pair_unset_dimension;
 
     pair_handlers.read_property           = pair_read_property;
     pair_handlers.write_property          = pair_write_property;

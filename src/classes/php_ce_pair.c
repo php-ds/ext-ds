@@ -7,21 +7,25 @@
 
 zend_class_entry *pair_ce;
 
-ARGINFO_ZVAL_ZVAL(__construct, key, value)
+ARGINFO_OPTIONAL_ZVAL_OPTIONAL_ZVAL(__construct, key, value)
 METHOD(__construct)
 {
-    Pair *pair;
-    PARSE_ZVAL_ZVAL(key, value);
+    PARSE_OPTIONAL_ZVAL_OPTIONAL_ZVAL(key, value);
+    {
+        Pair *pair = THIS_PAIR();
 
-    pair = THIS_PAIR();
+        if (key) {
+            ZVAL_COPY(&pair->key, key);
+        } else {
+            ZVAL_NULL(&pair->key);
+        }
 
-    if ( ! Z_ISUNDEF(pair->key)) {
-        RECONSTRUCTION_NOT_ALLOWED();
-        return;
+        if (value) {
+            ZVAL_COPY(&pair->value, value);
+        } else {
+            ZVAL_NULL(&pair->value);
+        }
     }
-
-    ZVAL_COPY(&pair->key, key);
-    ZVAL_COPY(&pair->value, value);
 }
 
 ARGINFO_NONE_RETURN_ARRAY(toArray)

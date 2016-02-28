@@ -15,6 +15,11 @@ zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
 zval *v = NULL; \
 PARSE_1("|z", &v)
 
+#define PARSE_OPTIONAL_ZVAL_OPTIONAL_ZVAL(v1, v2) \
+zval *v1 = NULL; \
+zval *v2 = NULL; \
+PARSE_2("|zz", &v1, &v2)
+
 #define PARSE_STRING() \
 char *str; \
 size_t len; \
