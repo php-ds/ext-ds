@@ -56,7 +56,7 @@ ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(
     Sequence_contains, values
 );
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_COLLECTION(
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(
     Sequence_filter, callback, Sequence
 );
 
@@ -84,7 +84,7 @@ ARGINFO_NONE(
     Sequence_last
 );
 
-ARGINFO_CALLABLE_RETURN_COLLECTION(
+ARGINFO_CALLABLE_RETURN_DS(
     Sequence_map, callback, Sequence
 );
 
@@ -108,7 +108,7 @@ ARGINFO_LONG(
     Sequence_remove, index
 );
 
-ARGINFO_NONE_RETURN_COLLECTION(
+ARGINFO_NONE_RETURN_DS(
     Sequence_reverse, Sequence
 );
 
@@ -120,11 +120,11 @@ ARGINFO_NONE(
     Sequence_shift
 );
 
-ARGINFO_LONG_OPTIONAL_LONG_RETURN_COLLECTION(
+ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(
     Sequence_slice, index, length, Sequence
 );
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_COLLECTION(
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(
     Sequence_sort,  comparator, Sequence
 );
 

@@ -81,25 +81,25 @@ METHOD(contains)
     RETURN_BOOL(set_contains_all(THIS_SET(), argc, argv));
 }
 
-ARGINFO_COLLECTION_RETURN_COLLECTION(difference, set, Set, Set)
-METHOD(difference)
+ARGINFO_DS_RETURN_DS(diff, set, Set, Set)
+METHOD(diff)
 {
     PARSE_OBJ(obj, set_ce);
-    set_difference(THIS_SET(), obj, return_value);
+    set_diff(THIS_SET(), obj, return_value);
 }
 
-ARGINFO_COLLECTION_RETURN_COLLECTION(intersection, set, Set, Set)
-METHOD(intersection)
+ARGINFO_DS_RETURN_DS(intersect, set, Set, Set)
+METHOD(intersect)
 {
     PARSE_OBJ(obj, set_ce);
-    set_intersection(THIS_SET(), obj, return_value);
+    set_intersect(THIS_SET(), obj, return_value);
 }
 
-ARGINFO_COLLECTION_RETURN_COLLECTION(exclusive, set, Set, Set)
-METHOD(exclusive)
+ARGINFO_DS_RETURN_DS(xor, set, Set, Set)
+METHOD(xor)
 {
     PARSE_OBJ(obj, set_ce);
-    set_exclusive(THIS_SET(), obj, return_value);
+    set_xor(THIS_SET(), obj, return_value);
 }
 
 ARGINFO_NONE(first)
@@ -116,7 +116,7 @@ METHOD(last)
     RETURN_ZVAL_COPY(set_get_last(THIS_SET()));
 }
 
-ARGINFO_COLLECTION_RETURN_COLLECTION(union, set, Set, Set)
+ARGINFO_DS_RETURN_DS(union, set, Set, Set)
 METHOD(union)
 {
     PARSE_OBJ(obj, set_ce);
@@ -151,7 +151,7 @@ METHOD(isEmpty)
     RETURN_BOOL(SET_IS_EMPTY(THIS_SET()));
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_COLLECTION(sort, comparator, Set)
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sort, comparator, Set)
 METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
@@ -162,7 +162,7 @@ METHOD(sort)
     }
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(copy, Set)
+ARGINFO_NONE_RETURN_DS(copy, Set)
 METHOD(copy)
 {
     PARSE_NONE;
@@ -176,7 +176,7 @@ METHOD(reduce)
     set_reduce(THIS_SET(), FCI_ARGS, initial, return_value);
 }
 
-ARGINFO_LONG_OPTIONAL_LONG_RETURN_COLLECTION(slice, index, length, Set)
+ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(slice, index, length, Set)
 METHOD(slice)
 {
     Set *set = THIS_SET();
@@ -190,7 +190,7 @@ METHOD(slice)
     }
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_COLLECTION(filter, callback, Set)
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(filter, callback, Set)
 METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
@@ -201,7 +201,7 @@ METHOD(filter)
     }
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(reverse, Set)
+ARGINFO_NONE_RETURN_DS(reverse, Set)
 METHOD(reverse)
 {
     PARSE_NONE;
@@ -226,12 +226,11 @@ void register_set()
         COLLECTION_ME(Set, allocate)
         COLLECTION_ME(Set, capacity)
         COLLECTION_ME(Set, contains)
-        COLLECTION_ME(Set, difference)
-        COLLECTION_ME(Set, exclusive)
+        COLLECTION_ME(Set, diff)
         COLLECTION_ME(Set, filter)
         COLLECTION_ME(Set, first)
         COLLECTION_ME(Set, get)
-        COLLECTION_ME(Set, intersection)
+        COLLECTION_ME(Set, intersect)
         COLLECTION_ME(Set, join)
         COLLECTION_ME(Set, last)
         COLLECTION_ME(Set, reduce)
@@ -240,6 +239,7 @@ void register_set()
         COLLECTION_ME(Set, slice)
         COLLECTION_ME(Set, sort)
         COLLECTION_ME(Set, union)
+        COLLECTION_ME(Set, xor)
 
         COLLECTION_ME_LIST(Set)
         PHP_FE_END

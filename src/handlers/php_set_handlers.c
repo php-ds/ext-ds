@@ -180,8 +180,6 @@ void register_set_handlers()
     set_handlers.count_elements      = set_count_elements;
     set_handlers.read_dimension      = set_read_dimension;
     set_handlers.write_dimension     = set_write_dimension;
-    // set_handlers.has_dimension       = set_has_dimension;
-    // set_handlers.unset_dimension     = set_unset_dimension;
     set_handlers.cast_object         = ds_default_cast_object;
-    set_handlers.do_operation        = set_do_operation;
+    // set_handlers.do_operation        = set_do_operation;
 }

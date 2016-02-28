@@ -20,7 +20,7 @@ ARGINFO_NONE(
     Collection_clear
 );
 
-ARGINFO_NONE_RETURN_COLLECTION(
+ARGINFO_NONE_RETURN_DS(
     Collection_copy, Collection
 );
 

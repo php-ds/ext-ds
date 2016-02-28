@@ -78,14 +78,14 @@ void set_reversed(Set *set, zval *return_value);
 int set_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
 int set_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
 
-void set_difference(Set *set, zval *obj, zval *return_value);
-void set_intersection(Set *set, zval *obj, zval *return_value);
-void set_exclusive(Set *set, zval *obj, zval *return_value);
+void set_diff(Set *set, zval *obj, zval *return_value);
+void set_intersect(Set *set, zval *obj, zval *return_value);
+void set_xor(Set *set, zval *obj, zval *return_value);
 void set_union(Set *set, zval *obj, zval *return_value);
 
-void set_assign_difference(Set *set, zval *obj);
-void set_assign_intersection(Set *set, zval *obj);
-void set_assign_exclusive(Set *set, zval *obj);
+void set_assign_diff(Set *set, zval *obj);
+void set_assign_intersect(Set *set, zval *obj);
+void set_assign_xor(Set *set, zval *obj);
 void set_assign_union(Set *set, zval *obj);
 
 #endif

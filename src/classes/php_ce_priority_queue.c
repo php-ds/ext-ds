@@ -32,7 +32,7 @@ METHOD(capacity)
     RETURN_LONG(priority_queue_capacity(THIS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(copy, PriorityQueue)
+ARGINFO_NONE_RETURN_DS(copy, PriorityQueue)
 METHOD(copy)
 {
     PARSE_NONE;

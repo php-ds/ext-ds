@@ -65,7 +65,7 @@ METHOD(peek)
     RETURN_ZVAL_COPY(queue_peek(THIS_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(copy, Queue)
+ARGINFO_NONE_RETURN_DS(copy, Queue)
 METHOD(copy)
 {
     PARSE_NONE;

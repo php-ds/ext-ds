@@ -24,7 +24,7 @@ zend_class_entry *ds_ce;
 /**
  * ds::vector(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(vector, values, Vector);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(vector, values, Vector);
 METHOD(vector)
 {
     Vector *vector;
@@ -47,7 +47,7 @@ METHOD(vector)
 /**
  * ds::deque(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(deque, values, Deque);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(deque, values, Deque);
 METHOD(deque)
 {
     Deque *deque;
@@ -70,7 +70,7 @@ METHOD(deque)
 /**
  * ds::stack(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(stack, values, Stack);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, Stack);
 METHOD(stack)
 {
     Stack *stack = stack_init();
@@ -90,7 +90,7 @@ METHOD(stack)
 /**
  * ds::queue(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(queue, values, Queue);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(queue, values, Queue);
 METHOD(queue)
 {
     Queue *queue = queue_init();
@@ -110,7 +110,7 @@ METHOD(queue)
 /**
  * ds::priority_queue()
  */
-ARGINFO_NONE_RETURN_COLLECTION(priority_queue, PriorityQueue);
+ARGINFO_NONE_RETURN_DS(priority_queue, PriorityQueue);
 METHOD(priority_queue)
 {
     RETURN_PRIORITY_QUEUE(priority_queue_init());
@@ -119,7 +119,7 @@ METHOD(priority_queue)
 /**
  * ds::map(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(map, values, Map);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(map, values, Map);
 METHOD(map)
 {
     Map *map = map_create();
@@ -139,7 +139,7 @@ METHOD(map)
 /**
  * ds::set(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(set, values, Set);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(set, values, Set);
 METHOD(set)
 {
     Set *set = set_init();

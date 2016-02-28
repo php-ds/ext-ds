@@ -215,7 +215,7 @@ void set_join(Set *set, const char *glue, const size_t len, zval *return_value)
     ZVAL_STR(return_value, str);
 }
 
-void set_difference(Set *set, zval *obj, zval *return_value)
+void set_diff(Set *set, zval *obj, zval *return_value)
 {
     zval *value;
 
@@ -232,7 +232,7 @@ void set_difference(Set *set, zval *obj, zval *return_value)
     set_init_zval_ex(return_value, result);
 }
 
-void set_assign_difference(Set *set, zval *obj)
+void set_assign_diff(Set *set, zval *obj)
 {
     zval *value;
     Set *other  = Z_SET_P(obj);
@@ -243,7 +243,7 @@ void set_assign_difference(Set *set, zval *obj)
     SET_FOREACH_END();
 }
 
-void set_intersection(Set *set, zval *obj, zval *return_value)
+void set_intersect(Set *set, zval *obj, zval *return_value)
 {
     zval *value;
 
@@ -260,7 +260,7 @@ void set_intersection(Set *set, zval *obj, zval *return_value)
     set_init_zval_ex(return_value, result);
 }
 
-void set_assign_intersection(Set *set, zval *obj)
+void set_assign_intersect(Set *set, zval *obj)
 {
     zval *value;
     Set *other = Z_SET_P(obj);
@@ -274,7 +274,7 @@ void set_assign_intersection(Set *set, zval *obj)
 }
 
 // Returns a new Set with buffer in either A or B but not both
-void set_exclusive(Set *set, zval *obj, zval *return_value)
+void set_xor(Set *set, zval *obj, zval *return_value)
 {
     zval *value;
 
@@ -299,7 +299,7 @@ void set_exclusive(Set *set, zval *obj, zval *return_value)
 }
 
 // Elements in either A or B but not both
-void set_assign_exclusive(Set *set, zval *obj)
+void set_assign_xor(Set *set, zval *obj)
 {
     zval *value;
 

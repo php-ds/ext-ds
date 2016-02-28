@@ -65,6 +65,13 @@ METHOD(remove)
     map_remove(THIS_MAP(), key, def, return_value);
 }
 
+ARGINFO_ZVAL(removeAll, keys)
+METHOD(removeAll)
+{
+    PARSE_ZVAL(keys);
+    map_remove_all(THIS_MAP(), keys);
+}
+
 ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(containsKey, keys)
 METHOD(containsKey)
 {
@@ -79,6 +86,13 @@ METHOD(containsValue)
     RETURN_BOOL(map_has_values(THIS_MAP(), argc, argv));
 }
 
+ARGINFO_DS_RETURN_DS(diff, map, Map, Map)
+METHOD(diff)
+{
+    PARSE_OBJ(obj, map_ce);
+    map_diff(THIS_MAP(), obj, return_value);
+}
+
 ARGINFO_NONE(clear)
 METHOD(clear)
 {
@@ -86,7 +100,7 @@ METHOD(clear)
     map_clear(THIS_MAP());
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_COLLECTION(sort, comparator, Map)
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sort, comparator, Map)
 METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
@@ -97,21 +111,35 @@ METHOD(sort)
     }
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(keys, Set)
+ARGINFO_DS_RETURN_DS(intersect, Map, Map)
+METHOD(intersect)
+{
+    PARSE_OBJ(obj, map_ce);
+    map_intersect(THIS_MAP(), obj, return_value);
+}
+
+ARGINFO_NONE_RETURN_DS(keys, Set)
 METHOD(keys)
 {
     PARSE_NONE;
     map_create_key_set(THIS_MAP(), return_value);
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(values, Sequence)
-METHOD(values)
+ARGINFO_NONE_RETURN_DS(last, Pair)
+METHOD(last)
 {
     PARSE_NONE;
-    map_create_value_sequence(THIS_MAP(), return_value);
+    map_last(THIS_MAP(), return_value);
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(pairs, Sequence)
+ARGINFO_DS_RETURN_DS(merge, map, Map, Map)
+METHOD(merge)
+{
+    PARSE_OBJ(obj, map_ce);
+    map_merge(THIS_MAP(), obj, return_value);
+}
+
+ARGINFO_NONE_RETURN_DS(pairs, Sequence)
 METHOD(pairs)
 {
     PARSE_NONE;
@@ -139,14 +167,7 @@ METHOD(isEmpty)
     RETURN_BOOL(MAP_IS_EMPTY(THIS_MAP()));
 }
 
-ARGINFO_NONE_RETURN_COLLECTION(reverse, Map)
-METHOD(reverse)
-{
-    PARSE_NONE;
-    map_reversed(THIS_MAP(), return_value);
-}
-
-ARGINFO_NONE_RETURN_COLLECTION(copy, Map)
+ARGINFO_NONE_RETURN_DS(copy, Map)
 METHOD(copy)
 {
     PARSE_NONE;
@@ -160,11 +181,18 @@ METHOD(jsonSerialize)
     map_to_array(THIS_MAP(), return_value);
 }
 
-ARGINFO_CALLABLE_RETURN_COLLECTION(filter, callback, Map)
+ARGINFO_CALLABLE_RETURN_DS(filter, callback, Map)
 METHOD(filter)
 {
     PARSE_CALLABLE();
     map_filter_callback(THIS_MAP(), FCI_ARGS, return_value);
+}
+
+ARGINFO_NONE_RETURN_DS(first, Pair)
+METHOD(first)
+{
+    PARSE_NONE;
+    map_first(THIS_MAP(), return_value);
 }
 
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
@@ -174,14 +202,21 @@ METHOD(reduce)
     map_reduce(THIS_MAP(), FCI_ARGS, initial, return_value);
 }
 
-ARGINFO_CALLABLE_RETURN_COLLECTION(map, callback, Map)
+ARGINFO_LONG_RETURN_DS(skip, position, Pair)
+METHOD(skip)
+{
+    PARSE_LONG(position);
+    map_skip(THIS_MAP(), position, return_value);
+}
+
+ARGINFO_CALLABLE_RETURN_DS(map, callback, Map)
 METHOD(map)
 {
     PARSE_CALLABLE();
     map_map(THIS_MAP(), FCI_ARGS, return_value);
 }
 
-ARGINFO_LONG_OPTIONAL_LONG_RETURN_COLLECTION(slice, index, length, Map)
+ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(slice, index, length, Map)
 METHOD(slice)
 {
     Map *map = THIS_MAP();
@@ -195,6 +230,20 @@ METHOD(slice)
     }
 }
 
+ARGINFO_NONE_RETURN_DS(values, Sequence)
+METHOD(values)
+{
+    PARSE_NONE;
+    map_create_value_sequence(THIS_MAP(), return_value);
+}
+
+ARGINFO_DS_RETURN_DS(xor, map, Map, Map)
+METHOD(xor)
+{
+    PARSE_OBJ(obj, map_ce);
+    map_xor(THIS_MAP(), obj, return_value);
+}
+
 void register_map()
 {
     zend_class_entry ce;
@@ -205,19 +254,27 @@ void register_map()
         COLLECTION_ME(Map, capacity)
         COLLECTION_ME(Map, containsKey)
         COLLECTION_ME(Map, containsValue)
+        COLLECTION_ME(Map, diff)
         COLLECTION_ME(Map, filter)
+        COLLECTION_ME(Map, first)
         COLLECTION_ME(Map, get)
+        COLLECTION_ME(Map, intersect)
         COLLECTION_ME(Map, keys)
+        COLLECTION_ME(Map, last)
         COLLECTION_ME(Map, map)
+        COLLECTION_ME(Map, merge)
         COLLECTION_ME(Map, pairs)
         COLLECTION_ME(Map, put)
         COLLECTION_ME(Map, putAll)
         COLLECTION_ME(Map, reduce)
         COLLECTION_ME(Map, remove)
+        COLLECTION_ME(Map, removeAll)
         COLLECTION_ME(Map, reverse)
+        COLLECTION_ME(Map, skip)
         COLLECTION_ME(Map, slice)
         COLLECTION_ME(Map, sort)
         COLLECTION_ME(Map, values)
+        COLLECTION_ME(Map, xor)
 
         COLLECTION_ME_LIST(Map)
         PHP_FE_END

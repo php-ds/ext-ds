@@ -57,6 +57,15 @@ void map_sort(Map *map);
 void map_sorted_callback(Map *map, zval *obj);
 void map_sorted(Map *map, zval *obj);
 
+void map_xor(Map *map, zval *other, zval *return_value);
+void map_merge(Map *map, zval *other, zval *return_value);
+void map_diff(Map *map, zval *other, zval *return_value);
+void map_intersect(Map *map, zval *other, zval *return_value);
+void map_remove_all(Map *map, zval *keys);
+void map_first(Map *map, zval *return_value);
+void map_last(Map *map, zval *return_value);
+void map_skip(Map *map, zval *return_value);
+
 int map_serialize(zval *object, unsigned char **buffer, size_t *buf_len, zend_serialize_data *data);
 int map_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
 

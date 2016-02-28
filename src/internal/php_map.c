@@ -112,7 +112,6 @@ void map_remove(Map *map, zval *key, zval *def, zval *return_value)
 
         if ( ! def) {
             // Did not specify a default value
-
             KEY_NOT_FOUND();
             ZVAL_NULL(return_value);
             return;
@@ -209,6 +208,46 @@ void map_slice(Map *map, zend_long index, zend_long length, zval *obj)
 {
     HTable *sliced = htable_slice(map->table, index, length);
     map_init_zval_ex(obj, map_init_ex(sliced));
+}
+
+void map_xor(Map *map, zval *other, zval *return_value)
+{
+
+}
+
+void map_merge(Map *map, zval *other, zval *return_value)
+{
+
+}
+
+void map_diff(Map *map, zval *other, zval *return_value)
+{
+
+}
+
+void map_intersect(Map *map, zval *other, zval *return_value)
+{
+
+}
+
+void map_remove_all(Map *map, zval *keys)
+{
+
+}
+
+void map_first(Map *map, zval *return_value)
+{
+
+}
+
+void map_last(Map *map, zval *return_value)
+{
+
+}
+
+void map_skip(Map *map, zval *return_value)
+{
+
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
