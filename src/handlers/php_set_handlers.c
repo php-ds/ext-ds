@@ -88,9 +88,9 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
             if (is_set(op2)) {
                 if (op1 == result) {
                     // &=, intersect which modifies the Set.
-                    set_assign_intersect(set, op2);
+                    set_assign_intersect(set, Z_SET_P(op2));
                 } else {
-                    set_intersect(set, op2, result);
+                    set_intersect(set, Z_SET_P(op2), result);
                 }
                 return SUCCESS;
             }
@@ -99,7 +99,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // |, union which creates a new Set.
         case ZEND_BW_OR:
             if (is_set(op2)) {
-                set_union(set, op2, result);
+                set_union(set, Z_SET_P(op2), result);
                 return SUCCESS;
             }
             break;
@@ -107,7 +107,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // |=, union which modifies the Set.
         case ZEND_ASSIGN_BW_OR:
             if (is_set(op2)) {
-                set_assign_union(set, op2);
+                set_assign_union(set, Z_SET_P(op2));
                 return SUCCESS;
             }
             break;
@@ -115,7 +115,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // ^, xor which creates a new Set.
         case ZEND_BW_XOR:
             if (is_set(op2)) {
-                set_xor(set, op2, result);
+                set_xor(set, Z_SET_P(op2), result);
                 return SUCCESS;
             }
             break;
@@ -123,7 +123,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // ^=, xor which modifies the Set.
         case ZEND_ASSIGN_BW_XOR:
             if (is_set(op2)) {
-                set_assign_xor(set, op2);
+                set_assign_xor(set, Z_SET_P(op2));
                 return SUCCESS;
             }
             break;
@@ -131,7 +131,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // -, diff which creates a new Set.
         case ZEND_SUB:
             if (is_set(op2)) {
-                set_diff(set, op2, result);
+                set_diff(set, Z_SET_P(op2), result);
                 return SUCCESS;
             }
             break;
@@ -139,7 +139,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
         // -=, diff which modifies the Set.
         case ZEND_ASSIGN_SUB:
             if (is_set(op2)) {
-                set_assign_diff(set, op2);
+                set_assign_diff(set, Z_SET_P(op2));
                 return SUCCESS;
             }
             break;

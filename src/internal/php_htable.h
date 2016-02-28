@@ -148,6 +148,14 @@ zend_string *htable_join_keys(HTable *table, const char* glue, const size_t len)
 void htable_reverse(HTable *table);
 HTable *htable_reversed(HTable *table);
 
+HTable *htable_xor(HTable *table, HTable *other);
+HTable *htable_diff(HTable *table, HTable *other);
+HTable *htable_intersect(HTable *table, HTable *other);
+HTable *htable_merge(HTable *table, HTable *other);
+
+HBucket *htable_last(HTable *table);
+HBucket *htable_first(HTable *table);
+
 HTable *htable_map(HTable *table, FCI_PARAMS);
 HTable *htable_filter_callback(HTable *table, FCI_PARAMS);
 void htable_reduce(HTable *table, FCI_PARAMS, zval *initial, zval *return_value);

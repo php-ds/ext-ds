@@ -181,7 +181,7 @@ zval *set_get(Set *set, zend_long index)
 
 zval *set_get_first(Set *set)
 {
-    HBucket *bucket = htable_lookup_by_position(set->table, 0);
+    HBucket *bucket = htable_first(set->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -193,7 +193,7 @@ zval *set_get_first(Set *set)
 
 zval *set_get_last(Set *set)
 {
-    HBucket *bucket = htable_lookup_by_position(set->table, SET_SIZE(set) - 1);
+    HBucket *bucket = htable_last(set->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -215,56 +215,30 @@ void set_join(Set *set, const char *glue, const size_t len, zval *return_value)
     ZVAL_STR(return_value, str);
 }
 
-void set_diff(Set *set, zval *obj, zval *return_value)
+void set_diff(Set *set, Set *other, zval *obj)
 {
-    zval *value;
-
-    Set *other  = Z_SET_P(obj);
-    Set *result = set_init();
-
-    SET_FOREACH(set, value) {
-        if ( ! _set_contains(other, value)) {
-            _set_add(result, value);
-        }
-    }
-    SET_FOREACH_END();
-
-    set_init_zval_ex(return_value, result);
+    HTable *diff = htable_diff(set->table, other->table);
+    set_init_zval_ex(obj, set_init_ex(diff));
 }
 
-void set_assign_diff(Set *set, zval *obj)
+void set_assign_diff(Set *set, Set *other)
 {
     zval *value;
-    Set *other  = Z_SET_P(obj);
-
     SET_FOREACH(other, value) {
         set_remove(set, value);
     }
     SET_FOREACH_END();
 }
 
-void set_intersect(Set *set, zval *obj, zval *return_value)
+void set_intersect(Set *set, Set *other, zval *obj)
 {
-    zval *value;
-
-    Set *other  = Z_SET_P(obj);
-    Set *result = set_init();
-
-    SET_FOREACH(set, value) {
-        if (_set_contains(other, value)) {
-            _set_add(result, value);
-        }
-    }
-    SET_FOREACH_END();
-
-    set_init_zval_ex(return_value, result);
+    HTable *intersection = htable_intersect(set->table, other->table);
+    set_init_zval_ex(obj, set_init_ex(intersection));
 }
 
-void set_assign_intersect(Set *set, zval *obj)
+void set_assign_intersect(Set *set, Set *other)
 {
     zval *value;
-    Set *other = Z_SET_P(obj);
-
     SET_FOREACH(set, value) {
         if ( ! _set_contains(other, value)) {
             set_remove(set, value);
@@ -274,36 +248,16 @@ void set_assign_intersect(Set *set, zval *obj)
 }
 
 // Returns a new Set with buffer in either A or B but not both
-void set_xor(Set *set, zval *obj, zval *return_value)
+void set_xor(Set *set, Set *other, zval *obj)
 {
-    zval *value;
-
-    Set *other  = Z_SET_P(obj);
-    Set *result = set_init();
-
-    SET_FOREACH(set, value) {
-        if ( ! _set_contains(other, value)) {
-            _set_add(result, value);
-        }
-    }
-    SET_FOREACH_END();
-
-    SET_FOREACH(other, value) {
-        if ( ! _set_contains(set, value)) {
-            _set_add(result, value);
-        }
-    }
-    SET_FOREACH_END();
-
-    set_init_zval_ex(return_value, result);
+    HTable *xor = htable_xor(set->table, other->table);
+    set_init_zval_ex(obj, set_init_ex(xor));
 }
 
 // Elements in either A or B but not both
-void set_assign_xor(Set *set, zval *obj)
+void set_assign_xor(Set *set, Set *other)
 {
     zval *value;
-
-    Set *other  = Z_SET_P(obj);
     Set *result = set_init();
 
     SET_FOREACH(set, value) {
@@ -321,31 +275,15 @@ void set_assign_xor(Set *set, zval *obj)
 
 // Creates a new Set that contains the values of the current Set as well as
 // the values of the provided Set.
-void set_union(Set *set, zval *obj, zval *return_value)
+void set_union(Set *set, Set *other, zval *obj)
 {
-    zval *value;
-
-    Set *other  = Z_SET_P(obj);
-    Set *result = set_init();
-
-    SET_FOREACH(set, value) {
-        _set_add(result, value);
-    }
-    SET_FOREACH_END();
-
-    SET_FOREACH(other, value) {
-        _set_add(result, value);
-    }
-    SET_FOREACH_END();
-
-    set_init_zval_ex(return_value, result);
+    HTable *merged = htable_merge(set->table, other->table);
+    set_init_zval_ex(obj, set_init_ex(merged));
 }
 
-void set_assign_union(Set *set, zval *obj)
+void set_assign_union(Set *set, Set *other)
 {
     zval *value;
-    Set *other = Z_SET_P(obj);
-
     SET_FOREACH(other, value) {
         _set_add(set, value);
     }

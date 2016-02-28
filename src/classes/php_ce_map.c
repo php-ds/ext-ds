@@ -65,13 +65,6 @@ METHOD(remove)
     map_remove(THIS_MAP(), key, def, return_value);
 }
 
-ARGINFO_ZVAL(removeAll, keys)
-METHOD(removeAll)
-{
-    PARSE_ZVAL(keys);
-    map_remove_all(THIS_MAP(), keys);
-}
-
 ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(containsKey, keys)
 METHOD(containsKey)
 {
@@ -90,7 +83,7 @@ ARGINFO_DS_RETURN_DS(diff, map, Map, Map)
 METHOD(diff)
 {
     PARSE_OBJ(obj, map_ce);
-    map_diff(THIS_MAP(), obj, return_value);
+    map_diff(THIS_MAP(), Z_MAP_P(obj), return_value);
 }
 
 ARGINFO_NONE(clear)
@@ -129,7 +122,7 @@ ARGINFO_DS_RETURN_DS(merge, map, Map, Map)
 METHOD(merge)
 {
     PARSE_OBJ(obj, map_ce);
-    map_merge(THIS_MAP(), obj, return_value);
+    map_merge(THIS_MAP(), Z_MAP_P(obj), return_value);
 }
 
 ARGINFO_NONE_RETURN_DS(pairs, Sequence)
@@ -184,7 +177,8 @@ METHOD(filter)
 ARGINFO_NONE_RETURN_DS(first, Pair)
 METHOD(first)
 {
-
+    PARSE_NONE;
+    map_first(THIS_MAP(), return_value);
 }
 
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
@@ -204,7 +198,8 @@ METHOD(reverse)
 ARGINFO_LONG_RETURN_DS(skip, position, Pair)
 METHOD(skip)
 {
-
+    PARSE_LONG(position);
+    map_skip(THIS_MAP(), position, return_value);
 }
 
 ARGINFO_CALLABLE_RETURN_DS(map, callback, Map)
@@ -238,7 +233,8 @@ METHOD(values)
 ARGINFO_DS_RETURN_DS(xor, map, Map, Map)
 METHOD(xor)
 {
-
+    PARSE_OBJ(obj, map_ce);
+    map_xor(THIS_MAP(), Z_MAP_P(obj), return_value);
 }
 
 void register_map()
@@ -264,7 +260,6 @@ void register_map()
         COLLECTION_ME(Map, putAll)
         COLLECTION_ME(Map, reduce)
         COLLECTION_ME(Map, remove)
-        COLLECTION_ME(Map, removeAll)
         COLLECTION_ME(Map, reverse)
         COLLECTION_ME(Map, skip)
         COLLECTION_ME(Map, slice)

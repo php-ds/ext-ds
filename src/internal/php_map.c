@@ -3,6 +3,7 @@
 #include "../handlers/php_map_handlers.h"
 #include "php_htable.h"
 #include "php_map.h"
+#include "php_pair.h"
 
 static Map *map_init_ex(HTable *table)
 {
@@ -210,44 +211,67 @@ void map_slice(Map *map, zend_long index, zend_long length, zval *obj)
     map_init_zval_ex(obj, map_init_ex(sliced));
 }
 
-void map_xor(Map *map, zval *other, zval *return_value)
+void map_merge(Map *map, Map *other, zval *obj)
 {
-
+    HTable *merged = htable_merge(map->table, other->table);
+    map_init_zval_ex(obj, map_init_ex(merged));
 }
 
-void map_merge(Map *map, zval *other, zval *return_value)
+void map_xor(Map *map, Map *other, zval *obj)
 {
-
+    HTable *xor = htable_xor(map->table, other->table);
+    map_init_zval_ex(obj, map_init_ex(xor));
 }
 
-void map_diff(Map *map, zval *other, zval *return_value)
+void map_diff(Map *map, Map *other, zval *obj)
 {
-
+    HTable *diff = htable_diff(map->table, other->table);
+    map_init_zval_ex(obj, map_init_ex(diff));
 }
 
-void map_intersect(Map *map, zval *other, zval *return_value)
+void map_intersect(Map *map, Map *other, zval *obj)
 {
-
-}
-
-void map_remove_all(Map *map, zval *keys)
-{
-
+    HTable *intersection = htable_intersect(map->table, other->table);
+    map_init_zval_ex(obj, map_init_ex(intersection));
 }
 
 void map_first(Map *map, zval *return_value)
 {
+    HBucket *bucket = htable_first(map->table);
 
+    if ( ! bucket) {
+        NOT_ALLOWED_WHEN_EMPTY();
+        ZVAL_NULL(return_value);
+        return;
+    }
+
+    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 void map_last(Map *map, zval *return_value)
 {
+    HBucket *bucket = htable_last(map->table);
 
+    if ( ! bucket) {
+        NOT_ALLOWED_WHEN_EMPTY();
+        ZVAL_NULL(return_value);
+        return;
+    }
+
+    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 void map_skip(Map *map, zend_long position, zval *return_value)
 {
+    HBucket *bucket = htable_lookup_by_position(map->table, position);
 
+    if ( ! bucket) {
+        INDEX_OUT_OF_RANGE(position, map->table->size);
+        ZVAL_NULL(return_value);
+        return;
+    }
+
+    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)

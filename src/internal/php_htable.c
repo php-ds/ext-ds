@@ -637,7 +637,8 @@ void htable_ensure_capacity(HTable *table, uint32_t capacity)
     }
 }
 
-static inline HBucket *init_next_bucket(HTable *table, zval *key, const uint32_t hash)
+
+static HBucket *init_next_bucket(HTable *table, zval *key, const uint32_t hash)
 {
     HBucket *bucket = &table->buckets[table->next];
 
@@ -649,6 +650,18 @@ static inline HBucket *init_next_bucket(HTable *table, zval *key, const uint32_t
     table->size++;
 
     return bucket;
+}
+
+static void htable_put_next(HTable *table, HBucket *bucket)
+{
+    COPY_BUCKET(&table->buckets[table->next], bucket);
+
+    table->next++;
+    table->size++;
+
+    if (table->next == table->capacity) {
+        htable_increase_capacity(table);
+    }
 }
 
 bool htable_lookup_or_next(HTable *table, zval *key, HBucket **return_value)
@@ -1028,6 +1041,107 @@ void htable_reduce(HTable *table, FCI_PARAMS, zval *initial, zval *return_value)
     HTABLE_FOREACH_END();
 
     ZVAL_COPY(return_value, &carry);
+}
+
+HTable *htable_xor(HTable *table, HTable *other)
+{
+    HBucket *bucket;
+    HTable *xor = htable_init();
+
+    HTABLE_FOREACH_BUCKET(table, bucket) {
+        if ( ! htable_has_key(other, &bucket->key)) {
+            htable_put_next(xor, bucket);
+        }
+    }
+    HTABLE_FOREACH_END();
+
+    HTABLE_FOREACH_BUCKET(other, bucket) {
+        if ( ! htable_has_key(table, &bucket->key)) {
+            htable_put_next(xor, bucket);
+        }
+    }
+    HTABLE_FOREACH_END();
+
+    return xor;
+}
+
+HTable *htable_diff(HTable *table, HTable *other)
+{
+    HBucket *bucket;
+    HTable *diff = htable_init();
+
+    HTABLE_FOREACH_BUCKET(table, bucket) {
+        if ( ! htable_has_key(other, &bucket->key)) {
+            htable_put_next(diff, bucket);
+        }
+    }
+    HTABLE_FOREACH_END();
+
+    return diff;
+}
+
+HTable *htable_intersect(HTable *table, HTable *other)
+{
+    HBucket *bucket;
+    HTable *intersection = htable_init();
+
+    HTABLE_FOREACH_BUCKET(table, bucket) {
+        if (htable_has_key(other, &bucket->key)) {
+            htable_put_next(intersection, bucket);
+        }
+    }
+    HTABLE_FOREACH_END();
+
+    return intersection;
+}
+
+HTable *htable_merge(HTable *table, HTable *other)
+{
+    HBucket *bucket;
+    HTable *merged = htable_clone(table);
+
+    HTABLE_FOREACH_BUCKET(other, bucket) {
+        htable_put(merged, &bucket->key, &bucket->value);
+    }
+    HTABLE_FOREACH_END();
+
+    return merged;
+}
+
+HBucket *htable_last(HTable *table)
+{
+    if (table->size == 0) {
+        return NULL;
+
+    } else {
+        HBucket *last = &table->buckets[table->next - 1];
+
+        if ( ! HTABLE_IS_PACKED(table)) {
+            while (BUCKET_DELETED(last)) {
+                last--;
+            }
+        }
+
+        return last;
+    }
+}
+
+HBucket *htable_first(HTable *table)
+{
+    if (table->size == 0) {
+        return NULL;
+
+    } else {
+        HBucket *first = table->buckets;
+
+        if (table->min_deleted > 0) {
+            while (BUCKET_DELETED(first)) {
+                first++;
+            }
+        }
+
+        return first;
+    }
 }
 
 void htable_reverse(HTable *table)

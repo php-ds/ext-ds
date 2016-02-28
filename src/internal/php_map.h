@@ -57,11 +57,10 @@ void map_sort(Map *map);
 void map_sorted_callback(Map *map, zval *obj);
 void map_sorted(Map *map, zval *obj);
 
-void map_xor(Map *map, zval *other, zval *return_value);
-void map_merge(Map *map, zval *other, zval *return_value);
-void map_diff(Map *map, zval *other, zval *return_value);
-void map_intersect(Map *map, zval *other, zval *return_value);
-void map_remove_all(Map *map, zval *keys);
+void map_xor(Map *map, Map *other, zval *obj);
+void map_merge(Map *map, Map *other, zval *obj);
+void map_diff(Map *map, Map *other, zval *obj);
+void map_intersect(Map *map, Map *other, zval *obj);
 void map_first(Map *map, zval *return_value);
 void map_last(Map *map, zval *return_value);
 void map_skip(Map *map, zend_long position, zval *return_value);

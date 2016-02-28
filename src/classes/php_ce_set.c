@@ -85,21 +85,21 @@ ARGINFO_DS_RETURN_DS(diff, set, Set, Set)
 METHOD(diff)
 {
     PARSE_OBJ(obj, set_ce);
-    set_diff(THIS_SET(), obj, return_value);
+    set_diff(THIS_SET(), Z_SET_P(obj), return_value);
 }
 
 ARGINFO_DS_RETURN_DS(intersect, set, Set, Set)
 METHOD(intersect)
 {
     PARSE_OBJ(obj, set_ce);
-    set_intersect(THIS_SET(), obj, return_value);
+    set_intersect(THIS_SET(), Z_SET_P(obj), return_value);
 }
 
 ARGINFO_DS_RETURN_DS(xor, set, Set, Set)
 METHOD(xor)
 {
     PARSE_OBJ(obj, set_ce);
-    set_xor(THIS_SET(), obj, return_value);
+    set_xor(THIS_SET(), Z_SET_P(obj), return_value);
 }
 
 ARGINFO_NONE(first)
@@ -120,7 +120,7 @@ ARGINFO_DS_RETURN_DS(union, set, Set, Set)
 METHOD(union)
 {
     PARSE_OBJ(obj, set_ce);
-    set_union(THIS_SET(), obj, return_value);
+    set_union(THIS_SET(), Z_SET_P(obj), return_value);
 }
 
 ARGINFO_NONE(clear)
