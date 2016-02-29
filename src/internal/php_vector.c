@@ -606,31 +606,33 @@ void vector_filter_callback(Vector *vector, zval *obj, FCI_PARAMS)
         return;
 
     } else {
-        zval *value;
-        zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
-        zval *pos = buf;
+        zval param;
+        zval retval;
 
-        VECTOR_FOREACH(vector, value) {
-            zval param;
-            zval retval;
+        zval *src;
+        zval *ptr = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *pos = ptr;
 
-            ZVAL_COPY_VALUE(&param, value);
-
+        VECTOR_FOREACH(vector, src) {
+            ZVAL_COPY_VALUE(&param, src);
             fci.param_count = 1;
             fci.params      = &param;
             fci.retval      = &retval;
 
-            if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                efree(buf);
-                ZVAL_NULL(obj);
+            // Catch potential exceptions or other errors during comparison.
+            if (zend_call_function(&fci, &fci_cache) == FAILURE) {
+                efree(ptr);
+                ZVAL_UNDEF(obj);
                 return;
-            } else if (zend_is_true(&retval)) {
-                ZVAL_COPY(pos++, value);
+            }
+
+            // Only push if the value is not falsey.
+            if (zend_is_true(&retval)) {
+                ZVAL_COPY(pos++, src);
             }
         }
         VECTOR_FOREACH_END();
-
-        ZVAL_VECTOR(obj, vector_from_buffer_ex(buf, (pos - buf), vector->size));
+        ZVAL_VECTOR(obj, vector_from_buffer_ex(ptr, (pos - ptr), vector->size));
     }
 }
 
