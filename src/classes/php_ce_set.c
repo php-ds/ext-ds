@@ -254,6 +254,12 @@ void register_set()
     set_ce->serialize      = set_serialize;
     set_ce->unserialize    = set_unserialize;
 
+    zend_declare_class_constant_long(
+        set_ce,
+        STR_AND_LEN("MIN_CAPACITY"),
+        HTABLE_MIN_CAPACITY
+    );
+
     zend_class_implements(set_ce, 1, collection_ce);
     register_set_handlers();
 }

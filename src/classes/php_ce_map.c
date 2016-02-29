@@ -58,6 +58,13 @@ METHOD(get)
     RETURN_ZVAL_COPY(map_get(THIS_MAP(), key, def));
 }
 
+ARGINFO_DS_RETURN_DS(intersect, map, Map, Map)
+METHOD(intersect)
+{
+    PARSE_OBJ(obj, map_ce);
+    map_intersect(THIS_MAP(), Z_MAP_P(obj), return_value);
+}
+
 ARGINFO_ZVAL_OPTIONAL_ZVAL(remove, key, default)
 METHOD(remove)
 {
@@ -251,6 +258,7 @@ void register_map()
         COLLECTION_ME(Map, filter)
         COLLECTION_ME(Map, first)
         COLLECTION_ME(Map, get)
+        COLLECTION_ME(Map, intersect)
         COLLECTION_ME(Map, keys)
         COLLECTION_ME(Map, last)
         COLLECTION_ME(Map, map)
@@ -280,7 +288,11 @@ void register_map()
     map_ce->serialize      = map_serialize;
     map_ce->unserialize    = map_unserialize;
 
-    zend_declare_class_constant_long(map_ce, STR_AND_LEN("MIN_CAPACITY"), HTABLE_MIN_CAPACITY);
+    zend_declare_class_constant_long(
+        map_ce,
+        STR_AND_LEN("MIN_CAPACITY"),
+        HTABLE_MIN_CAPACITY
+    );
 
     zend_class_implements(map_ce, 1, collection_ce);
     register_map_handlers();

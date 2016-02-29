@@ -1,6 +1,7 @@
 {
     "name": "php-ds/extension",
     "license": "MIT",
+    "keywords": [],
     "authors": [
         {
             "name": "Rudi Theunissen",

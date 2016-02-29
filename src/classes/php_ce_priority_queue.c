@@ -120,6 +120,12 @@ void register_priority_queue()
     priority_queue_ce->serialize      = priority_queue_serialize;
     priority_queue_ce->unserialize    = priority_queue_unserialize;
 
+    zend_declare_class_constant_long(
+        priority_queue_ce,
+        STR_AND_LEN("MIN_CAPACITY"),
+        PRIORITY_QUEUE_MIN_CAPACITY
+    );
+
     zend_class_implements(priority_queue_ce, 1, collection_ce);
     register_priority_queue_handlers();
 }
