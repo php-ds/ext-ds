@@ -758,6 +758,7 @@ void deque_filter_callback(Deque *deque, zval *obj, FCI_PARAMS)
 
             // Catch potential exceptions or other errors during comparison.
             if (zend_call_function(&fci, &fci_cache) == FAILURE) {
+                efree(ptr);
                 ZVAL_UNDEF(obj);
                 return;
             }
