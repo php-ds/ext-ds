@@ -458,15 +458,14 @@ void vector_merge(Vector *vector, zval *values, zval *obj)
         return;
     }
 
-    if ( ! is_array(values) && ! is_traversable(values)) {
-        ARRAY_OR_TRAVERSABLE_REQUIRED();
-        return;
-
-    } else {
+    if (is_array(values) || is_traversable(values)) {
         Vector *merged = vector_create_copy(vector);
         vector_push_all(merged, values);
         ZVAL_VECTOR(obj, merged);
+        return;
     }
+
+    ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
 void vector_pop(Vector *vector, zval *return_value)

@@ -682,15 +682,14 @@ void deque_merge(Deque *deque, zval *values, zval *obj)
         return;
     }
 
-    if ( ! is_array(values) && ! is_traversable(values)) {
-        ARRAY_OR_TRAVERSABLE_REQUIRED();
-        return;
-
-    } else {
+    if (is_array(values) || is_traversable(values)) {
         Deque *merged = deque_create_copy(deque);
         deque_push_all(merged, values);
         ZVAL_DEQUE(obj, merged);
+        return;
     }
+
+    ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
 void deque_sort_callback(Deque *deque)
