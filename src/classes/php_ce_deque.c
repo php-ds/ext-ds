@@ -81,6 +81,7 @@ METHOD(filter)
         PARSE_CALLABLE();
         deque_filter_callback(THIS_DEQUE(), return_value, FCI_ARGS);
     } else {
+        PARSE_NONE;
         deque_filter(THIS_DEQUE(), return_value);
     }
 }

@@ -738,35 +738,38 @@ void deque_map(Deque *deque, zval *obj, FCI_PARAMS)
 
 void deque_filter_callback(Deque *deque, zval *obj, FCI_PARAMS)
 {
-    zval param;
-    zval retval;
-
-    zval *buf, *src, *dst;
-
     if (DEQUE_IS_EMPTY(deque)) {
         ZVAL_NEW_DEQUE(obj);
         return;
-    }
 
-    buf = ALLOC_ZVAL_BUFFER(deque->capacity);
-    dst = buf;
+    } else {
+        zval param;
+        zval retval;
 
-    DEQUE_FOREACH(deque, src) {
-        ZVAL_COPY_VALUE(&param, src);
+        zval *src;
+        zval *ptr = ALLOC_ZVAL_BUFFER(deque->capacity);
+        zval *pos = ptr;
 
-        fci.param_count = 1;
-        fci.params      = &param;
-        fci.retval      = &retval;
+        DEQUE_FOREACH(deque, src) {
+            ZVAL_COPY_VALUE(&param, src);
+            fci.param_count = 1;
+            fci.params      = &param;
+            fci.retval      = &retval;
 
-        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            ZVAL_NULL(obj);
-            return;
-        } else if (zend_is_true(&retval)) {
-            ZVAL_COPY(dst++, src);
+            // Catch potential exceptions or other errors during comparison.
+            if (zend_call_function(&fci, &fci_cache) == FAILURE) {
+                ZVAL_UNDEF(obj);
+                return;
+            }
+
+            // Only push if the value is not falsey.
+            if (zend_is_true(&retval)) {
+                ZVAL_COPY(pos++, src);
+            }
         }
+        DEQUE_FOREACH_END();
+        ZVAL_DEQUE(obj, deque_from_buffer(ptr, pos - ptr));
     }
-    DEQUE_FOREACH_END();
-    ZVAL_DEQUE(obj, deque_from_buffer(buf, dst - buf));
 }
 
 void deque_filter(Deque *deque, zval *obj)
