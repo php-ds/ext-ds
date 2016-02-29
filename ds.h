@@ -1,8 +1,6 @@
 #ifndef PHP_DS_H
 #define PHP_DS_H
 
-// #include "php.h"
-
 extern zend_module_entry ds_module_entry;
 
 #define phpext_ds_ptr &ds_module_entry
