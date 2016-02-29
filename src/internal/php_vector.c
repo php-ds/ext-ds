@@ -439,7 +439,7 @@ void vector_push_all(Vector *vector, zval *values)
         return;
     }
 
-    if (Z_TYPE_P(values) == IS_ARRAY) {
+    if (is_array(values)) {
         add_array_to_vector(vector, Z_ARRVAL_P(values));
         return;
     }
@@ -450,6 +450,23 @@ void vector_push_all(Vector *vector, zval *values)
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+}
+
+void vector_merge(Vector *vector, zval *values, zval *obj)
+{
+    if ( ! values) {
+        return;
+    }
+
+    if ( ! is_array(values) && ! is_traversable(values)) {
+        ARRAY_OR_TRAVERSABLE_REQUIRED();
+        return;
+
+    } else {
+        Vector *merged = vector_create_copy(vector);
+        vector_push_all(merged, values);
+        ZVAL_VECTOR(obj, merged);
+    }
 }
 
 void vector_pop(Vector *vector, zval *return_value)

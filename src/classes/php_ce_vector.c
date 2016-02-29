@@ -126,6 +126,11 @@ METHOD(map)
     vector_map(THIS_VECTOR(), return_value, FCI_ARGS);
 }
 
+METHOD(merge)
+{
+    PARSE_ZVAL(values);
+    vector_merge(THIS_VECTOR(), values, return_value);
+}
 
 METHOD(pop)
 {

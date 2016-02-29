@@ -63,6 +63,12 @@ METHOD(map)
     deque_map(THIS_DEQUE(), return_value, FCI_ARGS);
 }
 
+METHOD(merge)
+{
+    PARSE_ZVAL(values);
+    deque_merge(THIS_DEQUE(), values, return_value);
+}
+
 METHOD(reduce)
 {
     PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);

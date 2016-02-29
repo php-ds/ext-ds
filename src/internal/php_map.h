@@ -57,8 +57,9 @@ void map_sort(Map *map);
 void map_sorted_callback(Map *map, zval *obj);
 void map_sorted(Map *map, zval *obj);
 
+void map_merge(Map *map, zval *values, zval *obj);
+
 void map_xor(Map *map, Map *other, zval *obj);
-void map_merge(Map *map, Map *other, zval *obj);
 void map_diff(Map *map, Map *other, zval *obj);
 void map_intersect(Map *map, Map *other, zval *obj);
 void map_first(Map *map, zval *return_value);

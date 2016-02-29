@@ -125,11 +125,11 @@ METHOD(last)
     map_last(THIS_MAP(), return_value);
 }
 
-ARGINFO_DS_RETURN_DS(merge, map, Map, Map)
+ARGINFO_ZVAL_RETURN_DS(merge, values, Map)
 METHOD(merge)
 {
-    PARSE_OBJ(obj, map_ce);
-    map_merge(THIS_MAP(), Z_MAP_P(obj), return_value);
+    PARSE_ZVAL(values);
+    map_merge(THIS_MAP(), values, return_value);
 }
 
 ARGINFO_NONE_RETURN_DS(pairs, Sequence)

@@ -142,6 +142,11 @@ int zval_isset(zval *value, int check_empty)
     return zend_is_true(value);
 }
 
+bool is_array(zval *value)
+{
+    return Z_TYPE_P(value) == IS_ARRAY;
+}
+
 bool is_traversable(zval *value)
 {
     return Z_TYPE_P(value) == IS_OBJECT &&

@@ -205,6 +205,11 @@ zval *vector_get_first(Vector *vector);
 void vector_map(Vector *vector, zval *obj, FCI_PARAMS);
 
 /**
+ *
+ */
+void vector_merge(Vector *vector, zval *values, zval *obj);
+
+/**
  * Reduces all values of a Vector to a single value, starting with an optional
  * initial value (IS_NULL if the pointer is NULL).
  */

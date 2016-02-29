@@ -221,6 +221,11 @@ void deque_join(Deque *deque, char *str, size_t len, zval *return_value);
 void deque_map(Deque *deque, zval *obj, FCI_PARAMS);
 
 /**
+ *
+ */
+void deque_merge(Deque *deque, zval *values, zval *obj);
+
+/**
  * Creates a new Deque containing all the values of a given Deque that are
  * considered true according to `zend_is_true`.
  */

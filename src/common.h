@@ -203,6 +203,11 @@ void reverse_zval_range(zval *x, zval *y);
 bool is_traversable(zval *value);
 
 /**
+ * Determines if a zval is an array.
+ */
+bool is_array(zval *value);
+
+/**
  * Normalizes input parameters for slicing so that the implementation can focus
  * on the actual slicing. Takes care of negative values, length > size etc.
  */

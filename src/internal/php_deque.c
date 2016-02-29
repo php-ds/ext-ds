@@ -119,7 +119,7 @@ Deque *deque_create_copy(Deque *deque)
 {
     Deque *cloned = ecalloc(1, sizeof(Deque));
 
-    cloned->buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+    cloned->buffer   = ALLOC_ZVAL_BUFFER(deque->capacity);
     cloned->capacity = deque->capacity;
     cloned->head     = deque->head;
     cloned->tail     = deque->tail;
@@ -661,19 +661,36 @@ void deque_push_all(Deque *deque, zval *values)
 {
     if ( ! values) {
         return;
+    }
 
-    } else if (Z_TYPE_P(values) == IS_ARRAY) {
+    if (is_array(values)) {
         add_array_to_deque(deque, Z_ARRVAL_P(values));
         return;
+    }
 
-    } else if (Z_TYPE_P(values) == IS_OBJECT) {
-        if (instanceof_function(Z_OBJCE_P(values), zend_ce_traversable)) {
-            add_traversable_to_deque(deque, values);
-            return;
-        }
+    if (is_traversable(values)) {
+        add_traversable_to_deque(deque, values);
+        return;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+}
+
+void deque_merge(Deque *deque, zval *values, zval *obj)
+{
+    if ( ! values) {
+        return;
+    }
+
+    if ( ! is_array(values) && ! is_traversable(values)) {
+        ARRAY_OR_TRAVERSABLE_REQUIRED();
+        return;
+
+    } else {
+        Deque *merged = deque_create_copy(deque);
+        deque_push_all(merged, values);
+        ZVAL_DEQUE(obj, merged);
+    }
 }
 
 void deque_sort_callback(Deque *deque)

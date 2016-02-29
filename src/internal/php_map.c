@@ -1,8 +1,10 @@
 #include "../common.h"
 #include "../classes/php_ce_map.h"
+#include "../classes/php_ce_set.h"
 #include "../handlers/php_map_handlers.h"
 #include "php_htable.h"
 #include "php_map.h"
+#include "php_set.h"
 #include "php_pair.h"
 
 static Map *map_init_ex(HTable *table)
@@ -211,10 +213,37 @@ void map_slice(Map *map, zend_long index, zend_long length, zval *obj)
     map_init_zval_ex(obj, map_init_ex(sliced));
 }
 
-void map_merge(Map *map, Map *other, zval *obj)
+void map_merge(Map *map, zval *values, zval *obj)
 {
-    HTable *merged = htable_merge(map->table, other->table);
-    map_init_zval_ex(obj, map_init_ex(merged));
+    if (is_array(values)) {
+        Map *merged = map_clone(map);
+        map_put_all(merged, values);
+        map_init_zval_ex(obj, merged);
+        return;
+    }
+
+    if (Z_TYPE_P(values) == IS_OBJECT) {
+        if (Z_OBJCE_P(values) == map_ce) {
+            HTable *merged = htable_merge(map->table, Z_MAP_P(values)->table);
+            map_init_zval_ex(obj, map_init_ex(merged));
+            return;
+        }
+
+        if (Z_OBJCE_P(values) == set_ce) {
+            HTable *merged = htable_merge(map->table, Z_SET_P(values)->table);
+            map_init_zval_ex(obj, map_init_ex(merged));
+            return;
+        }
+
+        if (is_traversable(values)) {
+            Map *merged = map_clone(map);
+            map_put_all(merged, values);
+            map_init_zval_ex(obj, merged);
+            return;
+        }
+    }
+
+    ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
 void map_xor(Map *map, Map *other, zval *obj)
@@ -316,19 +345,17 @@ void map_put_all(Map *map, zval *values)
 {
     if ( ! values) {
         return;
+    }
 
-    } else if (Z_TYPE_P(values) == IS_ARRAY) {
+    if (is_array(values)) {
         HashTable *ht = Z_ARRVAL_P(values);
         add_ht_to_map(map, ht);
         return;
+    }
 
-    } else if (Z_TYPE_P(values) == IS_OBJECT) {
-        zend_class_entry *ce = Z_OBJCE_P(values);
-
-        if (instanceof_function(ce, zend_ce_traversable)) {
-            add_traversable_to_map(map, values);
-            return;
-        }
+    if (is_traversable(values)) {
+        add_traversable_to_map(map, values);
+        return;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();

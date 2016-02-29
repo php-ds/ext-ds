@@ -21,6 +21,7 @@ SEQUENCE_ME(cls, insert) \
 SEQUENCE_ME(cls, join) \
 SEQUENCE_ME(cls, last) \
 SEQUENCE_ME(cls, map) \
+SEQUENCE_ME(cls, merge) \
 SEQUENCE_ME(cls, pop) \
 SEQUENCE_ME(cls, push) \
 SEQUENCE_ME(cls, pushAll) \
@@ -86,6 +87,10 @@ ARGINFO_NONE(
 
 ARGINFO_CALLABLE_RETURN_DS(
     Sequence_map, callback, Sequence
+);
+
+ARGINFO_ZVAL_RETURN_DS(
+    Sequence_merge, values, Sequence
 );
 
 ARGINFO_NONE(
