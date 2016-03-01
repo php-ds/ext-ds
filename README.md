@@ -1,12 +1,14 @@
-# Data structures for PHP 7
+### Data structures for PHP 7
+##### Extension
 
 [![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 
+---
+
 [**Blog post**](https://medium.com/@rtheunissen/efficient-data-structures-for-php-7-9dda7af674cd) that covers the behaviour and performance benefits of each data structure.
 
-
-## Installation
+### Installation
 
 ```bash
 # Dependencies you might need to install
@@ -27,7 +29,7 @@ make clean
 phpize --clean
 ```
 
-## Usage
+### Usage
 
 ##### Enabling the extension
 
@@ -49,7 +51,7 @@ You can also enable the extension temporarily using the command line:
 php -d extension=ds.so
 ```
 
-## Testing
+### Testing
 
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
 
@@ -62,15 +64,15 @@ composer install
 composer test
 ```
 
-## Contributing
+### Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
-## Credits
+### Credits
 
 - [Rudi Theunissen](https://github.com/rtheunissen)
 - [Joe Watkins](https://github.com/krakjoe)
 
-## License
+### License
 
 The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
