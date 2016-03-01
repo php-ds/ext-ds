@@ -8,7 +8,7 @@
 #include "main/php.h"
 #include "ext/standard/info.h"
 #include "ext/standard/php_var.h"
-#include "ds.h"
+#include "php_ds.h"
 
 #include "src/classes/php_ce_hashable.h"
 #include "src/classes/php_ce_collection.h"
