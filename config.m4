@@ -1,6 +1,3 @@
-dnl $Id$
-dnl config.m4 for extension ds
-
 PHP_ARG_ENABLE(ds, whether to enable ds support,
 [  --enable-ds           Enable ds support])
 
