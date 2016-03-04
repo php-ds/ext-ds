@@ -4,14 +4,16 @@ php:
   - 7.0
   - nightly
 
+before_install:
+  - phpenv config-rm xdebug.ini
+
 install:
     - phpize
     - ./configure
     - make install
+    - composer install --no-interaction
 
 before_script:
-  - phpenv config-rm xdebug.ini
-  - composer install --no-interaction
   - echo "extension=ds.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
