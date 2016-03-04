@@ -20,17 +20,17 @@ static zval *get_value(Pair *pair, zval *offset)
 static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
 {
     Pair *pair = Z_PAIR_P(object);
+    zval *value = get_value(pair, offset);
 
-    if (offset && Z_TYPE_P(offset) == IS_STRING) {
-        if (ZVAL_EQUALS_STRING(offset, "key")) {
-            return &pair->key;
-        }
-        if (ZVAL_EQUALS_STRING(offset, "value")) {
-            return &pair->value;
-        }
+    if ( ! value) {
+        return &EG(uninitialized_zval);
     }
 
-    return &EG(uninitialized_zval);
+    if (type != BP_VAR_R) {
+        ZVAL_MAKE_REF(value);
+    }
+
+    return value;
 }
 
 static void pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
