@@ -17,19 +17,27 @@ static zval *get_property(Pair *pair, zval *offset)
     return NULL;
 }
 
-static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
+static zval *pair_get_property_ptr_ptr(zval *object, zval *offset, int type, void **cache_slot)
 {
-    zval *value = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_PAIR_P(object), offset);
 
-    if ( ! value) {
+    if ( ! property) {
         return &EG(uninitialized_zval);
     }
 
-    if (type != BP_VAR_R) {
-        ZVAL_MAKE_REF(value);
+    return property;
+}
+
+static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
+{
+    zval *property = get_property(Z_PAIR_P(object), offset);
+
+    if ( ! property) {
+        OFFSET_OUT_OF_BOUNDS();
+        return &EG(uninitialized_zval);
     }
 
-    return value;
+    return property;
 }
 
 static void pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
@@ -47,9 +55,9 @@ static void pair_write_property(zval *object, zval *offset, zval *value, void **
 
 static int pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
-    zval *value = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_PAIR_P(object), offset);
 
-    if ( ! value) {
+    if ( ! property) {
         return 0;
     }
 
@@ -58,16 +66,16 @@ static int pair_has_property(zval *object, zval *offset, int has_set_exists, voi
         return 1;
     }
 
-    return zval_isset(value, has_set_exists);
+    return zval_isset(property, has_set_exists);
 }
 
 static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
 {
-    zval *value = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_PAIR_P(object), offset);
 
-    if (value) {
-        zval_ptr_dtor(value);
-        ZVAL_NULL(value);
+    if (property) {
+        zval_ptr_dtor(property);
+        ZVAL_NULL(property);
     }
 }
 
@@ -121,6 +129,7 @@ void register_pair_handlers()
     pair_handlers.get_debug_info          = pair_get_debug_info;
     pair_handlers.count_elements          = pair_count_elements;
 
+    pair_handlers.get_property_ptr_ptr    = pair_get_property_ptr_ptr;
     pair_handlers.read_property           = pair_read_property;
     pair_handlers.write_property          = pair_write_property;
     pair_handlers.has_property            = pair_has_property;
