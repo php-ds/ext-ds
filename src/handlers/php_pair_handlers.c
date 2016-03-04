@@ -3,7 +3,7 @@
 
 zend_object_handlers pair_handlers;
 
-static zval *get_value(Pair *pair, zval *offset)
+static zval *get_property(Pair *pair, zval *offset)
 {
     if (offset && Z_TYPE_P(offset) == IS_STRING) {
         if (ZVAL_EQUALS_STRING(offset, "key")) {
@@ -19,8 +19,7 @@ static zval *get_value(Pair *pair, zval *offset)
 
 static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
 {
-    Pair *pair = Z_PAIR_P(object);
-    zval *value = get_value(pair, offset);
+    zval *value = get_property(Z_PAIR_P(object), offset);
 
     if ( ! value) {
         return &EG(uninitialized_zval);
@@ -35,17 +34,12 @@ static zval *pair_read_property(zval *object, zval *offset, int type, void **cac
 
 static void pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
 {
-    Pair *pair = Z_PAIR_P(object);
+    zval *property = get_property(Z_PAIR_P(object), offset);
 
-    if (offset && Z_TYPE_P(offset) == IS_STRING) {
-        if (ZVAL_EQUALS_STRING(offset, "key")) {
-            ZVAL_COPY(&pair->key, value);
-            return;
-        }
-        if (ZVAL_EQUALS_STRING(offset, "value")) {
-            ZVAL_COPY(&pair->value, value);
-            return;
-        }
+    if (property) {
+        zval_ptr_dtor(property);
+        ZVAL_COPY(property, value);
+        return;
     }
 
     OFFSET_OUT_OF_BOUNDS();
@@ -53,8 +47,7 @@ static void pair_write_property(zval *object, zval *offset, zval *value, void **
 
 static int pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
-    Pair *pair = Z_PAIR_P(object);
-    zval *value = get_value(pair, offset);
+    zval *value = get_property(Z_PAIR_P(object), offset);
 
     if ( ! value) {
         return 0;
@@ -70,15 +63,11 @@ static int pair_has_property(zval *object, zval *offset, int has_set_exists, voi
 
 static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
 {
-    Pair *pair = Z_PAIR_P(object);
+    zval *value = get_property(Z_PAIR_P(object), offset);
 
-    if (offset && Z_TYPE_P(offset) == IS_STRING) {
-        if (ZVAL_EQUALS_STRING(offset, "key")) {
-            ZVAL_NULL(&pair->key);
-        }
-        if (ZVAL_EQUALS_STRING(offset, "value")) {
-            ZVAL_NULL(&pair->value);
-        }
+    if (value) {
+        zval_ptr_dtor(value);
+        ZVAL_NULL(value);
     }
 }
 
