@@ -72,15 +72,15 @@ METHOD(remove)
     map_remove(THIS_MAP(), key, def, return_value);
 }
 
-ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(containsKey, keys)
-METHOD(containsKey)
+ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(hasKey, keys)
+METHOD(hasKey)
 {
     PARSE_VARIADIC_ZVAL();
     RETURN_BOOL(map_has_keys(THIS_MAP(), argc, argv));
 }
 
-ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(containsValue, values)
-METHOD(containsValue)
+ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(hasValue, values)
+METHOD(hasValue)
 {
     PARSE_VARIADIC_ZVAL();
     RETURN_BOOL(map_has_values(THIS_MAP(), argc, argv));
@@ -252,8 +252,8 @@ void register_map()
         COLLECTION_ME(Map, __construct)
         COLLECTION_ME(Map, allocate)
         COLLECTION_ME(Map, capacity)
-        COLLECTION_ME(Map, containsKey)
-        COLLECTION_ME(Map, containsValue)
+        COLLECTION_ME(Map, hasKey)
+        COLLECTION_ME(Map, hasValue)
         COLLECTION_ME(Map, diff)
         COLLECTION_ME(Map, filter)
         COLLECTION_ME(Map, first)
