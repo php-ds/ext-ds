@@ -1201,25 +1201,15 @@ HashTable *htable_pairs_to_php_ht(HTable *table)
     HashTable *ht;
 
     zval *key;
-    zval *val;
+    zval *value;
 
     zval pair;
-
-    uint32_t pos;
 
     ALLOC_HASHTABLE(ht);
     zend_hash_init(ht, table->size, NULL, ZVAL_PTR_DTOR, 0);
 
-    HTABLE_FOREACH(table, pos, key, val) {
-
-        array_init_size(&pair, 2);
-
-        add_next_index_zval(&pair, key);
-        add_next_index_zval(&pair, val);
-
-        Z_TRY_ADDREF_P(key);
-        Z_TRY_ADDREF_P(val);
-
+    HTABLE_FOREACH_KEY_VALUE(table, key, value) {
+        pair_create_as_zval(key, value, &pair);
         zend_hash_next_index_insert(ht, &pair);
     }
     HTABLE_FOREACH_END();

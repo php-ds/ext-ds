@@ -142,11 +142,11 @@ HTable *htable_slice(HTable *table, zend_long index, zend_long length);
 HTable *htable_init();
 void htable_clear(HTable *h);
 HTable *htable_clone(HTable *source);
-HashTable *htable_pairs_to_php_ht(HTable *h);
 bool htable_isset(HTable *h, zval *key, bool check_empty);
 zend_string *htable_join_keys(HTable *table, const char* glue, const size_t len);
 void htable_reverse(HTable *table);
 HTable *htable_reversed(HTable *table);
+HashTable *htable_pairs_to_php_ht(HTable *table);
 
 HTable *htable_xor(HTable *table, HTable *other);
 HTable *htable_diff(HTable *table, HTable *other);
