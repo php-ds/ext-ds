@@ -13,18 +13,18 @@ static inline bool index_out_of_range(zend_long index, zend_long max)
     return false;
 }
 
-static inline void vector_reallocate(Vector *vector, zend_long capacity)
+static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
 {
     REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
     vector->capacity = capacity;
 }
 
-Vector *vector_init_ex(zend_long capacity)
+ds_vector_t *ds_vector_ex(zend_long capacity)
 {
-    Vector *vector = ecalloc(1, sizeof(Vector));
+    ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
 
     // Make sure that capacity is valid.
-    capacity = MAX(capacity, VECTOR_MIN_CAPACITY);
+    capacity = MAX(capacity, DS_VECTOR_MIN_CAPACITY);
 
     vector->buffer   = ALLOC_ZVAL_BUFFER(capacity);
     vector->capacity = capacity;
@@ -33,12 +33,12 @@ Vector *vector_init_ex(zend_long capacity)
     return vector;
 }
 
-static Vector *vector_from_buffer_ex(
+static ds_vector_t *ds_vector_from_buffer_ex(
     zval *buffer,
     zend_long size,
     zend_long capacity
 ) {
-    Vector *vector   = ecalloc(1, sizeof(Vector));
+    ds_vector_t *vector   = ecalloc(1, sizeof(ds_vector_t));
     vector->buffer   = buffer;
     vector->capacity = capacity;
     vector->size     = size;
@@ -46,12 +46,12 @@ static Vector *vector_from_buffer_ex(
     return vector;
 }
 
-Vector *vector_from_buffer(zval *buffer, zend_long length)
+ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long length)
 {
     zend_long capacity = length;
 
-    if (capacity < VECTOR_MIN_CAPACITY) {
-        capacity = VECTOR_MIN_CAPACITY;
+    if (capacity < DS_VECTOR_MIN_CAPACITY) {
+        capacity = DS_VECTOR_MIN_CAPACITY;
         REALLOC_ZVAL_BUFFER(buffer, capacity);
 
     } else if (length < capacity >> 2) {
@@ -59,45 +59,45 @@ Vector *vector_from_buffer(zval *buffer, zend_long length)
         REALLOC_ZVAL_BUFFER(buffer, capacity);
     }
 
-    return vector_from_buffer_ex(buffer, length, capacity);
+    return ds_vector_from_buffer_ex(buffer, length, capacity);
 }
 
-Vector *vector_init()
+ds_vector_t *ds_vector()
 {
-    return vector_init_ex(VECTOR_MIN_CAPACITY);
+    return ds_vector_ex(DS_VECTOR_MIN_CAPACITY);
 }
 
-zend_object *vector_create_object_ex(Vector *vector)
+zend_object *php_ds_vector_ex(ds_vector_t *vector)
 {
-    VectorObj *obj = ecalloc(1, sizeof(VectorObj));
-    zend_object_std_init(&obj->std, vector_ce);
-    obj->std.handlers = &vector_object_handlers;
+    php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
+    zend_object_std_init(&obj->std, ds_vector_ce);
+    obj->std.handlers = &ds_vector_object_handlers;
     obj->vector = vector;
     return &obj->std;
 }
 
-zend_object *vector_create_object(zend_class_entry *ce)
+zend_object *php_ds_vector(zend_class_entry *ce)
 {
-    return vector_create_object_ex(vector_init());
+    return php_ds_vector_ex(ds_vector());
 }
 
-void vector_user_allocate(Vector *vector, zend_long capacity)
+void ds_vector_user_allocate(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
-        vector_reallocate(vector, capacity);
+        ds_vector_reallocate(vector, capacity);
     }
 }
 
-Vector *vector_create_copy(Vector *vector)
+ds_vector_t *ds_vector_create_copy(ds_vector_t *vector)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
-        return vector_init();
+    if (DS_VECTOR_IS_EMPTY(vector)) {
+        return ds_vector();
 
     } else {
         zend_long size     = vector->size;
         zend_long capacity = vector->capacity;
 
-        Vector *copy = vector_init_ex(capacity);
+        ds_vector_t *copy = ds_vector_ex(capacity);
 
         copy->buffer   = ALLOC_ZVAL_BUFFER(capacity);
         copy->capacity = capacity;
@@ -109,42 +109,42 @@ Vector *vector_create_copy(Vector *vector)
     }
 }
 
-zend_object *vector_create_clone(Vector *vector)
+zend_object *ds_vector_create_clone(ds_vector_t *vector)
 {
-    return vector_create_object_ex(vector_create_copy(vector));
+    return php_ds_vector_ex(ds_vector_create_copy(vector));
 }
 
-static inline void vector_increase_capacity(Vector *vector)
+static inline void ds_vector_increase_capacity(ds_vector_t *vector)
 {
-    vector_reallocate(vector, vector->capacity + (vector->capacity >> 1));
+    ds_vector_reallocate(vector, vector->capacity + (vector->capacity >> 1));
 }
 
-static inline void vector_ensure_capacity(Vector *vector, zend_long capacity)
+static inline void ds_vector_ensure_capacity(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
         zend_long boundary = vector->capacity + (vector->capacity >> 1);
-        vector_reallocate(vector, MAX(capacity, boundary));
+        ds_vector_reallocate(vector, MAX(capacity, boundary));
     }
 }
 
-static inline void vector_check_compact(Vector *vector)
+static inline void ds_vector_check_compact(ds_vector_t *vector)
 {
     if (vector->size < vector->capacity >> 2) {
 
-        if (vector->capacity >> 1 > VECTOR_MIN_CAPACITY) {
-            vector_reallocate(vector, vector->capacity >> 1);
+        if (vector->capacity >> 1 > DS_VECTOR_MIN_CAPACITY) {
+            ds_vector_reallocate(vector, vector->capacity >> 1);
         }
     }
 }
 
-void vector_remove(Vector *vector, zend_long index, zval *return_value)
+void ds_vector_remove(ds_vector_t *vector, zend_long index, zval *return_value)
 {
     if (index_out_of_range(index, vector->size)) {
         return;
     }
 
     if (index == vector->size - 1) {
-        vector_pop(vector, return_value);
+        ds_vector_pop(vector, return_value);
 
     } else {
         zval *pos = vector->buffer + index;
@@ -160,11 +160,11 @@ void vector_remove(Vector *vector, zend_long index, zval *return_value)
         memmove(pos, pos + 1, sizeof(zval) * (vector->size - index));
         vector->size--;
 
-        vector_check_compact(vector);
+        ds_vector_check_compact(vector);
     }
 }
 
-zval *vector_get(Vector *vector, zend_long index)
+zval *ds_vector_get(ds_vector_t *vector, zend_long index)
 {
     if (index_out_of_range(index, vector->size)) {
         return NULL;
@@ -173,14 +173,14 @@ zval *vector_get(Vector *vector, zend_long index)
     return vector->buffer + index;
 }
 
-static inline void increase_capacity_if_full(Vector *vector)
+static inline void increase_capacity_if_full(ds_vector_t *vector)
 {
     if (vector->size == vector->capacity) {
-        vector_increase_capacity(vector);
+        ds_vector_increase_capacity(vector);
     }
 }
 
-void vector_clear(Vector *vector)
+void ds_vector_clear(ds_vector_t *vector)
 {
     zval *pos = vector->buffer;
     zval *end = pos + vector->size;
@@ -190,10 +190,10 @@ void vector_clear(Vector *vector)
     }
 
     vector->size = 0;
-    vector_reallocate(vector, VECTOR_MIN_CAPACITY);
+    ds_vector_reallocate(vector, DS_VECTOR_MIN_CAPACITY);
 }
 
-void vector_set(Vector *vector, zend_long index, zval *value)
+void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
 {
     if ( ! index_out_of_range(index, vector->size)) {
         zval *current = vector->buffer + index;
@@ -202,7 +202,7 @@ void vector_set(Vector *vector, zend_long index, zval *value)
     }
 }
 
-void vector_to_array(Vector *vector, zval *return_value)
+void ds_vector_to_array(ds_vector_t *vector, zval *return_value)
 {
     zend_long n = vector->size;
 
@@ -222,7 +222,7 @@ void vector_to_array(Vector *vector, zval *return_value)
     }
 }
 
-static inline zend_long vector_find_index(Vector *vector, zval *value)
+static inline zend_long ds_vector_find_index(ds_vector_t *vector, zval *value)
 {
     zval *pos = vector->buffer;
     zval *end = vector->buffer + vector->size;
@@ -236,9 +236,9 @@ static inline zend_long vector_find_index(Vector *vector, zval *value)
     return FAILURE;
 }
 
-void vector_find(Vector *vector, zval *value, zval *return_value)
+void ds_vector_find(ds_vector_t *vector, zval *value, zval *return_value)
 {
-    zend_long index = vector_find_index(vector, value);
+    zend_long index = ds_vector_find_index(vector, value);
 
     if (index >= 0) {
         ZVAL_LONG(return_value, index);
@@ -248,30 +248,30 @@ void vector_find(Vector *vector, zval *value, zval *return_value)
     ZVAL_FALSE(return_value);
 }
 
-bool vector_contains(Vector *vector, zval *value)
+bool ds_vector_contains(ds_vector_t *vector, zval *value)
 {
-    return vector_find_index(vector, value) != FAILURE;
+    return ds_vector_find_index(vector, value) != FAILURE;
 }
 
-bool vector_contains_va(Vector *vector, VA_PARAMS)
+bool ds_vector_contains_va(ds_vector_t *vector, VA_PARAMS)
 {
     if (argc == 0) return false;
 
     while (argc--) {
-        if ( ! vector_contains(vector, argv++)) return false;
+        if ( ! ds_vector_contains(vector, argv++)) return false;
     }
 
     return true;
 }
 
-void vector_join(Vector *vector, char *str, size_t len, zval *return_value)
+void ds_vector_join(ds_vector_t *vector, char *str, size_t len, zval *return_value)
 {
     zend_string *s;
-    s = join_zval_buffer(vector->buffer, VECTOR_SIZE(vector), str, len);
+    s = join_zval_buffer(vector->buffer, DS_VECTOR_SIZE(vector), str, len);
     ZVAL_STR(return_value, s);
 }
 
-void vector_insert_va(Vector *vector, zend_long index, VA_PARAMS)
+void ds_vector_insert_va(ds_vector_t *vector, zend_long index, VA_PARAMS)
 {
     if ( ! index_out_of_range(index, vector->size + 1) && argc > 0) {
         zend_long len;
@@ -279,7 +279,7 @@ void vector_insert_va(Vector *vector, zend_long index, VA_PARAMS)
         zval *dst;
         zval *end;
 
-        vector_ensure_capacity(vector, vector->size + argc);
+        ds_vector_ensure_capacity(vector, vector->size + argc);
 
         src = argv;
         dst = vector->buffer + index;
@@ -298,29 +298,29 @@ void vector_insert_va(Vector *vector, zend_long index, VA_PARAMS)
     }
 }
 
-void vector_insert(Vector *vector, zend_long index, zval *value)
+void ds_vector_insert(ds_vector_t *vector, zend_long index, zval *value)
 {
-    vector_insert_va(vector, index, 1, value);
+    ds_vector_insert_va(vector, index, 1, value);
 }
 
-void vector_push(Vector *vector, zval *value)
+void ds_vector_push(ds_vector_t *vector, zval *value)
 {
     increase_capacity_if_full(vector);
     ZVAL_COPY(&vector->buffer[vector->size], value);
     vector->size++;
 }
 
-void vector_push_va(Vector *vector, VA_PARAMS)
+void ds_vector_push_va(ds_vector_t *vector, VA_PARAMS)
 {
     if (argc == 1) {
-        vector_push(vector, argv);
+        ds_vector_push(vector, argv);
         return;
     }
 
     if (argc > 0) {
         zval *src, *dst, *end;
 
-        vector_ensure_capacity(vector, vector->size + argc);
+        ds_vector_ensure_capacity(vector, vector->size + argc);
 
         src = argv;
         dst = &vector->buffer[vector->size];
@@ -334,22 +334,22 @@ void vector_push_va(Vector *vector, VA_PARAMS)
     }
 }
 
-void vector_unshift(Vector *vector, zval *value)
+void ds_vector_unshift(ds_vector_t *vector, zval *value)
 {
-    vector_insert(vector, 0, value);
+    ds_vector_insert(vector, 0, value);
 }
 
-void vector_unshift_va(Vector *vector, VA_PARAMS)
+void ds_vector_unshift_va(ds_vector_t *vector, VA_PARAMS)
 {
     if (argc == 1) {
-        vector_unshift(vector, argv);
+        ds_vector_unshift(vector, argv);
         return;
     }
 
     if (argc > 0) {
         zval *dst, *src, *end;
 
-        vector_ensure_capacity(vector, vector->size + argc);
+        ds_vector_ensure_capacity(vector, vector->size + argc);
 
         src = argv;
         dst = vector->buffer;
@@ -365,17 +365,17 @@ void vector_unshift_va(Vector *vector, VA_PARAMS)
     }
 }
 
-void vector_sort_callback(Vector *vector)
+void ds_vector_sort_callback(ds_vector_t *vector)
 {
     user_sort_zval_buffer(vector->buffer, vector->size);
 }
 
-void vector_sort(Vector *vector)
+void ds_vector_sort(ds_vector_t *vector)
 {
     sort_zval_buffer(vector->buffer, vector->size);
 }
 
-bool vector_isset(Vector *vector, zend_long index, int check_empty)
+bool ds_vector_isset(ds_vector_t *vector, zend_long index, int check_empty)
 {
     if (index < 0 || index >= vector->size) {
         return 0;
@@ -384,34 +384,34 @@ bool vector_isset(Vector *vector, zend_long index, int check_empty)
     return zval_isset(vector->buffer + index, check_empty);
 }
 
-bool vector_index_exists(Vector *vector, zend_long index)
+bool ds_vector_index_exists(ds_vector_t *vector, zend_long index)
 {
     return index >= 0 && index < vector->size;
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
-    vector_push((Vector *) puser, iterator->funcs->get_current_data(iterator));
+    ds_vector_push((ds_vector_t *) puser, iterator->funcs->get_current_data(iterator));
     return SUCCESS;
 }
 
-static inline void add_traversable_to_vector(Vector *vector, zval *obj)
+static inline void add_traversable_to_vector(ds_vector_t *vector, zval *obj)
 {
     spl_iterator_apply(obj, iterator_add, (void*) vector);
 }
 
-static inline void add_array_to_vector(Vector *vector, HashTable *array)
+static inline void add_array_to_vector(ds_vector_t *vector, HashTable *array)
 {
     zval *value;
-    vector_ensure_capacity(vector, vector->size + array->nNumOfElements);
+    ds_vector_ensure_capacity(vector, vector->size + array->nNumOfElements);
 
     ZEND_HASH_FOREACH_VAL(array, value) {
-        vector_push(vector, value);
+        ds_vector_push(vector, value);
     }
     ZEND_HASH_FOREACH_END();
 }
 
-void vector_rotate(Vector *vector, zend_long r)
+void ds_vector_rotate(ds_vector_t *vector, zend_long r)
 {
     zval *a, *b, *c;
 
@@ -424,16 +424,17 @@ void vector_rotate(Vector *vector, zend_long r)
     // There's no need to rotate if the sequence won't be affected.
     if (r == 0 || r == n) return;
 
-    a = vector->buffer;
-    b = a + r;
-    c = a + n;
+    a = vector->buffer; // Start of buffer
+    b = a + r;          // Pivot
+    c = a + n;          // End of buffer
+                        // [a..b....c]
 
     reverse_zval_range(a, b);
     reverse_zval_range(b, c);
     reverse_zval_range(a, c);
 }
 
-void vector_push_all(Vector *vector, zval *values)
+void ds_vector_push_all(ds_vector_t *vector, zval *values)
 {
     if ( ! values) {
         return;
@@ -452,25 +453,25 @@ void vector_push_all(Vector *vector, zval *values)
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-void vector_merge(Vector *vector, zval *values, zval *obj)
+void ds_vector_merge(ds_vector_t *vector, zval *values, zval *obj)
 {
     if ( ! values) {
         return;
     }
 
     if (is_array(values) || is_traversable(values)) {
-        Vector *merged = vector_create_copy(vector);
-        vector_push_all(merged, values);
-        ZVAL_VECTOR(obj, merged);
+        ds_vector_t *merged = ds_vector_create_copy(vector);
+        ds_vector_push_all(merged, values);
+        ZVAL_DS_VECTOR(obj, merged);
         return;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-void vector_pop(Vector *vector, zval *return_value)
+void ds_vector_pop(ds_vector_t *vector, zval *return_value)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
 
@@ -482,15 +483,15 @@ void vector_pop(Vector *vector, zval *return_value)
         }
 
         zval_ptr_dtor(value);
-        vector_check_compact(vector);
+        ds_vector_check_compact(vector);
     }
 }
 
-void vector_shift(Vector *vector, zval *return_value)
+void ds_vector_shift(ds_vector_t *vector, zval *return_value)
 {
     zval *first = vector->buffer;
 
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
     }
@@ -500,12 +501,12 @@ void vector_shift(Vector *vector, zval *return_value)
 
     memmove(first, first + 1, sizeof(zval) * (--vector->size));
 
-    vector_check_compact(vector);
+    ds_vector_check_compact(vector);
 }
 
-zval *vector_get_last(Vector *vector)
+zval *ds_vector_get_last(ds_vector_t *vector)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return NULL;
     }
@@ -513,9 +514,9 @@ zval *vector_get_last(Vector *vector)
     return &vector->buffer[vector->size - 1];
 }
 
-zval *vector_get_first(Vector *vector)
+zval *ds_vector_get_first(ds_vector_t *vector)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return NULL;
     }
@@ -523,33 +524,33 @@ zval *vector_get_first(Vector *vector)
     return &vector->buffer[0];
 }
 
-void vector_reverse(Vector *vector)
+void ds_vector_reverse(ds_vector_t *vector)
 {
     reverse_zval_range(vector->buffer, vector->buffer + vector->size);
 }
 
-Vector *vector_reversed(Vector *vector)
+ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
 {
     zval *src;
     zval *buf = ALLOC_ZVAL_BUFFER(vector->capacity);
     zval *dst = buf;
 
-    VECTOR_FOREACH_REVERSED(vector, src) {
+    DS_VECTOR_FOREACH_REVERSED(vector, src) {
         ZVAL_COPY(dst, src);
         dst++;
     }
-    VECTOR_FOREACH_END();
+    DS_VECTOR_FOREACH_END();
 
-    return vector_from_buffer_ex(buf, vector->size, vector->capacity);
+    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
 }
 
-void vector_map(Vector *vector, zval *obj, FCI_PARAMS)
+void ds_vector_map(ds_vector_t *vector, zval *obj, FCI_PARAMS)
 {
     zval *value;
     zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
     zval *pos = buf;
 
-    VECTOR_FOREACH(vector, value) {
+    DS_VECTOR_FOREACH(vector, value) {
         zval param;
         zval retval;
 
@@ -569,14 +570,14 @@ void vector_map(Vector *vector, zval *obj, FCI_PARAMS)
 
         pos++;
     }
-    VECTOR_FOREACH_END();
+    DS_VECTOR_FOREACH_END();
 
-    ZVAL_VECTOR(obj, vector_from_buffer_ex(buf, vector->size, vector->capacity));
+    ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(buf, vector->size, vector->capacity));
 }
 
-void vector_filter(Vector *vector, zval *obj)
+void ds_vector_filter(ds_vector_t *vector, zval *obj)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         ZVAL_NEW_VECTOR(obj);
         return;
 
@@ -587,21 +588,21 @@ void vector_filter(Vector *vector, zval *obj)
 
         zend_long size = 0;
 
-        VECTOR_FOREACH(vector, value) {
+        DS_VECTOR_FOREACH(vector, value) {
             if (zend_is_true(value)) {
                 ZVAL_COPY(pos++, value);
                 size++;
             }
         }
-        VECTOR_FOREACH_END();
+        DS_VECTOR_FOREACH_END();
 
-        ZVAL_VECTOR(obj, vector_from_buffer_ex(buf, size, vector->size));
+        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(buf, size, vector->size));
     }
 }
 
-void vector_filter_callback(Vector *vector, zval *obj, FCI_PARAMS)
+void ds_vector_filter_callback(ds_vector_t *vector, zval *obj, FCI_PARAMS)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         ZVAL_NEW_VECTOR(obj);
         return;
 
@@ -613,7 +614,7 @@ void vector_filter_callback(Vector *vector, zval *obj, FCI_PARAMS)
         zval *ptr = ALLOC_ZVAL_BUFFER(vector->size);
         zval *pos = ptr;
 
-        VECTOR_FOREACH(vector, src) {
+        DS_VECTOR_FOREACH(vector, src) {
             ZVAL_COPY_VALUE(&param, src);
             fci.param_count = 1;
             fci.params      = &param;
@@ -631,12 +632,12 @@ void vector_filter_callback(Vector *vector, zval *obj, FCI_PARAMS)
                 ZVAL_COPY(pos++, src);
             }
         }
-        VECTOR_FOREACH_END();
-        ZVAL_VECTOR(obj, vector_from_buffer_ex(ptr, (pos - ptr), vector->size));
+        DS_VECTOR_FOREACH_END();
+        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer_ex(ptr, (pos - ptr), vector->size));
     }
 }
 
-void vector_reduce(Vector *vector, zval *initial, zval *return_value, FCI_PARAMS)
+void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS)
 {
     zval carry;
 
@@ -671,7 +672,7 @@ void vector_reduce(Vector *vector, zval *initial, zval *return_value, FCI_PARAMS
     ZVAL_COPY(return_value, &carry);
 }
 
-void vector_slice(Vector *vector, zend_long index, zend_long length, zval *obj)
+void ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length, zval *obj)
 {
     normalize_slice_params(&index, &length, vector->size);
 
@@ -691,35 +692,35 @@ void vector_slice(Vector *vector, zend_long index, zend_long length, zval *obj)
             ZVAL_COPY(dst, src);
         }
 
-        ZVAL_VECTOR(obj, vector_from_buffer(buffer, length));
+        ZVAL_DS_VECTOR(obj, ds_vector_from_buffer(buffer, length));
     }
 }
 
-void vector_destroy(Vector *vector)
+void ds_vector_destroy(ds_vector_t *vector)
 {
-    vector_clear(vector);
+    ds_vector_clear(vector);
     efree(vector->buffer);
     efree(vector);
 }
 
-int vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
+int ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    Vector *vector = Z_VECTOR_P(object);
+    ds_vector_t *vector = Z_DS_VECTOR_P(object);
 
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
 
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {
         zval *value;
         smart_str buf = {0};
 
-        VECTOR_FOREACH(vector, value) {
+        DS_VECTOR_FOREACH(vector, value) {
             php_var_serialize(&buf, value, &serialize_data);
         }
-        VECTOR_FOREACH_END();
+        DS_VECTOR_FOREACH_END();
 
         smart_str_0(&buf);
         SERIALIZE_SET_ZSTR(buf.s);
@@ -730,9 +731,9 @@ int vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_
     return SUCCESS;
 }
 
-int vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
+int ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
 {
-    Vector *vector = vector_init();
+    ds_vector_t *vector = ds_vector();
 
     php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
 
@@ -750,14 +751,14 @@ int vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned char *buf
             goto error;
         }
 
-        vector_push(vector, value);
+        ds_vector_push(vector, value);
     }
 
     if (*(++pos) != '\0') {
         goto error;
     }
 
-    ZVAL_VECTOR(obj, vector);
+    ZVAL_DS_VECTOR(obj, vector);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

@@ -4,7 +4,7 @@
 #include "php_vector.h"
 #include "php_stack.h"
 
-static Stack *stack_init_ex(Vector *vector)
+static Stack *stack_init_ex(ds_vector_t *vector)
 {
     Stack *stack = ecalloc(1, sizeof(Stack));
     zend_object_std_init(&stack->std, stack_ce);
@@ -15,7 +15,7 @@ static Stack *stack_init_ex(Vector *vector)
 
 Stack *stack_init()
 {
-    return stack_init_ex(vector_init());
+    return stack_init_ex(ds_vector());
 }
 
 zend_object *stack_create_object(zend_class_entry *ce)
@@ -25,13 +25,13 @@ zend_object *stack_create_object(zend_class_entry *ce)
 
 zend_object *stack_create_clone(Stack *stack)
 {
-    Vector *cloned = vector_create_copy(stack->vector);
+    ds_vector_t *cloned = ds_vector_create_copy(stack->vector);
     return &stack_init_ex(cloned)->std;
 }
 
 void stack_user_allocate(Stack *stack, zend_long capacity)
 {
-    vector_user_allocate(stack->vector, capacity);
+    ds_vector_user_allocate(stack->vector, capacity);
 }
 
 zend_long stack_capacity(Stack *stack)
@@ -41,22 +41,22 @@ zend_long stack_capacity(Stack *stack)
 
 void stack_push(Stack *stack, VA_PARAMS)
 {
-    vector_push_va(stack->vector, argc, argv);
+    ds_vector_push_va(stack->vector, argc, argv);
 }
 
 void stack_push_one(Stack *stack, zval *value)
 {
-    vector_push(stack->vector, value);
+    ds_vector_push(stack->vector, value);
 }
 
 void stack_clear(Stack *stack)
 {
-    vector_clear(stack->vector);
+    ds_vector_clear(stack->vector);
 }
 
 void stack_push_all(Stack *stack, zval *value)
 {
-    vector_push_all(stack->vector, value);
+    ds_vector_push_all(stack->vector, value);
 }
 
 void stack_to_array(Stack *stack, zval *return_value)
@@ -70,27 +70,27 @@ void stack_to_array(Stack *stack, zval *return_value)
         zval *value;
         array_init_size(return_value, size);
 
-        VECTOR_FOREACH_REVERSED(stack->vector, value) {
+        DS_VECTOR_FOREACH_REVERSED(stack->vector, value) {
             add_next_index_zval(return_value, value);
             Z_TRY_ADDREF_P(value);
         }
-        VECTOR_FOREACH_END();
+        DS_VECTOR_FOREACH_END();
     }
 }
 
 void stack_pop(Stack *stack, zval *return_value)
 {
-    vector_pop(stack->vector, return_value);
+    ds_vector_pop(stack->vector, return_value);
 }
 
 void stack_destroy(Stack *stack)
 {
-    vector_destroy(stack->vector);
+    ds_vector_destroy(stack->vector);
 }
 
 zval *stack_peek(Stack *stack)
 {
-    return vector_get_last(stack->vector);
+    return ds_vector_get_last(stack->vector);
 }
 
 int stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
@@ -108,10 +108,10 @@ int stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_s
         zval *value;
         smart_str buf = {0};
 
-        VECTOR_FOREACH(stack->vector, value) {
+        DS_VECTOR_FOREACH(stack->vector, value) {
             php_var_serialize(&buf, value, &serialize_data);
         }
-        VECTOR_FOREACH_END();
+        DS_VECTOR_FOREACH_END();
 
         smart_str_0(&buf);
         SERIALIZE_SET_ZSTR(buf.s);

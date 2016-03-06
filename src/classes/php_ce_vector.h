@@ -4,7 +4,7 @@
 #include "php.h"
 #include "../common.h"
 
-extern zend_class_entry *vector_ce;
+extern zend_class_entry *ds_vector_ce;
 
 void register_vector();
 

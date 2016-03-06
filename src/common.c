@@ -80,7 +80,7 @@ void create_empty_sequence(zval *obj)
 
 void create_sequence(zval *obj, zval *buffer, zend_long size)
 {
-    ZVAL_VECTOR(obj, vector_from_buffer(buffer, size));
+    ZVAL_DS_VECTOR(obj, ds_vector_from_buffer(buffer, size));
 }
 
 static int zval_user_compare(const void *a, const void *b)

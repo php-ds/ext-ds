@@ -4,18 +4,16 @@
 #include "php.h"
 #include "../internal/php_vector.h"
 
-typedef struct _vectorIterator {
-
+typedef struct _php_ds_vector_iterator_t {
     zend_object_iterator        intern;
     zend_long                   position;
-    Vector                     *vector;
-
-} VectorIterator;
+    ds_vector_t                 *vector;
+} php_ds_vector_iterator_t;
 
 /**
  *
  */
-zend_object_iterator *vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, Vector *vector);
-zend_object_iterator *vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);
+zend_object_iterator *php_ds_vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, ds_vector_t *vector);
+zend_object_iterator *php_ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);
 
 #endif

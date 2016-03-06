@@ -10,37 +10,37 @@ static void iterator_dtor(zend_object_iterator *i)
 
 static int iterator_valid(zend_object_iterator *i)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     return iterator->position < iterator->vector->size ? SUCCESS : FAILURE;
 }
 
 static zval *iterator_get_current_data(zend_object_iterator *i)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     return &iterator->vector->buffer[iterator->position];
 }
 
 static void iterator_get_current_key(zend_object_iterator *i, zval *key)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     ZVAL_LONG(key, iterator->position);
 }
 
 static void iterator_move_forward(zend_object_iterator *i)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     iterator->position++;
 }
 
 static void iterator_rewind(zend_object_iterator *i)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     iterator->position = 0;
 }
 
 static zval *iterator_reversed_get_current_data(zend_object_iterator *i)
 {
-    VectorIterator *iterator = (VectorIterator *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     return &iterator->vector->buffer[iterator->vector->size - iterator->position - 1];
 }
 
@@ -53,20 +53,20 @@ static zend_object_iterator_funcs iterator_funcs = {
     iterator_rewind
 };
 
-static zend_object_iterator *vector_create_iterator(
-    Vector *vector,
+static zend_object_iterator *ds_vector_create_iterator(
+    ds_vector_t *vector,
     zend_object_iterator_funcs *funcs,
     int by_ref
 ) {
 
-    VectorIterator *iterator;
+    php_ds_vector_iterator_t *iterator;
 
     if (by_ref) {
         ITERATION_BY_REF_NOT_SUPPORTED();
         return NULL;
     }
 
-    iterator = ecalloc(1, sizeof(VectorIterator));
+    iterator = ecalloc(1, sizeof(php_ds_vector_iterator_t));
 
     zend_iterator_init((zend_object_iterator*) iterator);
 
@@ -77,13 +77,13 @@ static zend_object_iterator *vector_create_iterator(
     return (zend_object_iterator *) iterator;
 }
 
-zend_object_iterator *vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, Vector *vector)
+zend_object_iterator *php_ds_vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, ds_vector_t *vector)
 {
-    return vector_create_iterator(vector, &iterator_funcs, by_ref);
+    return ds_vector_create_iterator(vector, &iterator_funcs, by_ref);
 }
 
-zend_object_iterator *vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
+zend_object_iterator *php_ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
-    Vector *vector = Z_VECTOR_P(obj);
-    return vector_create_iterator(vector, &iterator_funcs, by_ref);
+    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
+    return ds_vector_create_iterator(vector, &iterator_funcs, by_ref);
 }
