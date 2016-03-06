@@ -71,7 +71,7 @@ zend_object *php_ds_vector_ex(ds_vector_t *vector)
 {
     php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
     zend_object_std_init(&obj->std, ds_vector_ce);
-    obj->std.handlers = &ds_vector_object_handlers;
+    obj->std.handlers = &php_ds_vector_handlers;
     obj->vector = vector;
     return &obj->std;
 }

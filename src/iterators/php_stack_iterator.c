@@ -5,73 +5,73 @@
 #include "../internal/php_stack.h"
 #include "php_stack_iterator.h"
 
-static void stack_iterator_dtor(zend_object_iterator *iter)
+static void php_ds_stack_iterator_dtor(zend_object_iterator *iter)
 {
     DTOR_AND_UNDEF(&iter->data);
 }
 
-static int stack_iterator_valid(zend_object_iterator *iter)
+static int php_ds_stack_iterator_valid(zend_object_iterator *iter)
 {
     return Z_ISUNDEF(iter->data) ? FAILURE : SUCCESS;
 }
 
-static zval *stack_iterator_get_current_data(zend_object_iterator *iter)
+static zval *php_ds_stack_iterator_get_current_data(zend_object_iterator *iter)
 {
     return &iter->data;
 }
 
-static void stack_iterator_get_current_key(zend_object_iterator *iter, zval *key) {
-    ZVAL_LONG(key, ((StackIterator *) iter)->position);
+static void php_ds_stack_iterator_get_current_key(zend_object_iterator *iter, zval *key) {
+    ZVAL_LONG(key, ((php_ds_stack_iterator_t *) iter)->position);
 }
 
-static void stack_iterator_move_forward(zend_object_iterator *iter)
+static void php_ds_stack_iterator_move_forward(zend_object_iterator *iter)
 {
-    StackIterator *iterator = (StackIterator *) iter;
+    php_ds_stack_iterator_t *iterator = (php_ds_stack_iterator_t *) iter;
 
-    if ( ! STACK_IS_EMPTY(iterator->stack)) {
-        stack_pop(iterator->stack, &iter->data);
+    if ( ! DS_STACK_IS_EMPTY(iterator->stack)) {
+        php_ds_stack_pop(iterator->stack, &iter->data);
         iterator->position++;
     } else {
         ZVAL_UNDEF(&iter->data);
     }
 }
 
-static void stack_iterator_rewind(zend_object_iterator *iter)
+static void php_ds_stack_iterator_rewind(zend_object_iterator *iter)
 {
-    StackIterator *iterator = (StackIterator *) iter;
+    php_ds_stack_iterator_t *iterator = (php_ds_stack_iterator_t *) iter;
 
-    if ( ! STACK_IS_EMPTY(iterator->stack)) {
-        stack_pop(iterator->stack, &iter->data);
+    if ( ! DS_STACK_IS_EMPTY(iterator->stack)) {
+        php_ds_stack_pop(iterator->stack, &iter->data);
     }
 
     iterator->position = 0;
 }
 
 static zend_object_iterator_funcs iterator_funcs = {
-    stack_iterator_dtor,
-    stack_iterator_valid,
-    stack_iterator_get_current_data,
-    stack_iterator_get_current_key,
-    stack_iterator_move_forward,
-    stack_iterator_rewind
+    php_ds_stack_iterator_dtor,
+    php_ds_stack_iterator_valid,
+    php_ds_stack_iterator_get_current_data,
+    php_ds_stack_iterator_get_current_key,
+    php_ds_stack_iterator_move_forward,
+    php_ds_stack_iterator_rewind
 };
 
-zend_object_iterator *stack_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
+zend_object_iterator *php_ds_stack_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
 {
-    StackIterator *iterator;
+    php_ds_stack_iterator_t *iterator;
 
     if (by_ref) {
         ITERATION_BY_REF_NOT_SUPPORTED();
         return NULL;
     }
 
-    iterator = ecalloc(1, sizeof(StackIterator));
+    iterator = ecalloc(1, sizeof(php_ds_stack_iterator_t));
     zend_iterator_init((zend_object_iterator*) iterator);
 
     ZVAL_UNDEF(&iterator->intern.data);
 
     iterator->intern.funcs = &iterator_funcs;
-    iterator->stack        = Z_STACK_P(object);
+    iterator->stack        = Z_DS_STACK_P(object);
     iterator->position     = 0;
 
     return (zend_object_iterator *) iterator;

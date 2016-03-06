@@ -229,7 +229,7 @@ METHOD(unshift)
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 
-void register_vector()
+void php_ds_register_vector()
 {
     zend_class_entry ce;
 
@@ -251,5 +251,5 @@ void register_vector()
     zend_declare_class_constant_long(ds_vector_ce, STR_AND_LEN("MIN_CAPACITY"), DS_VECTOR_MIN_CAPACITY);
 
     zend_class_implements(ds_vector_ce, 1, sequence_ce);
-    register_vector_handlers();
+    php_ds_register_vector_handlers();
 }

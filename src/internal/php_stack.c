@@ -4,64 +4,64 @@
 #include "php_vector.h"
 #include "php_stack.h"
 
-static Stack *stack_init_ex(ds_vector_t *vector)
+static php_ds_stack_t *php_ds_stack_init_ex(ds_vector_t *vector)
 {
-    Stack *stack = ecalloc(1, sizeof(Stack));
-    zend_object_std_init(&stack->std, stack_ce);
-    stack->std.handlers = &stack_handlers;
+    php_ds_stack_t *stack = ecalloc(1, sizeof(php_ds_stack_t));
+    zend_object_std_init(&stack->std, php_ds_stack_ce);
+    stack->std.handlers = &php_ds_stack_handlers;
     stack->vector = vector;
     return stack;
 }
 
-Stack *stack_init()
+php_ds_stack_t *php_ds_stack_init()
 {
-    return stack_init_ex(ds_vector());
+    return php_ds_stack_init_ex(ds_vector());
 }
 
-zend_object *stack_create_object(zend_class_entry *ce)
+zend_object *php_ds_stack_create_object(zend_class_entry *ce)
 {
-    return &stack_init()->std;
+    return &php_ds_stack_init()->std;
 }
 
-zend_object *stack_create_clone(Stack *stack)
+zend_object *php_ds_stack_create_clone(php_ds_stack_t *stack)
 {
     ds_vector_t *cloned = ds_vector_create_copy(stack->vector);
-    return &stack_init_ex(cloned)->std;
+    return &php_ds_stack_init_ex(cloned)->std;
 }
 
-void stack_user_allocate(Stack *stack, zend_long capacity)
+void php_ds_stack_user_allocate(php_ds_stack_t *stack, zend_long capacity)
 {
     ds_vector_user_allocate(stack->vector, capacity);
 }
 
-zend_long stack_capacity(Stack *stack)
+zend_long php_ds_stack_capacity(php_ds_stack_t *stack)
 {
     return stack->vector->capacity;
 }
 
-void stack_push(Stack *stack, VA_PARAMS)
+void php_ds_stack_push(php_ds_stack_t *stack, VA_PARAMS)
 {
     ds_vector_push_va(stack->vector, argc, argv);
 }
 
-void stack_push_one(Stack *stack, zval *value)
+void php_ds_stack_push_one(php_ds_stack_t *stack, zval *value)
 {
     ds_vector_push(stack->vector, value);
 }
 
-void stack_clear(Stack *stack)
+void php_ds_stack_clear(php_ds_stack_t *stack)
 {
     ds_vector_clear(stack->vector);
 }
 
-void stack_push_all(Stack *stack, zval *value)
+void php_ds_stack_push_all(php_ds_stack_t *stack, zval *value)
 {
     ds_vector_push_all(stack->vector, value);
 }
 
-void stack_to_array(Stack *stack, zval *return_value)
+void php_ds_stack_to_array(php_ds_stack_t *stack, zval *return_value)
 {
-    zend_ulong size = STACK_SIZE(stack);
+    zend_ulong size = DS_STACK_SIZE(stack);
 
     if (size == 0) {
         array_init(return_value);
@@ -78,29 +78,29 @@ void stack_to_array(Stack *stack, zval *return_value)
     }
 }
 
-void stack_pop(Stack *stack, zval *return_value)
+void php_ds_stack_pop(php_ds_stack_t *stack, zval *return_value)
 {
     ds_vector_pop(stack->vector, return_value);
 }
 
-void stack_destroy(Stack *stack)
+void php_ds_stack_destroy(php_ds_stack_t *stack)
 {
     ds_vector_destroy(stack->vector);
 }
 
-zval *stack_peek(Stack *stack)
+zval *php_ds_stack_peek(php_ds_stack_t *stack)
 {
     return ds_vector_get_last(stack->vector);
 }
 
-int stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
+int php_ds_stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    Stack *stack = Z_STACK_P(object);
+    php_ds_stack_t *stack = Z_DS_STACK_P(object);
 
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
 
-    if (STACK_SIZE(stack) == 0) {
+    if (DS_STACK_SIZE(stack) == 0) {
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {
@@ -122,9 +122,9 @@ int stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_s
     return SUCCESS;
 }
 
-int stack_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
+int php_ds_stack_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
 {
-    Stack *stack = stack_init();
+    php_ds_stack_t *stack = php_ds_stack_init();
 
     php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
 
@@ -143,7 +143,7 @@ int stack_unserialize(zval *object, zend_class_entry *ce, const unsigned char *b
             goto error;
         }
 
-        stack_push_one(stack, value);
+        php_ds_stack_push_one(stack, value);
     }
 
     if (*(++pos) != '\0') {

@@ -37,9 +37,9 @@ PHP_MINIT_FUNCTION(ds)
     register_sequence();
 
     // Classes
-    register_vector();
+    php_ds_register_vector();
     register_deque();
-    register_stack();
+    php_ds_register_stack();
     register_queue();
     register_map();
     register_set();

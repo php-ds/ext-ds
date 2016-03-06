@@ -70,21 +70,21 @@ METHOD(deque)
 /**
  * ds::stack(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, Stack);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, php_ds_stack_t);
 METHOD(stack)
 {
-    Stack *stack = stack_init();
+    php_ds_stack_t *stack = php_ds_stack_init();
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            stack_user_allocate(stack, Z_LVAL_P(values));
+            php_ds_stack_user_allocate(stack, Z_LVAL_P(values));
         } else {
-            stack_push_all(stack, values);
+            php_ds_stack_push_all(stack, values);
         }
     }
 
-    RETURN_STACK(stack);
+    RETURN_DS_STACK(stack);
 }
 
 /**

@@ -6,6 +6,6 @@
 
 extern zend_class_entry *ds_vector_ce;
 
-void register_vector();
+void php_ds_register_vector();
 
 #endif
