@@ -6,11 +6,11 @@
 #include "zend_interfaces.h"
 #include "ext/spl/spl_iterators.h"
 
-#include "php_deque.h"
+#include "ds_deque.h"
 
 typedef struct _Queue {
     zend_object    std;
-    Deque         *deque;
+    ds_deque_t         *deque;
 } Queue;
 
 

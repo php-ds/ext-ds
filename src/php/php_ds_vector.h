@@ -4,8 +4,6 @@
 #include "../common.h"
 #include "../internal/ds_vector.h"
 
-extern zend_class_entry *ds_vector_ce;
-
 typedef struct php_ds_vector {
     zend_object      std;
     ds_vector_t     *vector;

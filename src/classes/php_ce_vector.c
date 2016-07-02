@@ -1,5 +1,5 @@
 #include "../common.h"
-#include "../internal/php_vector.h"
+#include "../php/php_ds_vector.h"
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
 #include "php_ce_sequence.h"
@@ -7,7 +7,7 @@
 
 #define METHOD(name) PHP_METHOD(Vector, name)
 
-zend_class_entry *ds_vector_ce;
+zend_class_entry *php_ds_vector_ce;
 
 METHOD(__construct)
 {

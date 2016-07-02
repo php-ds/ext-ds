@@ -1,10 +1,10 @@
 #include "../common.h"
 #include "../classes/php_ce_queue.h"
 #include "../handlers/php_queue_handlers.h"
-#include "php_deque.h"
+#include "ds_deque.h"
 #include "php_queue.h"
 
-static Queue *queue_init_ex(Deque *deque)
+static Queue *queue_init_ex(ds_deque_t *deque)
 {
     Queue *queue = ecalloc(1, sizeof(Queue));
     zend_object_std_init(&queue->std, queue_ce);
@@ -15,7 +15,7 @@ static Queue *queue_init_ex(Deque *deque)
 
 Queue *queue_init()
 {
-    return queue_init_ex(deque_init());
+    return queue_init_ex(ds_deque());
 }
 
 zend_object *queue_create_object(zend_class_entry *ce)
@@ -25,7 +25,7 @@ zend_object *queue_create_object(zend_class_entry *ce)
 
 zend_object *queue_create_clone(Queue *queue)
 {
-    Deque *copy = deque_create_copy(queue->deque);
+    ds_deque_t *copy = deque_create_copy(queue->deque);
     return &queue_init_ex(copy)->std;
 }
 

@@ -1,5 +1,5 @@
 #include "../common.h"
-#include "../internal/php_deque.h"
+#include "../php/php_ds_deque.h"
 #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
 #include "php_ce_collection.h"
@@ -8,7 +8,7 @@
 
 #define METHOD(name) PHP_METHOD(Deque, name)
 
-zend_class_entry *deque_ce;
+zend_class_entry *php_ds_deque_ce;
 
 METHOD(__construct)
 {
@@ -60,7 +60,7 @@ METHOD(pushAll)
 METHOD(map)
 {
     PARSE_CALLABLE();
-    deque_map(THIS_DEQUE(), return_value, FCI_ARGS);
+    RETURN_DEQUE(deque_map(THIS_DEQUE(), FCI_ARGS));
 }
 
 METHOD(merge)
@@ -79,29 +79,29 @@ METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_CALLABLE();
-        deque_filter_callback(THIS_DEQUE(), return_value, FCI_ARGS);
+        RETURN_DEQUE(deque_filter_callback(THIS_DEQUE(), FCI_ARGS));
     } else {
         PARSE_NONE;
-        deque_filter(THIS_DEQUE(), return_value);
+        RETURN_DEQUE(deque_filter(THIS_DEQUE()));
     }
 }
 
 METHOD(slice)
 {
-    Deque *deque = THIS_DEQUE();
+    ds_deque_t *deque = THIS_DEQUE();
 
     if (ZEND_NUM_ARGS() > 1) {
         PARSE_LONG_AND_LONG(index, length);
-        deque_slice(deque, index, length, return_value);
+        RETURN_DEQUE(deque_slice(deque, index, length));
     } else {
         PARSE_LONG(index);
-        deque_slice(deque, index, DEQUE_SIZE(deque), return_value);
+        RETURN_DEQUE(deque_slice(deque, index, DEQUE_SIZE(deque)));
     }
 }
 
 METHOD(sort)
 {
-    Deque *sorted = deque_create_copy(THIS_DEQUE());
+    ds_deque_t *sorted = deque_create_copy(THIS_DEQUE());
 
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
@@ -151,7 +151,7 @@ METHOD(last)
 
 METHOD(count)
 {
-    Deque *deque = THIS_DEQUE();
+    ds_deque_t *deque = THIS_DEQUE();
     PARSE_NONE;
     RETURN_LONG(DEQUE_SIZE(deque));
 }
@@ -241,15 +241,15 @@ void register_deque()
 
     INIT_CLASS_ENTRY(ce, DS_NS(Deque), methods);
 
-    deque_ce = zend_register_internal_class(&ce);
-    deque_ce->ce_flags      |= ZEND_ACC_FINAL;
-    deque_ce->create_object  = deque_create_object;
-    deque_ce->get_iterator   = deque_get_iterator;
-    deque_ce->serialize      = deque_serialize;
-    deque_ce->unserialize    = deque_unserialize;
+    php_ds_deque_ce = zend_register_internal_class(&ce);
+    php_ds_deque_ce->ce_flags      |= ZEND_ACC_FINAL;
+    php_ds_deque_ce->create_object  = deque_create_object;
+    php_ds_deque_ce->get_iterator   = deque_get_iterator;
+    php_ds_deque_ce->serialize      = deque_serialize;
+    php_ds_deque_ce->unserialize    = deque_unserialize;
 
     zend_declare_class_constant_long(deque_ce, STR_AND_LEN("MIN_CAPACITY"), DEQUE_MIN_CAPACITY);
+    zend_class_implements(php_ds_deque_ce, 1, sequence_ce);
 
-    zend_class_implements(deque_ce, 1, sequence_ce);
     register_deque_handlers();
 }

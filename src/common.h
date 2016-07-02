@@ -166,10 +166,10 @@ bool array_uses_keys(HashTable *ht);
  * Use NULL and 0 for 'str' and 'len' to indicate an optional glue.
  */
 zend_string *join_zval_buffer(
-    zval *buffer,
-    const zend_long size,
-    const char *str,
-    const size_t len
+    zval        *buffer,
+    zend_long    size,
+    char        *str,
+    size_t       len
 );
 
 /**

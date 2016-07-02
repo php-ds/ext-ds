@@ -3,7 +3,7 @@
 
 #include "../common.h"
 
-extern zend_class_entry *deque_ce;
+extern zend_class_entry *php_ds_deque_ce;
 
 void register_deque();
 

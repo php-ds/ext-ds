@@ -2,8 +2,11 @@
 #include "internal/ds_vector.h"
 #include "php/php_ds_vector.h"
 
-void normalize_slice_params(zend_long *offset, zend_long *length, const zend_long size)
-{
+void normalize_slice_params(
+    zend_long *offset,
+    zend_long *length,
+    zend_long size
+) {
     zend_long idx = *offset;
     zend_long len = *length;
 
@@ -35,10 +38,10 @@ void normalize_slice_params(zend_long *offset, zend_long *length, const zend_lon
 }
 
 zend_string *join_zval_buffer(
-    zval *buffer,
-    const zend_long size,
-    const char *glue,
-    const size_t len
+    zval        *buffer,
+    zend_long    size,
+    char        *glue,
+    size_t       len
 ) {
     smart_str str = {0};
 
@@ -99,7 +102,10 @@ static int zval_user_compare(const void *a, const void *b)
     DSG(user_compare_fci).params      = params;
     DSG(user_compare_fci).retval      = &retval;
 
-    if (zend_call_function(&DSG(user_compare_fci), &DSG(user_compare_fci_cache)) == SUCCESS) {
+    if (zend_call_function(
+            &DSG(user_compare_fci),
+            &DSG(user_compare_fci_cache)) == SUCCESS) {
+
         return (int) zval_get_long(&retval);
     }
 

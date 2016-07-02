@@ -2,7 +2,8 @@
 #include "php.h"
 #include "ext/spl/spl_exceptions.h"
 #include "../common.h"
-#include "../internal/php_deque.h"
+#include "../internal/ds_deque.h"
+#include "../php/php_ds_deque.h"
 
 zend_object_handlers deque_handlers;
 
@@ -25,7 +26,7 @@ static zval *deque_read_dimension(zval *obj, zval *offset, int type, zval *retur
 
 static void deque_write_dimension(zval *obj, zval *offset, zval *value)
 {
-    Deque *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DEQUE_P(obj);
 
     if (offset == NULL) { /* $v[] = ... */
         deque_push(deque, value);
@@ -50,7 +51,7 @@ static int deque_has_dimension(zval *obj, zval *offset, int check_empty)
 static void deque_unset_dimension(zval *obj, zval *offset)
 {
     zend_long index;
-    Deque *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DEQUE_P(obj);
 
     if (Z_TYPE_P(offset) != IS_LONG) {
         return;
@@ -65,14 +66,14 @@ static void deque_unset_dimension(zval *obj, zval *offset)
 
 static int deque_count_elements(zval *obj, zend_long *count)
 {
-    Deque *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DEQUE_P(obj);
     *count = DEQUE_SIZE(deque);
     return SUCCESS;
 }
 
 static void deque_free_object(zend_object *object)
 {
-    DequeObj *intern = (DequeObj*) object;
+    php_ds_deque_t *intern = (php_ds_deque_t*) object;
     zend_object_std_dtor(&intern->std);
     deque_destroy(intern->deque);
     efree(intern->deque);
@@ -81,7 +82,7 @@ static void deque_free_object(zend_object *object)
 static HashTable *deque_get_debug_info(zval *obj, int *is_temp)
 {
     zval return_value;
-    Deque *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DEQUE_P(obj);
 
     *is_temp = 1;
 
@@ -91,7 +92,7 @@ static HashTable *deque_get_debug_info(zval *obj, int *is_temp)
 
 static zend_object *deque_create_copy_obj(zval *obj)
 {
-    Deque *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DEQUE_P(obj);
     return deque_create_clone(deque);
 }
 
@@ -99,7 +100,7 @@ void register_deque_handlers()
 {
     memcpy(&deque_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    deque_handlers.offset = XtOffsetOf(DequeObj, std);
+    deque_handlers.offset = XtOffsetOf(php_ds_deque_t, std);
 
     deque_handlers.dtor_obj         = zend_objects_destroy_object;
     deque_handlers.free_obj         = deque_free_object;

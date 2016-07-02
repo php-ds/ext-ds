@@ -1,46 +1,47 @@
 #include "../common.h"
-#include "../iterators/php_vector_iterator.h"
-#include "../handlers/php_vector_handlers.h"
-#include "../classes/php_ce_vector.h"
-#include "php_ds_vector.h"
+#include "../iterators/php_deque_iterator.h"
+#include "../handlers/php_deque_handlers.h"
+#include "../classes/php_ce_deque.h"
+#include "php_ds_deque.h"
 
-zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
+zend_object *deque_create_object_ex(ds_deque_t *deque)
 {
-    php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
-    zend_object_std_init(&obj->std, php_ds_vector_ce);
-    obj->std.handlers = &ds_vector_object_handlers;
-    obj->vector = vector;
+    php_ds_deque_t *obj = ecalloc(1, sizeof(php_ds_deque_t));
+    zend_object_std_init(&obj->std, php_ds_deque_ce);
+    obj->std.handlers = &deque_handlers;
+    obj->deque = deque;
     return &obj->std;
 }
 
-zend_object *php_ds_vector_create_object(zend_class_entry *ce)
+zend_object *deque_create_object(zend_class_entry *ce)
 {
-    return php_ds_vector_create_object_ex(ds_vector());
+    return deque_create_object_ex(ds_deque());
 }
 
-zend_object *php_ds_vector_create_clone(ds_vector_t *vector)
+zend_object *deque_create_clone(ds_deque_t *deque)
 {
-    return php_ds_vector_create_object_ex(ds_vector_clone(vector));
+    return deque_create_object_ex(deque_create_copy(deque));
 }
 
-int php_ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
+int deque_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    ds_vector_t *vector = Z_VECTOR_P(object);
+    ds_deque_t *deque = Z_DEQUE_P(object);
 
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
 
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DEQUE_IS_EMPTY(deque)) {
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {
+
         zval *value;
         smart_str buf = {0};
 
-        DS_VECTOR_FOREACH(vector, value) {
+        DEQUE_FOREACH(deque, value) {
             php_var_serialize(&buf, value, &serialize_data);
         }
-        DS_VECTOR_FOREACH_END();
+        DEQUE_FOREACH_END();
 
         smart_str_0(&buf);
         SERIALIZE_SET_ZSTR(buf.s);
@@ -51,9 +52,9 @@ int php_ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length
     return SUCCESS;
 }
 
-int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
+int deque_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
 {
-    ds_vector_t *vector = ds_vector();
+    ds_deque_t *deque = ds_deque();
 
     php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
 
@@ -63,6 +64,7 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
     while (*pos != '}') {
+
         zval *value = var_tmp_var(&unserialize_data);
 
         if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
@@ -71,14 +73,14 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
             goto error;
         }
 
-        ds_vector_push(vector, value);
+        deque_push(deque, value);
     }
 
     if (*(++pos) != '\0') {
         goto error;
     }
 
-    ZVAL_VECTOR(obj, vector);
+    ZVAL_DEQUE(object, deque);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

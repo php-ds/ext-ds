@@ -1,6 +1,6 @@
 #include "../common.h"
 #include "../internal/ds_vector.h"
-#include "../internal/php_deque.h"
+#include "../internal/ds_deque.h"
 #include "../internal/php_stack.h"
 #include "../internal/php_queue.h"
 #include "../internal/php_priority_queue.h"
@@ -9,6 +9,7 @@
 #include "../internal/php_pair.h"
 
 #include "../php/php_ds_vector.h"
+#include "../php/php_ds_deque.h"
 
 /**
  *
@@ -49,21 +50,21 @@ METHOD(vector)
 /**
  * ds::deque(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_DS(deque, values, Deque);
+ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(deque, values, Deque);
 METHOD(deque)
 {
-    Deque *deque;
+    ds_deque_t *deque;
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            deque = deque_init_ex(Z_LVAL_P(values));
+            deque = ds_deque_ex(Z_LVAL_P(values));
         } else {
-            deque = deque_init();
+            deque = ds_deque();
             deque_push_all(deque, values);
         }
     } else {
-        deque = deque_init();
+        deque = ds_deque();
     }
 
     RETURN_DEQUE(deque);
