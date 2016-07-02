@@ -1,8 +1,8 @@
-
 #include "php.h"
 #include "ext/spl/spl_exceptions.h"
 #include "../common.h"
-#include "../internal/php_vector.h"
+#include "../internal/ds_vector.h"
+#include "../php/objects/php_ds_vector.h"
 
 zend_object_handlers php_ds_vector_handlers;
 

@@ -3,7 +3,7 @@
 #include "ext/spl/spl_exceptions.h"
 #include "../common.h"
 #include "../internal/ds_deque.h"
-#include "../php/php_ds_deque.h"
+#include "../php/objects/php_ds_deque.h"
 
 zend_object_handlers deque_handlers;
 

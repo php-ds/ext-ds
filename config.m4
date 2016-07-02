@@ -17,8 +17,8 @@ dnl Internal
   src/internal/php_priority_queue.c           \
   src/internal/php_queue.c                    \
                                               \
-  src/php/php_ds_vector.c                     \
-  src/php/php_ds_deque.c                      \
+  src/php/objects/php_ds_vector.c             \
+  src/php/objects/php_ds_deque.c              \
                                               \
 dnl Iterators
   src/iterators/php_vector_iterator.c         \

@@ -4,11 +4,11 @@
 #include "php.h"
 #include "../internal/ds_deque.h"
 
-typedef struct ds_deque_iterator {
+typedef struct php_ds_deque_iterator {
     zend_object_iterator    intern;
     zend_long               position;
-    ds_deque_t                  *deque;
-} ds_deque_iterator_t;
+    ds_deque_t             *deque;
+} php_ds_deque_iterator_t;
 
 zend_object_iterator *deque_get_iterator_ex(zend_class_entry *ce, zval *object, int by_ref, ds_deque_t *deque);
 zend_object_iterator *deque_get_iterator(zend_class_entry *ce, zval *object, int by_ref);

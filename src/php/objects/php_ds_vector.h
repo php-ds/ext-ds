@@ -1,8 +1,8 @@
 #ifndef PHP_DS_VECTOR_H
 #define PHP_DS_VECTOR_H
 
-#include "../common.h"
-#include "../internal/ds_vector.h"
+#include "../../common.h"
+#include "../../internal/ds_vector.h"
 
 typedef struct php_ds_vector {
     zend_object      std;

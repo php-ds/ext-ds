@@ -1,7 +1,7 @@
-#include "../common.h"
-#include "../iterators/php_deque_iterator.h"
-#include "../handlers/php_deque_handlers.h"
-#include "../classes/php_ce_deque.h"
+#include "../../common.h"
+#include "../../iterators/php_deque_iterator.h"
+#include "../../handlers/php_deque_handlers.h"
+#include "../../classes/php_ce_deque.h"
 #include "php_ds_deque.h"
 
 zend_object *deque_create_object_ex(ds_deque_t *deque)

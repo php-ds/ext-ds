@@ -8,8 +8,8 @@
 #include "../internal/php_set.h"
 #include "../internal/php_pair.h"
 
-#include "../php/php_ds_vector.h"
-#include "../php/php_ds_deque.h"
+#include "../php/objects/php_ds_vector.h"
+#include "../php/objects/php_ds_deque.h"
 
 /**
  *

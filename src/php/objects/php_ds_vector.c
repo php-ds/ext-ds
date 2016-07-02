@@ -1,7 +1,7 @@
-#include "../common.h"
-#include "../iterators/php_vector_iterator.h"
-#include "../handlers/php_vector_handlers.h"
-#include "../classes/php_ce_vector.h"
+#include "../../common.h"
+#include "../../iterators/php_vector_iterator.h"
+#include "../../handlers/php_vector_handlers.h"
+#include "../../classes/php_ce_vector.h"
 #include "php_ds_vector.h"
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
