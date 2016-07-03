@@ -2,7 +2,7 @@
 #define DS_COMMON_H
 
 #include <stdbool.h>
-#include <assert.h>
+// #include <assert.h>
 
 #include "php.h"
 #include "main/php.h"
@@ -16,10 +16,10 @@
 #include "zend_smart_str.h"
 #include "json/php_json.h"
 
-#include "php_ds.h"
-#include "parameters.h"
-#include "exceptions.h"
-#include "arginfo.h"
+#include "../ds.h"
+#include "php/parameters.h"
+#include "php/exceptions.h"
+#include "php/arginfo.h"
 
 /**
  * Default namespace.
@@ -34,6 +34,9 @@
 #define COLLECTION_ME(cls, name) \
     PHP_ME(cls, name, arginfo_##name, ZEND_ACC_PUBLIC)
 
+/**
+ *
+ */
 #define SERIALIZE_SET_ZSTR(s) \
 *buffer = (unsigned char *) estrndup(ZSTR_VAL((s)), ZSTR_LEN((s))); \
 *length = ZSTR_LEN((s));
@@ -171,16 +174,6 @@ zend_string *join_zval_buffer(
     char        *str,
     size_t       len
 );
-
-/**
- * Creates an empty, default instance of a Sequence.
- */
-void create_empty_sequence(zval *obj);
-
-/**
- * Creates a default instance of a Sequence using a given buffer of zvals.
- */
-void create_sequence(zval *obj, zval *buffer, zend_long size);
 
 /**
  * Sorts a zval buffer in place using the default internal compare_func.

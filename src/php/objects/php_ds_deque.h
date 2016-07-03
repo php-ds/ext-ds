@@ -2,7 +2,7 @@
 #define PHP_DS_DEQUE_H
 
 #include "../../common.h"
-#include "../../internal/ds_deque.h"
+#include "../../ds/ds_deque.h"
 
 /**
  * Custom PHP object wrapped around an internal deque

@@ -2,7 +2,7 @@
 #define PHP_DS_VECTOR_H
 
 #include "../../common.h"
-#include "../../internal/ds_vector.h"
+#include "../../ds/ds_vector.h"
 
 typedef struct php_ds_vector {
     zend_object      std;

@@ -1,6 +1,4 @@
 #include "common.h"
-#include "internal/ds_vector.h"
-#include "php/objects/php_ds_vector.h"
 
 void normalize_slice_params(
     zend_long *offset,
@@ -75,16 +73,6 @@ zend_string *join_zval_buffer(
 
     smart_str_0(&str);
     return str.s;
-}
-
-void create_empty_sequence(zval *obj)
-{
-    ZVAL_NEW_VECTOR(obj);
-}
-
-void create_sequence(zval *obj, zval *buffer, zend_long size)
-{
-    ZVAL_DS_VECTOR(obj, ds_vector_from_buffer(buffer, size));
 }
 
 static int zval_user_compare(const void *a, const void *b)

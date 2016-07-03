@@ -7,54 +7,54 @@ if test "$PHP_COLLECTIONS" != "no"; then
   src/common.c                                \
                                               \
 dnl Internal
-  src/internal/ds_vector.c                    \
-  src/internal/ds_deque.c                     \
-  src/internal/php_htable.c                   \
-  src/internal/php_set.c                      \
-  src/internal/php_map.c                      \
-  src/internal/php_stack.c                    \
-  src/internal/php_pair.c                     \
-  src/internal/php_priority_queue.c           \
-  src/internal/php_queue.c                    \
+  src/ds/ds_vector.c                    \
+  src/ds/ds_deque.c                     \
+  src/ds/ds_htable.c                   \
+  src/ds/ds_set.c                      \
+  src/ds/ds_map.c                      \
+  src/ds/ds_stack.c                    \
+  src/ds/ds_pair.c                     \
+  src/ds/ds_priority_queue.c           \
+  src/ds/ds_queue.c                    \
                                               \
   src/php/objects/php_ds_vector.c             \
   src/php/objects/php_ds_deque.c              \
                                               \
 dnl Iterators
-  src/iterators/php_vector_iterator.c         \
-  src/iterators/php_deque_iterator.c          \
-  src/iterators/php_set_iterator.c            \
-  src/iterators/php_map_iterator.c            \
-  src/iterators/php_stack_iterator.c          \
-  src/iterators/php_htable_iterator.c         \
-  src/iterators/php_priority_queue_iterator.c \
-  src/iterators/php_queue_iterator.c          \
+  src/php/iterators/php_vector_iterator.c         \
+  src/php/iterators/php_deque_iterator.c          \
+  src/php/iterators/php_set_iterator.c            \
+  src/php/iterators/php_map_iterator.c            \
+  src/php/iterators/php_stack_iterator.c          \
+  src/php/iterators/php_htable_iterator.c         \
+  src/php/iterators/php_priority_queue_iterator.c \
+  src/php/iterators/php_queue_iterator.c          \
                                               \
 dnl Handlers
-  src/handlers/php_vector_handlers.c          \
-  src/handlers/php_deque_handlers.c           \
-  src/handlers/php_set_handlers.c             \
-  src/handlers/php_map_handlers.c             \
-  src/handlers/php_stack_handlers.c           \
-  src/handlers/php_pair_handlers.c            \
-  src/handlers/php_priority_queue_handlers.c  \
-  src/handlers/php_queue_handlers.c           \
+  src/php/handlers/php_vector_handlers.c          \
+  src/php/handlers/php_deque_handlers.c           \
+  src/php/handlers/php_set_handlers.c             \
+  src/php/handlers/php_map_handlers.c             \
+  src/php/handlers/php_stack_handlers.c           \
+  src/php/handlers/php_pair_handlers.c            \
+  src/php/handlers/php_priority_queue_handlers.c  \
+  src/php/handlers/php_queue_handlers.c           \
                                               \
 dnl Interfaces
-  src/classes/php_ce_hashable.c               \
-  src/classes/php_ce_collection.c             \
-  src/classes/php_ce_sequence.c               \
+  src/php/classes/php_ce_hashable.c               \
+  src/php/classes/php_ce_collection.c             \
+  src/php/classes/php_ce_sequence.c               \
                                               \
 dnl Classes
-  src/classes/php_ce_vector.c                 \
-  src/classes/php_ce_deque.c                  \
-  src/classes/php_ce_set.c                    \
-  src/classes/php_ce_map.c                    \
-  src/classes/php_ce_stack.c                  \
-  src/classes/php_ce_pair.c                   \
-  src/classes/php_ce_priority_queue.c         \
-  src/classes/php_ce_queue.c                  \
-  src/classes/php_ce_ds.c                     \
+  src/php/classes/php_ce_vector.c                 \
+  src/php/classes/php_ce_deque.c                  \
+  src/php/classes/php_ce_set.c                    \
+  src/php/classes/php_ce_map.c                    \
+  src/php/classes/php_ce_stack.c                  \
+  src/php/classes/php_ce_pair.c                   \
+  src/php/classes/php_ce_priority_queue.c         \
+  src/php/classes/php_ce_queue.c                  \
+  src/php/classes/php_ce_ds.c                     \
                                               \
   php_ds.c                                    \
                                               \

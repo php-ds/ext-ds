@@ -1,0 +1,15 @@
+#ifndef DS_QUEUE_ITERATOR_H
+#define DS_QUEUE_ITERATOR_H
+
+#include "php.h"
+#include "../../ds/ds_queue.h"
+
+typedef struct _QueueIterator {
+    zend_object_iterator     intern;
+    zend_long                position;
+    Queue                   *queue;
+} QueueIterator;
+
+zend_object_iterator *queue_get_iterator(zend_class_entry *ce, zval *object, int by_ref);
+
+#endif
