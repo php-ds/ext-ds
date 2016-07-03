@@ -143,19 +143,13 @@ do { \
 
 /** EXCEPTIONS **************************************************************/
 
-static void _throw_exception(zend_class_entry *ce, const char *format, ...)
-{
-    va_list ap;
-    zend_string *str;
-    va_start(ap, format); str = vstrpprintf(0, format, ap); va_end(ap);
-    zend_throw_exception(ce, str->val, 0);
-}
 
-#define ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED() _throw_exception( \
+
+#define ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
     "Array access by key is not supported")
 
-#define INDEX_OUT_OF_RANGE(index, max) _throw_exception( \
+#define INDEX_OUT_OF_RANGE(index, max) ds_throw_exception( \
     spl_ce_OutOfRangeException, \
     max == 0 \
         ? "Index out of range: %d" \
@@ -163,57 +157,62 @@ static void _throw_exception(zend_class_entry *ce, const char *format, ...)
     index, \
     max - 1)
 
-#define OFFSET_OUT_OF_BOUNDS() _throw_exception( \
+#define OFFSET_OUT_OF_BOUNDS() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
     "Offset out of bounds")
 
-#define ARRAY_ACCESS_PUSH_NOT_SUPPORTED() _throw_exception( \
+#define ARRAY_ACCESS_PUSH_NOT_SUPPORTED() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
     "Array access push syntax is not supported")
 
-#define KEY_NOT_FOUND() _throw_exception( \
+#define KEY_NOT_FOUND() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
     "Key not found")
 
-#define OBJ_HASH_MUST_BE_SCALAR(z) _throw_exception( \
+#define OBJ_HASH_MUST_BE_SCALAR(z) ds_throw_exception( \
     spl_ce_UnexpectedValueException, \
     "Object hash must be scalar, %s given", zend_get_type_by_const(Z_TYPE_P(z)))
 
-#define VALUE_MUST_BE_INTEGER(z) _throw_exception( \
+#define VALUE_MUST_BE_INTEGER(z) ds_throw_exception( \
     spl_ce_UnexpectedValueException, \
     "Value must be of type integer, %d given", zend_get_type_by_const(Z_TYPE_P(z)))
 
-#define NOT_ALLOWED_WHEN_EMPTY() _throw_exception( \
+#define NOT_ALLOWED_WHEN_EMPTY() ds_throw_exception( \
     spl_ce_UnderflowException, \
     "Unexpected empty state")
 
-#define ARRAY_OR_TRAVERSABLE_REQUIRED() _throw_exception( \
+#define ARRAY_OR_TRAVERSABLE_REQUIRED() ds_throw_exception( \
     spl_ce_InvalidArgumentException, \
     "Value must be an array or traversable object")
 
-#define INTEGER_INDEX_REQUIRED(z) _throw_exception( \
+#define INTEGER_INDEX_REQUIRED(z) ds_throw_exception( \
     zend_ce_type_error, \
     "Index must be of type integer, %s given", zend_get_type_by_const(Z_TYPE_P(z)))
 
-#define ITERATION_BY_REF_NOT_SUPPORTED() _throw_exception( \
+#define ITERATION_BY_REF_NOT_SUPPORTED() ds_throw_exception( \
     zend_ce_error, \
     "Iterating by reference is not supported")
 
-#define ACCESS_BY_REF_NOT_ALLOWED() _throw_exception( \
+#define ACCESS_BY_REF_NOT_ALLOWED() ds_throw_exception( \
     zend_ce_error, \
     "Access by reference is not allowed")
 
-#define UNSERIALIZE_ERROR() _throw_exception( \
+#define UNSERIALIZE_ERROR() ds_throw_exception( \
     zend_ce_error, \
     "Failed to unserialize data")
 
-#define RECONSTRUCTION_NOT_ALLOWED() _throw_exception( \
+#define RECONSTRUCTION_NOT_ALLOWED() ds_throw_exception( \
     zend_ce_error, \
     "Immutable objects may not be reconstructed")
 
-#define MUTABILITY_NOT_ALLOWED() _throw_exception( \
+#define MUTABILITY_NOT_ALLOWED() ds_throw_exception( \
     zend_ce_error, \
     "Immutable objects may not be changed")
+
+/**
+ *
+ */
+void ds_throw_exception(zend_class_entry *ce, const char *format, ...);
 
 /*****************************************************************************/
 
@@ -221,7 +220,7 @@ static void _throw_exception(zend_class_entry *ce, const char *format, ...)
  * Similar to 'implode', joins a zval buffer using an optional 'glue'.
  * Use NULL and 0 for 'str' and 'len' to indicate an optional glue.
  */
-zend_string *join_zval_buffer(
+zend_string *ds_join_zval_buffer(
     zval        *buffer,
     zend_long    size,
     char        *str,
@@ -233,7 +232,7 @@ zend_string *join_zval_buffer(
  * Normalizes input parameters for slicing so that the implementation can focus
  * on the actual slicing. Takes care of negative values, length > size etc.
  */
-void normalize_slice_params(
+void ds_normalize_slice_args(
     zend_long *offset,
     zend_long *length,
     zend_long size
@@ -242,22 +241,22 @@ void normalize_slice_params(
 /**
  * Sorts a zval buffer in place using the default internal compare_func.
  */
-void sort_zval_buffer(zval *buffer, zend_long size);
+void ds_sort_zval_buffer(zval *buffer, zend_long size);
 
 /**
  * Sorts a zval buffer in place using a user-provided, global compare function.
  */
-void user_sort_zval_buffer(zval *buffer, zend_long size);
+void ds_user_sort_zval_buffer(zval *buffer, zend_long size);
 
 /**
  * Reverses zvals between two ranges, usually a range within a buffer.
  */
-void reverse_zval_range(zval *x, zval *y);
+void ds_reverse_zval_range(zval *x, zval *y);
 
 /**
  * Determines if a zval is set, ie. 'isset' and 'empty'.
  */
-int zval_isset(zval *value, int check_empty);
+int ds_zval_isset(zval *value, int check_empty);
 
 /**
 <<<<<<< HEAD
@@ -272,12 +271,11 @@ bool is_array(zval *value);
  * Determines if an array uses keys, similar to how json_encode does it.
 >>>>>>> Significant include refactor, htable renaming
  */
-bool array_uses_keys(HashTable *ht);
+bool ds_php_array_uses_keys(HashTable *ht);
 
 /**
  * Determines if a zval is an object and implements Traversable.
  */
-bool is_traversable(zval *value);
-
+bool ds_zval_is_traversable(zval *value);
 
 #endif

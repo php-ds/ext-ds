@@ -38,7 +38,7 @@ static zval *iterator_get_current_value(zend_object_iterator *i)
 
     ds_htable_bucket_t *bucket = iterator->bucket;
 
-    if (DS_HTABLE_BUCKET_NOT_DELETED(bucket)) {
+    if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         return &bucket->value;
     }
 
@@ -51,7 +51,7 @@ static zval *iterator_get_current_keyval(zend_object_iterator *i)
 
     ds_htable_bucket_t *bucket = iterator->bucket;
 
-    if (DS_HTABLE_BUCKET_NOT_DELETED(bucket)) {
+    if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         return &bucket->key;
     }
 
@@ -64,7 +64,7 @@ static void iterator_get_current_key(zend_object_iterator *i, zval *key)
 
     ds_htable_bucket_t *bucket = iterator->bucket;
 
-    if (DS_HTABLE_BUCKET_NOT_DELETED(bucket)) {
+    if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         ZVAL_COPY(key, &bucket->key);
     }
 }
@@ -75,7 +75,7 @@ static zval *iterator_get_current_pair(zend_object_iterator *i)
 
     ds_htable_bucket_t *bucket = iterator->bucket;
 
-    if (DS_HTABLE_BUCKET_NOT_DELETED(bucket)) {
+    if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
 
         zval *key = &bucket->key;
         zval *val = &bucket->value;

@@ -271,7 +271,7 @@ void ds_deque_set(ds_deque_t *deque, zend_long index, zval *value)
 void ds_deque_reverse(ds_deque_t *deque)
 {
     if (deque->head < deque->tail) {
-        reverse_zval_range(
+        ds_reverse_zval_range(
             deque->buffer + deque->head,
             deque->buffer + deque->tail
         );
@@ -505,7 +505,7 @@ void ds_deque_join(ds_deque_t *deque, char *str, size_t len, zval *return_value)
 {
     zend_string *s;
     ds_deque_pack(deque);
-    s = join_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque), str, len);
+    s = ds_join_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque), str, len);
     ZVAL_STR(return_value, s);
 }
 
@@ -597,7 +597,7 @@ bool ds_deque_isset(ds_deque_t *deque, zend_long index, int check_empty)
         return false;
     }
 
-    return zval_isset(ds_deque_lookup_index(deque, index), check_empty);
+    return ds_zval_isset(ds_deque_lookup_index(deque, index), check_empty);
 }
 
 zval *ds_deque_get_last(ds_deque_t *deque)
@@ -681,13 +681,13 @@ void deque_merge(Deque *deque, zval *values, zval *obj)
 void ds_deque_sort_callback(ds_deque_t *deque)
 {
     ds_deque_pack(deque);
-    user_sort_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque));
+    ds_user_sort_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque));
 }
 
 void ds_deque_sort(ds_deque_t *deque)
 {
     ds_deque_pack(deque);
-    sort_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque));
+    ds_sort_zval_buffer(deque->buffer, DS_DEQUE_SIZE(deque));
 }
 
 ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
@@ -842,7 +842,7 @@ static ds_deque_t *ds_deque_do_slice(ds_deque_t *deque, zend_long index, zend_lo
 
 ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
 {
-    normalize_slice_params(&index, &length, DS_DEQUE_SIZE(deque));
+    ds_normalize_slice_args(&index, &length, DS_DEQUE_SIZE(deque));
 
     if (length == 0) {
         return ds_deque();

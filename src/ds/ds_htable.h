@@ -10,50 +10,89 @@ typedef struct ds_htable_bucket {
 } ds_htable_bucket_t;
 
 typedef struct ds_htable {
-    ds_htable_bucket_t  *buckets;
-    uint32_t            *lookup;
-    uint32_t             next;
-    uint32_t             size;
-    uint32_t             capacity;
-    uint32_t             min_deleted;
+    ds_htable_bucket_t  *buckets;       // Buffer for the buckets
+    uint32_t            *lookup;        // Separated hash lookup table
+    uint32_t             next;          // Next open index in the bucket buffer
+    uint32_t             size;          // Number of active pairs in the table
+    uint32_t             capacity;      // Number of buckets in the table
+    uint32_t             min_deleted;   // Lowest deleted bucket buffer index
 } ds_htable_t;
 
-#define DS_HTABLE_MIN_CAPACITY        8
-#define DS_HTABLE_INVALID_INDEX              ((uint32_t) -1)
+#define DS_HTABLE_MIN_CAPACITY  8  // Must be a power of 2
 
-#define DS_HTABLE_BUCKET_HASH(b)        (Z_NEXT((b)->key))
-#define DS_HTABLE_BUCKET_NEXT(b)        (Z_NEXT((b)->value))
-#define DS_HTABLE_BUCKET_DELETED(b)     (Z_ISUNDEF((b)->key))
-#define DS_HTABLE_BUCKET_NOT_DELETED(b) (!DS_HTABLE_BUCKET_DELETED(b))
-#define DS_HTABLE_BUCKET_LOOKUP(t, h)   ((t)->lookup[h & ((t)->capacity - 1)])
+/**
+ * Marker to indicate an invalid index in the buffer.
+ */
+#define DS_HTABLE_INVALID_INDEX ((uint32_t) -1)
+
+/**
+ * Determines the calculated hash of a bucket, before mod.
+ */
+#define DS_HTABLE_BUCKET_HASH(_bucket) (Z_NEXT((_bucket)->key))
+
+/**
+ * Determines the buffer index of the next bucket in the collision chain.
+ * An invalid index indicates that it's the last bucket in the chain.
+ */
+#define DS_HTABLE_BUCKET_NEXT(_bucket) (Z_NEXT((_bucket)->value))
+
+/**
+ * Determines if a bucket has been deleted.
+ */
+#define DS_HTABLE_BUCKET_DELETED(_bucket) (Z_ISUNDEF((_bucket)->key))
+
+/**
+ * Finds the start of the collision chain for a given hash.
+ * An invalid index indicates that a chain doesn't exist.
+ */
+#define DS_HTABLE_BUCKET_LOOKUP(t, h) ((t)->lookup[h & ((t)->capacity - 1)])
+
+/**
+ * Determines if a table is packed, ie. doesn't have deleted buckets.
+ */
+#define DS_HTABLE_IS_PACKED(t) ((t)->size == (t)->next)
+
+/**
+ * Rehashes a bucket into a table.
+ *
+ * 1. Determine where the bucket's chain would start.
+ * 2. Set the bucket's next bucket to be the start of the chain.
+ * 3. Set the start of the chain to the bucket's position in the buffer.
+ *
+ * This means that the next bucket can come before another in the buffer,
+ * because a rehash unshifts the bucket into the chain.
+ */
+#define DS_HTABLE_BUCKET_REHASH(_table, _bucket, _mask, _idx)                 \
+do {                                                                          \
+    uint32_t *_pos = &_table->lookup[DS_HTABLE_BUCKET_HASH(_bucket) & _mask]; \
+    DS_HTABLE_BUCKET_NEXT(_bucket) = *_pos;                                   \
+    *_pos = _idx;                                                             \
+} while (0)
+
+/**
+ * Copies a bucket's state into another, including: key, value, hash.
+ */
+#define DS_HTABLE_BUCKET_COPY(dst, src)                         \
+do {                                                            \
+    ds_htable_bucket_t *_src = src;                             \
+    ds_htable_bucket_t *_dst = dst;                             \
+    ZVAL_COPY(&_dst->key, &_src->key);                          \
+    ZVAL_COPY(&_dst->value, &_src->value);                      \
+    DS_HTABLE_BUCKET_HASH(_dst) = DS_HTABLE_BUCKET_HASH(_src);  \
+} while (0)
+
+/**
+ * Marks a bucket as deleted, destructing both the key and the value.
+ */
+#define DS_HTABLE_BUCKET_DELETE(b)                          \
+    DTOR_AND_UNDEF(&(b)->value);                            \
+    DTOR_AND_UNDEF(&(b)->key);                              \
+    DS_HTABLE_BUCKET_NEXT((b)) = DS_HTABLE_INVALID_INDEX
 
 /**
  *
  */
-#define DS_HTABLE_IS_PACKED(t)   ((t)->size == (t)->next)
-
-#define DS_HTABLE_BUCKET_REHASH(table, bucket, mask, index) \
-do { \
-    uint32_t *_pos = &table->lookup[DS_HTABLE_BUCKET_HASH(bucket) & mask]; \
-    DS_HTABLE_BUCKET_NEXT(bucket) = *_pos; \
-    *_pos = index; \
-} while (0)
-
-#define DS_HTABLE_BUCKET_COPY(dst, src) \
-do { \
-    ds_htable_bucket_t *_src = src; \
-    ds_htable_bucket_t *_dst = dst; \
-    ZVAL_COPY(&_dst->key, &_src->key); \
-    ZVAL_COPY(&_dst->value, &_src->value); \
-    DS_HTABLE_BUCKET_HASH(_dst) = DS_HTABLE_BUCKET_HASH(_src); \
-} while (0)
-
-#define DS_HTABLE_BUCKET_DELETE(b) \
-    DTOR_AND_UNDEF(&(b)->value); \
-    DTOR_AND_UNDEF(&(b)->key); \
-    DS_HTABLE_BUCKET_NEXT((b)) = DS_HTABLE_INVALID_INDEX
-
-#define DS_DS_HTABLE_FOREACH_BUCKET(h, b)         \
+#define DS_HTABLE_FOREACH_BUCKET(h, b)         \
 do {                                        \
     ds_htable_t  *_h = h;                        \
     ds_htable_bucket_t *_x = _h->buckets;              \
@@ -62,7 +101,7 @@ do {                                        \
         if (DS_HTABLE_BUCKET_DELETED(_x)) continue;   \
         b = _x;
 
-#define DS_DS_HTABLE_FOREACH_BUCKET_BY_INDEX(h, i, b) \
+#define DS_HTABLE_FOREACH_BUCKET_BY_INDEX(h, i, b) \
 do {                                            \
     uint32_t _i = 0;                            \
     ds_htable_t  *_h = h;                            \
@@ -73,7 +112,7 @@ do {                                            \
         b = _x;                                 \
         i = _i++;
 
-#define DS_DS_HTABLE_FOREACH_BUCKET_REVERSED(h, b)    \
+#define DS_HTABLE_FOREACH_BUCKET_REVERSED(h, b)    \
 do {                                            \
     ds_htable_t  *_h  = h;                           \
     ds_htable_bucket_t *_x = _h->buckets;                  \
@@ -98,15 +137,15 @@ do {                                        \
 static ds_htable_bucket_t *_b;
 
 #define DS_HTABLE_FOREACH_KEY(h, k) \
-DS_DS_HTABLE_FOREACH_BUCKET(h, _b);    \
+DS_HTABLE_FOREACH_BUCKET(h, _b);    \
 k = &_b->key;                    \
 
 #define DS_HTABLE_FOREACH_VALUE(h, v) \
-DS_DS_HTABLE_FOREACH_BUCKET(h, _b);      \
+DS_HTABLE_FOREACH_BUCKET(h, _b);      \
 v = &_b->value;                    \
 
 #define DS_HTABLE_FOREACH_KEY_VALUE(h, k, v)   \
-DS_DS_HTABLE_FOREACH_BUCKET(h, _b);               \
+DS_HTABLE_FOREACH_BUCKET(h, _b);               \
 k = &_b->key;                               \
 v = &_b->value;                             \
 

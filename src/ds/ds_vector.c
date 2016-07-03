@@ -253,7 +253,7 @@ bool ds_vector_contains_va(ds_vector_t *vector, VA_PARAMS)
 void ds_vector_join(ds_vector_t *vector, char *str, size_t len, zval *return_value)
 {
     zend_string *s;
-    s = join_zval_buffer(vector->buffer, DS_VECTOR_SIZE(vector), str, len);
+    s = ds_join_zval_buffer(vector->buffer, DS_VECTOR_SIZE(vector), str, len);
     ZVAL_STR(return_value, s);
 }
 
@@ -353,12 +353,12 @@ void ds_vector_unshift_va(ds_vector_t *vector, VA_PARAMS)
 
 void ds_vector_sort_callback(ds_vector_t *vector)
 {
-    user_sort_zval_buffer(vector->buffer, vector->size);
+    ds_user_sort_zval_buffer(vector->buffer, vector->size);
 }
 
 void ds_vector_sort(ds_vector_t *vector)
 {
-    sort_zval_buffer(vector->buffer, vector->size);
+    ds_sort_zval_buffer(vector->buffer, vector->size);
 }
 
 bool ds_vector_isset(ds_vector_t *vector, zend_long index, int check_empty)
@@ -367,7 +367,7 @@ bool ds_vector_isset(ds_vector_t *vector, zend_long index, int check_empty)
         return 0;
     }
 
-    return zval_isset(vector->buffer + index, check_empty);
+    return ds_zval_isset(vector->buffer + index, check_empty);
 }
 
 bool ds_vector_index_exists(ds_vector_t *vector, zend_long index)
@@ -415,9 +415,9 @@ void ds_vector_rotate(ds_vector_t *vector, zend_long r)
     c = a + n;          // End of buffer
                         // [a..b....c]
 
-    reverse_zval_range(a, b);
-    reverse_zval_range(b, c);
-    reverse_zval_range(a, c);
+    ds_reverse_zval_range(a, b);
+    ds_reverse_zval_range(b, c);
+    ds_reverse_zval_range(a, c);
 }
 
 void ds_vector_push_all(ds_vector_t *vector, zval *values)
@@ -431,7 +431,7 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
         return;
     }
 
-    if (is_traversable(values)) {
+    if (ds_zval_is_traversable(values)) {
         add_traversable_to_vector(vector, values);
         return;
     }
@@ -513,7 +513,7 @@ zval *ds_vector_get_first(ds_vector_t *vector)
 
 void ds_vector_reverse(ds_vector_t *vector)
 {
-    reverse_zval_range(vector->buffer, vector->buffer + vector->size);
+    ds_reverse_zval_range(vector->buffer, vector->buffer + vector->size);
 }
 
 ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
@@ -641,7 +641,7 @@ void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FC
 
 ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length)
 {
-    normalize_slice_params(&index, &length, vector->size);
+    ds_normalize_slice_args(&index, &length, vector->size);
 
     if (length == 0) {
         return ds_vector();

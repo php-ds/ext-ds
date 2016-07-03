@@ -21,7 +21,7 @@ zval *v2 = NULL; \
 PARSE_2("|zz", &v1, &v2)
 
 #define PARSE_STRING() \
-char *str; \
+char  *str; \
 size_t len; \
 PARSE_2("s", &str, &len)
 

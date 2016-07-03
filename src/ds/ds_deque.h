@@ -4,7 +4,7 @@
 #include "../common.h"
 
 /**
- * An internal zval deque that can also be used by other data structures.
+ *
  */
 typedef struct _ds_deque_t {
     zval      *buffer;
@@ -15,7 +15,7 @@ typedef struct _ds_deque_t {
 
 #define DS_DEQUE_MIN_CAPACITY 8 // Must be a power of 2
 
-#define DS_DEQUE_SIZE(d)    (((d)->tail - (d)->head) & ((d)->capacity - 1))
+#define DS_DEQUE_SIZE(d)    (((d)->tail  - (d)->head) & ((d)->capacity - 1))
 #define DS_DEQUE_IS_EMPTY(d) ((d)->head == (d)->tail)
 
 #define DS_DEQUE_FOREACH(_d, _v)                            \

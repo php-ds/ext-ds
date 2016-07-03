@@ -1,6 +1,6 @@
 #include "common.h"
 
-static int zval_user_compare(const void *a, const void *b)
+static int ds_zval_user_compare_func(const void *a, const void *b)
 {
     zval params[2];
     zval retval;
@@ -25,7 +25,7 @@ static int zval_user_compare(const void *a, const void *b)
     return 0;
 }
 
-static int zval_compare(const void *a, const void *b)
+static int ds_zval_compare_func(const void *a, const void *b)
 {
     zval retval;
 
@@ -39,17 +39,17 @@ static int zval_compare(const void *a, const void *b)
     return 0;
 }
 
-void sort_zval_buffer(zval *buffer, zend_long size)
+void ds_sort_zval_buffer(zval *buffer, zend_long size)
 {
-    qsort(buffer, size, sizeof(zval), zval_compare);
+    qsort(buffer, size, sizeof(zval), ds_zval_compare_func);
 }
 
-void user_sort_zval_buffer(zval *buffer, zend_long size)
+void ds_user_sort_zval_buffer(zval *buffer, zend_long size)
 {
-    qsort(buffer, size, sizeof(zval), zval_user_compare);
+    qsort(buffer, size, sizeof(zval), ds_zval_user_compare_func);
 }
 
-int zval_isset(zval *value, int check_empty)
+int ds_zval_isset(zval *value, int check_empty)
 {
     if (value == NULL) {
         return 0;
@@ -62,7 +62,7 @@ int zval_isset(zval *value, int check_empty)
     return zend_is_true(value);
 }
 
-void normalize_slice_params(
+void ds_normalize_slice_args(
     zend_long *offset,
     zend_long *length,
     zend_long size
@@ -97,8 +97,7 @@ void normalize_slice_params(
     *length = len;
 }
 
-
-zend_string *join_zval_buffer(
+zend_string *ds_join_zval_buffer(
     zval        *buffer,
     zend_long    size,
     char        *glue,
@@ -106,7 +105,7 @@ zend_string *join_zval_buffer(
 ) {
     smart_str str = {0};
 
-    if (size == 0) {
+    if (size <= 0) {
         return ZSTR_EMPTY_ALLOC();
     }
 
@@ -114,11 +113,14 @@ zend_string *join_zval_buffer(
         return zval_get_string(buffer);
     }
 
+    // Glue is optional, will use empty string by default if NULL
     if (glue && len) {
         zval *pos = buffer;
         zval *end = buffer + size - 1; // Exclude last value
+
+        // Append each part and the glue right up to the last value.
         do {
-            smart_str_append(&str, zval_get_string(pos));
+            smart_str_append (&str, zval_get_string(pos));
             smart_str_appendl(&str, glue, len);
         } while (++pos != end);
 
@@ -129,6 +131,7 @@ zend_string *join_zval_buffer(
         zval *pos = buffer;
         zval *end = buffer + size;
 
+        // Append each part including the last, without glue.
         do {
             smart_str_append(&str, zval_get_string(pos));
         } while (++pos != end);
@@ -138,19 +141,13 @@ zend_string *join_zval_buffer(
     return str.s;
 }
 
-
-bool is_array(zval *value)
-{
-    return Z_TYPE_P(value) == IS_ARRAY;
-}
-
-bool is_traversable(zval *value)
+bool ds_zval_is_traversable(zval *value)
 {
     return Z_TYPE_P(value) == IS_OBJECT &&
         instanceof_function(Z_OBJCE_P(value), zend_ce_traversable);
 }
 
-bool array_uses_keys(HashTable *ht)
+bool ds_php_array_uses_keys(HashTable *ht)
 {
     zend_string     *key;
     zend_long       index;
@@ -161,11 +158,20 @@ bool array_uses_keys(HashTable *ht)
             return true;
         }
     }
+
     ZEND_HASH_FOREACH_END();
     return false;
 }
 
-void reverse_zval_range(zval *x, zval *y)
+void ds_reverse_zval_range(zval *x, zval *y)
 {
     for (; x < --y; ++x) SWAP_ZVAL(*x, *y);
+}
+
+void ds_throw_exception(zend_class_entry *ce, const char *format, ...)
+{
+    va_list ap;
+    zend_string *str;
+    va_start(ap, format); str = vstrpprintf(0, format, ap); va_end(ap);
+    zend_throw_exception(ce, str->val, 0);
 }

@@ -85,7 +85,7 @@ static void ds_htable_rehash(ds_htable_t *table)
                     ds_htable_bucket_t *q = bucket;
 
                     while (++index < table->next) {
-                        if (DS_HTABLE_BUCKET_NOT_DELETED(++bucket)) {
+                        if ( ! DS_HTABLE_BUCKET_DELETED(++bucket)) {
                             *q = *bucket;
 
                             DS_HTABLE_BUCKET_REHASH(table, q, mask, j);
@@ -113,7 +113,7 @@ static void ds_htable_pack(ds_htable_t *table)
         ds_htable_bucket_t *dst = src;
 
         while (++src != end) {
-            if (DS_HTABLE_BUCKET_NOT_DELETED(src)) {
+            if ( ! DS_HTABLE_BUCKET_DELETED(src)) {
                 if (dst != src) *dst = *src;
                 dst++;
             }
@@ -166,7 +166,7 @@ static void ds_htable_copy(ds_htable_t *_src, ds_htable_t *_dst)
     memcpy(_dst->lookup, _src->lookup, _src->capacity * sizeof(uint32_t));
 
     for (; src != end; ++src, ++dst) {
-        if (DS_HTABLE_BUCKET_NOT_DELETED(src)) {
+        if ( ! DS_HTABLE_BUCKET_DELETED(src)) {
             DS_HTABLE_BUCKET_COPY(dst, src);
         }
     }
@@ -373,7 +373,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t po
 
             // Start at the back
             index = table->size - 1;
-            DS_DS_HTABLE_FOREACH_BUCKET_REVERSED(table, bucket) {
+            DS_HTABLE_FOREACH_BUCKET_REVERSED(table, bucket) {
                 if (index == position) return bucket;
                 index--;
             }
@@ -383,7 +383,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t po
 
             // Start at the front
             index = 0;
-            DS_DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+            DS_HTABLE_FOREACH_BUCKET(table, bucket) {
                 if (index == position) return bucket;
                 index++;
             }
@@ -398,7 +398,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *table, zval *value)
 {
     ds_htable_bucket_t *bucket;
 
-    DS_DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if (zend_is_identical(value, &bucket->value)) {
             return bucket;
         }
@@ -410,7 +410,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *table, zval *value)
 bool ds_htable_isset(ds_htable_t *table, zval *key, bool check_empty)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_key(table, key);
-    return bucket && zval_isset(&bucket->value, check_empty);
+    return bucket && ds_zval_isset(&bucket->value, check_empty);
 }
 
 zval *ds_htable_get(ds_htable_t *table, zval *key)
@@ -467,7 +467,7 @@ void ds_htable_clear(ds_htable_t *table)
         return;
     }
 
-    DS_DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         DS_HTABLE_BUCKET_DELETE(bucket);
     }
     DS_HTABLE_FOREACH_END();
@@ -746,7 +746,7 @@ static inline ds_htable_bucket_t *get_last_bucket(ds_htable_t *table)
     if (table->size > 0) {
         ds_htable_bucket_t *last = table->buckets + table->next;
         for (;;) {
-            if (DS_HTABLE_BUCKET_NOT_DELETED(--last)) {
+            if ( ! DS_HTABLE_BUCKET_DELETED(--last)) {
                 return last;
             }
         }
@@ -772,7 +772,7 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
         ds_htable_bucket_t *pos = table->buckets;
         ds_htable_bucket_t *end = get_last_bucket(table);
         do {
-            if (DS_HTABLE_BUCKET_NOT_DELETED(pos)) {
+            if ( ! DS_HTABLE_BUCKET_DELETED(pos)) {
                 smart_str_append(&str, zval_get_string(&pos->key));
                 smart_str_appendl(&str, glue, len);
             }
@@ -858,7 +858,7 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
 
 ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long length)
 {
-    normalize_slice_params(&index, &length, table->size);
+    ds_normalize_slice_args(&index, &length, table->size);
 
     if (length == 0) {
         return ds_htable();
@@ -975,7 +975,7 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
 
     ds_htable_t *clone = ds_htable_ex(table->capacity);
 
-    DS_DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         ZVAL_COPY_VALUE(&params[0], &bucket->key);
         ZVAL_COPY_VALUE(&params[1], &bucket->value);
 
@@ -1159,7 +1159,7 @@ ds_htable_t *ds_htable_reversed(ds_htable_t *table)
 
     const uint32_t mask = reversed->capacity - 1;
 
-    DS_DS_HTABLE_FOREACH_BUCKET_REVERSED(table, src) {
+    DS_HTABLE_FOREACH_BUCKET_REVERSED(table, src) {
         uint32_t *lookup = &reversed->lookup[DS_HTABLE_BUCKET_HASH(src) & mask];
 
         DS_HTABLE_BUCKET_COPY(dst, src);

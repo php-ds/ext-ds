@@ -135,7 +135,7 @@ void set_add_all(Set *set, zval *values)
         return;
     }
 
-    if (is_traversable(values)) {
+    if (ds_zval_is_traversable(values)) {
         add_traversable_to_set(set, values);
         return;
     }
