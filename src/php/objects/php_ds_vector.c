@@ -30,7 +30,7 @@ int php_ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
 
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {

@@ -546,7 +546,7 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 
 ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         return ds_vector();
 
     } else {
@@ -570,7 +570,7 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 
 ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 {
-    if (VECTOR_IS_EMPTY(vector)) {
+    if (DS_VECTOR_IS_EMPTY(vector)) {
         return ds_vector();
 
     } else {

@@ -61,7 +61,7 @@ METHOD(deque)
             deque = ds_deque_ex(Z_LVAL_P(values));
         } else {
             deque = ds_deque();
-            deque_push_all(deque, values);
+            ds_deque_push_all(deque, values);
         }
     } else {
         deque = ds_deque();

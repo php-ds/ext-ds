@@ -17,9 +17,9 @@ METHOD(__construct)
     if ( ! values) {
         return;
     } else if (Z_TYPE_P(values) == IS_LONG) {
-        deque_user_allocate(THIS_DEQUE(), Z_LVAL_P(values));
+        ds_deque_user_allocate(THIS_DEQUE(), Z_LVAL_P(values));
     } else {
-        deque_push_all(THIS_DEQUE(), values);
+        ds_deque_push_all(THIS_DEQUE(), values);
     }
 }
 
@@ -27,22 +27,22 @@ METHOD(join)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_STRING();
-        deque_join(THIS_DEQUE(), str, len, return_value);
+        ds_deque_join(THIS_DEQUE(), str, len, return_value);
     } else {
-        deque_join(THIS_DEQUE(), NULL, 0, return_value);
+        ds_deque_join(THIS_DEQUE(), NULL, 0, return_value);
     }
 }
 
 METHOD(rotate)
 {
     PARSE_LONG(rotations);
-    deque_rotate(THIS_DEQUE(), rotations);
+    ds_deque_rotate(THIS_DEQUE(), rotations);
 }
 
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    deque_user_allocate(THIS_DEQUE(), capacity);
+    ds_deque_user_allocate(THIS_DEQUE(), capacity);
 }
 
 METHOD(capacity)
@@ -54,13 +54,13 @@ METHOD(capacity)
 METHOD(pushAll)
 {
     PARSE_ZVAL(values);
-    deque_push_all(THIS_DEQUE(), values);
+    ds_deque_push_all(THIS_DEQUE(), values);
 }
 
 METHOD(map)
 {
     PARSE_CALLABLE();
-    RETURN_DEQUE(deque_map(THIS_DEQUE(), FCI_ARGS));
+    RETURN_DEQUE(ds_deque_map(THIS_DEQUE(), FCI_ARGS));
 }
 
 METHOD(merge)
@@ -72,17 +72,17 @@ METHOD(merge)
 METHOD(reduce)
 {
     PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);
-    deque_reduce(THIS_DEQUE(), initial, return_value, FCI_ARGS);
+    ds_deque_reduce(THIS_DEQUE(), initial, return_value, FCI_ARGS);
 }
 
 METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_CALLABLE();
-        RETURN_DEQUE(deque_filter_callback(THIS_DEQUE(), FCI_ARGS));
+        RETURN_DEQUE(ds_deque_filter_callback(THIS_DEQUE(), FCI_ARGS));
     } else {
         PARSE_NONE;
-        RETURN_DEQUE(deque_filter(THIS_DEQUE()));
+        RETURN_DEQUE(ds_deque_filter(THIS_DEQUE()));
     }
 }
 
@@ -92,22 +92,22 @@ METHOD(slice)
 
     if (ZEND_NUM_ARGS() > 1) {
         PARSE_LONG_AND_LONG(index, length);
-        RETURN_DEQUE(deque_slice(deque, index, length));
+        RETURN_DEQUE(ds_deque_slice(deque, index, length));
     } else {
         PARSE_LONG(index);
-        RETURN_DEQUE(deque_slice(deque, index, DEQUE_SIZE(deque)));
+        RETURN_DEQUE(ds_deque_slice(deque, index, DS_DEQUE_SIZE(deque)));
     }
 }
 
 METHOD(sort)
 {
-    ds_deque_t *sorted = deque_create_copy(THIS_DEQUE());
+    ds_deque_t *sorted = ds_deque_create_copy(THIS_DEQUE());
 
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
-        deque_sort_callback(sorted);
+        ds_deque_sort_callback(sorted);
     } else {
-        deque_sort(sorted);
+        ds_deque_sort(sorted);
     }
 
     RETURN_DEQUE(sorted);
@@ -116,116 +116,116 @@ METHOD(sort)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
-    deque_push_va(THIS_DEQUE(), argc, argv);
+    ds_deque_push_va(THIS_DEQUE(), argc, argv);
 }
 
 METHOD(unshift)
 {
     PARSE_VARIADIC_ZVAL();
-    deque_unshift_va(THIS_DEQUE(), argc, argv);
+    ds_deque_unshift_va(THIS_DEQUE(), argc, argv);
 }
 
 METHOD(pop)
 {
     PARSE_NONE;
-    deque_pop(THIS_DEQUE(), return_value);
+    ds_deque_pop(THIS_DEQUE(), return_value);
 }
 
 METHOD(shift)
 {
     PARSE_NONE;
-    deque_shift(THIS_DEQUE(), return_value);
+    ds_deque_shift(THIS_DEQUE(), return_value);
 }
 
 METHOD(first)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(deque_get_first(THIS_DEQUE()));
+    RETURN_ZVAL_COPY(ds_deque_get_first(THIS_DEQUE()));
 }
 
 METHOD(last)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(deque_get_last(THIS_DEQUE()));
+    RETURN_ZVAL_COPY(ds_deque_get_last(THIS_DEQUE()));
 }
 
 METHOD(count)
 {
     ds_deque_t *deque = THIS_DEQUE();
     PARSE_NONE;
-    RETURN_LONG(DEQUE_SIZE(deque));
+    RETURN_LONG(DS_DEQUE_SIZE(deque));
 }
 
 METHOD(clear)
 {
     PARSE_NONE;
-    deque_clear(THIS_DEQUE());
+    ds_deque_clear(THIS_DEQUE());
 }
 
 METHOD(contains)
 {
     PARSE_VARIADIC_ZVAL();
-    RETURN_BOOL(deque_contains_va(THIS_DEQUE(), argc, argv));
+    RETURN_BOOL(ds_deque_contains_va(THIS_DEQUE(), argc, argv));
 }
 
 METHOD(toArray)
 {
     PARSE_NONE;
-    deque_to_array(THIS_DEQUE(), return_value);
+    ds_deque_to_array(THIS_DEQUE(), return_value);
 }
 
 METHOD(get)
 {
     PARSE_LONG(index);
-    RETURN_ZVAL_COPY(deque_get(THIS_DEQUE(), index));
+    RETURN_ZVAL_COPY(ds_deque_get(THIS_DEQUE(), index));
 }
 
 METHOD(set)
 {
     PARSE_LONG_AND_ZVAL(index, value);
-    deque_set(THIS_DEQUE(), index, value);
+    ds_deque_set(THIS_DEQUE(), index, value);
 }
 
 METHOD(find)
 {
     PARSE_ZVAL(value);
-    deque_find(THIS_DEQUE(), value, return_value);
+    ds_deque_find(THIS_DEQUE(), value, return_value);
 }
 
 METHOD(remove)
 {
     PARSE_LONG(index);
-    deque_remove(THIS_DEQUE(), index, return_value);
+    ds_deque_remove(THIS_DEQUE(), index, return_value);
 }
 
 METHOD(insert)
 {
     PARSE_LONG_AND_VARARGS(index);
-    deque_insert_va(THIS_DEQUE(), index, argc, argv);
+    ds_deque_insert_va(THIS_DEQUE(), index, argc, argv);
 }
 
 METHOD(reverse)
 {
     PARSE_NONE;
-    RETURN_DEQUE(deque_reversed(THIS_DEQUE()));
+    RETURN_DEQUE(ds_deque_reversed(THIS_DEQUE()));
 }
 
 METHOD(isEmpty)
 {
     PARSE_NONE;
-    RETURN_BOOL(DEQUE_IS_EMPTY(THIS_DEQUE()));
+    RETURN_BOOL(DS_DEQUE_IS_EMPTY(THIS_DEQUE()));
 }
 
 METHOD(copy)
 {
     PARSE_NONE;
-    RETURN_OBJ(deque_create_clone(THIS_DEQUE()));
+    RETURN_OBJ(php_ds_deque_create_clone(THIS_DEQUE()));
 }
 
 METHOD(jsonSerialize)
 {
     PARSE_NONE;
-    deque_to_array(THIS_DEQUE(), return_value);
+    ds_deque_to_array(THIS_DEQUE(), return_value);
 }
 
 
@@ -243,10 +243,10 @@ void register_deque()
 
     php_ds_deque_ce = zend_register_internal_class(&ce);
     php_ds_deque_ce->ce_flags      |= ZEND_ACC_FINAL;
-    php_ds_deque_ce->create_object  = deque_create_object;
-    php_ds_deque_ce->get_iterator   = deque_get_iterator;
-    php_ds_deque_ce->serialize      = deque_serialize;
-    php_ds_deque_ce->unserialize    = deque_unserialize;
+    php_ds_deque_ce->create_object  = php_ds_deque_create_object;
+    php_ds_deque_ce->get_iterator   = ds_deque_get_iterator;
+    php_ds_deque_ce->serialize      = php_ds_deque_serialize;
+    php_ds_deque_ce->unserialize    = php_ds_deque_unserialize;
 
     zend_declare_class_constant_long(deque_ce, STR_AND_LEN("MIN_CAPACITY"), DEQUE_MIN_CAPACITY);
     zend_class_implements(php_ds_deque_ce, 1, sequence_ce);

@@ -16,8 +16,8 @@ typedef struct _php_ds_deque_t {
 #define Z_DEQUE_P(z) Z_DEQUE(*z)
 #define THIS_DEQUE() Z_DEQUE_P(getThis())
 
-#define ZVAL_DEQUE(z, d)  ZVAL_OBJ(z, deque_create_object_ex(d))
-#define ZVAL_NEW_DEQUE(z) ZVAL_OBJ(z, deque_create_object_ex(ds_deque()))
+#define ZVAL_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
+#define ZVAL_NEW_DEQUE(z) ZVAL_OBJ(z, php_ds_deque_create_object_ex(ds_deque()))
 
 #define RETURN_DEQUE(deque)              \
 do {                                     \
@@ -32,26 +32,26 @@ do {                                     \
 /**
  * Creates a new zend_object using an existing deque.
  */
-zend_object *deque_create_object_ex(ds_deque_t *deque);
+zend_object *php_ds_deque_create_object_ex(ds_deque_t *deque);
 
 /**
  * Creates a new deque zend_object.
  */
-zend_object *deque_create_object(zend_class_entry *ce);
+zend_object *php_ds_deque_create_object(zend_class_entry *ce);
 
 /**
  * Creates an object clone of a deque.
  */
-zend_object *deque_create_clone(ds_deque_t *deque);
+zend_object *php_ds_deque_create_clone(ds_deque_t *deque);
 
 /**
  * Serializses a deque object.
  */
-int deque_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
+int php_ds_deque_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
 
 /**
  * Unserializes a string as a deque object.
  */
-int deque_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+int php_ds_deque_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
 
 #endif

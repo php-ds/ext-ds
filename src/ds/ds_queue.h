@@ -14,7 +14,7 @@ typedef struct _Queue {
 } Queue;
 
 
-#define QUEUE_SIZE(queue) (DEQUE_SIZE((queue)->deque))
+#define QUEUE_SIZE(queue) (DS_DEQUE_SIZE((queue)->deque))
 #define QUEUE_IS_EMPTY(queue) (QUEUE_SIZE(queue) == 0)
 
 #define Z_QUEUE(z)   ((Queue*)(Z_OBJ(z)))
@@ -33,8 +33,8 @@ do { \
 #define QUEUE_FOREACH(queue, value)                 \
 do {                                                \
     zval _tmp;                                      \
-    while ( ! DEQUE_IS_EMPTY(queue->deque)) {       \
-        deque_shift(queue->deque, &_tmp);           \
+    while ( ! DS_DEQUE_IS_EMPTY(queue->deque)) {       \
+        ds_deque_shift(queue->deque, &_tmp);           \
         value = &_tmp;
 
 #define QUEUE_FOREACH_END()     \

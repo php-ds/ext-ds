@@ -11,23 +11,32 @@ typedef struct ds_vector {
 
 #define DS_VECTOR_MIN_CAPACITY 10 // Does not have to be a power of 2
 
-#define VECTOR_SIZE(v)     ((v)->size)
-#define VECTOR_IS_EMPTY(v) (VECTOR_SIZE(v) == 0)
+#define DS_VECTOR_SIZE(v)     ((v)->size)
+#define DS_VECTOR_IS_EMPTY(v) (DS_VECTOR_SIZE(v) == 0)
 
-#define DS_VECTOR_FOREACH(vector, value) \
-do {                                  \
-    zval *_pos = vector->buffer;      \
-    zval *_end = _pos + vector->size; \
-    for (; _pos < _end; ++_pos) {     \
-        value = _pos;
+/**
+ *
+ */
+#define DS_VECTOR_FOREACH(v, z) \
+do {                            \
+    zval *x = v->buffer;        \
+    zval *y = x + v->size;      \
+    for (; x < y; ++x) {        \
+        z = x;
 
-#define DS_VECTOR_FOREACH_REVERSED(vector, value) \
-do {                                           \
-    zval *_end = vector->buffer;               \
-    zval *_pos = _end + vector->size - 1;      \
-    for (; _pos >= _end; --_pos) {             \
-        value = _pos;
+/**
+ *
+ */
+#define DS_VECTOR_FOREACH_REVERSED(v, z) \
+do {                                     \
+    zval *y = v->buffer;                 \
+    zval *x = y + v->size - 1;           \
+    for (; x >= y; --x) {                \
+        z = x;
 
+/**
+ *
+ */
 #define DS_VECTOR_FOREACH_END() \
     } \
 } while (0)
