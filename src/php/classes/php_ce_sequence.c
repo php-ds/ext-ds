@@ -1,4 +1,5 @@
 #include "../../common.h"
+
 #include "php_ce_collection.h"
 #include "php_ce_sequence.h"
 

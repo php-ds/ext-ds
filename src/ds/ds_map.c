@@ -1,10 +1,14 @@
 #include "../common.h"
-#include "../php/classes/php_ce_map.h"
+
+// #include "../php/iterators/php_map_iterator.h"
 #include "../php/handlers/php_map_handlers.h"
+#include "../php/classes/php_ce_map.h"
+
 #include "ds_htable.h"
+#include "ds_vector.h"
 #include "ds_map.h"
 
-static Map *map_init_ex(HTable *table)
+static Map *map_init_ex(ds_htable_t *table)
 {
     Map *map = ecalloc(1, sizeof(Map));
     zend_object_std_init(&map->std, map_ce);
@@ -17,7 +21,7 @@ static Map *map_init_ex(HTable *table)
 
 Map *map_create()
 {
-    return map_init_ex(htable_init());
+    return map_init_ex(ds_htable());
 }
 
 zend_object *map_create_object(zend_class_entry *ce)
@@ -27,7 +31,7 @@ zend_object *map_create_object(zend_class_entry *ce)
 
 Map *map_clone(Map *map)
 {
-    return map_init_ex(htable_clone(map->table));
+    return map_init_ex(ds_htable_clone(map->table));
 }
 
 zend_object *map_create_clone(Map *map)
@@ -42,7 +46,7 @@ void map_init_zval_ex(zval *obj, Map *map)
 
 void map_user_allocate(Map *map, zend_long capacity)
 {
-    htable_ensure_capacity(map->table, capacity);
+    ds_htable_ensure_capacity(map->table, capacity);
 }
 
 zend_long map_capacity(Map *map)
@@ -52,28 +56,28 @@ zend_long map_capacity(Map *map)
 
 void map_reverse(Map *map)
 {
-    htable_reverse(map->table);
+    ds_htable_reverse(map->table);
 }
 
 void map_reversed(Map *map, zval *obj)
 {
-    HTable *reversed = htable_reversed(map->table);
+    ds_htable_t *reversed = ds_htable_reversed(map->table);
     map_init_zval_ex(obj, map_init_ex(reversed));
 }
 
 void map_put(Map *map, zval *key, zval *value)
 {
-    htable_put(map->table, key, value);
+    ds_htable_put(map->table, key, value);
 }
 
 void map_reduce(Map *map, FCI_PARAMS, zval *initial, zval *return_value)
 {
-    htable_reduce(map->table, FCI_ARGS, initial, return_value);
+    ds_htable_reduce(map->table, FCI_ARGS, initial, return_value);
 }
 
 void map_map(Map *map, FCI_PARAMS, zval *return_value)
 {
-    HTable *table = htable_map(map->table, FCI_ARGS);
+    ds_htable_t *table = ds_htable_map(map->table, FCI_ARGS);
     if (table) {
         map_init_zval_ex(return_value, map_init_ex(table));
     }
@@ -81,7 +85,7 @@ void map_map(Map *map, FCI_PARAMS, zval *return_value)
 
 void map_filter_callback(Map *map, FCI_PARAMS, zval *return_value)
 {
-    HTable *table = htable_filter_callback(map->table, FCI_ARGS);
+    ds_htable_t *table = ds_htable_filter_callback(map->table, FCI_ARGS);
     if (table) {
         map_init_zval_ex(return_value, map_init_ex(table));
     }
@@ -89,7 +93,7 @@ void map_filter_callback(Map *map, FCI_PARAMS, zval *return_value)
 
 zval *map_get(Map *map, zval *key, zval *def)
 {
-    zval *value = htable_get(map->table, key);
+    zval *value = ds_htable_get(map->table, key);
 
     if (value) {
         return value;
@@ -105,7 +109,7 @@ zval *map_get(Map *map, zval *key, zval *def)
 
 void map_remove(Map *map, zval *key, zval *def, zval *return_value)
 {
-    int removed = htable_remove(map->table, key, return_value);
+    int removed = ds_htable_remove(map->table, key, return_value);
 
     if (removed == FAILURE) {
         // Failed to remove value
@@ -124,93 +128,93 @@ void map_remove(Map *map, zval *key, zval *def, zval *return_value)
 
 bool map_has_key(Map *map, zval *key)
 {
-    return htable_has_key(map->table, key);
+    return ds_htable_has_key(map->table, key);
 }
 
 bool map_has_value(Map *map, zval *value)
 {
-    return htable_has_value(map->table, value);
+    return ds_htable_has_value(map->table, value);
 }
 
 bool map_has_keys(Map *map, VA_PARAMS)
 {
-    return htable_has_keys(map->table, argc, argv);
+    return ds_htable_has_keys(map->table, argc, argv);
 }
 
 bool map_has_values(Map *map, VA_PARAMS)
 {
-    return htable_has_values(map->table, argc, argv);
+    return ds_htable_has_values(map->table, argc, argv);
 }
 
 void map_clear(Map *map)
 {
-    htable_clear(map->table);
+    ds_htable_clear(map->table);
 }
 
 void map_sorted_by_value_callback(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
-    htable_sort_callback_by_value(sorted->table);
+    ds_htable_sort_callback_by_value(sorted->table);
     map_init_zval_ex(obj, sorted);
 }
 
 void map_sorted_by_value(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
-    htable_sort_by_value(sorted->table);
+    ds_htable_sort_by_value(sorted->table);
     map_init_zval_ex(obj, sorted);
 }
 
 void map_sorted_by_key_callback(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
-    htable_sort_callback_by_key(sorted->table);
+    ds_htable_sort_by_key(sorted->table);
     map_init_zval_ex(obj, sorted);
 }
 
 void map_sorted_by_key(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
-    htable_sort_by_key(sorted->table);
+    ds_htable_sort_by_key(sorted->table);
     map_init_zval_ex(obj, sorted);
 }
 
 void map_to_array(Map *map, zval *return_value)
 {
-    htable_to_array(map->table, return_value);
+    ds_htable_to_array(map->table, return_value);
 }
 
 int map_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
     Map *map = Z_MAP_P(object);
-    return htable_serialize(map->table, buffer, length, data);
+    return ds_htable_serialize(map->table, buffer, length, data);
 }
 
 int map_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
 {
     Map *map = map_create();
     ZVAL_OBJ(object, &map->std);
-    return htable_unserialize(map->table, buffer, length, data);
+    return ds_htable_unserialize(map->table, buffer, length, data);
 }
 
 void map_create_key_set(Map *map, zval *obj)
 {
-    htable_create_key_set(map->table, obj);
+    ds_htable_create_key_set(map->table, obj);
 }
 
 ds_vector_t *map_values_to_vector(Map *map)
 {
-    return htable_values_to_vector(map->table);
+    return ds_htable_values_to_vector(map->table);
 }
 
 ds_vector_t *map_pairs_to_vector(Map *map)
 {
-    return htable_pairs_to_vector(map->table);
+    return ds_htable_pairs_to_vector(map->table);
 }
 
 void map_slice(Map *map, zend_long index, zend_long length, zval *obj)
 {
-    HTable *sliced = htable_slice(map->table, index, length);
+    ds_htable_t *sliced = ds_htable_slice(map->table, index, length);
     map_init_zval_ex(obj, map_init_ex(sliced));
 }
 

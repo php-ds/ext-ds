@@ -1,6 +1,20 @@
 #ifndef PHP_DS_H
 #define PHP_DS_H
 
+#include <stdbool.h>
+
+#include "php.h"
+#include "main/php.h"
+#include "zend_exceptions.h"
+#include "zend_interfaces.h"
+#include "zend_operators.h"
+#include "ext/standard/info.h"
+#include "ext/standard/php_var.h"
+#include "ext/spl/spl_iterators.h"
+#include "ext/spl/spl_exceptions.h"
+#include "zend_smart_str.h"
+#include "json/php_json.h"
+
 extern zend_module_entry ds_module_entry;
 
 #define phpext_ds_ptr &ds_module_entry

@@ -1,7 +1,9 @@
 #include "../common.h"
+
 #include "../php/iterators/php_deque_iterator.h"
 #include "../php/handlers/php_deque_handlers.h"
 #include "../php/classes/php_ce_deque.h"
+
 #include "ds_deque.h"
 
 #define IS_POWER_OF_2(n) (n && !(n & (n - 1)))

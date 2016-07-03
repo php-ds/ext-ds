@@ -1,8 +1,7 @@
 #ifndef DS_CE_SEQUENCE_H
 #define DS_CE_SEQUENCE_H
 
-#include "../../common.h"
-#include "php_ce_collection.h"
+#include "php.h"
 
 extern zend_class_entry *sequence_ce;
 

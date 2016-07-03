@@ -7,8 +7,8 @@ if test "$PHP_COLLECTIONS" != "no"; then
   src/common.c                                \
                                               \
 dnl Internal
-  src/ds/ds_vector.c                    \
-  src/ds/ds_deque.c                     \
+  src/ds/ds_vector.c                   \
+  src/ds/ds_deque.c                    \
   src/ds/ds_htable.c                   \
   src/ds/ds_set.c                      \
   src/ds/ds_map.c                      \
@@ -29,8 +29,9 @@ dnl Iterators
   src/php/iterators/php_htable_iterator.c         \
   src/php/iterators/php_priority_queue_iterator.c \
   src/php/iterators/php_queue_iterator.c          \
-                                              \
+                                                  \
 dnl Handlers
+  src/php/handlers/php_common_handlers.c          \
   src/php/handlers/php_vector_handlers.c          \
   src/php/handlers/php_deque_handlers.c           \
   src/php/handlers/php_set_handlers.c             \

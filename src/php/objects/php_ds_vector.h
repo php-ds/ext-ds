@@ -1,7 +1,6 @@
 #ifndef PHP_DS_VECTOR_H
 #define PHP_DS_VECTOR_H
 
-#include "../../common.h"
 #include "../../ds/ds_vector.h"
 
 typedef struct php_ds_vector {
@@ -38,7 +37,19 @@ zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector);
 zend_object *php_ds_vector_create_object(zend_class_entry *ce);
 zend_object *php_ds_vector_create_clone(ds_vector_t *vector);
 
-int php_ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
-int php_ds_vector_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+int php_ds_vector_serialize(
+    zval                    *object,
+    unsigned char          **buffer,
+    size_t                  *length,
+    zend_serialize_data     *data
+);
+
+int php_ds_vector_unserialize(
+    zval                    *object,
+    zend_class_entry        *ce,
+    const unsigned char     *buffer,
+    size_t                   length,
+    zend_unserialize_data   *data
+);
 
 #endif

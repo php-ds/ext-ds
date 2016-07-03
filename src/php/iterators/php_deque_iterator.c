@@ -1,5 +1,5 @@
-#include "php.h"
 #include "../../common.h"
+
 #include "../../ds/ds_deque.h"
 #include "../objects/php_ds_deque.h"
 #include "php_deque_iterator.h"

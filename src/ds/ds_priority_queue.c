@@ -1,6 +1,9 @@
 #include "../common.h"
-#include "../php/classes/php_ce_priority_queue.h"
+
+#include "../php/iterators/php_priority_queue_iterator.h"
 #include "../php/handlers/php_priority_queue_handlers.h"
+#include "../php/classes/php_ce_priority_queue.h"
+
 #include "ds_priority_queue.h"
 
 #define LEFT(x) (((x) << 1) + 1)

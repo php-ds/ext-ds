@@ -1,7 +1,13 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../../ds/ds_priority_queue.h"
+
 #include "../iterators/php_priority_queue_iterator.h"
 #include "../handlers/php_priority_queue_handlers.h"
+
 #include "php_ce_collection.h"
 #include "php_ce_priority_queue.h"
 

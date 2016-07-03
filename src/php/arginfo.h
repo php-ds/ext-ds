@@ -1,7 +1,7 @@
 #ifndef DS_ARGINFO_H
 #define DS_ARGINFO_H
 
-#include "../common.h"
+// #include "../common.h"
 
 #define ARGINFO_NONE(name, ...) \
 ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 0) \

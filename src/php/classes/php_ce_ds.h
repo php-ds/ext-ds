@@ -1,7 +1,7 @@
 #ifndef DS_CE_DS_H
 #define DS_CE_DS_H
 
-#include "../../common.h"
+#include "php.h"
 
 extern zend_class_entry *ds_ce;
 

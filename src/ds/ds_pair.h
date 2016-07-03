@@ -1,10 +1,7 @@
 #ifndef DS_PAIR_H
 #define DS_PAIR_H
 
-#include "php.h"
-#include "zend_exceptions.h"
-#include "zend_interfaces.h"
-#include "ext/spl/spl_iterators.h"
+#include "../common.h"
 
 typedef struct _Pair {
     zend_object std;

@@ -1,9 +1,12 @@
 
-#include "php.h"
-#include "ext/spl/spl_exceptions.h"
-#include "../../common.h"
-#include "../../ds/ds_deque.h"
+// #include "php.h"
+// #include "ext/spl/spl_exceptions.h"
+
+#include "php_deque_handlers.h"
+#include "php_common_handlers.h"
+
 #include "../objects/php_ds_deque.h"
+#include "../../ds/ds_deque.h"
 
 zend_object_handlers ds_deque_handlers;
 

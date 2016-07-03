@@ -1,16 +1,12 @@
 #ifndef DS_SET_H
 #define DS_SET_H
 
-#include "php.h"
-#include "zend_exceptions.h"
-#include "zend_interfaces.h"
-#include "ext/spl/spl_iterators.h"
-
+#include "../common.h"
 #include "ds_htable.h"
 
 typedef struct _Set {
     zend_object  std;
-    HTable      *table;
+    ds_htable_t      *table;
 } Set;
 
 #define SET_SIZE(s) ((s)->table->size)
@@ -29,15 +25,15 @@ do { \
     return; \
 } while(0)
 
-#define SET_FOREACH(set, value) HTABLE_FOREACH_KEY(set->table, value)
-#define SET_FOREACH_END() HTABLE_FOREACH_END()
+#define SET_FOREACH(set, value) DS_HTABLE_FOREACH_KEY(set->table, value)
+#define SET_FOREACH_END() DS_HTABLE_FOREACH_END()
 
 #define SET_SIZE(s) ((s)->table->size)
 #define SET_IS_EMPTY(s) (SET_SIZE(s) == 0)
 
 Set *set_init();
 
-zend_object *set_create_object_ex(HTable *table);
+zend_object *set_create_object_ex(ds_htable_t *table);
 zend_object *set_create_object(zend_class_entry *ce);
 zend_object *set_create_clone(Set *set);
 void set_init_zval_ex(zval *obj, Set *set);

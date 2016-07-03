@@ -1,10 +1,13 @@
 #include "../common.h"
+
 #include "../php/iterators/php_set_iterator.h"
 #include "../php/handlers/php_set_handlers.h"
 #include "../php/classes/php_ce_set.h"
-#include "ds_set.h"
 
-static Set *set_init_ex(HTable *table)
+#include "ds_set.h"
+#include "ds_htable.h"
+
+static Set *set_init_ex(ds_htable_t *table)
 {
     Set *set = ecalloc(1, sizeof(Set));
     zend_object_std_init(&set->std, set_ce);
@@ -15,27 +18,27 @@ static Set *set_init_ex(HTable *table)
 
 Set *set_init()
 {
-    return set_init_ex(htable_init());
+    return set_init_ex(ds_htable());
 }
 
-zend_object *set_create_object_ex(HTable *table)
+zend_object *set_create_object_ex(ds_htable_t *table)
 {
     return &set_init_ex(table)->std;
 }
 
 zend_object *set_create_object(zend_class_entry *ce)
 {
-    return set_create_object_ex(htable_init());
+    return set_create_object_ex(ds_htable());
 }
 
 Set *set_clone(Set *src)
 {
-    return set_init_ex(htable_clone(src->table));
+    return set_init_ex(ds_htable_clone(src->table));
 }
 
 zend_object *set_create_clone(Set *src)
 {
-    return set_create_object_ex(htable_clone(src->table));
+    return set_create_object_ex(ds_htable_clone(src->table));
 }
 
 void set_init_zval_ex(zval *obj, Set *set)
@@ -45,7 +48,7 @@ void set_init_zval_ex(zval *obj, Set *set)
 
 void set_user_allocate(Set *set, zend_long capacity)
 {
-    htable_ensure_capacity(set->table, capacity);
+    ds_htable_ensure_capacity(set->table, capacity);
 }
 
 uint32_t set_capacity(Set *set)
@@ -60,32 +63,32 @@ void set_init_zval(zval *obj)
 
 void set_sort_callback(Set *set)
 {
-    htable_sort_callback_by_key(set->table);
+    ds_htable_sort_callback_by_key(set->table);
 }
 
 void set_sort(Set *set)
 {
-    htable_sort_by_key(set->table);
+    ds_htable_sort_by_key(set->table);
 }
 
 void set_sorted_callback(Set *set, zval *obj)
 {
     Set *sorted = set_clone(set);
-    htable_sort_callback_by_key(sorted->table);
+    ds_htable_sort_callback_by_key(sorted->table);
     set_init_zval_ex(obj, sorted);
 }
 
 void set_sorted(Set *set, zval *obj)
 {
     Set *sorted = set_clone(set);
-    htable_sort_by_key(sorted->table);
+    ds_htable_sort_by_key(sorted->table);
     set_init_zval_ex(obj, sorted);
 }
 
 static inline void _set_add(Set *set, zval *value)
 {
-    HBucket *b;
-    htable_lookup_or_next(set->table, value, &b);
+    ds_htable_bucket_t *b;
+    ds_htable_lookup_or_next(set->table, value, &b);
     ZVAL_NULL(&b->value);
 }
 
@@ -142,7 +145,7 @@ void set_add_all(Set *set, zval *values)
 
 static inline bool _set_contains(Set *set, zval *value)
 {
-    return htable_has_key(set->table, value);
+    return ds_htable_has_key(set->table, value);
 }
 
 bool set_contains(Set *set, zval *value)
@@ -152,12 +155,12 @@ bool set_contains(Set *set, zval *value)
 
 bool set_contains_all(Set *set, VA_PARAMS)
 {
-    return htable_has_keys(set->table, argc, argv);
+    return ds_htable_has_keys(set->table, argc, argv);
 }
 
 static inline void set_remove(Set *set, zval *value)
 {
-    htable_remove(set->table, value, NULL);
+    ds_htable_remove(set->table, value, NULL);
 }
 
 void set_remove_va(Set *set, VA_PARAMS)
@@ -169,7 +172,7 @@ void set_remove_va(Set *set, VA_PARAMS)
 
 zval *set_get(Set *set, zend_long index)
 {
-    HBucket *bucket = htable_lookup_by_position(set->table, index);
+    ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(set->table, index);
 
     if ( ! bucket) {
         INDEX_OUT_OF_RANGE(index, set->table->size);
@@ -181,7 +184,7 @@ zval *set_get(Set *set, zend_long index)
 
 zval *set_get_first(Set *set)
 {
-    HBucket *bucket = htable_first(set->table);
+    ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(set->table, 0);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -193,7 +196,7 @@ zval *set_get_first(Set *set)
 
 zval *set_get_last(Set *set)
 {
-    HBucket *bucket = htable_last(set->table);
+    ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(set->table, SET_SIZE(set) - 1);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -205,13 +208,13 @@ zval *set_get_last(Set *set)
 
 void set_slice(Set *set, zend_long index, zend_long length, zval *obj)
 {
-    HTable *sliced = htable_slice(set->table, index, length);
+    ds_htable_t *sliced = ds_htable_slice(set->table, index, length);
     set_init_zval_ex(obj, set_init_ex(sliced));
 }
 
 void set_join(Set *set, const char *glue, const size_t len, zval *return_value)
 {
-    zend_string *str = htable_join_keys(set->table, glue, len);
+    zend_string *str = ds_htable_join_keys(set->table, glue, len);
     ZVAL_STR(return_value, str);
 }
 
@@ -292,12 +295,12 @@ void set_assign_union(Set *set, Set *other)
 
 void set_clear(Set *set)
 {
-    htable_clear(set->table);
+    ds_htable_clear(set->table);
 }
 
 void set_free(Set *set)
 {
-    htable_destroy(set->table);
+    ds_htable_destroy(set->table);
 }
 
 void set_reduce(Set *set, FCI_PARAMS, zval *initial, zval *return_value)
@@ -388,12 +391,12 @@ void set_filter(Set *set, zval *obj)
 
 void set_reverse(Set *set)
 {
-    htable_reverse(set->table);
+    ds_htable_reverse(set->table);
 }
 
 void set_reversed(Set *set, zval *obj)
 {
-    set_init_zval_ex(obj, set_init_ex(htable_reversed(set->table)));
+    set_init_zval_ex(obj, set_init_ex(ds_htable_reversed(set->table)));
 }
 
 void set_to_array(Set *set, zval *arr)
@@ -402,11 +405,11 @@ void set_to_array(Set *set, zval *arr)
 
     array_init_size(arr, set->table->size);
 
-    HTABLE_FOREACH_KEY(set->table, value) {
+    DS_HTABLE_FOREACH_KEY(set->table, value) {
         add_next_index_zval(arr, value);
         Z_TRY_ADDREF_P(value);
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 }
 
 int set_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
@@ -424,10 +427,10 @@ int set_serialize(zval *object, unsigned char **buffer, size_t *length, zend_ser
         zval *key;
         smart_str buf = {0};
 
-        HTABLE_FOREACH_KEY(set->table, key) {
+        DS_HTABLE_FOREACH_KEY(set->table, key) {
             php_var_serialize(&buf, key, &serialize_data);
         }
-        HTABLE_FOREACH_END();
+        DS_HTABLE_FOREACH_END();
 
         smart_str_0(&buf);
         SERIALIZE_SET_ZSTR(buf.s);

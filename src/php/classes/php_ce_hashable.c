@@ -1,4 +1,7 @@
 #include "../../common.h"
+#include "../arginfo.h"
+
+#include "php_ce_hashable.h"
 
 zend_class_entry *hashable_ce;
 

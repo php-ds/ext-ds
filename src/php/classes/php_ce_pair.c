@@ -1,4 +1,8 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../../ds/ds_pair.h"
 #include "../handlers/php_pair_handlers.h"
 #include "php_ce_pair.h"

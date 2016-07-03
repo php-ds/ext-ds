@@ -1,7 +1,5 @@
-#include "php.h"
-#include "zend_exceptions.h"
-
 #include "../../common.h"
+
 #include "../../ds/ds_priority_queue.h"
 #include "php_priority_queue_iterator.h"
 

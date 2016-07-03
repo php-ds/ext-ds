@@ -1,9 +1,13 @@
-#include "php.h"
-#include "ext/spl/spl_exceptions.h"
-#include "../../common.h"
-#include "../../ds/ds_vector.h"
-#include "../objects/php_ds_vector.h"
+// #include "php.h"
+// #include "ext/spl/spl_exceptions.h"
+
+
+// #include "php_vector_handlers.h"
 #include "php_vector_handlers.h"
+#include "php_common_handlers.h"
+
+#include "../objects/php_ds_vector.h"
+#include "../../ds/ds_vector.h"
 
 zend_object_handlers php_ds_vector_handlers;
 

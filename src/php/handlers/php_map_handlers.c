@@ -1,10 +1,6 @@
-#include "php.h"
-#include "ext/spl/spl_exceptions.h"
-
-#include "../../common.h"
-#include "../../ds/ds_htable.h"
-#include "../../ds/ds_map.h"
 #include "php_map_handlers.h"
+#include "php_common_handlers.h"
+#include "../../ds/ds_map.h"
 
 zend_object_handlers map_handlers;
 
@@ -37,20 +33,20 @@ static void map_write_dimension(zval *obj, zval *offset, zval *value)
         return;
     }
 
-    htable_put(map->table, offset, value);
+    ds_htable_put(map->table, offset, value);
 }
 
 static int map_has_dimension(zval *obj, zval *offset, int check_empty)
 {
     Map *map = Z_MAP_P(obj);
 
-    return htable_isset(map->table, offset, check_empty);
+    return ds_htable_isset(map->table, offset, check_empty);
 }
 
 static void map_unset_dimension(zval *obj, zval *offset)
 {
     Map *map = Z_MAP_P(obj);
-    htable_remove(map->table, offset, NULL);
+    ds_htable_remove(map->table, offset, NULL);
 }
 
 static int map_count_elements(zval *obj, zend_long *count)
@@ -65,13 +61,13 @@ static void map_free_object(zend_object *object)
 
     zend_object_std_dtor(&intern->std);
 
-    htable_destroy(intern->table);
+    ds_htable_destroy(intern->table);
 }
 
 static HashTable *map_get_debug_info(zval *obj, int *is_temp)
 {
     *is_temp = 1;
-    return htable_pairs_to_php_ht(Z_MAP_P(obj)->table);
+    return ds_htable_pairs_to_php_ht(map->table);
 }
 
 static zend_object *map_clone_obj(zval *obj)

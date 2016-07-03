@@ -1,5 +1,5 @@
-#include "php.h"
 #include "../../common.h"
+
 #include "../../ds/ds_vector.h"
 #include "../objects/php_ds_vector.h"
 #include "php_vector_iterator.h"

@@ -1,6 +1,8 @@
+#include "php_pair_handlers.h"
+#include "php_common_handlers.h"
+
 #include "../../common.h"
 #include "../../ds/ds_pair.h"
-#include "php_pair_handlers.h"
 
 zend_object_handlers pair_handlers;
 

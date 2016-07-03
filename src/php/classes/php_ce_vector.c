@@ -1,7 +1,13 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../objects/php_ds_vector.h"
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
+
+#include "php_ce_collection.h"
 #include "php_ce_sequence.h"
 #include "php_ce_vector.h"
 

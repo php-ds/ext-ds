@@ -7,7 +7,7 @@
 
 typedef struct _Map {
     zend_object std;
-    HTable     *table;
+    ds_htable_t     *table;
     zend_long   position;
 } Map;
 

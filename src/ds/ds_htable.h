@@ -1,169 +1,164 @@
 #ifndef DS_HTABLE_H
 #define DS_HTABLE_H
 
-#include <stdbool.h>
-#include "php.h"
-#include "zend_exceptions.h"
-#include "zend_interfaces.h"
-#include "ext/spl/spl_iterators.h"
+#include "../common.h"
 #include "ds_vector.h"
 
-typedef struct _HBucket {
+typedef struct ds_htable_bucket {
     zval         key;
     zval         value;
-} HBucket;
+} ds_htable_bucket_t;
 
-typedef struct _HTable {
-    HBucket  *buckets;
-    uint32_t *lookup;
-    uint32_t  next;
-    uint32_t  size;
-    uint32_t  capacity;
-    uint32_t  min_deleted;
-} HTable;
+typedef struct ds_htable {
+    ds_htable_bucket_t  *buckets;
+    uint32_t            *lookup;
+    uint32_t             next;
+    uint32_t             size;
+    uint32_t             capacity;
+    uint32_t             min_deleted;
+} ds_htable_t;
 
-#define HTABLE_MIN_CAPACITY        8
-#define INVALID_INDEX              ((uint32_t) -1)
+#define DS_HTABLE_MIN_CAPACITY        8
+#define DS_HTABLE_INVALID_INDEX              ((uint32_t) -1)
 
-#define BUCKET_HASH(b)        (Z_NEXT((b)->key))
-#define NEXT_BUCKET(b)        (Z_NEXT((b)->value))
-#define BUCKET_DELETED(b)     (Z_ISUNDEF((b)->key))
-#define BUCKET_NOT_DELETED(b) (!BUCKET_DELETED(b))
-#define BUCKET_LOOKUP(t, h)   ((t)->lookup[h & ((t)->capacity - 1)])
-#define HTABLE_IS_PACKED(t)   ((t)->size == (t)->next)
+#define DS_HTABLE_BUCKET_HASH(b)        (Z_NEXT((b)->key))
+#define DS_HTABLE_BUCKET_NEXT(b)        (Z_NEXT((b)->value))
+#define DS_HTABLE_BUCKET_DELETED(b)     (Z_ISUNDEF((b)->key))
+#define DS_HTABLE_BUCKET_NOT_DELETED(b) (!DS_HTABLE_BUCKET_DELETED(b))
+#define DS_HTABLE_BUCKET_LOOKUP(t, h)   ((t)->lookup[h & ((t)->capacity - 1)])
 
-#define REHASH_BUCKET(table, bucket, mask, index) \
+/**
+ *
+ */
+#define DS_HTABLE_IS_PACKED(t)   ((t)->size == (t)->next)
+
+#define DS_HTABLE_BUCKET_REHASH(table, bucket, mask, index) \
 do { \
-    uint32_t *_pos = &table->lookup[BUCKET_HASH(bucket) & mask]; \
-    NEXT_BUCKET(bucket) = *_pos; \
+    uint32_t *_pos = &table->lookup[DS_HTABLE_BUCKET_HASH(bucket) & mask]; \
+    DS_HTABLE_BUCKET_NEXT(bucket) = *_pos; \
     *_pos = index; \
 } while (0)
 
-#define COPY_BUCKET(dst, src) \
+#define DS_HTABLE_BUCKET_COPY(dst, src) \
 do { \
-    HBucket *_src = src; \
-    HBucket *_dst = dst; \
+    ds_htable_bucket_t *_src = src; \
+    ds_htable_bucket_t *_dst = dst; \
     ZVAL_COPY(&_dst->key, &_src->key); \
     ZVAL_COPY(&_dst->value, &_src->value); \
-    BUCKET_HASH(_dst) = BUCKET_HASH(_src); \
+    DS_HTABLE_BUCKET_HASH(_dst) = DS_HTABLE_BUCKET_HASH(_src); \
 } while (0)
 
-#define DELETE_BUCKET(b) \
+#define DS_HTABLE_BUCKET_DELETE(b) \
     DTOR_AND_UNDEF(&(b)->value); \
     DTOR_AND_UNDEF(&(b)->key); \
-    NEXT_BUCKET((b)) = INVALID_INDEX
+    DS_HTABLE_BUCKET_NEXT((b)) = DS_HTABLE_INVALID_INDEX
 
-#define HTABLE_FOREACH_BUCKET(h, b)         \
+#define DS_DS_HTABLE_FOREACH_BUCKET(h, b)         \
 do {                                        \
-    HTable  *_h = h;                        \
-    HBucket *_x = _h->buckets;              \
-    HBucket *_y = _x + _h->next;            \
+    ds_htable_t  *_h = h;                        \
+    ds_htable_bucket_t *_x = _h->buckets;              \
+    ds_htable_bucket_t *_y = _x + _h->next;            \
     for (; _x < _y; ++_x) {                 \
-        if (BUCKET_DELETED(_x)) continue;   \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;   \
         b = _x;
 
-#define HTABLE_FOREACH_BUCKET_BY_INDEX(h, i, b) \
+#define DS_DS_HTABLE_FOREACH_BUCKET_BY_INDEX(h, i, b) \
 do {                                            \
     uint32_t _i = 0;                            \
-    HTable  *_h = h;                            \
-    HBucket *_x = _h->buckets;                  \
-    HBucket *_y = _x + _h->next;                \
+    ds_htable_t  *_h = h;                            \
+    ds_htable_bucket_t *_x = _h->buckets;                  \
+    ds_htable_bucket_t *_y = _x + _h->next;                \
     for (; _x < _y; ++_x) {                     \
-        if (BUCKET_DELETED(_x)) continue;       \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;       \
         b = _x;                                 \
         i = _i++;
 
-#define HTABLE_FOREACH_BUCKET_REVERSED(h, b)    \
+#define DS_DS_HTABLE_FOREACH_BUCKET_REVERSED(h, b)    \
 do {                                            \
-    HTable  *_h  = h;                           \
-    HBucket *_x = _h->buckets;                  \
-    HBucket *_y = _x + _h->next - 1;            \
+    ds_htable_t  *_h  = h;                           \
+    ds_htable_bucket_t *_x = _h->buckets;                  \
+    ds_htable_bucket_t *_y = _x + _h->next - 1;            \
     for (; _y >= _x; --_y) {                    \
-        if (BUCKET_DELETED(_y)) continue;       \
+        if (DS_HTABLE_BUCKET_DELETED(_y)) continue;       \
         b = _y;
 
-#define HTABLE_FOREACH(h, i, k, v)          \
+#define DS_HTABLE_FOREACH(h, i, k, v)          \
 do {                                        \
     uint32_t _i;                            \
-    HBucket *_b = (h)->buckets;             \
+    ds_htable_bucket_t *_b = (h)->buckets;             \
     const uint32_t _n = (h)->size;          \
                                             \
     for (_i = 0; _i < _n; ++_b) {           \
-        if (BUCKET_DELETED(_b)) continue;   \
+        if (DS_HTABLE_BUCKET_DELETED(_b)) continue;   \
         k = &_b->key;                       \
         v = &_b->value;                     \
         i = _i++;                           \
 
 // To avoid redefinition when using multiple foreach in the same scope.
-static HBucket *_b;
+static ds_htable_bucket_t *_b;
 
-#define HTABLE_FOREACH_KEY(h, k) \
-HTABLE_FOREACH_BUCKET(h, _b);    \
+#define DS_HTABLE_FOREACH_KEY(h, k) \
+DS_DS_HTABLE_FOREACH_BUCKET(h, _b);    \
 k = &_b->key;                    \
 
-#define HTABLE_FOREACH_VALUE(h, v) \
-HTABLE_FOREACH_BUCKET(h, _b);      \
+#define DS_HTABLE_FOREACH_VALUE(h, v) \
+DS_DS_HTABLE_FOREACH_BUCKET(h, _b);      \
 v = &_b->value;                    \
 
-#define HTABLE_FOREACH_KEY_VALUE(h, k, v)   \
-HTABLE_FOREACH_BUCKET(h, _b);               \
+#define DS_HTABLE_FOREACH_KEY_VALUE(h, k, v)   \
+DS_DS_HTABLE_FOREACH_BUCKET(h, _b);               \
 k = &_b->key;                               \
 v = &_b->value;                             \
 
-#define HTABLE_FOREACH_END() \
+#define DS_HTABLE_FOREACH_END() \
     }                        \
 } while (0)
 
-void htable_create_key_set(HTable *table, zval *return_value);
+ds_htable_t *ds_htable();
 
-ds_vector_t *htable_values_to_vector(HTable *table);
-ds_vector_t *htable_pairs_to_vector(HTable *table);
+void ds_htable_create_key_set(ds_htable_t *table, zval *return_value);
 
-void htable_ensure_capacity(HTable *table, uint32_t capacity);
+ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table);
+ds_vector_t *ds_htable_pairs_to_vector(ds_htable_t *table);
 
-void htable_sort(HTable *table, compare_func_t compare_func);
-void htable_sort_by_key(HTable *table);
-void htable_sort_by_value(HTable *table);
-void htable_sort_by_pair(HTable *table);
-void htable_sort_callback_by_key(HTable *table);
-void htable_sort_callback_by_value(HTable *table);
-void htable_sort_callback(HTable *table);
-HBucket *htable_lookup_by_value(HTable *h, zval *key);
-HBucket *htable_lookup_by_key(HTable *h, zval *key);
-HBucket *htable_lookup_by_position(HTable *table, uint32_t position);
-bool htable_lookup_or_next(HTable *table, zval *key, HBucket **return_value);
-bool htable_has_keys(HTable *h, VA_PARAMS);
-bool htable_has_key(HTable *table, zval *key);
-bool htable_has_values(HTable *h, VA_PARAMS);
-bool htable_has_value(HTable *h, zval *value);
-int htable_remove(HTable *h, zval *key, zval *return_value);
-void htable_put(HTable *h, zval *key, zval *value);
-void htable_to_array(HTable *h, zval *arr);
-void htable_destroy(HTable *h);
-zval *htable_get(HTable *h, zval *key);
-HTable *htable_slice(HTable *table, zend_long index, zend_long length);
-HTable *htable_init();
-void htable_clear(HTable *h);
-HTable *htable_clone(HTable *source);
-bool htable_isset(HTable *h, zval *key, bool check_empty);
-zend_string *htable_join_keys(HTable *table, const char* glue, const size_t len);
-void htable_reverse(HTable *table);
-HTable *htable_reversed(HTable *table);
-HashTable *htable_pairs_to_php_ht(HTable *table);
+void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity);
 
-HTable *htable_xor(HTable *table, HTable *other);
-HTable *htable_diff(HTable *table, HTable *other);
-HTable *htable_intersect(HTable *table, HTable *other);
-HTable *htable_merge(HTable *table, HTable *other);
+void ds_htable_sort(ds_htable_t *table, compare_func_t compare_func);
+void ds_htable_sort_by_key(ds_htable_t *table);
+void ds_htable_sort_by_value(ds_htable_t *table);
+void ds_htable_sort_by_pair(ds_htable_t *table);
+void ds_htable_sort_callback_by_key(ds_htable_t *table);
+void ds_htable_sort_callback_by_value(ds_htable_t *table);
+void ds_htable_sort_callback(ds_htable_t *table);
 
-HBucket *htable_last(HTable *table);
-HBucket *htable_first(HTable *table);
+ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *h, zval *key);
+ds_htable_bucket_t *ds_htable_lookup_by_key(ds_htable_t *h, zval *key);
+ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t position);
+bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **return_value);
+bool ds_htable_has_keys(ds_htable_t *h, VA_PARAMS);
+bool ds_htable_has_key(ds_htable_t *table, zval *key);
+bool ds_htable_has_values(ds_htable_t *h, VA_PARAMS);
+bool ds_htable_has_value(ds_htable_t *h, zval *value);
+int ds_htable_remove(ds_htable_t *h, zval *key, zval *return_value);
+void ds_htable_put(ds_htable_t *h, zval *key, zval *value);
+void ds_htable_to_array(ds_htable_t *h, zval *arr);
+void ds_htable_destroy(ds_htable_t *h);
+zval *ds_htable_get(ds_htable_t *h, zval *key);
+ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long length);
 
-HTable *htable_map(HTable *table, FCI_PARAMS);
-HTable *htable_filter_callback(HTable *table, FCI_PARAMS);
-void htable_reduce(HTable *table, FCI_PARAMS, zval *initial, zval *return_value);
+void ds_htable_clear(ds_htable_t *h);
+ds_htable_t *ds_htable_clone(ds_htable_t *source);
+HashTable *ds_htable_pairs_to_php_ht(ds_htable_t *h);
+bool ds_htable_isset(ds_htable_t *h, zval *key, bool check_empty);
+zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const size_t len);
+void ds_htable_reverse(ds_htable_t *table);
+ds_htable_t *ds_htable_reversed(ds_htable_t *table);
 
-int htable_serialize(HTable *table, unsigned char **buffer, size_t *buf_len, zend_serialize_data *data);
-int htable_unserialize(HTable *table, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS);
+ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS);
+void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *return_value);
+
+int ds_htable_serialize(ds_htable_t *table, unsigned char **buffer, size_t *buf_len, zend_serialize_data *data);
+int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
 
 #endif

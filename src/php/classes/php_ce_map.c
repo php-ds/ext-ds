@@ -1,8 +1,14 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../../ds/ds_map.h"
+
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 #include "../objects/php_ds_vector.h"
+
 #include "php_ce_collection.h"
 #include "php_ce_map.h"
 

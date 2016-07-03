@@ -2,6 +2,7 @@
 #define DS_CE_COLLECTION_H
 
 #include "../../common.h"
+#include "../arginfo.h"
 
 extern zend_class_entry *collection_ce;
 

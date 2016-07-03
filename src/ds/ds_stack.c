@@ -1,7 +1,9 @@
 #include "../common.h"
-#include "../php/classes/php_ce_stack.h"
+
+#include "../php/iterators/php_stack_iterator.h"
 #include "../php/handlers/php_stack_handlers.h"
-#include "ds_vector.h"
+#include "../php/classes/php_ce_stack.h"
+
 #include "ds_stack.h"
 
 static php_ds_stack_t *php_ds_stack_init_ex(ds_vector_t *vector)

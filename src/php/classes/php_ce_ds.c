@@ -1,4 +1,10 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
+#include "php_ce_ds.h"
+
 #include "../../ds/ds_vector.h"
 #include "../../ds/ds_deque.h"
 #include "../../ds/ds_stack.h"

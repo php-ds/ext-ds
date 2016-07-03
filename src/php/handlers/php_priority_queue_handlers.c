@@ -1,7 +1,6 @@
-#include "../../common.h"
-#include "../../ds/ds_priority_queue.h"
-#include "../classes/php_ce_priority_queue.h"
 #include "php_priority_queue_handlers.h"
+#include "php_common_handlers.h"
+#include "../../ds/ds_priority_queue.h"
 
 zend_object_handlers priority_queue_handlers;
 

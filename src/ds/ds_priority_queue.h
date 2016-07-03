@@ -1,7 +1,7 @@
 #ifndef DS_PRIORITY_QUEUE_H
 #define DS_PRIORITY_QUEUE_H
 
-#include "php.h"
+#include "../common.h"
 
 typedef struct _PriorityHeapNode {
     zval        value;

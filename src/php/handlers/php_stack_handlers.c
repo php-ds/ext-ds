@@ -1,9 +1,10 @@
-#include "php.h"
-#include "ext/spl/spl_exceptions.h"
-#include "../../common.h"
-#include "../../ds/ds_stack.h"
-#include "../classes/php_ce_stack.h"
 #include "php_stack_handlers.h"
+#include "php_common_handlers.h"
+// #include "php.h"
+// #include "ext/spl/spl_exceptions.h"
+#include "../../ds/ds_stack.h"
+// #include "../classes/php_ce_stack.h"
+// #include "php_stack_handlers.h"
 
 zend_object_handlers php_ds_stack_handlers;
 

@@ -1,6 +1,9 @@
 #include "../common.h"
-#include "../php/classes/php_ce_queue.h"
+
+#include "../php/iterators/php_queue_iterator.h"
 #include "../php/handlers/php_queue_handlers.h"
+#include "../php/classes/php_ce_queue.h"
+
 #include "ds_deque.h"
 #include "ds_queue.h"
 

@@ -1,6 +1,5 @@
-#include "php.h"
-
 #include "../../common.h"
+
 #include "../../ds/ds_set.h"
 #include "../../ds/ds_htable.h"
 
@@ -9,6 +8,6 @@
 
 zend_object_iterator *set_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
-    HTable *table = (Z_SET_P(obj))->table;
-    return htable_get_key_iterator_ex(ce, obj, by_ref, table);
+    ds_htable_t *table = (Z_SET_P(obj))->table;
+    return ds_htable_get_key_iterator_ex(ce, obj, by_ref, table);
 }

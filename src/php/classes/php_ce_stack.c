@@ -1,7 +1,13 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../../ds/ds_stack.h"
+
 #include "../iterators/php_stack_iterator.h"
 #include "../handlers/php_stack_handlers.h"
+
 #include "php_ce_collection.h"
 #include "php_ce_stack.h"
 

@@ -1,7 +1,12 @@
 #include "../../common.h"
+
+#include "../parameters.h"
+#include "../arginfo.h"
+
 #include "../objects/php_ds_deque.h"
 #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
+
 #include "php_ce_collection.h"
 #include "php_ce_sequence.h"
 #include "php_ce_deque.h"
@@ -227,7 +232,6 @@ METHOD(jsonSerialize)
     PARSE_NONE;
     ds_deque_to_array(THIS_DEQUE(), return_value);
 }
-
 
 void register_deque()
 {

@@ -1,7 +1,5 @@
-#include "php.h"
-#include "zend_exceptions.h"
-
 #include "../../common.h"
+
 #include "../../ds/ds_stack.h"
 #include "php_stack_iterator.h"
 

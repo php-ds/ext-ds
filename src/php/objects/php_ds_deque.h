@@ -1,7 +1,6 @@
 #ifndef PHP_DS_DEQUE_H
 #define PHP_DS_DEQUE_H
 
-#include "../../common.h"
 #include "../../ds/ds_deque.h"
 
 /**
@@ -47,11 +46,22 @@ zend_object *php_ds_deque_create_clone(ds_deque_t *deque);
 /**
  * Serializses a deque object.
  */
-int php_ds_deque_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
+int php_ds_deque_serialize(
+    zval                    *object,
+    unsigned char          **buffer,
+    size_t                  *length,
+    zend_serialize_data     *data
+);
 
 /**
  * Unserializes a string as a deque object.
  */
-int php_ds_deque_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+int php_ds_deque_unserialize(
+    zval                    *object,
+    zend_class_entry        *ce,
+    const unsigned char     *buffer,
+    size_t                   length,
+    zend_unserialize_data   *data
+);
 
 #endif

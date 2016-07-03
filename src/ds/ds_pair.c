@@ -1,6 +1,7 @@
 #include "../common.h"
-#include "../php/classes/php_ce_pair.h"
+
 #include "../php/handlers/php_pair_handlers.h"
+#include "../php/classes/php_ce_pair.h"
 
 #include "ds_pair.h"
 
