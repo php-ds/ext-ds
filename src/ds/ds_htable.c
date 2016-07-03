@@ -797,8 +797,7 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
 
 int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
 {
-    const uint32_t hash = get_hash(key);
-
+    uint32_t hash  = get_hash(key);
     uint32_t index = DS_HTABLE_BUCKET_LOOKUP(table, hash);
 
     ds_htable_bucket_t *bucket = NULL;
@@ -838,7 +837,9 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
         }
 
         //
-        table->min_deleted = MIN(index, table->min_deleted);
+        if (index < table->min_deleted) {
+            table->min_deleted = index;
+        }
 
         //
         if ((--table->size) <= table->capacity >> 2) {
