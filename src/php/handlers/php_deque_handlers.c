@@ -17,7 +17,7 @@ static zval *ds_deque_read_dimension(zval *obj, zval *offset, int type, zval *re
         return NULL;
 
     } else {
-        zval *value = ds_deque_get(Z_DEQUE_P(obj), Z_LVAL_P(offset));
+        zval *value = ds_deque_get(Z_DS_DEQUE_P(obj), Z_LVAL_P(offset));
 
         // Create a reference to handle nested array access
         if (value && type != BP_VAR_R) {
@@ -29,7 +29,7 @@ static zval *ds_deque_read_dimension(zval *obj, zval *offset, int type, zval *re
 
 static void ds_deque_write_dimension(zval *obj, zval *offset, zval *value)
 {
-    ds_deque_t *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     if (offset == NULL) { /* $v[] = ... */
         ds_deque_push(deque, value);
@@ -48,13 +48,13 @@ static int ds_deque_has_dimension(zval *obj, zval *offset, int check_empty)
         return 0;
     }
 
-    return ds_deque_isset(Z_DEQUE_P(obj), Z_LVAL_P(offset), check_empty);
+    return ds_deque_isset(Z_DS_DEQUE_P(obj), Z_LVAL_P(offset), check_empty);
 }
 
 static void ds_deque_unset_dimension(zval *obj, zval *offset)
 {
     zend_long index;
-    ds_deque_t *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     if (Z_TYPE_P(offset) != IS_LONG) {
         return;
@@ -69,7 +69,7 @@ static void ds_deque_unset_dimension(zval *obj, zval *offset)
 
 static int ds_deque_count_elements(zval *obj, zend_long *count)
 {
-    ds_deque_t *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
     *count = DS_DEQUE_SIZE(deque);
     return SUCCESS;
 }
@@ -85,7 +85,7 @@ static void ds_deque_free_object(zend_object *object)
 static HashTable *ds_deque_get_debug_info(zval *obj, int *is_temp)
 {
     zval return_value;
-    ds_deque_t *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     *is_temp = 1;
 
@@ -95,7 +95,7 @@ static HashTable *ds_deque_get_debug_info(zval *obj, int *is_temp)
 
 static zend_object *ds_deque_create_copy_obj(zval *obj)
 {
-    ds_deque_t *deque = Z_DEQUE_P(obj);
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
     return php_ds_deque_create_clone(deque);
 }
 

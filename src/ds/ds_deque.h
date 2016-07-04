@@ -6,7 +6,7 @@
 /**
  *
  */
-typedef struct _ds_deque_t {
+typedef struct ds_deque {
     zval      *buffer;
     zend_long  capacity;
     zend_long  head;
@@ -203,6 +203,12 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS);
  * like array_slice, but keys are not preserved.
  */
 ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length);
+
+
+/**
+ *
+ */
+ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values);
 
 /**
  * Reduces all values of a deque to a single value, starting with an optional

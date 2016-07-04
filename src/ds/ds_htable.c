@@ -635,6 +635,21 @@ void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
     }
 }
 
+/**
+ *
+ */
+static void ds_htable_put_next(ds_htable_t *table, ds_htable_bucket_t *bucket)
+{
+    DS_HTABLE_BUCKET_COPY(&table->buckets[table->next], bucket);
+
+    table->next++;
+    table->size++;
+
+    if (table->next == table->capacity) {
+        ds_htable_increase_capacity(table);
+    }
+}
+
 static inline ds_htable_bucket_t *init_next_bucket(ds_htable_t *table, zval *key, const uint32_t hash)
 {
     ds_htable_bucket_t *bucket = &table->buckets[table->next];
@@ -773,7 +788,7 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
         ds_htable_bucket_t *end = get_last_bucket(table);
         do {
             if ( ! DS_HTABLE_BUCKET_DELETED(pos)) {
-                smart_str_append(&str, zval_get_string(&pos->key));
+                smart_str_append (&str, zval_get_string(&pos->key));
                 smart_str_appendl(&str, glue, len);
             }
         } while (++pos != end);
@@ -1032,82 +1047,81 @@ void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *retur
     ZVAL_COPY(return_value, &carry);
 }
 
-<<<<<<< HEAD
-HTable *htable_xor(HTable *table, HTable *other)
+ds_htable_t *ds_htable_xor(ds_htable_t *table, ds_htable_t *other)
 {
-    HBucket *bucket;
-    HTable *xor = htable_init();
+    ds_htable_bucket_t *bucket;
+    ds_htable_t *xor = ds_htable();
 
-    HTABLE_FOREACH_BUCKET(table, bucket) {
-        if ( ! htable_has_key(other, &bucket->key)) {
-            htable_put_next(xor, bucket);
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+        if ( ! ds_htable_has_key(other, &bucket->key)) {
+            ds_htable_put_next(xor, bucket);
         }
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 
-    HTABLE_FOREACH_BUCKET(other, bucket) {
-        if ( ! htable_has_key(table, &bucket->key)) {
-            htable_put_next(xor, bucket);
+    DS_HTABLE_FOREACH_BUCKET(other, bucket) {
+        if ( ! ds_htable_has_key(table, &bucket->key)) {
+            ds_htable_put_next(xor, bucket);
         }
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 
     return xor;
 }
 
-HTable *htable_diff(HTable *table, HTable *other)
+ds_htable_t *ds_htable_diff(ds_htable_t *table, ds_htable_t *other)
 {
-    HBucket *bucket;
-    HTable *diff = htable_init();
+    ds_htable_bucket_t *bucket;
+    ds_htable_t *diff = ds_htable();
 
-    HTABLE_FOREACH_BUCKET(table, bucket) {
-        if ( ! htable_has_key(other, &bucket->key)) {
-            htable_put_next(diff, bucket);
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+        if ( ! ds_htable_has_key(other, &bucket->key)) {
+            ds_htable_put_next(diff, bucket);
         }
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 
     return diff;
 }
 
-HTable *htable_intersect(HTable *table, HTable *other)
+ds_htable_t *ds_htable_intersect(ds_htable_t *table, ds_htable_t *other)
 {
-    HBucket *bucket;
-    HTable *intersection = htable_init();
+    ds_htable_bucket_t *bucket;
+    ds_htable_t *intersection = ds_htable();
 
-    HTABLE_FOREACH_BUCKET(table, bucket) {
-        if (htable_has_key(other, &bucket->key)) {
-            htable_put_next(intersection, bucket);
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+        if (ds_htable_has_key(other, &bucket->key)) {
+            ds_htable_put_next(intersection, bucket);
         }
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 
     return intersection;
 }
 
-HTable *htable_merge(HTable *table, HTable *other)
+ds_htable_t *ds_htable_merge(ds_htable_t *table, ds_htable_t *other)
 {
-    HBucket *bucket;
-    HTable *merged = htable_clone(table);
+    ds_htable_bucket_t *bucket;
+    ds_htable_t *merged = ds_htable_clone(table);
 
-    HTABLE_FOREACH_BUCKET(other, bucket) {
-        htable_put(merged, &bucket->key, &bucket->value);
+    DS_HTABLE_FOREACH_BUCKET(other, bucket) {
+        ds_htable_put(merged, &bucket->key, &bucket->value);
     }
-    HTABLE_FOREACH_END();
+    DS_HTABLE_FOREACH_END();
 
     return merged;
 }
 
-HBucket *htable_last(HTable *table)
+ds_htable_bucket_t *ds_htable_last(ds_htable_t *table)
 {
     if (table->size == 0) {
         return NULL;
 
     } else {
-        HBucket *last = &table->buckets[table->next - 1];
+        ds_htable_bucket_t *last = &table->buckets[table->next - 1];
 
-        if ( ! HTABLE_IS_PACKED(table)) {
-            while (BUCKET_DELETED(last)) {
+        if ( ! DS_HTABLE_IS_PACKED(table)) {
+            while (DS_HTABLE_BUCKET_DELETED(last)) {
                 last--;
             }
         }
@@ -1116,16 +1130,16 @@ HBucket *htable_last(HTable *table)
     }
 }
 
-HBucket *htable_first(HTable *table)
+ds_htable_bucket_t *ds_htable_first(ds_htable_t *table)
 {
     if (table->size == 0) {
         return NULL;
 
     } else {
-        HBucket *first = table->buckets;
+        ds_htable_bucket_t *first = table->buckets;
 
         if (table->min_deleted > 0) {
-            while (BUCKET_DELETED(first)) {
+            while (DS_HTABLE_BUCKET_DELETED(first)) {
                 first++;
             }
         }
@@ -1198,16 +1212,8 @@ HashTable *ds_htable_pairs_to_php_ht(ds_htable_t *table)
     ALLOC_HASHTABLE(ht);
     zend_hash_init(ht, table->size, NULL, ZVAL_PTR_DTOR, 0);
 
-    DS_HTABLE_FOREACH(table, pos, key, val) {
-
-        array_init_size(&pair, 2);
-
-        add_next_index_zval(&pair, key);
-        add_next_index_zval(&pair, val);
-
-        Z_TRY_ADDREF_P(key);
-        Z_TRY_ADDREF_P(val);
-
+    DS_HTABLE_FOREACH_KEY_VALUE(table, key, value) {
+        pair_create_as_zval(key, value, &pair);
         zend_hash_next_index_insert(ht, &pair);
     }
     DS_HTABLE_FOREACH_END();

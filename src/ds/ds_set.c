@@ -220,7 +220,7 @@ void set_join(Set *set, const char *glue, const size_t len, zval *return_value)
 
 void set_diff(Set *set, Set *other, zval *obj)
 {
-    HTable *diff = htable_diff(set->table, other->table);
+    ds_htable_t *diff = ds_htable_diff(set->table, other->table);
     set_init_zval_ex(obj, set_init_ex(diff));
 }
 
@@ -235,7 +235,7 @@ void set_assign_diff(Set *set, Set *other)
 
 void set_intersect(Set *set, Set *other, zval *obj)
 {
-    HTable *intersection = htable_intersect(set->table, other->table);
+    ds_htable_t *intersection = ds_htable_intersect(set->table, other->table);
     set_init_zval_ex(obj, set_init_ex(intersection));
 }
 
@@ -253,7 +253,7 @@ void set_assign_intersect(Set *set, Set *other)
 // Returns a new Set with buffer in either A or B but not both
 void set_xor(Set *set, Set *other, zval *obj)
 {
-    HTable *xor = htable_xor(set->table, other->table);
+    ds_htable_t *xor = ds_htable_xor(set->table, other->table);
     set_init_zval_ex(obj, set_init_ex(xor));
 }
 
@@ -280,7 +280,7 @@ void set_assign_xor(Set *set, Set *other)
 // the values of the provided Set.
 void set_union(Set *set, Set *other, zval *obj)
 {
-    HTable *merged = htable_merge(set->table, other->table);
+    ds_htable_t *merged = ds_htable_merge(set->table, other->table);
     set_init_zval_ex(obj, set_init_ex(merged));
 }
 

@@ -79,6 +79,8 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
 ds_vector_t *ds_vector_filter(ds_vector_t *vector);
 ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS);
 
+ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values);
+
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS);
 void ds_vector_reverse(ds_vector_t *vector);
 void ds_vector_rotate(ds_vector_t *vector, zend_long rotations);

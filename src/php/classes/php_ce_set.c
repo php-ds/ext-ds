@@ -263,7 +263,7 @@ void register_set()
     zend_declare_class_constant_long(
         set_ce,
         STR_AND_LEN("MIN_CAPACITY"),
-        HTABLE_MIN_CAPACITY
+        DS_HTABLE_MIN_CAPACITY
     );
 
     zend_class_implements(set_ce, 1, collection_ce);

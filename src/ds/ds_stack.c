@@ -27,7 +27,7 @@ zend_object *php_ds_stack_create_object(zend_class_entry *ce)
 
 zend_object *php_ds_stack_create_clone(php_ds_stack_t *stack)
 {
-    ds_vector_t *cloned = ds_vector_create_copy(stack->vector);
+    ds_vector_t *cloned = ds_vector_clone(stack->vector);
     return &php_ds_stack_init_ex(cloned)->std;
 }
 

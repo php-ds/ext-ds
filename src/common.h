@@ -13,7 +13,7 @@
 #include "zend_smart_str.h"
 // #include "json/php_json.h"
 
-#include "../ds.h"
+#include "../php_ds.h"
 
 
 /**
@@ -30,7 +30,12 @@
 /**
  * Default namespace.
  */
-#define COLLECTION_NS(cls) "Ds\\" #cls
+#define DS_NS(cls) "Ds\\" #cls
+
+/**
+ *
+ */
+#define STR_AND_LEN(str) str, sizeof(str) - 1
 
 /**
  * Combined class, name, and arginfo method entry.
@@ -259,17 +264,12 @@ void ds_reverse_zval_range(zval *x, zval *y);
 int ds_zval_isset(zval *value, int check_empty);
 
 /**
-<<<<<<< HEAD
  * Determines if a zval is an array.
  */
-bool is_array(zval *value);
+bool ds_zval_is_array(zval *value);
 
 /**
- * Normalizes input parameters for slicing so that the implementation can focus
- * on the actual slicing. Takes care of negative values, length > size etc.
-=======
  * Determines if an array uses keys, similar to how json_encode does it.
->>>>>>> Significant include refactor, htable renaming
  */
 bool ds_php_array_uses_keys(HashTable *ht);
 

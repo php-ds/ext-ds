@@ -58,9 +58,9 @@ static void pair_write_property(zval *object, zval *offset, zval *value, void **
 
 static int pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
-    zval *property = get_property(Z_PAIR_P(object), offset);
+    zval *value = get_property(Z_PAIR_P(object), offset);
 
-    if ( ! property) {
+    if ( ! value) {
         return 0;
     }
 
@@ -80,8 +80,6 @@ static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
         zval_ptr_dtor(property);
         ZVAL_NULL(property);
     }
-
-    return value;
 }
 
 static void pair_write_dimension(zval *object, zval *offset, zval *value)
@@ -91,8 +89,7 @@ static void pair_write_dimension(zval *object, zval *offset, zval *value)
 
 static int pair_has_dimension(zval *object, zval *offset, int check_empty)
 {
-    Pair *pair = Z_PAIR_P(object);
-    return ds_zval_isset(get_value(pair, offset), check_empty);
+    return ds_zval_isset(get_property(Z_PAIR_P(object), offset), check_empty);
 }
 
 static void pair_unset_dimension(zval *object, zval *offset)

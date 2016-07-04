@@ -33,7 +33,7 @@ zend_class_entry *ds_ce;
 /**
  * ds::vector(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(vector, values, Vector);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(vector, values, Vector);
 METHOD(vector)
 {
     ds_vector_t *vector;
@@ -56,7 +56,7 @@ METHOD(vector)
 /**
  * ds::deque(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_COLLECTION(deque, values, Deque);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(deque, values, Deque);
 METHOD(deque)
 {
     ds_deque_t *deque;
@@ -73,7 +73,7 @@ METHOD(deque)
         deque = ds_deque();
     }
 
-    RETURN_DEQUE(deque);
+    RETURN_DS_DEQUE(deque);
 }
 
 /**

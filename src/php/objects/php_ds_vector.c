@@ -8,7 +8,7 @@ zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
 {
     php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
     zend_object_std_init(&obj->std, php_ds_vector_ce);
-    obj->std.handlers = &ds_vector_object_handlers;
+    obj->std.handlers = &php_ds_vector_handlers;
     obj->vector = vector;
     return &obj->std;
 }
@@ -25,7 +25,7 @@ zend_object *php_ds_vector_create_clone(ds_vector_t *vector)
 
 int php_ds_vector_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    ds_vector_t *vector = Z_VECTOR_P(object);
+    ds_vector_t *vector = Z_DS_VECTOR_P(object);
 
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
@@ -78,7 +78,7 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
         goto error;
     }
 
-    ZVAL_VECTOR(obj, vector);
+    ZVAL_DS_VECTOR(obj, vector);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

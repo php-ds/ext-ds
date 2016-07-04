@@ -147,6 +147,11 @@ bool ds_zval_is_traversable(zval *value)
         instanceof_function(Z_OBJCE_P(value), zend_ce_traversable);
 }
 
+bool ds_zval_is_array(zval *value)
+{
+    return Z_TYPE_P(value) == IS_ARRAY;
+}
+
 bool ds_php_array_uses_keys(HashTable *ht)
 {
     zend_string     *key;

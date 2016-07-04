@@ -66,7 +66,9 @@ static void map_free_object(zend_object *object)
 
 static HashTable *map_get_debug_info(zval *obj, int *is_temp)
 {
+    Map *map = Z_MAP_P(obj);
     *is_temp = 1;
+
     return ds_htable_pairs_to_php_ht(map->table);
 }
 

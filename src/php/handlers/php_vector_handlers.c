@@ -99,7 +99,7 @@ static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)
 
 static zend_object *ds_vector_clone_obj(zval *obj)
 {
-    return ds_vector_create_clone(Z_DS_VECTOR_P(obj));
+    return php_ds_vector_create_clone(Z_DS_VECTOR_P(obj));
 }
 
 static HashTable *ds_vector_get_gc(zval *obj, zval **gc_data, int *gc_count)

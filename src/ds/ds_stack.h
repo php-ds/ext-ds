@@ -4,8 +4,7 @@
 #include "../common.h"
 #include "ds_vector.h"
 
-
-typedef struct _php_ds_stack_t {
+typedef struct php_ds_stack {
     zend_object     std;
     ds_vector_t    *vector;
 } php_ds_stack_t;

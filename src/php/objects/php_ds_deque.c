@@ -25,7 +25,7 @@ zend_object *php_ds_deque_create_clone(ds_deque_t *deque)
 
 int php_ds_deque_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    ds_deque_t *deque = Z_DEQUE_P(object);
+    ds_deque_t *deque = Z_DS_DEQUE_P(object);
 
     php_serialize_data_t serialize_data = (php_serialize_data_t) data;
     PHP_VAR_SERIALIZE_INIT(serialize_data);
@@ -80,7 +80,7 @@ int php_ds_deque_unserialize(zval *object, zend_class_entry *ce, const unsigned 
         goto error;
     }
 
-    ZVAL_DEQUE(object, deque);
+    ZVAL_DS_DEQUE(object, deque);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

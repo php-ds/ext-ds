@@ -6,22 +6,22 @@
 /**
  * Custom PHP object wrapped around an internal deque
  */
-typedef struct _php_ds_deque_t {
+typedef struct php_ds_deque {
     zend_object  std;
     ds_deque_t  *deque;
 } php_ds_deque_t;
 
-#define Z_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
-#define Z_DEQUE_P(z) Z_DEQUE(*z)
-#define THIS_DEQUE() Z_DEQUE_P(getThis())
+#define Z_DS_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
+#define Z_DS_DEQUE_P(z) Z_DS_DEQUE(*z)
+#define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
 
-#define ZVAL_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
-#define ZVAL_NEW_DEQUE(z) ZVAL_OBJ(z, php_ds_deque_create_object_ex(ds_deque()))
+#define ZVAL_DS_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
+#define ZVAL_NEW_DS_DEQUE(z) ZVAL_OBJ(z, php_ds_deque_create_object_ex(ds_deque()))
 
-#define RETURN_DEQUE(deque)              \
+#define RETURN_DS_DEQUE(deque)              \
 do {                                     \
     if (deque) {                         \
-        ZVAL_DEQUE(return_value, deque); \
+        ZVAL_DS_DEQUE(return_value, deque); \
     } else {                             \
         ZVAL_NULL(return_value);         \
     }                                    \

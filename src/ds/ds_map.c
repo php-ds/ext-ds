@@ -3,10 +3,13 @@
 // #include "../php/iterators/php_map_iterator.h"
 #include "../php/handlers/php_map_handlers.h"
 #include "../php/classes/php_ce_map.h"
+#include "../php/classes/php_ce_set.h"
 
 #include "ds_htable.h"
 #include "ds_vector.h"
 #include "ds_map.h"
+#include "ds_set.h"
+#include "ds_pair.h"
 
 static Map *map_init_ex(ds_htable_t *table)
 {
@@ -220,7 +223,7 @@ void map_slice(Map *map, zend_long index, zend_long length, zval *obj)
 
 void map_merge(Map *map, zval *values, zval *obj)
 {
-    if (is_array(values)) {
+    if (ds_zval_is_array(values)) {
         Map *merged = map_clone(map);
         map_put_all(merged, values);
         map_init_zval_ex(obj, merged);
@@ -229,18 +232,18 @@ void map_merge(Map *map, zval *values, zval *obj)
 
     if (Z_TYPE_P(values) == IS_OBJECT) {
         if (Z_OBJCE_P(values) == map_ce) {
-            HTable *merged = htable_merge(map->table, Z_MAP_P(values)->table);
+            ds_htable_t *merged = ds_htable_merge(map->table, Z_MAP_P(values)->table);
             map_init_zval_ex(obj, map_init_ex(merged));
             return;
         }
 
         if (Z_OBJCE_P(values) == set_ce) {
-            HTable *merged = htable_merge(map->table, Z_SET_P(values)->table);
+            ds_htable_t *merged = ds_htable_merge(map->table, Z_SET_P(values)->table);
             map_init_zval_ex(obj, map_init_ex(merged));
             return;
         }
 
-        if (is_traversable(values)) {
+        if (ds_zval_is_traversable(values)) {
             Map *merged = map_clone(map);
             map_put_all(merged, values);
             map_init_zval_ex(obj, merged);
@@ -253,25 +256,25 @@ void map_merge(Map *map, zval *values, zval *obj)
 
 void map_xor(Map *map, Map *other, zval *obj)
 {
-    HTable *xor = htable_xor(map->table, other->table);
+    ds_htable_t *xor = ds_htable_xor(map->table, other->table);
     map_init_zval_ex(obj, map_init_ex(xor));
 }
 
 void map_diff(Map *map, Map *other, zval *obj)
 {
-    HTable *diff = htable_diff(map->table, other->table);
+    ds_htable_t *diff = ds_htable_diff(map->table, other->table);
     map_init_zval_ex(obj, map_init_ex(diff));
 }
 
 void map_intersect(Map *map, Map *other, zval *obj)
 {
-    HTable *intersection = htable_intersect(map->table, other->table);
+    ds_htable_t *intersection = ds_htable_intersect(map->table, other->table);
     map_init_zval_ex(obj, map_init_ex(intersection));
 }
 
 void map_first(Map *map, zval *return_value)
 {
-    HBucket *bucket = htable_first(map->table);
+    ds_htable_bucket_t *bucket = ds_htable_first(map->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -284,7 +287,7 @@ void map_first(Map *map, zval *return_value)
 
 void map_last(Map *map, zval *return_value)
 {
-    HBucket *bucket = htable_last(map->table);
+    ds_htable_bucket_t *bucket = ds_htable_last(map->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -297,7 +300,7 @@ void map_last(Map *map, zval *return_value)
 
 void map_skip(Map *map, zend_long position, zval *return_value)
 {
-    HBucket *bucket = htable_lookup_by_position(map->table, position);
+    ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(map->table, position);
 
     if ( ! bucket) {
         INDEX_OUT_OF_RANGE(position, map->table->size);
@@ -352,13 +355,13 @@ void map_put_all(Map *map, zval *values)
         return;
     }
 
-    if (is_array(values)) {
+    if (ds_zval_is_array(values)) {
         HashTable *ht = Z_ARRVAL_P(values);
         add_ht_to_map(map, ht);
         return;
     }
 
-    if (is_traversable(values)) {
+    if (ds_zval_is_traversable(values)) {
         add_traversable_to_map(map, values);
         return;
     }

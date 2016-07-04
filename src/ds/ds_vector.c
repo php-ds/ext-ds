@@ -76,7 +76,7 @@ void ds_vector_user_allocate(ds_vector_t *vector, zend_long capacity)
     }
 }
 
-ds_vector_t *ds_vector_create_copy(ds_vector_t *vector)
+ds_vector_t *ds_vector_clone(ds_vector_t *vector)
 {
     if (DS_VECTOR_IS_EMPTY(vector)) {
         return ds_vector();
@@ -426,7 +426,7 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
         return;
     }
 
-    if (is_array(values)) {
+    if (ds_zval_is_array(values)) {
         add_array_to_vector(vector, Z_ARRVAL_P(values));
         return;
     }
@@ -439,21 +439,16 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-// This should accept two vectors and return a new vector, not zend.
-void ds_vector_merge(ds_vector_t *vector, zval *values, zval *obj)
+ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values)
 {
-    if ( ! values) {
-        return;
-    }
-
-    if (is_array(values) || is_traversable(values)) {
-        ds_vector_t *merged = ds_vector_create_copy(vector);
+    if (values && (ds_zval_is_array(values) || ds_zval_is_traversable(values))) {
+        ds_vector_t *merged = ds_vector_clone(vector);
         ds_vector_push_all(merged, values);
-        ZVAL_DS_VECTOR(obj, merged);
-        return;
+        return merged;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+    return NULL;
 }
 
 void ds_vector_pop(ds_vector_t *vector, zval *return_value)

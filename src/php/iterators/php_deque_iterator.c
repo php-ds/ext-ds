@@ -69,12 +69,12 @@ static zend_object_iterator *create_iterator(ds_deque_t *deque, int by_ref)
     return (zend_object_iterator *) iterator;
 }
 
-zend_object_iterator *ds_deque_get_iterator_ex(zend_class_entry *ce, zval *object, int by_ref, ds_deque_t *deque)
+zend_object_iterator *php_ds_deque_get_iterator_ex(zend_class_entry *ce, zval *object, int by_ref, ds_deque_t *deque)
 {
     return create_iterator(deque, by_ref);
 }
 
-zend_object_iterator *ds_deque_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
+zend_object_iterator *php_ds_deque_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
 {
-    return create_iterator(Z_DEQUE_P(object), by_ref);
+    return create_iterator(Z_DS_DEQUE_P(object), by_ref);
 }

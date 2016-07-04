@@ -193,9 +193,17 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
 void ds_htable_reverse(ds_htable_t *table);
 ds_htable_t *ds_htable_reversed(ds_htable_t *table);
 
+ds_htable_bucket_t *ds_htable_first(ds_htable_t *table);
+ds_htable_bucket_t *ds_htable_last(ds_htable_t *table);
+
 ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS);
 ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS);
 void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *return_value);
+
+ds_htable_t *ds_htable_xor(ds_htable_t *table, ds_htable_t *other);
+ds_htable_t *ds_htable_diff(ds_htable_t *table, ds_htable_t *other);
+ds_htable_t *ds_htable_intersect(ds_htable_t *table, ds_htable_t *other);
+ds_htable_t *ds_htable_merge(ds_htable_t *table, ds_htable_t *other);
 
 int ds_htable_serialize(ds_htable_t *table, unsigned char **buffer, size_t *buf_len, zend_serialize_data *data);
 int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_t length, zend_unserialize_data *data);

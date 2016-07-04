@@ -22,20 +22,20 @@ if (PHP_DS != "no") {
         "common.c"
     ]);
 
-    ds_src("/internal",
+    ds_src("/ds",
     [
-        "php_deque.c",
-        "php_vector.c",
-        "php_htable.c",
-        "php_set.c",
-        "php_map.c",
-        "php_stack.c",
-        "php_pair.c",
-        "php_priority_queue.c",
-        "php_queue.c",
+        "ds_deque.c",
+        "ds_vector.c",
+        "ds_htable.c",
+        "ds_set.c",
+        "ds_map.c",
+        "ds_stack.c",
+        "ds_pair.c",
+        "ds_priority_queue.c",
+        "ds_queue.c",
     ]);
 
-    ds_src("/iterators",
+    ds_src("/php/iterators",
     [
         "php_vector_iterator.c",
         "php_deque_iterator.c",
@@ -47,8 +47,9 @@ if (PHP_DS != "no") {
         "php_queue_iterator.c",
     ]);
 
-    ds_src("/handlers",
+    ds_src("/php/handlers",
     [
+        "php_common_handlers.c",
         "php_vector_handlers.c",
         "php_deque_handlers.c",
         "php_set_handlers.c",
@@ -59,7 +60,7 @@ if (PHP_DS != "no") {
         "php_queue_handlers.c",
     ]);
 
-    ds_src("/classes",
+    ds_src("/php/classes",
     [
         "php_ce_hashable.c",
         "php_ce_collection.c",

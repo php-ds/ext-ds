@@ -55,7 +55,7 @@ METHOD(contains)
 METHOD(copy)
 {
     PARSE_NONE;
-    RETURN_OBJ(ds_vector_create_clone(THIS_DS_VECTOR()));
+    RETURN_OBJ(php_ds_vector_create_clone(THIS_DS_VECTOR()));
 }
 
 METHOD(count)
@@ -68,9 +68,9 @@ METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_CALLABLE();
-        ds_vector_filter_callback(THIS_DS_VECTOR(), return_value, FCI_ARGS);
+        RETURN_DS_VECTOR(ds_vector_filter_callback(THIS_DS_VECTOR(), FCI_ARGS));
     } else {
-        ds_vector_filter(THIS_DS_VECTOR(), return_value);
+        RETURN_DS_VECTOR(ds_vector_filter(THIS_DS_VECTOR()));
     }
 }
 
@@ -129,13 +129,13 @@ METHOD(last)
 METHOD(map)
 {
     PARSE_CALLABLE();
-    ds_vector_map(THIS_DS_VECTOR(), return_value, FCI_ARGS);
+    RETURN_DS_VECTOR(ds_vector_map(THIS_DS_VECTOR(), FCI_ARGS));
 }
 
 METHOD(merge)
 {
     PARSE_ZVAL(values);
-    ds_vector_merge(THIS_DS_VECTOR(), values, return_value);
+    RETURN_DS_VECTOR(ds_vector_merge(THIS_DS_VECTOR(), values));
 }
 
 METHOD(pop)
@@ -172,7 +172,7 @@ METHOD(reverse)
 {
     PARSE_NONE;
     {
-        ds_vector_t *vector = ds_vector_create_copy(THIS_DS_VECTOR());
+        ds_vector_t *vector = ds_vector_clone(THIS_DS_VECTOR());
         ds_vector_reverse(vector);
         RETURN_DS_VECTOR(vector);
     }
@@ -202,16 +202,16 @@ METHOD(slice)
 
     if (ZEND_NUM_ARGS() > 1) {
         PARSE_LONG_AND_LONG(index, length);
-        ds_vector_slice(vector, index, length, return_value);
+        RETURN_DS_VECTOR(ds_vector_slice(vector, index, length));
     } else {
         PARSE_LONG(index);
-        ds_vector_slice(vector, index, vector->size, return_value);
+        RETURN_DS_VECTOR(ds_vector_slice(vector, index, vector->size));
     }
 }
 
 METHOD(sort)
 {
-    ds_vector_t *vector = ds_vector_create_copy(THIS_DS_VECTOR());
+    ds_vector_t *vector = ds_vector_clone(THIS_DS_VECTOR());
 
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
@@ -247,15 +247,15 @@ void php_ds_register_vector()
 
     INIT_CLASS_ENTRY(ce, DS_NS(Vector), methods);
 
-    ds_vector_ce = zend_register_internal_class(&ce);
-    ds_vector_ce->ce_flags      |= ZEND_ACC_FINAL;
-    ds_vector_ce->create_object  = php_ds_vector;
-    ds_vector_ce->get_iterator   = php_ds_vector_get_iterator;
-    ds_vector_ce->serialize      = ds_vector_serialize;
-    ds_vector_ce->unserialize    = ds_vector_unserialize;
+    php_ds_vector_ce = zend_register_internal_class(&ce);
+    php_ds_vector_ce->ce_flags      |= ZEND_ACC_FINAL;
+    php_ds_vector_ce->create_object  = php_ds_vector_create_object;
+    php_ds_vector_ce->get_iterator   = php_ds_vector_get_iterator;
+    php_ds_vector_ce->serialize      = php_ds_vector_serialize;
+    php_ds_vector_ce->unserialize    = php_ds_vector_unserialize;
 
-    zend_declare_class_constant_long(ds_vector_ce, STR_AND_LEN("MIN_CAPACITY"), DS_VECTOR_MIN_CAPACITY);
+    zend_declare_class_constant_long(php_ds_vector_ce, STR_AND_LEN("MIN_CAPACITY"), DS_VECTOR_MIN_CAPACITY);
 
-    zend_class_implements(ds_vector_ce, 1, sequence_ce);
+    zend_class_implements(php_ds_vector_ce, 1, sequence_ce);
     php_ds_register_vector_handlers();
 }

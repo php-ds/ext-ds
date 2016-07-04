@@ -649,12 +649,12 @@ void ds_deque_push_all(ds_deque_t *deque, zval *values)
         return;
     }
 
-    if (is_array(values)) {
+    if (ds_zval_is_array(values)) {
         add_array_to_deque(deque, Z_ARRVAL_P(values));
         return;
     }
 
-    if (is_traversable(values)) {
+    if (ds_zval_is_traversable(values)) {
         add_traversable_to_deque(deque, values);
         return;
     }
@@ -662,20 +662,16 @@ void ds_deque_push_all(ds_deque_t *deque, zval *values)
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-void deque_merge(Deque *deque, zval *values, zval *obj)
+ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values)
 {
-    if ( ! values) {
-        return;
-    }
-
-    if (is_array(values) || is_traversable(values)) {
-        Deque *merged = deque_create_copy(deque);
-        deque_push_all(merged, values);
-        ZVAL_DEQUE(obj, merged);
-        return;
+    if (values && (ds_zval_is_array(values) || ds_zval_is_traversable(values))) {
+        ds_deque_t *merged = ds_deque_create_copy(deque);
+        ds_deque_push_all(merged, values);
+        return merged;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+    return NULL;
 }
 
 void ds_deque_sort_callback(ds_deque_t *deque)
@@ -722,7 +718,7 @@ ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
 
 ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
 {
-    if (DEQUE_IS_EMPTY(deque)) {
+    if (DS_DEQUE_IS_EMPTY(deque)) {
         return ds_deque();
 
     } else {
@@ -733,7 +729,7 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
         zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
         zval *dst = buf;
 
-        DEQUE_FOREACH(deque, src) {
+        DS_DEQUE_FOREACH(deque, src) {
             ZVAL_COPY_VALUE(&param, src);
 
             fci.param_count = 1;
@@ -751,8 +747,8 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
             }
         }
 
-        DEQUE_FOREACH_END();
-        return deque_from_buffer(buf, dst - buf);
+        DS_DEQUE_FOREACH_END();
+        return ds_deque_from_buffer(buf, dst - buf);
     }
 }
 
