@@ -7,6 +7,6 @@
 /**
  *
  */
-zend_object_iterator *map_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);
+zend_object_iterator *php_ds_map_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);
 
 #endif

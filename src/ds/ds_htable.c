@@ -612,11 +612,6 @@ void ds_htable_sort_callback_by_value(ds_htable_t *table)
     ds_htable_sort(table, user_compare_by_value);
 }
 
-void ds_htable_sort_callback(ds_htable_t *table)
-{
-    ds_htable_sort(table, user_compare_by_pair);
-}
-
 static inline void ds_htable_increase_capacity(ds_htable_t *table)
 {
     if (table->next > table->size + (table->size >> 5)) {

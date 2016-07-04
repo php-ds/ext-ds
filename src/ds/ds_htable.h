@@ -168,7 +168,6 @@ void ds_htable_sort_by_value(ds_htable_t *table);
 void ds_htable_sort_by_pair(ds_htable_t *table);
 void ds_htable_sort_callback_by_key(ds_htable_t *table);
 void ds_htable_sort_callback_by_value(ds_htable_t *table);
-void ds_htable_sort_callback(ds_htable_t *table);
 
 ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *h, zval *key);
 ds_htable_bucket_t *ds_htable_lookup_by_key(ds_htable_t *h, zval *key);

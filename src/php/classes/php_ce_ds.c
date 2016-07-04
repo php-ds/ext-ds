@@ -131,18 +131,18 @@ METHOD(priority_queue)
 ARGINFO_OPTIONAL_ZVAL_RETURN_DS(map, values, Map);
 METHOD(map)
 {
-    Map *map = map_create();
+    ds_map_t *map = ds_map();
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            map_user_allocate(map, Z_LVAL_P(values));
+            ds_map_user_allocate(map, Z_LVAL_P(values));
         } else {
-            map_put_all(map, values);
+            ds_map_put_all(map, values);
         }
     }
 
-    RETURN_MAP(map);
+    RETURN_DS_MAP(map);
 }
 
 /**

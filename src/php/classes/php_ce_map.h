@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_class_entry *map_ce;
+extern zend_class_entry *ds_map_ce;
 
 void register_map();
 
