@@ -8,7 +8,7 @@
 #include "../objects/php_ds_deque.h"
 #include "../../ds/ds_deque.h"
 
-zend_object_handlers ds_deque_handlers;
+zend_object_handlers php_ds_deque_handlers;
 
 static zval *ds_deque_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
@@ -101,18 +101,18 @@ static zend_object *ds_deque_create_copy_obj(zval *obj)
 
 void register_deque_handlers()
 {
-    memcpy(&ds_deque_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_deque_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    ds_deque_handlers.offset = XtOffsetOf(php_ds_deque_t, std);
+    php_ds_deque_handlers.offset = XtOffsetOf(php_ds_deque_t, std);
 
-    ds_deque_handlers.dtor_obj         = zend_objects_destroy_object;
-    ds_deque_handlers.free_obj         = ds_deque_free_object;
-    ds_deque_handlers.cast_object      = ds_default_cast_object;
-    ds_deque_handlers.clone_obj        = ds_deque_create_copy_obj;
-    ds_deque_handlers.get_debug_info   = ds_deque_get_debug_info;
-    ds_deque_handlers.count_elements   = ds_deque_count_elements;
-    ds_deque_handlers.read_dimension   = ds_deque_read_dimension;
-    ds_deque_handlers.write_dimension  = ds_deque_write_dimension;
-    ds_deque_handlers.has_dimension    = ds_deque_has_dimension;
-    ds_deque_handlers.unset_dimension  = ds_deque_unset_dimension;
+    php_ds_deque_handlers.dtor_obj         = zend_objects_destroy_object;
+    php_ds_deque_handlers.free_obj         = ds_deque_free_object;
+    php_ds_deque_handlers.cast_object      = ds_default_cast_object;
+    php_ds_deque_handlers.clone_obj        = ds_deque_create_copy_obj;
+    php_ds_deque_handlers.get_debug_info   = ds_deque_get_debug_info;
+    php_ds_deque_handlers.count_elements   = ds_deque_count_elements;
+    php_ds_deque_handlers.read_dimension   = ds_deque_read_dimension;
+    php_ds_deque_handlers.write_dimension  = ds_deque_write_dimension;
+    php_ds_deque_handlers.has_dimension    = ds_deque_has_dimension;
+    php_ds_deque_handlers.unset_dimension  = ds_deque_unset_dimension;
 }

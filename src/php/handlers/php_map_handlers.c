@@ -1,6 +1,7 @@
 #include "php_map_handlers.h"
 #include "php_common_handlers.h"
 #include "../../ds/ds_map.h"
+#include "../objects/php_ds_map.h"
 
 zend_object_handlers php_ds_map_handlers;
 
@@ -57,11 +58,9 @@ static int ds_map_count_elements(zval *obj, zend_long *count)
 
 static void ds_map_free_object(zend_object *object)
 {
-    ds_map_t *intern = (ds_map_t*) object;
-
+    php_ds_map_t *intern = (php_ds_map_t*) object;
     zend_object_std_dtor(&intern->std);
-
-    ds_htable_destroy(intern->table);
+    ds_map_destroy(intern->map);
 }
 
 static HashTable *ds_map_get_debug_info(zval *obj, int *is_temp)
@@ -76,15 +75,14 @@ static HashTable *ds_map_get_debug_info(zval *obj, int *is_temp)
 
 static zend_object *ds_map_clone_obj(zval *obj)
 {
-    ds_map_t *map = Z_DS_MAP_P(obj);
-    return ds_map_create_clone(map);
+    return php_ds_map_create_clone(Z_DS_MAP_P(obj));
 }
 
 void register_map_handlers()
 {
     memcpy(&php_ds_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_map_handlers.offset = XtOffsetOf(ds_map_t, std);
+    php_ds_map_handlers.offset = XtOffsetOf(php_ds_map_t, std);
 
     php_ds_map_handlers.dtor_obj            = zend_objects_destroy_object;
     php_ds_map_handlers.free_obj            = ds_map_free_object;

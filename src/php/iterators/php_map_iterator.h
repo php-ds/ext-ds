@@ -2,7 +2,6 @@
 #define DS_MAP_ITERATOR_H
 
 #include "php.h"
-#include "../../ds/ds_map.h"
 
 /**
  *

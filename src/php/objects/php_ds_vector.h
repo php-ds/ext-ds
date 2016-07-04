@@ -8,7 +8,7 @@ typedef struct php_ds_vector {
     ds_vector_t     *vector;
 } php_ds_vector_t;
 
-#define Z_DS_VECTOR(z)   ((php_ds_vector_t*)(Z_OBJ(z)))->vector
+#define Z_DS_VECTOR(z)   (((php_ds_vector_t*)(Z_OBJ(z)))->vector)
 #define Z_DS_VECTOR_P(z) Z_DS_VECTOR(*z)
 #define THIS_DS_VECTOR() Z_DS_VECTOR_P(getThis())
 
@@ -23,14 +23,14 @@ do { \
     ZVAL_OBJ(z, php_ds_vector_create_object_ex(_v)); \
 } while(0)
 
-#define RETURN_DS_VECTOR(v)              \
-do {                                  \
-    if (v) {                          \
-        ZVAL_DS_VECTOR(return_value, v); \
-    } else {                          \
-        ZVAL_NULL(return_value);      \
-    }                                 \
-    return;                           \
+#define RETURN_DS_VECTOR(v)                 \
+do {                                        \
+    if (v) {                                \
+        ZVAL_DS_VECTOR(return_value, v);    \
+    } else {                                \
+        ZVAL_NULL(return_value);            \
+    }                                       \
+    return;                                 \
 } while(0)
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector);

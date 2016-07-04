@@ -16,6 +16,7 @@
 
 #include "../objects/php_ds_vector.h"
 #include "../objects/php_ds_deque.h"
+#include "../objects/php_ds_map.h"
 
 /**
  *

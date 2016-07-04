@@ -10,12 +10,9 @@
 #include "ds_set.h"
 #include "ds_pair.h"
 
-static ds_map_t *ds_map_init_ex(ds_htable_t *table)
+static ds_map_t *ds_map_ex(ds_htable_t *table)
 {
     ds_map_t *map = ecalloc(1, sizeof(ds_map_t));
-    zend_object_std_init(&map->std, ds_map_ce);
-
-    map->std.handlers = &php_ds_map_handlers;
     map->table = table;
 
     return map;
@@ -23,27 +20,12 @@ static ds_map_t *ds_map_init_ex(ds_htable_t *table)
 
 ds_map_t *ds_map()
 {
-    return ds_map_init_ex(ds_htable());
-}
-
-zend_object *ds_map_create_object(zend_class_entry *ce)
-{
-    return &ds_map()->std;
+    return ds_map_ex(ds_htable());
 }
 
 ds_map_t *ds_map_clone(ds_map_t *map)
 {
-    return ds_map_init_ex(ds_htable_clone(map->table));
-}
-
-zend_object *ds_map_create_clone(ds_map_t *map)
-{
-    return &ds_map_clone(map)->std;
-}
-
-void ds_map_init_zval_ex(zval *obj, ds_map_t *map)
-{
-    ZVAL_OBJ(obj, &map->std);
+    return ds_map_ex(ds_htable_clone(map->table));
 }
 
 void ds_map_user_allocate(ds_map_t *map, zend_long capacity)
@@ -61,10 +43,9 @@ void ds_map_reverse(ds_map_t *map)
     ds_htable_reverse(map->table);
 }
 
-void ds_map_reversed(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_reversed(ds_map_t *map)
 {
-    ds_htable_t *reversed = ds_htable_reversed(map->table);
-    ds_map_init_zval_ex(obj, ds_map_init_ex(reversed));
+    return ds_map_ex(ds_htable_reversed(map->table));
 }
 
 void ds_map_put(ds_map_t *map, zval *key, zval *value)
@@ -77,20 +58,26 @@ void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value)
     ds_htable_reduce(map->table, FCI_ARGS, initial, return_value);
 }
 
-void ds_map_map(ds_map_t *map, FCI_PARAMS, zval *return_value)
+ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS)
 {
     ds_htable_t *table = ds_htable_map(map->table, FCI_ARGS);
+
     if (table) {
-        ds_map_init_zval_ex(return_value, ds_map_init_ex(table));
+        return ds_map_ex(table);
     }
+
+    return NULL;
 }
 
-void ds_map_filter_callback(ds_map_t *map, FCI_PARAMS, zval *return_value)
+ds_map_t *ds_map_filter_callback(ds_map_t *map, FCI_PARAMS)
 {
     ds_htable_t *table = ds_htable_filter_callback(map->table, FCI_ARGS);
+
     if (table) {
-        ds_map_init_zval_ex(return_value, ds_map_init_ex(table));
+        return ds_map_ex(table);
     }
+
+    return NULL;
 }
 
 zval *ds_map_get(ds_map_t *map, zval *key, zval *def)
@@ -153,50 +140,37 @@ void ds_map_clear(ds_map_t *map)
     ds_htable_clear(map->table);
 }
 
-void map_sorted_by_value_callback(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_sorted_by_value_callback(ds_map_t *map)
 {
     ds_map_t *sorted = ds_map_clone(map);
     ds_htable_sort_callback_by_value(sorted->table);
-    map_init_zval_ex(obj, sorted);
+    return sorted;
 }
 
-void map_sorted_by_value(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_sorted_by_value(ds_map_t *map)
 {
     ds_map_t *sorted = ds_map_clone(map);
     ds_htable_sort_by_value(sorted->table);
-    map_init_zval_ex(obj, sorted);
+    return sorted;
 }
 
-void map_sorted_by_key_callback(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_sorted_by_key_callback(ds_map_t *map, zval *obj)
 {
     ds_map_t *sorted = ds_map_clone(map);
     ds_htable_sort_by_key(sorted->table);
-    map_init_zval_ex(obj, sorted);
+    return sorted;
 }
 
-void map_sorted_by_key(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_sorted_by_key(ds_map_t *map, zval *obj)
 {
     ds_map_t *sorted = ds_map_clone(map);
     ds_htable_sort_callback_by_key(sorted->table);
-    ds_map_init_zval_ex(obj, sorted);
+    return sorted;
 }
 
 void ds_map_to_array(ds_map_t *map, zval *return_value)
 {
     ds_htable_to_array(map->table, return_value);
-}
-
-int ds_map_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
-{
-    ds_map_t *map = Z_DS_MAP_P(object);
-    return ds_htable_serialize(map->table, buffer, length, data);
-}
-
-int ds_map_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
-{
-    ds_map_t *map = ds_map();
-    ZVAL_OBJ(object, &map->std);
-    return ds_htable_unserialize(map->table, buffer, length, data);
 }
 
 void ds_map_create_key_set(ds_map_t *map, zval *obj)
@@ -214,61 +188,39 @@ ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
     return ds_htable_pairs_to_vector(map->table);
 }
 
-void ds_map_slice(ds_map_t *map, zend_long index, zend_long length, zval *obj)
+ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length)
 {
-    ds_htable_t *sliced = ds_htable_slice(map->table, index, length);
-    ds_map_init_zval_ex(obj, ds_map_init_ex(sliced));
+    return ds_map_ex(ds_htable_slice(map->table, index, length));
 }
 
-void ds_map_merge(ds_map_t *map, zval *values, zval *obj)
+ds_map_t *ds_map_merge(ds_map_t *map, zval *values)
 {
-    if (ds_zval_is_array(values)) {
+    if (ds_zval_is_array(values) || ds_zval_is_traversable(values)) {
         ds_map_t *merged = ds_map_clone(map);
         ds_map_put_all(merged, values);
-        ds_map_init_zval_ex(obj, merged);
-        return;
-    }
-
-    if (Z_TYPE_P(values) == IS_OBJECT) {
-        if (Z_OBJCE_P(values) == ds_map_ce) {
-            ds_htable_t *merged = ds_htable_merge(map->table, Z_DS_MAP_P(values)->table);
-            ds_map_init_zval_ex(obj, ds_map_init_ex(merged));
-            return;
-        }
-
-        if (Z_OBJCE_P(values) == set_ce) {
-            ds_htable_t *merged = ds_htable_merge(map->table, Z_SET_P(values)->table);
-            ds_map_init_zval_ex(obj, ds_map_init_ex(merged));
-            return;
-        }
-
-        if (ds_zval_is_traversable(values)) {
-            ds_map_t *merged = ds_map_clone(map);
-            ds_map_put_all(merged, values);
-            ds_map_init_zval_ex(obj, merged);
-            return;
-        }
+        return merged;
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+    return NULL;
 }
 
-void ds_map_xor(ds_map_t *map, ds_map_t *other, zval *obj)
+ds_map_t *ds_map_xor(ds_map_t *map, ds_map_t *other)
 {
     ds_htable_t *xor = ds_htable_xor(map->table, other->table);
-    ds_map_init_zval_ex(obj, ds_map_init_ex(xor));
+    return ds_map_ex(xor);
 }
 
-void ds_map_diff(ds_map_t *map, ds_map_t *other, zval *obj)
+ds_map_t *ds_map_diff(ds_map_t *map, ds_map_t *other)
 {
     ds_htable_t *diff = ds_htable_diff(map->table, other->table);
-    ds_map_init_zval_ex(obj, ds_map_init_ex(diff));
+    return ds_map_ex(diff);
 }
 
-void ds_map_intersect(ds_map_t *map, ds_map_t *other, zval *obj)
+ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other)
 {
     ds_htable_t *intersection = ds_htable_intersect(map->table, other->table);
-    ds_map_init_zval_ex(obj, ds_map_init_ex(intersection));
+    return ds_map_ex(intersection);
 }
 
 void ds_map_first(ds_map_t *map, zval *return_value)
@@ -366,4 +318,10 @@ void ds_map_put_all(ds_map_t *map, zval *values)
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+}
+
+void ds_map_destroy(ds_map_t *map)
+{
+    ds_htable_destroy(map->table);
+    efree(map);
 }

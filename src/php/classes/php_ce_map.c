@@ -3,18 +3,17 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../../ds/ds_map.h"
-
+#include "../objects/php_ds_vector.h"
+#include "../objects/php_ds_map.h"
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
-#include "../objects/php_ds_vector.h"
 
 #include "php_ce_collection.h"
 #include "php_ce_map.h"
 
 #define METHOD(name) PHP_METHOD(Map, name)
 
-zend_class_entry *ds_map_ce;
+zend_class_entry *php_ds_map_ce;
 
 ARGINFO_OPTIONAL_ZVAL(__construct, values)
 METHOD(__construct)
@@ -68,8 +67,8 @@ METHOD(get)
 ARGINFO_DS_RETURN_DS(intersect, map, Map, Map)
 METHOD(intersect)
 {
-    PARSE_OBJ(obj, ds_map_ce);
-    ds_map_intersect(THIS_DS_MAP(), Z_DS_MAP_P(obj), return_value);
+    PARSE_OBJ(obj, php_ds_map_ce);
+    RETURN_DS_MAP(ds_map_intersect(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
 ARGINFO_ZVAL_OPTIONAL_ZVAL(remove, key, default)
@@ -96,8 +95,8 @@ METHOD(hasValue)
 ARGINFO_DS_RETURN_DS(diff, map, Map, Map)
 METHOD(diff)
 {
-    PARSE_OBJ(obj, ds_map_ce);
-    ds_map_diff(THIS_DS_MAP(), Z_DS_MAP_P(obj), return_value);
+    PARSE_OBJ(obj, php_ds_map_ce);
+    RETURN_DS_MAP(ds_map_diff(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
 ARGINFO_NONE(clear)
@@ -112,9 +111,9 @@ METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
-        map_sorted_by_value_callback(THIS_MAP(), return_value);
+        RETURN_DS_MAP(ds_map_sorted_by_value_callback(THIS_MAP()));
     } else {
-        map_sorted_by_value(THIS_MAP(), return_value);
+        RETURN_DS_MAP(ds_map_sorted_by_value(THIS_MAP()));
     }
 }
 
@@ -123,9 +122,9 @@ METHOD(ksort)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
-        map_sorted_by_key_callback(THIS_MAP(), return_value);
+        RETURN_DS_MAP(ds_map_sorted_by_key_callback(THIS_DS_MAP()));
     } else {
-        map_sorted_by_key(THIS_MAP(), return_value);
+        RETURN_DS_MAP(ds_map_sorted_by_key(THIS_DS_MAP()));
     }
 }
 
@@ -147,7 +146,7 @@ ARGINFO_ZVAL_RETURN_DS(merge, values, ds_map_t)
 METHOD(merge)
 {
     PARSE_ZVAL(values);
-    ds_map_merge(THIS_DS_MAP(), values, return_value);
+    RETURN_DS_MAP(ds_map_merge(THIS_DS_MAP(), values));
 }
 
 ARGINFO_NONE_RETURN_DS(pairs, Sequence)
@@ -178,11 +177,11 @@ METHOD(isEmpty)
     RETURN_BOOL(DS_MAP_IS_EMPTY(THIS_DS_MAP()));
 }
 
-ARGINFO_NONE_RETURN_DS(copy, ds_map_t)
+ARGINFO_NONE_RETURN_DS(copy, Map)
 METHOD(copy)
 {
     PARSE_NONE;
-    RETURN_OBJ(ds_map_create_clone(THIS_DS_MAP()));
+    RETURN_OBJ(php_ds_map_create_clone(THIS_DS_MAP()));
 }
 
 ARGINFO_NONE(jsonSerialize)
@@ -196,7 +195,7 @@ ARGINFO_CALLABLE_RETURN_DS(filter, callback, Map)
 METHOD(filter)
 {
     PARSE_CALLABLE();
-    ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS, return_value);
+    RETURN_DS_MAP(ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS));
 }
 
 ARGINFO_NONE_RETURN_DS(first, Pair)
@@ -217,7 +216,7 @@ ARGINFO_NONE_RETURN_DS(reverse, Map)
 METHOD(reverse)
 {
     PARSE_NONE;
-    ds_map_reversed(THIS_DS_MAP(), return_value);
+    RETURN_DS_MAP(ds_map_reversed(THIS_DS_MAP()));
 }
 
 ARGINFO_LONG_RETURN_DS(skip, position, Pair)
@@ -231,7 +230,7 @@ ARGINFO_CALLABLE_RETURN_DS(map, callback, Map)
 METHOD(map)
 {
     PARSE_CALLABLE();
-    ds_map_map(THIS_DS_MAP(), FCI_ARGS, return_value);
+    RETURN_DS_MAP(ds_map_map(THIS_DS_MAP(), FCI_ARGS));
 }
 
 ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(slice, index, length, Map)
@@ -241,10 +240,10 @@ METHOD(slice)
 
     if (ZEND_NUM_ARGS() > 1) {
         PARSE_LONG_AND_LONG(index, length);
-        ds_map_slice(map, index, length, return_value);
+        RETURN_DS_MAP(ds_map_slice(map, index, length));
     } else {
         PARSE_LONG(index);
-        ds_map_slice(map, index, DS_MAP_SIZE(map), return_value);
+        RETURN_DS_MAP(ds_map_slice(map, index, DS_MAP_SIZE(map)));
     }
 }
 
@@ -258,8 +257,8 @@ METHOD(values)
 ARGINFO_DS_RETURN_DS(xor, map, Map, Map)
 METHOD(xor)
 {
-    PARSE_OBJ(obj, ds_map_ce);
-    ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj), return_value);
+    PARSE_OBJ(obj, php_ds_map_ce);
+    RETURN_DS_MAP(ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
 void register_map()
@@ -300,19 +299,19 @@ void register_map()
 
     INIT_CLASS_ENTRY(ce, DS_NS(Map), methods);
 
-    ds_map_ce = zend_register_internal_class(&ce);
-    ds_map_ce->ce_flags      |= ZEND_ACC_FINAL;
-    ds_map_ce->create_object  = ds_map_create_object;
-    ds_map_ce->get_iterator   = php_ds_map_get_iterator;
-    ds_map_ce->serialize      = ds_map_serialize;
-    ds_map_ce->unserialize    = ds_map_unserialize;
+    php_ds_map_ce = zend_register_internal_class(&ce);
+    php_ds_map_ce->ce_flags      |= ZEND_ACC_FINAL;
+    php_ds_map_ce->create_object  = php_ds_map_create_object;
+    php_ds_map_ce->get_iterator   = php_ds_map_get_iterator;
+    php_ds_map_ce->serialize      = php_ds_map_serialize;
+    php_ds_map_ce->unserialize    = php_ds_map_unserialize;
 
     zend_declare_class_constant_long(
-        ds_map_ce,
+        php_ds_map_ce,
         STR_AND_LEN("MIN_CAPACITY"),
         DS_HTABLE_MIN_CAPACITY
     );
 
-    zend_class_implements(ds_map_ce, 1, collection_ce);
+    zend_class_implements(php_ds_map_ce, 1, collection_ce);
     register_map_handlers();
 }

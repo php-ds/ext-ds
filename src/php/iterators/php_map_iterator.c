@@ -2,6 +2,7 @@
 
 #include "../../ds/ds_map.h"
 #include "../../ds/ds_htable.h"
+#include "../objects/php_ds_map.h"
 
 #include "php_map_iterator.h"
 #include "php_htable_iterator.h"

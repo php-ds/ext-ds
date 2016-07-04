@@ -19,6 +19,7 @@ dnl Internal
                                               \
   src/php/objects/php_ds_vector.c             \
   src/php/objects/php_ds_deque.c              \
+  src/php/objects/php_ds_map.c                \
                                               \
 dnl Iterators
   src/php/iterators/php_vector_iterator.c         \

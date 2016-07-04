@@ -19,13 +19,13 @@ typedef struct php_ds_deque {
 #define ZVAL_NEW_DS_DEQUE(z) ZVAL_OBJ(z, php_ds_deque_create_object_ex(ds_deque()))
 
 #define RETURN_DS_DEQUE(deque)              \
-do {                                     \
-    if (deque) {                         \
+do {                                        \
+    if (deque) {                            \
         ZVAL_DS_DEQUE(return_value, deque); \
-    } else {                             \
-        ZVAL_NULL(return_value);         \
-    }                                    \
-    return;                              \
+    } else {                                \
+        ZVAL_NULL(return_value);            \
+    }                                       \
+    return;                                 \
 } while(0)
 
 /**

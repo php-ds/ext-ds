@@ -1,4 +1,4 @@
-#include "../iterators/php_deque_iterator.h"
+// #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
 #include "../classes/php_ce_deque.h"
 
@@ -8,7 +8,7 @@ zend_object *php_ds_deque_create_object_ex(ds_deque_t *deque)
 {
     php_ds_deque_t *obj = ecalloc(1, sizeof(php_ds_deque_t));
     zend_object_std_init(&obj->std, php_ds_deque_ce);
-    obj->std.handlers = &ds_deque_handlers;
+    obj->std.handlers = &php_ds_deque_handlers;
     obj->deque = deque;
     return &obj->std;
 }
