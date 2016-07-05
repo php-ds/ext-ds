@@ -17,7 +17,7 @@ typedef struct _php_ds_pair_t {
 #define RETURN_DS_PAIR(pair)                \
 do {                                        \
     if (pair) {                             \
-        ZVAL_DS_MAP(return_value, pair);    \
+        ZVAL_DS_PAIR(return_value, pair);   \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

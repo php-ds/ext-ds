@@ -17,6 +17,7 @@
 #include "../objects/php_ds_vector.h"
 #include "../objects/php_ds_deque.h"
 #include "../objects/php_ds_map.h"
+#include "../objects/php_ds_pair.h"
 
 /**
  *
@@ -173,7 +174,7 @@ ARGINFO_ZVAL_ZVAL(pair, key, value)
 METHOD(pair)
 {
     PARSE_ZVAL_ZVAL(key, value);
-    ds_pair_create_as_zval(key, value, return_value);
+    ZVAL_DS_PAIR(return_value, ds_pair_ex(key, value));
 }
 
 void register_ds()

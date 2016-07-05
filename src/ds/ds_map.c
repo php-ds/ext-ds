@@ -154,17 +154,17 @@ ds_map_t *ds_map_sorted_by_value(ds_map_t *map)
     return sorted;
 }
 
-ds_map_t *ds_map_sorted_by_key_callback(ds_map_t *map, zval *obj)
-{
-    ds_map_t *sorted = ds_map_clone(map);
-    ds_htable_sort_by_key(sorted->table);
-    return sorted;
-}
-
-ds_map_t *ds_map_sorted_by_key(ds_map_t *map, zval *obj)
+ds_map_t *ds_map_sorted_by_key_callback(ds_map_t *map)
 {
     ds_map_t *sorted = ds_map_clone(map);
     ds_htable_sort_callback_by_key(sorted->table);
+    return sorted;
+}
+
+ds_map_t *ds_map_sorted_by_key(ds_map_t *map)
+{
+    ds_map_t *sorted = ds_map_clone(map);
+    ds_htable_sort_by_key(sorted->table);
     return sorted;
 }
 
@@ -181,11 +181,6 @@ void ds_map_create_key_set(ds_map_t *map, zval *obj)
 ds_vector_t *ds_map_values_to_vector(ds_map_t *map)
 {
     return ds_htable_values_to_vector(map->table);
-}
-
-ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
-{
-    return ds_htable_pairs_to_vector(map->table);
 }
 
 ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length)
@@ -223,43 +218,40 @@ ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other)
     return ds_map_ex(intersection);
 }
 
-void ds_map_first(ds_map_t *map, zval *return_value)
+ds_pair_t *ds_map_first(ds_map_t *map)
 {
     ds_htable_bucket_t *bucket = ds_htable_first(map->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
-        ZVAL_NULL(return_value);
-        return;
+        return NULL;
     }
 
-    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    return ds_pair_ex(&bucket->key, &bucket->value);
 }
 
-void ds_map_last(ds_map_t *map, zval *return_value)
+ds_pair_t *ds_map_last(ds_map_t *map)
 {
     ds_htable_bucket_t *bucket = ds_htable_last(map->table);
 
     if ( ! bucket) {
         NOT_ALLOWED_WHEN_EMPTY();
-        ZVAL_NULL(return_value);
-        return;
+        return NULL;
     }
 
-    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    return ds_pair_ex(&bucket->key, &bucket->value);
 }
 
-void ds_map_skip(ds_map_t *map, zend_long position, zval *return_value)
+ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(map->table, position);
 
     if ( ! bucket) {
         INDEX_OUT_OF_RANGE(position, map->table->size);
-        ZVAL_NULL(return_value);
-        return;
+        return NULL;
     }
 
-    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    return ds_pair_ex(&bucket->key, &bucket->value);
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)

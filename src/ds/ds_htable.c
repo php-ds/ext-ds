@@ -544,28 +544,6 @@ static int user_compare_by_key(const void *a, const void *b)
     return 0;
 }
 
-static int user_compare_by_pair(const void *a, const void *b)
-{
-    zval params[2];
-    zval retval;
-
-    ds_htable_bucket_t *x = (ds_htable_bucket_t*) a;
-    ds_htable_bucket_t *y = (ds_htable_bucket_t*) b;
-
-    ds_pair_create_as_zval(&x->key, &x->value, &params[0]); // MIGHT BE ABLE TO AVOID THIS USING 'sort' and 'ksort'
-    ds_pair_create_as_zval(&y->key, &y->value, &params[1]);
-
-    DSG(user_compare_fci).param_count = 2;
-    DSG(user_compare_fci).params      = params;
-    DSG(user_compare_fci).retval      = &retval;
-
-    if (zend_call_function(&DSG(user_compare_fci), &DSG(user_compare_fci_cache)) == SUCCESS) {
-        return zval_get_long(&retval);
-    }
-
-    return 0;
-}
-
 static int compare_by_key(const void *a, const void *b)
 {
     zval retval;

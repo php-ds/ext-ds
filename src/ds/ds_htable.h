@@ -5,8 +5,8 @@
 #include "ds_vector.h"
 
 typedef struct ds_htable_bucket {
-    zval         key;
-    zval         value;
+    zval key;
+    zval value;
 } ds_htable_bucket_t;
 
 typedef struct ds_htable {
@@ -171,12 +171,13 @@ void ds_htable_sort_callback_by_value(ds_htable_t *table);
 ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *h, zval *key);
 ds_htable_bucket_t *ds_htable_lookup_by_key(ds_htable_t *h, zval *key);
 ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t position);
+
 bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **return_value);
 bool ds_htable_has_keys(ds_htable_t *h, VA_PARAMS);
 bool ds_htable_has_key(ds_htable_t *table, zval *key);
 bool ds_htable_has_values(ds_htable_t *h, VA_PARAMS);
 bool ds_htable_has_value(ds_htable_t *h, zval *value);
-int ds_htable_remove(ds_htable_t *h, zval *key, zval *return_value);
+int  ds_htable_remove(ds_htable_t *h, zval *key, zval *return_value);
 void ds_htable_put(ds_htable_t *h, zval *key, zval *value);
 void ds_htable_to_array(ds_htable_t *h, zval *arr);
 void ds_htable_destroy(ds_htable_t *h);

@@ -73,7 +73,7 @@ int php_ds_pair_unserialize(zval *object, zend_class_entry *ce, const unsigned c
         goto error;
     }
 
-    ds_pair_create_as_zval(key, value, object);
+    ZVAL_DS_PAIR(object, ds_pair_ex(key, value));
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

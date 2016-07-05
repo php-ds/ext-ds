@@ -4,6 +4,7 @@
 #include "../common.h"
 #include "ds_htable.h"
 #include "ds_vector.h"
+#include "ds_pair.h"
 
 typedef struct _ds_map_t {
     ds_htable_t *table;
@@ -29,7 +30,6 @@ ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length);
 void ds_map_create_key_set(ds_map_t *map, zval *return_value);
 
 ds_vector_t *ds_map_values_to_vector(ds_map_t *map);
-ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map);
 
 ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS);
 ds_map_t *ds_map_filter_callback(ds_map_t *map, FCI_PARAMS);
@@ -48,9 +48,9 @@ ds_map_t *ds_map_xor(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_diff(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other);
 
-void ds_map_first(ds_map_t *map, zval *return_value);
-void ds_map_last(ds_map_t *map, zval *return_value);
-void ds_map_skip(ds_map_t *map, zend_long position, zval *return_value);
+ds_pair_t *ds_map_first(ds_map_t *map);
+ds_pair_t *ds_map_last(ds_map_t *map);
+ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
 
 void ds_map_destroy(ds_map_t *map);
 

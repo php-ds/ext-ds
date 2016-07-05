@@ -5,6 +5,8 @@
 
 #include "../objects/php_ds_vector.h"
 #include "../objects/php_ds_map.h"
+#include "../objects/php_ds_pair.h"
+
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 
@@ -111,9 +113,9 @@ METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
-        RETURN_DS_MAP(ds_map_sorted_by_value_callback(THIS_MAP()));
+        RETURN_DS_MAP(ds_map_sorted_by_value_callback(THIS_DS_MAP()));
     } else {
-        RETURN_DS_MAP(ds_map_sorted_by_value(THIS_MAP()));
+        RETURN_DS_MAP(ds_map_sorted_by_value(THIS_DS_MAP()));
     }
 }
 
@@ -135,14 +137,14 @@ METHOD(keys)
     ds_map_create_key_set(THIS_DS_MAP(), return_value);
 }
 
-ARGINFO_NONE_RETURN_DS(last, ds_pair_t)
+ARGINFO_NONE_RETURN_DS(last, Pair)
 METHOD(last)
 {
     PARSE_NONE;
-    ds_map_last(THIS_DS_MAP(), return_value);
+    RETURN_DS_PAIR(ds_map_last(THIS_DS_MAP()));
 }
 
-ARGINFO_ZVAL_RETURN_DS(merge, values, ds_map_t)
+ARGINFO_ZVAL_RETURN_DS(merge, values, Map)
 METHOD(merge)
 {
     PARSE_ZVAL(values);
@@ -198,11 +200,11 @@ METHOD(filter)
     RETURN_DS_MAP(ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS));
 }
 
-ARGINFO_NONE_RETURN_DS(first, ds_pair_t)
+ARGINFO_NONE_RETURN_DS(first, Pair)
 METHOD(first)
 {
     PARSE_NONE;
-    ds_map_first(THIS_DS_MAP(), return_value);
+    RETURN_DS_PAIR(ds_map_first(THIS_DS_MAP()));
 }
 
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
@@ -219,11 +221,11 @@ METHOD(reverse)
     RETURN_DS_MAP(ds_map_reversed(THIS_DS_MAP()));
 }
 
-ARGINFO_LONG_RETURN_DS(skip, position, ds_pair_t)
+ARGINFO_LONG_RETURN_DS(skip, position, Pair)
 METHOD(skip)
 {
     PARSE_LONG(position);
-    ds_map_skip(THIS_DS_MAP(), position, return_value);
+    RETURN_DS_PAIR(ds_map_skip(THIS_DS_MAP(), position));
 }
 
 ARGINFO_CALLABLE_RETURN_DS(map, callback, Map)

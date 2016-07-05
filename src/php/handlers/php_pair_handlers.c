@@ -1,8 +1,7 @@
 #include "php_pair_handlers.h"
 #include "php_common_handlers.h"
-
-#include "../../common.h"
 #include "../../ds/ds_pair.h"
+#include "../objects/php_ds_pair.h"
 
 zend_object_handlers php_ds_pair_handlers;
 
@@ -99,9 +98,9 @@ static void ds_pair_unset_dimension(zval *object, zval *offset)
 
 static void ds_pair_free_object(zend_object *object)
 {
-    ds_pair_t *pair = (ds_pair_t*) object;
-    zend_object_std_dtor(&pair->std);
-    ds_pair_destroy(pair);
+    php_ds_pair_t *obj = (php_ds_pair_t*) object;
+    zend_object_std_dtor(&obj->std);
+    ds_pair_destroy(obj->pair);
 }
 
 static int ds_pair_count_elements(zval *object, zend_long *count)
@@ -138,7 +137,7 @@ void register_pair_handlers()
 {
     memcpy(&php_ds_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_pair_handlers.offset = XtOffsetOf(ds_pair_t, std);
+    php_ds_pair_handlers.offset = XtOffsetOf(php_ds_pair_t, std);
 
     php_ds_pair_handlers.dtor_obj                = zend_objects_destroy_object;
     php_ds_pair_handlers.free_obj                = ds_pair_free_object;
