@@ -150,24 +150,28 @@ void map_clear(Map *map)
     htable_clear(map->table);
 }
 
-void map_sort_callback(Map *map)
-{
-    htable_sort_callback(map->table);
-}
-
-void map_sort(Map *map)
-{
-    htable_sort_by_key(map->table);
-}
-
-void map_sorted_callback(Map *map, zval *obj)
+void map_sorted_by_value_callback(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
-    htable_sort_callback(sorted->table);
+    htable_sort_callback_by_value(sorted->table);
     map_init_zval_ex(obj, sorted);
 }
 
-void map_sorted(Map *map, zval *obj)
+void map_sorted_by_value(Map *map, zval *obj)
+{
+    Map *sorted = map_clone(map);
+    htable_sort_by_value(sorted->table);
+    map_init_zval_ex(obj, sorted);
+}
+
+void map_sorted_by_key_callback(Map *map, zval *obj)
+{
+    Map *sorted = map_clone(map);
+    htable_sort_callback_by_key(sorted->table);
+    map_init_zval_ex(obj, sorted);
+}
+
+void map_sorted_by_key(Map *map, zval *obj)
 {
     Map *sorted = map_clone(map);
     htable_sort_by_key(sorted->table);

@@ -105,9 +105,20 @@ METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
-        map_sorted_callback(THIS_MAP(), return_value);
+        map_sorted_by_value_callback(THIS_MAP(), return_value);
     } else {
-        map_sorted(THIS_MAP(), return_value);
+        map_sorted_by_value(THIS_MAP(), return_value);
+    }
+}
+
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(ksort, comparator, Map)
+METHOD(ksort)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        map_sorted_by_key_callback(THIS_MAP(), return_value);
+    } else {
+        map_sorted_by_key(THIS_MAP(), return_value);
     }
 }
 
@@ -260,6 +271,7 @@ void register_map()
         COLLECTION_ME(Map, get)
         COLLECTION_ME(Map, intersect)
         COLLECTION_ME(Map, keys)
+        COLLECTION_ME(Map, ksort)
         COLLECTION_ME(Map, last)
         COLLECTION_ME(Map, map)
         COLLECTION_ME(Map, merge)

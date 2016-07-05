@@ -52,10 +52,11 @@ void map_reduce(Map *map, FCI_PARAMS, zval *initial, zval *return_value);
 void map_filter_callback(Map *map, FCI_PARAMS, zval *return_value);
 void map_user_allocate(Map *map, zend_long capacity);
 zend_long map_capacity(Map *map);
-void map_sort_callback(Map *map);
-void map_sort(Map *map);
-void map_sorted_callback(Map *map, zval *obj);
-void map_sorted(Map *map, zval *obj);
+
+void map_sorted_by_value_callback(Map *map, zval *obj);
+void map_sorted_by_value(Map *map, zval *obj);
+void map_sorted_by_key_callback(Map *map, zval *obj);
+void map_sorted_by_key(Map *map, zval *obj);
 
 void map_merge(Map *map, zval *values, zval *obj);
 
