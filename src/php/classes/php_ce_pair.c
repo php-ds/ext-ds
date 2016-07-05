@@ -9,14 +9,14 @@
 
 #define METHOD(name) PHP_METHOD(Pair, name)
 
-zend_class_entry *pair_ce;
+zend_class_entry *php_ds_pair_ce;
 
 ARGINFO_OPTIONAL_ZVAL_OPTIONAL_ZVAL(__construct, key, value)
 METHOD(__construct)
 {
     PARSE_OPTIONAL_ZVAL_OPTIONAL_ZVAL(key, value);
     {
-        Pair *pair = THIS_PAIR();
+        ds_pair_t *pair = THIS_DS_PAIR();
 
         if (key) {
             ZVAL_COPY(&pair->key, key);
@@ -36,14 +36,14 @@ ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
-    pair_to_array(THIS_PAIR(), return_value);
+    ds_pair_to_array(THIS_DS_PAIR(), return_value);
 }
 
 ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;
-    pair_to_array(THIS_PAIR(), return_value);
+    ds_pair_to_array(THIS_DS_PAIR(), return_value);
 }
 
 void register_pair()
@@ -58,13 +58,13 @@ void register_pair()
     };
 
     INIT_CLASS_ENTRY(ce, DS_NS(Pair), methods);
-    pair_ce = zend_register_internal_class(&ce);
+    php_ds_pair_ce = zend_register_internal_class(&ce);
 
-    pair_ce->ce_flags         |= ZEND_ACC_FINAL;
-    pair_ce->create_object     = pair_create_object;
-    pair_ce->serialize         = pair_serialize;
-    pair_ce->unserialize       = pair_unserialize;
+    php_ds_pair_ce->ce_flags         |= ZEND_ACC_FINAL;
+    php_ds_pair_ce->create_object     = php_ds_pair_create_object;
+    php_ds_pair_ce->serialize         = php_ds_pair_serialize;
+    php_ds_pair_ce->unserialize       = php_ds_pair_unserialize;
 
-    zend_class_implements(pair_ce, 1, php_json_serializable_ce);
+    zend_class_implements(php_ds_pair_ce, 1, php_json_serializable_ce);
     register_pair_handlers();
 }

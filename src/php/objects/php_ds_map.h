@@ -28,6 +28,11 @@ zend_object *php_ds_map_create_object_ex(ds_map_t *map);
 zend_object *php_ds_map_create_object(zend_class_entry *ce);
 zend_object *php_ds_map_create_clone(ds_map_t *map);
 
+// This can not be handled internally because we have to create new instances
+// of php_ds_pair_t, which is outside of the internal scope.
+ds_vector_t *php_ds_map_pairs_to_vector(ds_map_t *map);
+HashTable *php_ds_map_pairs_to_php_array(ds_map_t *map);
+
 int php_ds_map_serialize(
     zval                    *object,
     unsigned char          **buffer,

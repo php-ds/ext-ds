@@ -135,7 +135,7 @@ METHOD(keys)
     ds_map_create_key_set(THIS_DS_MAP(), return_value);
 }
 
-ARGINFO_NONE_RETURN_DS(last, Pair)
+ARGINFO_NONE_RETURN_DS(last, ds_pair_t)
 METHOD(last)
 {
     PARSE_NONE;
@@ -153,7 +153,7 @@ ARGINFO_NONE_RETURN_DS(pairs, Sequence)
 METHOD(pairs)
 {
     PARSE_NONE;
-    RETURN_DS_VECTOR(ds_map_pairs_to_vector(THIS_DS_MAP()));
+    RETURN_DS_VECTOR(php_ds_map_pairs_to_vector(THIS_DS_MAP()));
 }
 
 ARGINFO_NONE_RETURN_ARRAY(toArray)
@@ -198,7 +198,7 @@ METHOD(filter)
     RETURN_DS_MAP(ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS));
 }
 
-ARGINFO_NONE_RETURN_DS(first, Pair)
+ARGINFO_NONE_RETURN_DS(first, ds_pair_t)
 METHOD(first)
 {
     PARSE_NONE;
@@ -219,7 +219,7 @@ METHOD(reverse)
     RETURN_DS_MAP(ds_map_reversed(THIS_DS_MAP()));
 }
 
-ARGINFO_LONG_RETURN_DS(skip, position, Pair)
+ARGINFO_LONG_RETURN_DS(skip, position, ds_pair_t)
 METHOD(skip)
 {
     PARSE_LONG(position);

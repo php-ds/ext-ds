@@ -4,9 +4,9 @@
 #include "../../common.h"
 #include "../../ds/ds_pair.h"
 
-zend_object_handlers pair_handlers;
+zend_object_handlers php_ds_pair_handlers;
 
-static zval *get_property(Pair *pair, zval *offset)
+static zval *get_property(ds_pair_t *pair, zval *offset)
 {
     if (offset && Z_TYPE_P(offset) == IS_STRING) {
         if (ZVAL_EQUALS_STRING(offset, "key")) {
@@ -20,9 +20,9 @@ static zval *get_property(Pair *pair, zval *offset)
     return NULL;
 }
 
-static zval *pair_get_property_ptr_ptr(zval *object, zval *offset, int type, void **cache_slot)
+static zval *ds_pair_get_property_ptr_ptr(zval *object, zval *offset, int type, void **cache_slot)
 {
-    zval *property = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! property) {
         return &EG(uninitialized_zval);
@@ -31,9 +31,9 @@ static zval *pair_get_property_ptr_ptr(zval *object, zval *offset, int type, voi
     return property;
 }
 
-static zval *pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
+static zval *ds_pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
 {
-    zval *property = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! property) {
         OFFSET_OUT_OF_BOUNDS();
@@ -43,9 +43,9 @@ static zval *pair_read_property(zval *object, zval *offset, int type, void **cac
     return property;
 }
 
-static void pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
+static void ds_pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
 {
-    zval *property = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if (property) {
         zval_ptr_dtor(property);
@@ -56,9 +56,9 @@ static void pair_write_property(zval *object, zval *offset, zval *value, void **
     OFFSET_OUT_OF_BOUNDS();
 }
 
-static int pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
+static int ds_pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
-    zval *value = get_property(Z_PAIR_P(object), offset);
+    zval *value = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! value) {
         return 0;
@@ -72,9 +72,9 @@ static int pair_has_property(zval *object, zval *offset, int has_set_exists, voi
     return ds_zval_isset(value, has_set_exists);
 }
 
-static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
+static void ds_pair_unset_property(zval *object, zval *offset, void **cache_slot)
 {
-    zval *property = get_property(Z_PAIR_P(object), offset);
+    zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if (property) {
         zval_ptr_dtor(property);
@@ -82,38 +82,38 @@ static void pair_unset_property(zval *object, zval *offset, void **cache_slot)
     }
 }
 
-static void pair_write_dimension(zval *object, zval *offset, zval *value)
+static void ds_pair_write_dimension(zval *object, zval *offset, zval *value)
 {
     MUTABILITY_NOT_ALLOWED();
 }
 
-static int pair_has_dimension(zval *object, zval *offset, int check_empty)
+static int ds_pair_has_dimension(zval *object, zval *offset, int check_empty)
 {
-    return ds_zval_isset(get_property(Z_PAIR_P(object), offset), check_empty);
+    return ds_zval_isset(get_property(Z_DS_PAIR_P(object), offset), check_empty);
 }
 
-static void pair_unset_dimension(zval *object, zval *offset)
+static void ds_pair_unset_dimension(zval *object, zval *offset)
 {
     MUTABILITY_NOT_ALLOWED();
 }
 
-static void pair_free_object(zend_object *object)
+static void ds_pair_free_object(zend_object *object)
 {
-    Pair *pair = (Pair*) object;
+    ds_pair_t *pair = (ds_pair_t*) object;
     zend_object_std_dtor(&pair->std);
-    pair_destroy(pair);
+    ds_pair_destroy(pair);
 }
 
-static int pair_count_elements(zval *object, zend_long *count)
+static int ds_pair_count_elements(zval *object, zend_long *count)
 {
     *count = 2;
     return SUCCESS;
 }
 
-static HashTable *pair_get_debug_info(zval *object, int *is_temp)
+static HashTable *ds_pair_get_debug_info(zval *object, int *is_temp)
 {
     zval arr;
-    Pair *pair = Z_PAIR_P(object);
+    ds_pair_t *pair = Z_DS_PAIR_P(object);
 
     *is_temp = 1;
 
@@ -128,28 +128,28 @@ static HashTable *pair_get_debug_info(zval *object, int *is_temp)
     return Z_ARRVAL(arr);
 }
 
-static zend_object *pair_clone_object(zval *object)
+static zend_object *ds_pair_clone_object(zval *object)
 {
-    Pair *pair = Z_PAIR_P(object);
-    return pair_create_clone(pair);
+    ds_pair_t *pair = Z_DS_PAIR_P(object);
+    return php_ds_pair_create_clone(pair);
 }
 
 void register_pair_handlers()
 {
-    memcpy(&pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    pair_handlers.offset = XtOffsetOf(Pair, std);
+    php_ds_pair_handlers.offset = XtOffsetOf(ds_pair_t, std);
 
-    pair_handlers.dtor_obj                = zend_objects_destroy_object;
-    pair_handlers.free_obj                = pair_free_object;
-    pair_handlers.clone_obj               = pair_clone_object;
-    pair_handlers.cast_object             = ds_default_cast_object;
-    pair_handlers.get_debug_info          = pair_get_debug_info;
-    pair_handlers.count_elements          = pair_count_elements;
+    php_ds_pair_handlers.dtor_obj                = zend_objects_destroy_object;
+    php_ds_pair_handlers.free_obj                = ds_pair_free_object;
+    php_ds_pair_handlers.clone_obj               = ds_pair_clone_object;
+    php_ds_pair_handlers.cast_object             = ds_default_cast_object;
+    php_ds_pair_handlers.get_debug_info          = ds_pair_get_debug_info;
+    php_ds_pair_handlers.count_elements          = ds_pair_count_elements;
 
-    pair_handlers.get_property_ptr_ptr    = pair_get_property_ptr_ptr;
-    pair_handlers.read_property           = pair_read_property;
-    pair_handlers.write_property          = pair_write_property;
-    pair_handlers.has_property            = pair_has_property;
-    pair_handlers.unset_property          = pair_unset_property;
+    php_ds_pair_handlers.get_property_ptr_ptr    = ds_pair_get_property_ptr_ptr;
+    php_ds_pair_handlers.read_property           = ds_pair_read_property;
+    php_ds_pair_handlers.write_property          = ds_pair_write_property;
+    php_ds_pair_handlers.has_property            = ds_pair_has_property;
+    php_ds_pair_handlers.unset_property          = ds_pair_unset_property;
 }

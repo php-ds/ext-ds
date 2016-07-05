@@ -158,7 +158,6 @@ ds_htable_t *ds_htable();
 void ds_htable_create_key_set(ds_htable_t *table, zval *return_value);
 
 ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table);
-ds_vector_t *ds_htable_pairs_to_vector(ds_htable_t *table);
 
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity);
 
@@ -186,7 +185,6 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
 
 void ds_htable_clear(ds_htable_t *h);
 ds_htable_t *ds_htable_clone(ds_htable_t *source);
-HashTable *ds_htable_pairs_to_php_ht(ds_htable_t *h);
 bool ds_htable_isset(ds_htable_t *h, zval *key, bool check_empty);
 zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const size_t len);
 void ds_htable_reverse(ds_htable_t *table);

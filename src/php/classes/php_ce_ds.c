@@ -173,7 +173,7 @@ ARGINFO_ZVAL_ZVAL(pair, key, value)
 METHOD(pair)
 {
     PARSE_ZVAL_ZVAL(key, value);
-    pair_create_as_zval(key, value, return_value);
+    ds_pair_create_as_zval(key, value, return_value);
 }
 
 void register_ds()

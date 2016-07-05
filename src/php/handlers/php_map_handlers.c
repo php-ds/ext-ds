@@ -65,12 +65,8 @@ static void ds_map_free_object(zend_object *object)
 
 static HashTable *ds_map_get_debug_info(zval *obj, int *is_temp)
 {
-    ds_map_t *map = Z_DS_MAP_P(obj);
-
-    //
     *is_temp = 1;
-
-    return ds_htable_pairs_to_php_ht(map->table);
+    return php_ds_map_pairs_to_php_array(Z_DS_MAP_P(obj));
 }
 
 static zend_object *ds_map_clone_obj(zval *obj)

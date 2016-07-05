@@ -233,7 +233,7 @@ void ds_map_first(ds_map_t *map, zval *return_value)
         return;
     }
 
-    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 void ds_map_last(ds_map_t *map, zval *return_value)
@@ -246,7 +246,7 @@ void ds_map_last(ds_map_t *map, zval *return_value)
         return;
     }
 
-    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 void ds_map_skip(ds_map_t *map, zend_long position, zval *return_value)
@@ -259,7 +259,7 @@ void ds_map_skip(ds_map_t *map, zend_long position, zval *return_value)
         return;
     }
 
-    pair_create_as_zval(&bucket->key, &bucket->value, return_value);
+    ds_pair_create_as_zval(&bucket->key, &bucket->value, return_value);
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)

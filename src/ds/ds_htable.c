@@ -552,8 +552,8 @@ static int user_compare_by_pair(const void *a, const void *b)
     ds_htable_bucket_t *x = (ds_htable_bucket_t*) a;
     ds_htable_bucket_t *y = (ds_htable_bucket_t*) b;
 
-    pair_create_as_zval(&x->key, &x->value, &params[0]);
-    pair_create_as_zval(&y->key, &y->value, &params[1]);
+    ds_pair_create_as_zval(&x->key, &x->value, &params[0]); // MIGHT BE ABLE TO AVOID THIS USING 'sort' and 'ksort'
+    ds_pair_create_as_zval(&y->key, &y->value, &params[1]);
 
     DSG(user_compare_fci).param_count = 2;
     DSG(user_compare_fci).params      = params;
@@ -717,22 +717,6 @@ static zval *create_zval_buffer_of_keys(ds_htable_t *table)
     return buffer;
 }
 
-static zval *create_zval_buffer_of_pairs(ds_htable_t *table)
-{
-    zval *buffer = ALLOC_ZVAL_BUFFER(table->size);
-    zval *target = buffer;
-
-    zval *key;
-    zval *value;
-
-    DS_HTABLE_FOREACH_KEY_VALUE(table, key, value) {
-        pair_create_as_zval(key, value, target++);
-    }
-    DS_HTABLE_FOREACH_END();
-
-    return buffer;
-}
-
 void ds_htable_create_key_set(ds_htable_t *table, zval *obj)
 {
     ds_htable_t *clone = ds_htable_clone(table);
@@ -745,13 +729,7 @@ ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table)
     return ds_vector_from_buffer(buffer, table->size);
 }
 
-ds_vector_t *ds_htable_pairs_to_vector(ds_htable_t *table)
-{
-    zval *buffer = create_zval_buffer_of_pairs(table);
-    return ds_vector_from_buffer(buffer, table->size);
-}
-
-static inline ds_htable_bucket_t *get_last_bucket(ds_htable_t *table)
+static ds_htable_bucket_t *get_last_bucket(ds_htable_t *table)
 {
     if (table->size > 0) {
         ds_htable_bucket_t *last = table->buckets + table->next;
@@ -1193,27 +1171,6 @@ void ds_htable_to_array(ds_htable_t *table, zval *arr)
         array_set_zval_key(Z_ARR_P(arr), key, val);
     }
     DS_HTABLE_FOREACH_END();
-}
-
-HashTable *ds_htable_pairs_to_php_ht(ds_htable_t *table)
-{
-    HashTable *ht;
-
-    zval *key;
-    zval *value;
-
-    zval pair;
-
-    ALLOC_HASHTABLE(ht);
-    zend_hash_init(ht, table->size, NULL, ZVAL_PTR_DTOR, 0);
-
-    DS_HTABLE_FOREACH_KEY_VALUE(table, key, value) {
-        pair_create_as_zval(key, value, &pair);
-        zend_hash_next_index_insert(ht, &pair);
-    }
-    DS_HTABLE_FOREACH_END();
-
-    return ht;
 }
 
 int ds_htable_serialize(ds_htable_t *table, unsigned char **buffer, size_t *length, zend_serialize_data *data)

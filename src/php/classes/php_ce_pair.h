@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_class_entry *pair_ce;
+extern zend_class_entry *php_ds_pair_ce;
 
 void register_pair();
 

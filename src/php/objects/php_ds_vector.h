@@ -19,8 +19,7 @@ do { \
 
 #define ZVAL_NEW_DS_VECTOR(z) \
 do { \
-    ds_vector_t *_v = ds_vector(); \
-    ZVAL_OBJ(z, php_ds_vector_create_object_ex(_v)); \
+    ZVAL_OBJ(z, php_ds_vector_create_object_ex(ds_vector())); \
 } while(0)
 
 #define RETURN_DS_VECTOR(v)                 \
