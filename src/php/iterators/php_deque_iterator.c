@@ -1,7 +1,7 @@
 #include "../../common.h"
 
 #include "../../ds/ds_deque.h"
-#include "../objects/php_ds_deque.h"
+#include "../objects/php_deque.h"
 #include "php_deque_iterator.h"
 
 static void ds_deque_iterator_dtor(zend_object_iterator *intern)

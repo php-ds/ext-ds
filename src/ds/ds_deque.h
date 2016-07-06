@@ -6,7 +6,7 @@
 /**
  *
  */
-typedef struct ds_deque {
+typedef struct _ds_deque_t {
     zval      *buffer;
     zend_long  capacity;
     zend_long  head;

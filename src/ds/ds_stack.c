@@ -10,7 +10,7 @@ static php_ds_stack_t *php_ds_stack_init_ex(ds_vector_t *vector)
 {
     php_ds_stack_t *stack = ecalloc(1, sizeof(php_ds_stack_t));
     zend_object_std_init(&stack->std, php_ds_stack_ce);
-    stack->std.handlers = &php_ds_stack_handlers;
+    stack->std.handlers = &php_stack_handlers;
     stack->vector = vector;
     return stack;
 }

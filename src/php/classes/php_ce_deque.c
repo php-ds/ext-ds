@@ -3,7 +3,7 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_ds_deque.h"
+#include "../objects/php_deque.h"
 #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
 

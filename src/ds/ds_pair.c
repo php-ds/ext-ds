@@ -5,24 +5,6 @@
 
 #include "ds_pair.h"
 
-void ds_pair_to_array(ds_pair_t *pair, zval *array)
-{
-    array_init_size(array, 2);
-
-    add_assoc_zval(array, "key", &pair->key);
-    add_assoc_zval(array, "value", &pair->value);
-
-    Z_TRY_ADDREF_P(&pair->key);
-    Z_TRY_ADDREF_P(&pair->value);
-}
-
-void ds_pair_destroy(ds_pair_t *pair)
-{
-    DTOR_AND_UNDEF(&pair->key);
-    DTOR_AND_UNDEF(&pair->value);
-    efree(pair);
-}
-
 ds_pair_t *ds_pair()
 {
     ds_pair_t *pair = ecalloc(1, sizeof(ds_pair_t));
@@ -51,4 +33,22 @@ ds_pair_t *ds_pair_clone(ds_pair_t *pair)
     ZVAL_COPY(&clone->value, &pair->value);
 
     return clone;
+}
+
+void ds_pair_to_array(ds_pair_t *pair, zval *array)
+{
+    array_init_size(array, 2);
+
+    add_assoc_zval(array, "key", &pair->key);
+    add_assoc_zval(array, "value", &pair->value);
+
+    Z_TRY_ADDREF_P(&pair->key);
+    Z_TRY_ADDREF_P(&pair->value);
+}
+
+void ds_pair_destroy(ds_pair_t *pair)
+{
+    DTOR_AND_UNDEF(&pair->key);
+    DTOR_AND_UNDEF(&pair->value);
+    efree(pair);
 }

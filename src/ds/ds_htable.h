@@ -4,12 +4,12 @@
 #include "../common.h"
 #include "ds_vector.h"
 
-typedef struct ds_htable_bucket {
+typedef struct _ds_htable_bucket_t {
     zval key;
     zval value;
 } ds_htable_bucket_t;
 
-typedef struct ds_htable {
+typedef struct _ds_htable_t {
     ds_htable_bucket_t  *buckets;       // Buffer for the buckets
     uint32_t            *lookup;        // Separated hash lookup table
     uint32_t             next;          // Next open index in the bucket buffer

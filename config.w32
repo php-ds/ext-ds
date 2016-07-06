@@ -37,10 +37,11 @@ if (PHP_DS != "no") {
 
     ds_src("/php/objects",
     [
-        "php_ds_deque.c",
-        "php_ds_vector.c",
-        "php_ds_map.c",
-        "php_ds_pair.c",
+        "php_deque.c",
+        "php_vector.c",
+        "php_map.c",
+        "php_pair.c",
+        "php_priority_queue.c",
     ]);
 
     ds_src("/php/iterators",

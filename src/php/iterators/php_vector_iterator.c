@@ -1,7 +1,7 @@
 #include "../../common.h"
 
 #include "../../ds/ds_vector.h"
-#include "../objects/php_ds_vector.h"
+#include "../objects/php_vector.h"
 #include "php_vector_iterator.h"
 
 static void iterator_dtor(zend_object_iterator *i)

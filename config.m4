@@ -17,10 +17,11 @@ dnl Internal
   src/ds/ds_priority_queue.c           \
   src/ds/ds_queue.c                    \
                                               \
-  src/php/objects/php_ds_vector.c             \
-  src/php/objects/php_ds_deque.c              \
-  src/php/objects/php_ds_map.c                \
-  src/php/objects/php_ds_pair.c               \
+  src/php/objects/php_vector.c             \
+  src/php/objects/php_deque.c              \
+  src/php/objects/php_map.c                \
+  src/php/objects/php_pair.c               \
+  src/php/objects/php_priority_queue.c     \
                                               \
 dnl Iterators
   src/php/iterators/php_vector_iterator.c         \

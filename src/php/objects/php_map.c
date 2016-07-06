@@ -2,15 +2,15 @@
 #include "../handlers/php_map_handlers.h"
 #include "../classes/php_ce_map.h"
 
-#include "php_ds_map.h"
-#include "php_ds_pair.h"
-#include "php_ds_vector.h"
+#include "php_map.h"
+#include "php_pair.h"
+#include "php_vector.h"
 
 zend_object *php_ds_map_create_object_ex(ds_map_t *map)
 {
     php_ds_map_t *obj = ecalloc(1, sizeof(php_ds_map_t));
     zend_object_std_init(&obj->std, php_ds_map_ce);
-    obj->std.handlers = &php_ds_map_handlers;
+    obj->std.handlers = &php_map_handlers;
     obj->map = map;
     return &obj->std;
 }
@@ -25,7 +25,7 @@ zend_object *php_ds_map_create_clone(ds_map_t *map)
     return php_ds_map_create_object_ex(ds_map_clone(map));
 }
 
-HashTable *php_ds_map_pairs_to_php_array(ds_map_t *map)
+HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map)
 {
     HashTable *array;
 
@@ -46,7 +46,7 @@ HashTable *php_ds_map_pairs_to_php_array(ds_map_t *map)
     return array;
 }
 
-ds_vector_t *php_ds_map_pairs_to_vector(ds_map_t *map)
+ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
 {
     zval *buffer = ALLOC_ZVAL_BUFFER(DS_MAP_SIZE(map));
     zval *target = buffer;

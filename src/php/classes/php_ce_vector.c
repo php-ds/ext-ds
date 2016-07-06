@@ -3,7 +3,7 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_ds_vector.h"
+#include "../objects/php_vector.h"
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
 
@@ -257,5 +257,5 @@ void php_ds_register_vector()
     zend_declare_class_constant_long(php_ds_vector_ce, STR_AND_LEN("MIN_CAPACITY"), DS_VECTOR_MIN_CAPACITY);
 
     zend_class_implements(php_ds_vector_ce, 1, sequence_ce);
-    php_ds_register_vector_handlers();
+    php_register_vector_handlers();
 }

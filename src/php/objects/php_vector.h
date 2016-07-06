@@ -3,11 +3,6 @@
 
 #include "../../ds/ds_vector.h"
 
-typedef struct php_ds_vector {
-    zend_object      std;
-    ds_vector_t     *vector;
-} php_ds_vector_t;
-
 #define Z_DS_VECTOR(z)   (((php_ds_vector_t*)(Z_OBJ(z)))->vector)
 #define Z_DS_VECTOR_P(z) Z_DS_VECTOR(*z)
 #define THIS_DS_VECTOR() Z_DS_VECTOR_P(getThis())
@@ -31,6 +26,11 @@ do {                                        \
     }                                       \
     return;                                 \
 } while(0)
+
+typedef struct php_ds_vector {
+    zend_object      std;
+    ds_vector_t     *vector;
+} php_ds_vector_t;
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector);
 zend_object *php_ds_vector_create_object(zend_class_entry *ce);

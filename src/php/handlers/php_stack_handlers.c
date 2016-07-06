@@ -6,7 +6,7 @@
 // #include "../classes/php_ce_stack.h"
 // #include "php_stack_handlers.h"
 
-zend_object_handlers php_ds_stack_handlers;
+zend_object_handlers php_stack_handlers;
 
 static void php_ds_stack_write_dimension(zval *obj, zval *offset, zval *value)
 {
@@ -50,25 +50,25 @@ static HashTable *php_ds_stack_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(arr);
 }
 
-void php_ds_register_php_ds_stack_handlers()
+void php_register_php_ds_stack_handlers()
 {
-    memcpy(&php_ds_stack_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_stack_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_stack_handlers.offset = XtOffsetOf(php_ds_stack_t, std);
+    php_stack_handlers.offset = XtOffsetOf(php_ds_stack_t, std);
 
-    php_ds_stack_handlers.dtor_obj          = zend_objects_destroy_object;
-    php_ds_stack_handlers.free_obj          = php_ds_stack_free_object;
+    php_stack_handlers.dtor_obj          = zend_objects_destroy_object;
+    php_stack_handlers.free_obj          = php_ds_stack_free_object;
 
-    php_ds_stack_handlers.clone_obj         = php_ds_stack_clone_obj;
-    php_ds_stack_handlers.cast_object       = ds_default_cast_object;
+    php_stack_handlers.clone_obj         = php_ds_stack_clone_obj;
+    php_stack_handlers.cast_object       = ds_default_cast_object;
 
-    php_ds_stack_handlers.get_debug_info    = php_ds_stack_get_debug_info;
-    // php_ds_stack_handlers.get_properties    = php_ds_stack_get_properties;
+    php_stack_handlers.get_debug_info    = php_ds_stack_get_debug_info;
+    // php_stack_handlers.get_properties    = php_ds_stack_get_properties;
 
-    php_ds_stack_handlers.count_elements    = php_ds_stack_count_elements;
+    php_stack_handlers.count_elements    = php_ds_stack_count_elements;
 
-    php_ds_stack_handlers.write_dimension   = php_ds_stack_write_dimension;
-    // php_ds_stack_handlers.read_dimension   = php_ds_stack_read_dimension;
-    // php_ds_stack_handlers.has_dimension    = php_ds_stack_has_dimension;
-    // php_ds_stack_handlers.unset_dimension  = php_ds_stack_unset_dimension;
+    php_stack_handlers.write_dimension   = php_ds_stack_write_dimension;
+    // php_stack_handlers.read_dimension   = php_ds_stack_read_dimension;
+    // php_stack_handlers.has_dimension    = php_ds_stack_has_dimension;
+    // php_stack_handlers.unset_dimension  = php_ds_stack_unset_dimension;
 }

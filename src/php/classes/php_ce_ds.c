@@ -14,10 +14,11 @@
 #include "../../ds/ds_set.h"
 #include "../../ds/ds_pair.h"
 
-#include "../objects/php_ds_vector.h"
-#include "../objects/php_ds_deque.h"
-#include "../objects/php_ds_map.h"
-#include "../objects/php_ds_pair.h"
+#include "../objects/php_vector.h"
+#include "../objects/php_deque.h"
+#include "../objects/php_map.h"
+#include "../objects/php_pair.h"
+#include "../objects/php_priority_queue.h"
 
 /**
  *
@@ -124,7 +125,7 @@ METHOD(queue)
 ARGINFO_NONE_RETURN_DS(priority_queue, PriorityQueue);
 METHOD(priority_queue)
 {
-    RETURN_PRIORITY_QUEUE(priority_queue_init());
+    RETURN_DS_PRIORITY_QUEUE(ds_priority_queue());
 }
 
 /**

@@ -2,14 +2,15 @@
 #include "../handlers/php_vector_handlers.h"
 #include "../classes/php_ce_vector.h"
 
-#include "php_ds_vector.h"
+#include "php_vector.h"
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
 {
     php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
     zend_object_std_init(&obj->std, php_ds_vector_ce);
-    obj->std.handlers = &php_ds_vector_handlers;
+    obj->std.handlers = &php_vector_handlers;
     obj->vector = vector;
+
     return &obj->std;
 }
 

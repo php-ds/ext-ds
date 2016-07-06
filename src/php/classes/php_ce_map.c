@@ -3,9 +3,9 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_ds_vector.h"
-#include "../objects/php_ds_map.h"
-#include "../objects/php_ds_pair.h"
+#include "../objects/php_vector.h"
+#include "../objects/php_map.h"
+#include "../objects/php_pair.h"
 
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
@@ -155,7 +155,7 @@ ARGINFO_NONE_RETURN_DS(pairs, Sequence)
 METHOD(pairs)
 {
     PARSE_NONE;
-    RETURN_DS_VECTOR(php_ds_map_pairs_to_vector(THIS_DS_MAP()));
+    RETURN_DS_VECTOR(ds_map_pairs_to_vector(THIS_DS_MAP()));
 }
 
 ARGINFO_NONE_RETURN_ARRAY(toArray)

@@ -3,14 +3,6 @@
 
 #include "../../ds/ds_deque.h"
 
-/**
- * Custom PHP object wrapped around an internal deque
- */
-typedef struct php_ds_deque {
-    zend_object  std;
-    ds_deque_t  *deque;
-} php_ds_deque_t;
-
 #define Z_DS_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
 #define Z_DS_DEQUE_P(z) Z_DS_DEQUE(*z)
 #define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
@@ -27,6 +19,15 @@ do {                                        \
     }                                       \
     return;                                 \
 } while(0)
+
+
+/**
+ *
+ */
+typedef struct php_ds_deque {
+    zend_object  std;
+    ds_deque_t  *deque;
+} php_ds_deque_t;
 
 /**
  * Creates a new zend_object using an existing deque.

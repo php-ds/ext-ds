@@ -1,9 +1,9 @@
 #include "php_map_handlers.h"
 #include "php_common_handlers.h"
 #include "../../ds/ds_map.h"
-#include "../objects/php_ds_map.h"
+#include "../objects/php_map.h"
 
-zend_object_handlers php_ds_map_handlers;
+zend_object_handlers php_map_handlers;
 
 static zval *ds_map_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
@@ -66,7 +66,7 @@ static void ds_map_free_object(zend_object *object)
 static HashTable *ds_map_get_debug_info(zval *obj, int *is_temp)
 {
     *is_temp = 1;
-    return php_ds_map_pairs_to_php_array(Z_DS_MAP_P(obj));
+    return ds_map_pairs_to_php_hashtable(Z_DS_MAP_P(obj));
 }
 
 static zend_object *ds_map_clone_obj(zval *obj)
@@ -76,19 +76,19 @@ static zend_object *ds_map_clone_obj(zval *obj)
 
 void register_map_handlers()
 {
-    memcpy(&php_ds_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_map_handlers.offset = XtOffsetOf(php_ds_map_t, std);
+    php_map_handlers.offset = XtOffsetOf(php_ds_map_t, std);
 
-    php_ds_map_handlers.dtor_obj            = zend_objects_destroy_object;
-    php_ds_map_handlers.free_obj            = ds_map_free_object;
-    php_ds_map_handlers.clone_obj           = ds_map_clone_obj;
-    php_ds_map_handlers.get_debug_info      = ds_map_get_debug_info;
-    php_ds_map_handlers.count_elements      = ds_map_count_elements;
-    php_ds_map_handlers.read_dimension      = ds_map_read_dimension;
-    php_ds_map_handlers.write_dimension     = ds_map_write_dimension;
-    php_ds_map_handlers.has_dimension       = ds_map_has_dimension;
-    php_ds_map_handlers.unset_dimension     = ds_map_unset_dimension;
-    php_ds_map_handlers.cast_object         = ds_default_cast_object;
-    // php_ds_map_handlers.get_properties      = ds_map_get_properties;
+    php_map_handlers.dtor_obj            = zend_objects_destroy_object;
+    php_map_handlers.free_obj            = ds_map_free_object;
+    php_map_handlers.clone_obj           = ds_map_clone_obj;
+    php_map_handlers.get_debug_info      = ds_map_get_debug_info;
+    php_map_handlers.count_elements      = ds_map_count_elements;
+    php_map_handlers.read_dimension      = ds_map_read_dimension;
+    php_map_handlers.write_dimension     = ds_map_write_dimension;
+    php_map_handlers.has_dimension       = ds_map_has_dimension;
+    php_map_handlers.unset_dimension     = ds_map_unset_dimension;
+    php_map_handlers.cast_object         = ds_default_cast_object;
+    // php_map_handlers.get_properties      = ds_map_get_properties;
 }

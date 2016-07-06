@@ -6,7 +6,7 @@
 
 #include "ds_priority_queue.h"
 
-#define LEFT(x) (((x) << 1) + 1)
+#define LEFT(x)  (((x) << 1) + 1)
 #define RIGHT(x) (((x) << 1) + 2)
 #define PARENT(x) ((x - 1) >> 1)
 
@@ -15,7 +15,7 @@
 
 static uint32_t capacity_for_size(uint32_t size)
 {
-    uint32_t c = MAX(size, PRIORITY_QUEUE_MIN_CAPACITY);
+    uint32_t c = MAX(size, DS_PRIORITY_QUEUE_MIN_CAPACITY);
 
     c--;
     c |= c >> 1;
@@ -29,72 +29,64 @@ static uint32_t capacity_for_size(uint32_t size)
 }
 
 // Priority comparison, with insertion stamp fallback.
-static inline int compare(PriorityNode a, PriorityNode b)
+static inline int compare(ds_priority_queue_node_t a, ds_priority_queue_node_t b)
 {
     return ((a.priority == b.priority) ? (STAMP(a) < STAMP(b) ? 1 : -1) :
             (a.priority >  b.priority) ? 1 : -1);
 }
 
-static inline PriorityNode *reallocate_nodes(PriorityNode *nodes, uint32_t capacity)
+static inline ds_priority_queue_node_t *reallocate_nodes(ds_priority_queue_node_t *nodes, uint32_t capacity)
 {
-    return erealloc(nodes, capacity * sizeof(PriorityNode));
+    return erealloc(nodes, capacity * sizeof(ds_priority_queue_node_t));
 }
 
-static inline PriorityNode *allocate_nodes(uint32_t capacity)
+static inline ds_priority_queue_node_t *allocate_nodes(uint32_t capacity)
 {
-    return ecalloc(capacity, sizeof(PriorityNode));
+    return ecalloc(capacity, sizeof(ds_priority_queue_node_t));
 }
 
-static inline void reallocate_to_capacity(PriorityQueue *queue, uint32_t capacity)
+static inline void reallocate_to_capacity(ds_priority_queue_t *queue, uint32_t capacity)
 {
     queue->nodes = reallocate_nodes(queue->nodes, capacity);
     queue->capacity = capacity;
 }
 
-static inline void increase_capacity(PriorityQueue *queue)
+static inline void increase_capacity(ds_priority_queue_t *queue)
 {
     reallocate_to_capacity(queue, queue->capacity << 1);
 }
 
-void priority_queue_user_allocate(PriorityQueue *queue, uint32_t capacity)
+void ds_priority_queue_user_allocate(ds_priority_queue_t *queue, uint32_t capacity)
 {
     if (capacity > queue->capacity) {
         reallocate_to_capacity(queue, capacity_for_size(capacity));
     }
 }
 
-PriorityQueue *priority_queue_init()
+ds_priority_queue_t *ds_priority_queue()
 {
-    PriorityQueue *queue = ecalloc(1, sizeof(PriorityQueue));
-    zend_object_std_init(&queue->std, priority_queue_ce);
+    ds_priority_queue_t *queue = ecalloc(1, sizeof(ds_priority_queue_t));
 
-    queue->std.handlers = &priority_queue_handlers;
-
-    queue->nodes    = allocate_nodes(PRIORITY_QUEUE_MIN_CAPACITY);
-    queue->capacity = PRIORITY_QUEUE_MIN_CAPACITY;
+    queue->nodes    = allocate_nodes(DS_PRIORITY_QUEUE_MIN_CAPACITY);
+    queue->capacity = DS_PRIORITY_QUEUE_MIN_CAPACITY;
     queue->size     = 0;
     queue->next     = 0;
 
     return queue;
 }
 
-zend_object *priority_queue_init_object(zend_class_entry *ce)
-{
-    return &priority_queue_init()->std;
-}
-
-uint32_t priority_queue_capacity(PriorityQueue *queue)
+uint32_t ds_priority_queue_capacity(ds_priority_queue_t *queue)
 {
     return queue->capacity;
 }
 
-void priority_queue_push(PriorityQueue *queue, zval *value, zend_long priority)
+void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long priority)
 {
     uint32_t parent;
     uint32_t index;
 
-    PriorityNode *nodes;
-    PriorityNode *node;
+    ds_priority_queue_node_t *nodes;
+    ds_priority_queue_node_t *node;
 
     if (queue->size == queue->capacity) {
         increase_capacity(queue);
@@ -125,14 +117,14 @@ void priority_queue_push(PriorityQueue *queue, zval *value, zend_long priority)
     queue->size++;
 }
 
-void priority_queue_pop(PriorityQueue *queue, zval *return_value)
+void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value)
 {
     uint32_t index, swap;
 
-    PriorityNode bottom;
-    PriorityNode *nodes = queue->nodes;
+    ds_priority_queue_node_t bottom;
+    ds_priority_queue_node_t *nodes = pq->nodes;
 
-    const uint32_t size = queue->size;
+    const uint32_t size = pq->size;
     const uint32_t half = (size - 1) >> 1;
 
     if (size == 0) {
@@ -148,12 +140,12 @@ void priority_queue_pop(PriorityQueue *queue, zval *return_value)
     bottom = nodes[size - 1];
     DTOR_AND_UNDEF(&(nodes[0].value));
 
-    queue->size--;
+    pq->size--;
 
     for (index = 0; index < half; index = swap) {
         swap = LEFT(index);
 
-        if (swap < queue->size && compare(nodes[swap], nodes[swap + 1]) < 0) {
+        if (swap < pq->size && compare(nodes[swap], nodes[swap + 1]) < 0) {
             swap++;
         }
 
@@ -165,43 +157,40 @@ void priority_queue_pop(PriorityQueue *queue, zval *return_value)
     }
     nodes[index] = bottom;
 
-    if (queue->size <= queue->capacity >> 2) {
-        reallocate_to_capacity(queue, queue->capacity >> 1);
+    if (pq->size <= pq->capacity >> 2) {
+        reallocate_to_capacity(pq, pq->capacity >> 1);
     }
 }
 
-static PriorityNode *copy_nodes(PriorityQueue *queue)
+static ds_priority_queue_node_t *copy_nodes(ds_priority_queue_t *pq)
 {
-    PriorityNode *copies = allocate_nodes(queue->capacity);
+    ds_priority_queue_node_t *copies = allocate_nodes(pq->capacity);
 
-    PriorityNode *src = queue->nodes;
-    PriorityNode *dst = copies;
-    PriorityNode *end = src + queue->size;
+    ds_priority_queue_node_t *src = pq->nodes;
+    ds_priority_queue_node_t *end = pq->nodes + pq->size;
+    ds_priority_queue_node_t *dst = copies;
 
     for (; src < end; ++src, ++dst) {
-        ZVAL_COPY(&dst->value, &src->value);
+        ZVAL_COPY(&dst->value, &src->value); // Also copies stamp
         dst->priority = src->priority;
     }
 
     return copies;
 }
 
-zend_object *priority_queue_init_clone(PriorityQueue *queue)
+ds_priority_queue_t *ds_priority_queue_clone(ds_priority_queue_t * pq)
 {
-    PriorityQueue *clone = ecalloc(1, sizeof(PriorityQueue));
-    zend_object_std_init(&clone->std, priority_queue_ce);
+    ds_priority_queue_t *clone = ecalloc(1, sizeof(ds_priority_queue_t));
 
-    clone->std.handlers = &priority_queue_handlers;
+    clone->nodes    = copy_nodes(pq);
+    clone->capacity = pq->capacity;
+    clone->size     = pq->size;
+    clone->next     = pq->next;
 
-    clone->nodes    = copy_nodes(queue);
-    clone->capacity = queue->capacity;
-    clone->size     = queue->size;
-    clone->next     = queue->next;
-
-    return &clone->std;
+    return clone;
 }
 
-zval *priority_queue_peek(PriorityQueue *queue)
+zval *ds_priority_queue_peek(ds_priority_queue_t *queue)
 {
     if (queue->size == 0) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -213,29 +202,29 @@ zval *priority_queue_peek(PriorityQueue *queue)
 
 static int priority_sort(const void *a, const void *b)
 {
-    return compare(*((PriorityNode *) b), *((PriorityNode *) a));
+    return compare(*((ds_priority_queue_node_t *) b), *((ds_priority_queue_node_t *) a));
 }
 
-PriorityNode* create_sorted_buffer(PriorityQueue *queue)
+ds_priority_queue_node_t* ds_priority_queue_create_sorted_buffer(ds_priority_queue_t *queue)
 {
-    PriorityNode *buffer = allocate_nodes(queue->size);
+    ds_priority_queue_node_t *buffer = allocate_nodes(queue->size);
 
-    memcpy(buffer, queue->nodes, queue->size * sizeof(PriorityNode));
-    qsort(buffer, queue->size, sizeof(PriorityNode), priority_sort);
+    memcpy(buffer, queue->nodes, queue->size * sizeof(ds_priority_queue_node_t));
+    qsort(buffer, queue->size, sizeof(ds_priority_queue_node_t), priority_sort);
 
     return buffer;
 }
 
-void priority_queue_to_array(PriorityQueue *queue, zval *array)
+void ds_priority_queue_to_array(ds_priority_queue_t *queue, zval *array)
 {
-    if (PRIORITY_QUEUE_IS_EMPTY(queue)) {
+    if (DS_PRIORITY_QUEUE_IS_EMPTY(queue)) {
         array_init(array);
 
     } else {
 
-        PriorityNode *pos, *end;
+        ds_priority_queue_node_t *pos, *end;
 
-        PriorityNode *buffer = create_sorted_buffer(queue);
+        ds_priority_queue_node_t *buffer = ds_priority_queue_create_sorted_buffer(queue);
 
         pos = buffer;
         end = pos + queue->size;
@@ -251,110 +240,22 @@ void priority_queue_to_array(PriorityQueue *queue, zval *array)
     }
 }
 
-void priority_queue_clear(PriorityQueue *queue)
+void ds_priority_queue_clear(ds_priority_queue_t *queue)
 {
-    PriorityNode *pos = queue->nodes;
-    PriorityNode *end = pos + queue->size;
+    ds_priority_queue_node_t *pos = queue->nodes;
+    ds_priority_queue_node_t *end = pos + queue->size;
 
     for (; pos < end; ++pos) {
         DTOR_AND_UNDEF(&pos->value);
     }
 
     queue->size = 0;
-    reallocate_to_capacity(queue, PRIORITY_QUEUE_MIN_CAPACITY);
+    reallocate_to_capacity(queue, DS_PRIORITY_QUEUE_MIN_CAPACITY);
 }
 
-void priority_queue_destroy(PriorityQueue *queue)
+void ds_priority_queue_destroy(ds_priority_queue_t *queue)
 {
-    priority_queue_clear(queue);
+    ds_priority_queue_clear(queue);
     efree(queue->nodes);
-}
-
-int priority_queue_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
-{
-    PriorityQueue *queue = Z_PRIORITY_QUEUE_P(object);
-
-    php_serialize_data_t serialize_data = (php_serialize_data_t) data;
-    PHP_VAR_SERIALIZE_INIT(serialize_data);
-
-    if (queue->size == 0) {
-        SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
-
-    } else {
-
-        PriorityNode *nodes = create_sorted_buffer(queue);
-        PriorityNode *pos   = nodes;
-        PriorityNode *end   = nodes + queue->size;
-
-        smart_str buf = {0};
-
-        for (; pos < end; ++pos) {
-
-            zval priority;
-            ZVAL_LONG(&priority, pos->priority);
-
-            php_var_serialize(&buf, &pos->value, &serialize_data);
-            php_var_serialize(&buf, &priority, &serialize_data);
-        }
-
-        smart_str_0(&buf);
-        SERIALIZE_SET_ZSTR(buf.s);
-        zend_string_release(buf.s);
-
-        efree(nodes);
-    }
-
-    PHP_VAR_SERIALIZE_DESTROY(serialize_data);
-    return SUCCESS;
-}
-
-int priority_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
-{
-    PriorityQueue *queue = priority_queue_init();
-
-    php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
-
-    const unsigned char *pos = buffer;
-    const unsigned char *max = buffer + length;
-
-    PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
-
-    ZVAL_OBJ(object, &queue->std);
-
-    while (*pos != '}') {
-
-        zval *value, *priority;
-
-        value = var_tmp_var(&unserialize_data);
-        if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
-            var_push_dtor(&unserialize_data, value);
-        } else {
-            goto error;
-        }
-
-        priority = var_tmp_var(&unserialize_data);
-        if (php_var_unserialize(priority, &pos, max, &unserialize_data)) {
-            var_push_dtor(&unserialize_data, priority);
-        } else {
-            goto error;
-        }
-
-        if (Z_TYPE_P(priority) != IS_LONG) {
-            goto error;
-        }
-
-        priority_queue_push(queue, value, Z_LVAL_P(priority));
-    }
-
-    if (*(++pos) != '\0') {
-        goto error;
-    }
-
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    return SUCCESS;
-
-error:
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    UNSERIALIZE_ERROR();
-    return FAILURE;
+    efree(queue);
 }

@@ -1,50 +1,52 @@
-#include "php_priority_queue_handlers.h"
 #include "php_common_handlers.h"
+#include "php_deque_handlers.h"
+
+#include "../objects/php_priority_queue.h"
 #include "../../ds/ds_priority_queue.h"
 
-zend_object_handlers priority_queue_handlers;
+zend_object_handlers php_priority_queue_handlers;
 
-static void priority_queue_free_object(zend_object *object)
+static void ds_priority_queue_free_object(zend_object *object)
 {
-    PriorityQueue *pq = (PriorityQueue*) object;
-    zend_object_std_dtor(&pq->std);
-    priority_queue_destroy(pq);
+    php_ds_priority_queue_t *queue = (php_ds_priority_queue_t*) object;
+    zend_object_std_dtor(&queue->std);
+    ds_priority_queue_destroy(queue->pq);
 }
 
-static int priority_queue_count_elements(zval *obj, zend_long *count)
+static int ds_priority_queue_count_elements(zval *obj, zend_long *count)
 {
-    *count = PRIORITY_QUEUE_SIZE(Z_PRIORITY_QUEUE_P(obj));
+    *count = DS_PRIORITY_QUEUE_SIZE(Z_DS_PRIORITY_QUEUE_P(obj));
     return SUCCESS;
 }
 
-static zend_object *priority_queue_clone_obj(zval *obj)
+static zend_object *php_ds_priority_queue_create_clone_obj(zval *obj)
 {
-    PriorityQueue *pq = Z_PRIORITY_QUEUE_P(obj);
-    return priority_queue_init_clone(pq);
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
+    return php_ds_priority_queue_create_clone(pq);
 }
 
-static HashTable *priority_queue_get_debug_info(zval *obj, int *is_temp)
+static HashTable *ds_priority_queue_get_debug_info(zval *obj, int *is_temp)
 {
     zval array;
-    PriorityQueue *pq = Z_PRIORITY_QUEUE_P(obj);
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
 
     *is_temp = 1;
 
-    priority_queue_to_array(pq, &array);
+    ds_priority_queue_to_array(pq, &array);
     return Z_ARRVAL(array);
 }
 
 void register_priority_queue_handlers()
 {
-    memcpy(&priority_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_priority_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    priority_queue_handlers.offset = XtOffsetOf(PriorityQueue, std);
+    php_priority_queue_handlers.offset = XtOffsetOf(php_ds_priority_queue_t, std);
 
-    priority_queue_handlers.free_obj          = priority_queue_free_object;
-    priority_queue_handlers.clone_obj         = priority_queue_clone_obj;
-    priority_queue_handlers.cast_object       = ds_default_cast_object;
-    priority_queue_handlers.get_debug_info    = priority_queue_get_debug_info;
+    php_priority_queue_handlers.free_obj          = ds_priority_queue_free_object;
+    php_priority_queue_handlers.clone_obj         = php_ds_priority_queue_create_clone_obj;
+    php_priority_queue_handlers.cast_object       = ds_default_cast_object;
+    php_priority_queue_handlers.get_debug_info    = ds_priority_queue_get_debug_info;
 
-    priority_queue_handlers.count_elements    = priority_queue_count_elements;
- // priority_queue_handlers.get_properties    = priority_queue_get_properties;
+    php_priority_queue_handlers.count_elements    = ds_priority_queue_count_elements;
+ // php_priority_queue_handlers.get_properties    = ds_priority_queue_get_properties;
 }

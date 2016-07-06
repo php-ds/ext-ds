@@ -3,7 +3,7 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_ds_pair.h"
+#include "../objects/php_pair.h"
 #include "../handlers/php_pair_handlers.h"
 
 #include "php_ce_pair.h"

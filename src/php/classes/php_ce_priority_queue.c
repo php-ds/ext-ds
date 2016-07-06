@@ -3,17 +3,16 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../../ds/ds_priority_queue.h"
-
 #include "../iterators/php_priority_queue_iterator.h"
 #include "../handlers/php_priority_queue_handlers.h"
+#include "../objects/php_priority_queue.h"
 
 #include "php_ce_collection.h"
 #include "php_ce_priority_queue.h"
 
 #define METHOD(name) PHP_METHOD(PriorityQueue, name)
 
-zend_class_entry *priority_queue_ce;
+zend_class_entry *php_ds_priority_queue_ce;
 
 ARGINFO_NONE(__construct)
 METHOD(__construct)
@@ -28,77 +27,77 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    priority_queue_user_allocate(THIS_PRIORITY_QUEUE(), capacity);
+    ds_priority_queue_user_allocate(THIS_DS_PRIORITY_QUEUE(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)
 METHOD(capacity)
 {
     PARSE_NONE;
-    RETURN_LONG(priority_queue_capacity(THIS_PRIORITY_QUEUE()));
+    RETURN_LONG(ds_priority_queue_capacity(THIS_DS_PRIORITY_QUEUE()));
 }
 
 ARGINFO_NONE_RETURN_DS(copy, PriorityQueue)
 METHOD(copy)
 {
     PARSE_NONE;
-    RETURN_OBJ(priority_queue_init_clone(THIS_PRIORITY_QUEUE()));
+    RETURN_OBJ(php_ds_priority_queue_create_clone(THIS_DS_PRIORITY_QUEUE()));
 }
 
 ARGINFO_ZVAL_LONG(push, value, priority)
 METHOD(push)
 {
     PARSE_ZVAL_LONG(value, priority);
-    priority_queue_push(THIS_PRIORITY_QUEUE(), value, priority);
+    ds_priority_queue_push(THIS_DS_PRIORITY_QUEUE(), value, priority);
 }
 
 ARGINFO_NONE(pop)
 METHOD(pop)
 {
     PARSE_NONE;
-    priority_queue_pop(THIS_PRIORITY_QUEUE(), return_value);
+    ds_priority_queue_pop(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
 ARGINFO_NONE(peek)
 METHOD(peek)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(priority_queue_peek(THIS_PRIORITY_QUEUE()));
+    RETURN_ZVAL_COPY(ds_priority_queue_peek(THIS_DS_PRIORITY_QUEUE()));
 }
 
 ARGINFO_NONE_RETURN_BOOL(isEmpty)
 METHOD(isEmpty)
 {
     PARSE_NONE;
-    RETURN_BOOL(PRIORITY_QUEUE_IS_EMPTY(THIS_PRIORITY_QUEUE()));
+    RETURN_BOOL(DS_PRIORITY_QUEUE_IS_EMPTY(THIS_DS_PRIORITY_QUEUE()));
 }
 
 ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
-    priority_queue_to_array(THIS_PRIORITY_QUEUE(), return_value);
+    ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
 ARGINFO_NONE_RETURN_LONG(count)
 METHOD(count)
 {
     PARSE_NONE;
-    RETURN_LONG(PRIORITY_QUEUE_SIZE(THIS_PRIORITY_QUEUE()));
+    RETURN_LONG(DS_PRIORITY_QUEUE_SIZE(THIS_DS_PRIORITY_QUEUE()));
 }
 
 ARGINFO_NONE(clear)
 METHOD(clear)
 {
     PARSE_NONE;
-    priority_queue_clear(THIS_PRIORITY_QUEUE());
+    ds_priority_queue_clear(THIS_DS_PRIORITY_QUEUE());
 }
 
 ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;
-    priority_queue_to_array(THIS_PRIORITY_QUEUE(), return_value);
+    ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
 void register_priority_queue()
@@ -119,19 +118,19 @@ void register_priority_queue()
 
     INIT_CLASS_ENTRY(ce, DS_NS(PriorityQueue), methods);
 
-    priority_queue_ce = zend_register_internal_class(&ce);
-    priority_queue_ce->ce_flags      |= ZEND_ACC_FINAL;
-    priority_queue_ce->create_object  = priority_queue_init_object;
-    priority_queue_ce->get_iterator   = priority_queue_get_iterator;
-    priority_queue_ce->serialize      = priority_queue_serialize;
-    priority_queue_ce->unserialize    = priority_queue_unserialize;
+    php_ds_priority_queue_ce = zend_register_internal_class(&ce);
+    php_ds_priority_queue_ce->ce_flags      |= ZEND_ACC_FINAL;
+    php_ds_priority_queue_ce->create_object  = php_ds_priority_queue_create_object;
+    php_ds_priority_queue_ce->get_iterator   = php_ds_priority_queue_get_iterator;
+    php_ds_priority_queue_ce->serialize      = php_ds_priority_queue_serialize;
+    php_ds_priority_queue_ce->unserialize    = php_ds_priority_queue_unserialize;
 
     zend_declare_class_constant_long(
-        priority_queue_ce,
+        php_ds_priority_queue_ce,
         STR_AND_LEN("MIN_CAPACITY"),
-        PRIORITY_QUEUE_MIN_CAPACITY
+        DS_PRIORITY_QUEUE_MIN_CAPACITY
     );
 
-    zend_class_implements(priority_queue_ce, 1, collection_ce);
+    zend_class_implements(php_ds_priority_queue_ce, 1, collection_ce);
     register_priority_queue_handlers();
 }

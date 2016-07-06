@@ -2,14 +2,14 @@
 #include "../handlers/php_pair_handlers.h"
 #include "../classes/php_ce_pair.h"
 
-#include "php_ds_pair.h"
+#include "php_pair.h"
 
 
 zend_object *php_ds_pair_create_object_ex(ds_pair_t *pair)
 {
     php_ds_pair_t *obj = ecalloc(1, sizeof(php_ds_pair_t));
     zend_object_std_init(&obj->std, php_ds_pair_ce);
-    obj->std.handlers = &php_ds_pair_handlers;
+    obj->std.handlers = &php_pair_handlers;
     obj->pair = pair;
 
     return &obj->std;
