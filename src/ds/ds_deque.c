@@ -103,7 +103,7 @@ static inline void ds_deque_copy(ds_deque_t *src, ds_deque_t *dst)
     }
 }
 
-ds_deque_t *ds_deque_create_copy(ds_deque_t *deque)
+ds_deque_t *ds_deque_clone(ds_deque_t *deque)
 {
     ds_deque_t *cloned = ecalloc(1, sizeof(ds_deque_t));
 
@@ -665,7 +665,7 @@ void ds_deque_push_all(ds_deque_t *deque, zval *values)
 ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values)
 {
     if (values && (ds_zval_is_array(values) || ds_zval_is_traversable(values))) {
-        ds_deque_t *merged = ds_deque_create_copy(deque);
+        ds_deque_t *merged = ds_deque_clone(deque);
         ds_deque_push_all(merged, values);
         return merged;
     }

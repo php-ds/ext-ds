@@ -89,7 +89,7 @@ static HashTable *ds_deque_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(return_value);
 }
 
-static zend_object *ds_deque_create_copy_obj(zval *obj)
+static zend_object *ds_deque_clone_obj(zval *obj)
 {
     ds_deque_t *deque = Z_DS_DEQUE_P(obj);
     return php_ds_deque_create_clone(deque);
@@ -104,7 +104,7 @@ void register_deque_handlers()
     php_deque_handlers.dtor_obj         = zend_objects_destroy_object;
     php_deque_handlers.free_obj         = ds_deque_free_object;
     php_deque_handlers.cast_object      = ds_default_cast_object;
-    php_deque_handlers.clone_obj        = ds_deque_create_copy_obj;
+    php_deque_handlers.clone_obj        = ds_deque_clone_obj;
     php_deque_handlers.get_debug_info   = ds_deque_get_debug_info;
     php_deque_handlers.count_elements   = ds_deque_count_elements;
     php_deque_handlers.read_dimension   = ds_deque_read_dimension;

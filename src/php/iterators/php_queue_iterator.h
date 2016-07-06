@@ -4,12 +4,12 @@
 #include "php.h"
 #include "../../ds/ds_queue.h"
 
-typedef struct _QueueIterator {
+typedef struct _ds_queue_tIterator {
     zend_object_iterator     intern;
     zend_long                position;
-    Queue                   *queue;
-} QueueIterator;
+    ds_queue_t                   *queue;
+} ds_queue_tIterator;
 
-zend_object_iterator *queue_get_iterator(zend_class_entry *ce, zval *object, int by_ref);
+zend_object_iterator *php_ds_queue_get_iterator(zend_class_entry *ce, zval *object, int by_ref);
 
 #endif

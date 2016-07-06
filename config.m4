@@ -16,13 +16,16 @@ dnl Internal
   src/ds/ds_pair.c                     \
   src/ds/ds_priority_queue.c           \
   src/ds/ds_queue.c                    \
-                                              \
-  src/php/objects/php_vector.c             \
-  src/php/objects/php_deque.c              \
-  src/php/objects/php_map.c                \
-  src/php/objects/php_pair.c               \
-  src/php/objects/php_priority_queue.c     \
-                                              \
+                                                  \
+  src/php/objects/php_vector.c                    \
+  src/php/objects/php_deque.c                     \
+  src/php/objects/php_map.c                       \
+  src/php/objects/php_pair.c                      \
+  src/php/objects/php_priority_queue.c            \
+  src/php/objects/php_queue.c                     \
+  src/php/objects/php_set.c                       \
+  src/php/objects/php_stack.c                     \
+                                                  \
 dnl Iterators
   src/php/iterators/php_vector_iterator.c         \
   src/php/iterators/php_deque_iterator.c          \
@@ -43,12 +46,12 @@ dnl Handlers
   src/php/handlers/php_pair_handlers.c            \
   src/php/handlers/php_priority_queue_handlers.c  \
   src/php/handlers/php_queue_handlers.c           \
-                                              \
+                                                  \
 dnl Interfaces
   src/php/classes/php_hashable_ce.c               \
   src/php/classes/php_collection_ce.c             \
   src/php/classes/php_sequence_ce.c               \
-                                              \
+                                                  \
 dnl Classes
   src/php/classes/php_vector_ce.c                 \
   src/php/classes/php_deque_ce.c                  \

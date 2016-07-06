@@ -48,7 +48,7 @@ do {                                                    \
 /**
  * Creates a copy of a deque.
  */
-ds_deque_t *ds_deque_create_copy(ds_deque_t *src);
+ds_deque_t *ds_deque_clone(ds_deque_t *src);
 
 /**
  * Creates a new empty deque.

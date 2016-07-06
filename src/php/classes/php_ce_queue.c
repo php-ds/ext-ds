@@ -2,11 +2,10 @@
 
 #include "../parameters.h"
 #include "../arginfo.h"
-// #include "../../ds/ds_queue.h"
+#include "../../ds/ds_queue.h"
 
 #include "../iterators/php_queue_iterator.h"
 #include "../handlers/php_queue_handlers.h"
-#include "../objects/php_queue.h"
 
 #include "php_collection_ce.h"
 #include "php_queue_ce.h"

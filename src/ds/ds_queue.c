@@ -7,62 +7,54 @@
 #include "ds_deque.h"
 #include "ds_queue.h"
 
-static Queue *queue_init_ex(ds_deque_t *deque)
+ds_queue_t *ds_queue_ex(ds_deque_t *deque)
 {
-    Queue *queue = ecalloc(1, sizeof(Queue));
-    zend_object_std_init(&queue->std, queue_ce);
-    queue->std.handlers = &queue_handlers;
+    ds_queue_t *queue = ecalloc(1, sizeof(ds_queue_t));
     queue->deque = deque;
     return queue;
 }
 
-Queue *queue_init()
+ds_queue_t *ds_queue()
 {
-    return queue_init_ex(ds_deque());
+    return ds_queue_ex(ds_deque());
 }
 
-zend_object *queue_create_object(zend_class_entry *ce)
+ds_queue_t *ds_queue_clone(ds_queue_t *queue)
 {
-    return &queue_init()->std;
+    return ds_queue_ex(ds_deque_clone(queue->deque));
 }
 
-zend_object *queue_create_clone(Queue *queue)
-{
-    ds_deque_t *copy = ds_deque_create_copy(queue->deque);
-    return &queue_init_ex(copy)->std;
-}
-
-void queue_user_allocate(Queue *queue, zend_long capacity)
+void ds_queue_user_allocate(ds_queue_t *queue, zend_long capacity)
 {
     ds_deque_user_allocate(queue->deque, capacity);
 }
 
-zend_long queue_capacity(Queue *queue)
+zend_long ds_queue_capacity(ds_queue_t *queue)
 {
     return queue->deque->capacity;
 }
 
-void queue_push(Queue *queue, VA_PARAMS)
+void ds_queue_push(ds_queue_t *queue, VA_PARAMS)
 {
     ds_deque_push_va(queue->deque, argc, argv);
 }
 
-void queue_push_one(Queue *queue, zval *value)
+void ds_queue_push_one(ds_queue_t *queue, zval *value)
 {
     ds_deque_push(queue->deque, value);
 }
 
-void queue_clear(Queue *queue)
+void ds_queue_clear(ds_queue_t *queue)
 {
     ds_deque_clear(queue->deque);
 }
 
-void queue_push_all(Queue *queue, zval *value)
+void ds_queue_push_all(ds_queue_t *queue, zval *value)
 {
     ds_deque_push_all(queue->deque, value);
 }
 
-void queue_to_array(Queue *queue, zval *return_value)
+void ds_queue_to_array(ds_queue_t *queue, zval *return_value)
 {
     zend_ulong size = QUEUE_SIZE(queue);
 
@@ -81,84 +73,17 @@ void queue_to_array(Queue *queue, zval *return_value)
     }
 }
 
-void queue_pop(Queue *queue, zval *return_value)
+void ds_queue_pop(ds_queue_t *queue, zval *return_value)
 {
     ds_deque_shift(queue->deque, return_value);
 }
 
-void queue_destroy(Queue *queue)
+void ds_queue_destroy(ds_queue_t *queue)
 {
     ds_deque_destroy(queue->deque);
 }
 
-zval *queue_peek(Queue *queue)
+zval *ds_queue_peek(ds_queue_t *queue)
 {
     return ds_deque_get_first(queue->deque);
-}
-
-int queue_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
-{
-    Queue *queue = Z_QUEUE_P(object);
-
-    php_serialize_data_t serialize_data = (php_serialize_data_t) data;
-    PHP_VAR_SERIALIZE_INIT(serialize_data);
-
-    if (QUEUE_SIZE(queue) == 0) {
-        SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
-
-    } else {
-
-        zval *value;
-        smart_str buf = {0};
-
-        DS_DEQUE_FOREACH(queue->deque, value) {
-            php_var_serialize(&buf, value, &serialize_data);
-        }
-        DS_DEQUE_FOREACH_END();
-
-        smart_str_0(&buf);
-        SERIALIZE_SET_ZSTR(buf.s);
-        zend_string_release(buf.s);
-    }
-
-    PHP_VAR_SERIALIZE_DESTROY(serialize_data);
-    return SUCCESS;
-}
-
-int queue_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
-{
-    Queue *queue = queue_init();
-
-    php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
-
-    const unsigned char *pos = buffer;
-    const unsigned char *max = buffer + length;
-
-    PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
-
-    while (*pos != '}') {
-
-        zval *value = var_tmp_var(&unserialize_data);
-
-        if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
-            var_push_dtor(&unserialize_data, value);
-        } else {
-            goto error;
-        }
-
-        queue_push_one(queue, value);
-    }
-
-    if (*(++pos) != '\0') {
-        goto error;
-    }
-
-    ZVAL_OBJ(object, &queue->std);
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    return SUCCESS;
-
-error:
-    PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
-    UNSERIALIZE_ERROR();
-    return FAILURE;
 }

@@ -19,9 +19,6 @@
 #include "../objects/php_map.h"
 #include "../objects/php_pair.h"
 #include "../objects/php_priority_queue.h"
-#include "../objects/php_queue.h"
-#include "../objects/php_stack.h"
-#include "../objects/php_set.h"
 
 /**
  *
@@ -105,7 +102,7 @@ METHOD(stack)
 /**
  * ds::queue(...)
  */
-ARGINFO_OPTIONAL_ZVAL_RETURN_DS(queue, values, Queue);
+ARGINFO_OPTIONAL_ZVAL_RETURN_DS(queue, values, ds_queue_t);
 METHOD(queue)
 {
     ds_queue_t *queue = ds_queue();

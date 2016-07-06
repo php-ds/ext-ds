@@ -4,27 +4,8 @@
 #include "../common.h"
 #include "ds_deque.h"
 
-typedef struct _Queue {
-    zend_object    std;
-    ds_deque_t         *deque;
-} Queue;
-
-
 #define QUEUE_SIZE(queue) (DS_DEQUE_SIZE((queue)->deque))
 #define QUEUE_IS_EMPTY(queue) (QUEUE_SIZE(queue) == 0)
-
-#define Z_QUEUE(z)   ((Queue*)(Z_OBJ(z)))
-#define Z_QUEUE_P(z) Z_QUEUE(*z)
-#define THIS_QUEUE() Z_QUEUE_P(getThis())
-
-#define ZVAL_QUEUE(z, queue)  ZVAL_OBJ(z, &queue->std)
-#define ZVAL_NEW_QUEUE(z)     ZVAL_QUEUE(z, queue_init())
-
-#define RETURN_QUEUE(queue) \
-do { \
-    ZVAL_QUEUE(return_value, queue); \
-    return; \
-} while(0)
 
 #define QUEUE_FOREACH(queue, value)                 \
 do {                                                \
@@ -38,25 +19,27 @@ do {                                                \
     zval_ptr_dtor(&_tmp);       \
 } while (0)                     \
 
+typedef struct _ds_queue_t {
+    ds_deque_t    *deque;
+} ds_queue_t;
 
-Queue *queue_init();
+ds_queue_t *ds_queue_ex(ds_deque_t *deque);
+ds_queue_t *ds_queue();
+ds_queue_t *ds_queue_clone(ds_queue_t *queue);
 
-zend_object *queue_create_object(zend_class_entry *ce);
-zend_object *queue_create_clone(Queue *queue);
+void ds_queue_user_allocate(ds_queue_t *queue, zend_long capacity);
+zend_long ds_queue_capacity(ds_queue_t *queue);
 
-void queue_user_allocate(Queue *queue, zend_long capacity);
-zend_long queue_capacity(Queue *queue);
+void  ds_queue_push(ds_queue_t *queue, VA_PARAMS);
+void  ds_queue_push_one(ds_queue_t *queue, zval *value);
+void  ds_queue_clear(ds_queue_t *queue);
+void  ds_queue_pop(ds_queue_t *queue, zval *return_value);
+zval *ds_queue_peek(ds_queue_t *queue);
+void  ds_queue_push_all(ds_queue_t *queue, zval *value);
+void  ds_queue_to_array(ds_queue_t *queue, zval *return_value);
+void  ds_queue_destroy(ds_queue_t *queue);
 
-void queue_push(Queue *queue, VA_PARAMS);
-void queue_push_one(Queue *queue, zval *value);
-void queue_clear(Queue *queue);
-void queue_pop(Queue *queue, zval *return_value);
-zval *queue_peek(Queue *queue);
-void queue_push_all(Queue *queue, zval *value);
-void queue_to_array(Queue *queue, zval *return_value);
-void queue_destroy(Queue *queue);
-
-int queue_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
-int queue_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+int ds_queue_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
+int ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
 
 #endif

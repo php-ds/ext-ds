@@ -42,6 +42,9 @@ if (PHP_DS != "no") {
         "php_map.c",
         "php_pair.c",
         "php_priority_queue.c",
+        "php_set.c",
+        "php_stack.c",
+        "php_queue.c",
     ]);
 
     ds_src("/php/iterators",
