@@ -1,5 +1,5 @@
-#ifndef DS_CE_DS_PRIORITY_QUEUE_H
-#define DS_CE_DS_PRIORITY_QUEUE_H
+#ifndef DS_DS_PRIORITY_QUEUE_CE_H
+#define DS_DS_PRIORITY_QUEUE_CE_H
 
 #include "php.h"
 

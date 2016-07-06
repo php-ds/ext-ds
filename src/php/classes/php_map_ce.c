@@ -10,8 +10,8 @@
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_map.h"
+#include "php_collection_ce.h"
+#include "php_map_ce.h"
 
 #define METHOD(name) PHP_METHOD(Map, name)
 

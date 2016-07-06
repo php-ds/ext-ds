@@ -6,7 +6,7 @@
 #include "../objects/php_pair.h"
 #include "../handlers/php_pair_handlers.h"
 
-#include "php_ce_pair.h"
+#include "php_pair_ce.h"
 
 #define METHOD(name) PHP_METHOD(Pair, name)
 

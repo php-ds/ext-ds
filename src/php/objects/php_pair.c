@@ -1,6 +1,6 @@
 // #include "../iterators/php_pair_iterator.h"
 #include "../handlers/php_pair_handlers.h"
-#include "../classes/php_ce_pair.h"
+#include "../classes/php_pair_ce.h"
 
 #include "php_pair.h"
 

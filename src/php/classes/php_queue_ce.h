@@ -1,5 +1,5 @@
-#ifndef DS_CE_QUEUE_H
-#define DS_CE_QUEUE_H
+#ifndef DS_QUEUE_CE_H
+#define DS_QUEUE_CE_H
 
 #include "php.h"
 

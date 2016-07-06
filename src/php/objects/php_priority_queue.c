@@ -1,6 +1,6 @@
 #include "../iterators/php_priority_queue_iterator.h"
 #include "../handlers/php_priority_queue_handlers.h"
-#include "../classes/php_ce_priority_queue.h"
+#include "../classes/php_priority_queue_ce.h"
 
 #include "php_priority_queue.h"
 

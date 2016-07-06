@@ -2,7 +2,7 @@
 
 #include "../php/iterators/php_stack_iterator.h"
 #include "../php/handlers/php_stack_handlers.h"
-#include "../php/classes/php_ce_stack.h"
+#include "../php/classes/php_stack_ce.h"
 
 #include "ds_stack.h"
 

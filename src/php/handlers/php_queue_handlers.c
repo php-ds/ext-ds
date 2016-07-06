@@ -4,7 +4,7 @@
 // #include "php.h"
 // #include "ext/spl/spl_exceptions.h"
 #include "../../ds/ds_queue.h"
-// #include "../classes/php_ce_queue.h"
+// #include "../classes/php_queue_ce.h"
 // #include "php_queue_handlers.h"
 
 zend_object_handlers queue_handlers;

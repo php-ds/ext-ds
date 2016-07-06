@@ -1,5 +1,5 @@
-#ifndef DS_CE_VECTOR_H
-#define DS_CE_VECTOR_H
+#ifndef DS_VECTOR_CE_H
+#define DS_VECTOR_CE_H
 
 #include "php.h"
 

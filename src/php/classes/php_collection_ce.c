@@ -1,5 +1,5 @@
 #include "../../common.h"
-#include "php_ce_collection.h"
+#include "php_collection_ce.h"
 
 zend_class_entry *collection_ce;
 

@@ -1,5 +1,5 @@
-#ifndef DS_CE_PAIR_H
-#define DS_CE_PAIR_H
+#ifndef DS_PAIR_CE_H
+#define DS_PAIR_CE_H
 
 #include "php.h"
 

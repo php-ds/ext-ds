@@ -5,7 +5,7 @@
 #include "ds_set.h"
 #include "ds_vector.h"
 
-#include "../php/classes/php_ce_hashable.h"
+#include "../php/classes/php_hashable_ce.h"
 
 static uint32_t next_power_of_2(uint32_t size)
 {

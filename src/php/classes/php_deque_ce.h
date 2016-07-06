@@ -1,5 +1,5 @@
-#ifndef DS_CE_DEQUE_H
-#define DS_CE_DEQUE_H
+#ifndef DS_DEQUE_CE_H
+#define DS_DEQUE_CE_H
 
 #include "php.h"
 

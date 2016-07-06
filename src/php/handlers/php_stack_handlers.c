@@ -3,7 +3,7 @@
 // #include "php.h"
 // #include "ext/spl/spl_exceptions.h"
 #include "../../ds/ds_stack.h"
-// #include "../classes/php_ce_stack.h"
+// #include "../classes/php_stack_ce.h"
 // #include "php_stack_handlers.h"
 
 zend_object_handlers php_stack_handlers;

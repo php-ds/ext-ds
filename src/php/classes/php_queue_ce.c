@@ -7,8 +7,8 @@
 #include "../iterators/php_queue_iterator.h"
 #include "../handlers/php_queue_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_queue.h"
+#include "php_collection_ce.h"
+#include "php_queue_ce.h"
 
 #define METHOD(name) PHP_METHOD(Queue, name)
 

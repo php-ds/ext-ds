@@ -1,6 +1,6 @@
 // #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
-#include "../classes/php_ce_vector.h"
+#include "../classes/php_vector_ce.h"
 
 #include "php_vector.h"
 

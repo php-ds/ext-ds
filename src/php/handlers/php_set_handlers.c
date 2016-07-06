@@ -3,7 +3,7 @@
 // #include "php.h"
 // #include "ext/spl/spl_exceptions.h"
 #include "../../ds/ds_set.h"
-#include "../classes/php_ce_set.h"
+#include "../classes/php_set_ce.h"
 // #include "php_set_handlers.h"
 
 zend_object_handlers set_handlers;

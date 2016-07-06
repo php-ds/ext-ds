@@ -1,8 +1,8 @@
 #include "../common.h"
 
 #include "../php/handlers/php_map_handlers.h"
-#include "../php/classes/php_ce_map.h"
-#include "../php/classes/php_ce_set.h"
+#include "../php/classes/php_map_ce.h"
+#include "../php/classes/php_set_ce.h"
 
 #include "ds_htable.h"
 #include "ds_vector.h"

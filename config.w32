@@ -71,18 +71,18 @@ if (PHP_DS != "no") {
 
     ds_src("/php/classes",
     [
-        "php_ce_hashable.c",
-        "php_ce_collection.c",
-        "php_ce_sequence.c",
-        "php_ce_vector.c",
-        "php_ce_deque.c",
-        "php_ce_set.c",
-        "php_ce_map.c",
-        "php_ce_stack.c",
-        "php_ce_pair.c",
-        "php_ce_priority_queue.c",
-        "php_ce_queue.c",
-        "php_ce_ds.c",
+        "php_hashable_ce.c",
+        "php_collection_ce.c",
+        "php_sequence_ce.c",
+        "php_vector_ce.c",
+        "php_deque_ce.c",
+        "php_set_ce.c",
+        "php_map_ce.c",
+        "php_stack_ce.c",
+        "php_pair_ce.c",
+        "php_priority_queue_ce.c",
+        "php_queue_ce.c",
+        "php_ds_ce.c",
     ]);
 }
 

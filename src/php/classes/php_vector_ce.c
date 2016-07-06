@@ -7,9 +7,9 @@
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_sequence.h"
-#include "php_ce_vector.h"
+#include "php_collection_ce.h"
+#include "php_sequence_ce.h"
+#include "php_vector_ce.h"
 
 #define METHOD(name) PHP_METHOD(Vector, name)
 

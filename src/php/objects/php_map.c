@@ -1,6 +1,6 @@
 // #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
-#include "../classes/php_ce_map.h"
+#include "../classes/php_map_ce.h"
 
 #include "php_map.h"
 #include "php_pair.h"

@@ -1,5 +1,5 @@
-#ifndef DS_CE_HASHABLE_H
-#define DS_CE_HASHABLE_H
+#ifndef DS_HASHABLE_CE_H
+#define DS_HASHABLE_CE_H
 
 #include "php.h"
 

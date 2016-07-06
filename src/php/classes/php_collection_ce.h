@@ -1,5 +1,5 @@
-#ifndef DS_CE_COLLECTION_H
-#define DS_CE_COLLECTION_H
+#ifndef DS_COLLECTION_CE_H
+#define DS_COLLECTION_CE_H
 
 #include "../../common.h"
 #include "../arginfo.h"

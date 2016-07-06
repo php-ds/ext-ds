@@ -8,8 +8,8 @@
 #include "../iterators/php_stack_iterator.h"
 #include "../handlers/php_stack_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_stack.h"
+#include "php_collection_ce.h"
+#include "php_stack_ce.h"
 
 #define METHOD(name) PHP_METHOD(Stack, name)
 

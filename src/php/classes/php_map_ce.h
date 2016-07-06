@@ -1,5 +1,5 @@
-#ifndef DS_CE_MAP_H
-#define DS_CE_MAP_H
+#ifndef DS_MAP_CE_H
+#define DS_MAP_CE_H
 
 #include "php.h"
 

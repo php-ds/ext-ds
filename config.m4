@@ -45,20 +45,20 @@ dnl Handlers
   src/php/handlers/php_queue_handlers.c           \
                                               \
 dnl Interfaces
-  src/php/classes/php_ce_hashable.c               \
-  src/php/classes/php_ce_collection.c             \
-  src/php/classes/php_ce_sequence.c               \
+  src/php/classes/php_hashable_ce.c               \
+  src/php/classes/php_collection_ce.c             \
+  src/php/classes/php_sequence_ce.c               \
                                               \
 dnl Classes
-  src/php/classes/php_ce_vector.c                 \
-  src/php/classes/php_ce_deque.c                  \
-  src/php/classes/php_ce_set.c                    \
-  src/php/classes/php_ce_map.c                    \
-  src/php/classes/php_ce_stack.c                  \
-  src/php/classes/php_ce_pair.c                   \
-  src/php/classes/php_ce_priority_queue.c         \
-  src/php/classes/php_ce_queue.c                  \
-  src/php/classes/php_ce_ds.c                     \
+  src/php/classes/php_vector_ce.c                 \
+  src/php/classes/php_deque_ce.c                  \
+  src/php/classes/php_set_ce.c                    \
+  src/php/classes/php_map_ce.c                    \
+  src/php/classes/php_stack_ce.c                  \
+  src/php/classes/php_pair_ce.c                   \
+  src/php/classes/php_priority_queue_ce.c         \
+  src/php/classes/php_queue_ce.c                  \
+  src/php/classes/php_ds_ce.c                     \
                                               \
   php_ds.c                                    \
                                               \

@@ -1,5 +1,5 @@
-#ifndef DS_CE_SEQUENCE_H
-#define DS_CE_SEQUENCE_H
+#ifndef DS_SEQUENCE_CE_H
+#define DS_SEQUENCE_CE_H
 
 #include "php.h"
 

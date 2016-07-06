@@ -1,7 +1,7 @@
 #include "../../common.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_sequence.h"
+#include "php_collection_ce.h"
+#include "php_sequence_ce.h"
 
 zend_class_entry *sequence_ce;
 

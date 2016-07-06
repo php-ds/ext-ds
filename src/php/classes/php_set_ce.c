@@ -8,8 +8,8 @@
 #include "../iterators/php_set_iterator.h"
 #include "../handlers/php_set_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_set.h"
+#include "php_collection_ce.h"
+#include "php_set_ce.h"
 
 #define METHOD(name) PHP_METHOD(Set, name)
 

@@ -2,7 +2,7 @@
 
 #include "../php/iterators/php_set_iterator.h"
 #include "../php/handlers/php_set_handlers.h"
-#include "../php/classes/php_ce_set.h"
+#include "../php/classes/php_set_ce.h"
 
 #include "ds_set.h"
 #include "ds_htable.h"

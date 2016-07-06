@@ -7,9 +7,9 @@
 #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
 
-#include "php_ce_collection.h"
-#include "php_ce_sequence.h"
-#include "php_ce_deque.h"
+#include "php_collection_ce.h"
+#include "php_sequence_ce.h"
+#include "php_deque_ce.h"
 
 #define METHOD(name) PHP_METHOD(Deque, name)
 

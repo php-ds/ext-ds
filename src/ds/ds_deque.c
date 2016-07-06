@@ -2,7 +2,7 @@
 
 #include "../php/iterators/php_deque_iterator.h"
 #include "../php/handlers/php_deque_handlers.h"
-#include "../php/classes/php_ce_deque.h"
+#include "../php/classes/php_deque_ce.h"
 
 #include "ds_deque.h"
 

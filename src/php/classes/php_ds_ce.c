@@ -3,7 +3,7 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "php_ce_ds.h"
+#include "php_ds_ce.h"
 
 #include "../../ds/ds_vector.h"
 #include "../../ds/ds_deque.h"
