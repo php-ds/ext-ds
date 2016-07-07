@@ -221,7 +221,7 @@ METHOD(jsonSerialize)
     ds_set_to_array(THIS_DS_SET(), return_value);
 }
 
-void register_set()
+void php_ds_register_set()
 {
     zend_class_entry ce;
 
@@ -267,5 +267,5 @@ void register_set()
     );
 
     zend_class_implements(php_ds_set_ce, 1, collection_ce);
-    register_set_handlers();
+    php_ds_register_set_handlers();
 }

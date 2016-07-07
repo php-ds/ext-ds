@@ -5,6 +5,6 @@
 
 extern zend_class_entry *php_ds_pair_ce;
 
-void register_pair();
+void php_ds_register_pair();
 
 #endif

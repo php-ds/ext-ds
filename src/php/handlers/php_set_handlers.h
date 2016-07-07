@@ -5,6 +5,6 @@
 
 extern zend_object_handlers php_ds_set_handlers;
 
-void register_set_handlers();
+void php_ds_register_set_handlers();
 
 #endif

@@ -48,7 +48,7 @@ static HashTable *ds_queue_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(arr);
 }
 
-void register_queue_handlers()
+void php_ds_register_queue_handlers()
 {
     memcpy(&php_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

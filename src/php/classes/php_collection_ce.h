@@ -41,6 +41,6 @@ ARGINFO_NONE_RETURN_ARRAY(
     Collection_toArray
 );
 
-void register_collection();
+void php_ds_register_collection();
 
 #endif

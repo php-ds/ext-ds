@@ -95,7 +95,7 @@ static zend_object *ds_deque_clone_obj(zval *obj)
     return php_ds_deque_create_clone(deque);
 }
 
-void register_deque_handlers()
+void php_ds_register_deque_handlers()
 {
     memcpy(&php_deque_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

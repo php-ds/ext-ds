@@ -5,6 +5,6 @@
 
 extern zend_class_entry *php_ds_queue_ce;
 
-void register_queue();
+void php_ds_register_queue();
 
 #endif

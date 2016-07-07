@@ -7,7 +7,7 @@ zend_class_entry *sequence_ce;
 
 #define SEQUENCE_ABSTRACT_ME(name) PHP_ABSTRACT_ME(Sequence, name, arginfo_Sequence_##name)
 
-void register_sequence()
+void php_ds_register_sequence()
 {
     zend_class_entry ce;
 

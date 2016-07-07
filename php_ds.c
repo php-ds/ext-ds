@@ -32,22 +32,22 @@ PHP_MINIT_FUNCTION(ds)
 	ZEND_INIT_MODULE_GLOBALS(ds, php_ds_init_globals, NULL);
 
     // Interfaces
-    register_hashable();
-    register_collection();
-    register_sequence();
+    php_ds_register_hashable();
+    php_ds_register_collection();
+    php_ds_register_sequence();
 
     // Classes
     php_ds_register_vector();
-    register_deque();
+    php_ds_register_deque();
     php_ds_register_stack();
-    register_queue();
-    register_map();
-    register_set();
-    register_priority_queue();
-    register_pair();
+    php_ds_register_queue();
+    php_ds_register_map();
+    php_ds_register_set();
+    php_ds_register_priority_queue();
+    php_ds_register_pair();
 
     // Shortcuts
-    register_ds();
+    php_ds_register_ds();
 
     return SUCCESS;
 }
@@ -82,7 +82,7 @@ zend_module_entry ds_module_entry = {
     PHP_RINIT(ds),
     PHP_RSHUTDOWN(ds),
     PHP_MINFO(ds),
-    DS_VERSION,
+    PHP_DS_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
 

@@ -3,7 +3,7 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../../ds/ds_stack.h"
+#include "../objects/php_stack.h"
 
 #include "../iterators/php_stack_iterator.h"
 #include "../handlers/php_stack_handlers.h"
@@ -22,9 +22,9 @@ METHOD(__construct)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            php_ds_stack_allocate(THIS_DS_STACK(), Z_LVAL_P(values));
+            ds_stack_allocate(THIS_DS_STACK(), Z_LVAL_P(values));
         } else {
-            php_ds_stack_push_all(THIS_DS_STACK(), values);
+            ds_stack_push_all(THIS_DS_STACK(), values);
         }
     }
 }
@@ -33,42 +33,42 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    php_ds_stack_allocate(THIS_DS_STACK(), capacity);
+    ds_stack_allocate(THIS_DS_STACK(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)
 METHOD(capacity)
 {
     PARSE_NONE;
-    RETURN_LONG(php_ds_stack_capacity(THIS_DS_STACK()))
+    RETURN_LONG(DS_STACK_CAPACITY(THIS_DS_STACK()));
 }
 
 ARGINFO_VARIADIC_ZVAL(push, values)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
-    php_ds_stack_push(THIS_DS_STACK(), argc, argv);
+    ds_stack_push(THIS_DS_STACK(), argc, argv);
 }
 
 ARGINFO_ZVAL(pushAll, values)
 METHOD(pushAll)
 {
     PARSE_ZVAL(values);
-    php_ds_stack_push_all(THIS_DS_STACK(), values);
+    ds_stack_push_all(THIS_DS_STACK(), values);
 }
 
 ARGINFO_NONE(pop)
 METHOD(pop)
 {
     PARSE_NONE;
-    php_ds_stack_pop(THIS_DS_STACK(), return_value);
+    ds_stack_pop(THIS_DS_STACK(), return_value);
 }
 
 ARGINFO_NONE(peek)
 METHOD(peek)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(php_ds_stack_peek(THIS_DS_STACK()));
+    RETURN_ZVAL_COPY(ds_stack_peek(THIS_DS_STACK()));
 }
 
 ARGINFO_NONE_RETURN_LONG(count)
@@ -78,7 +78,7 @@ METHOD(count)
     RETURN_LONG(DS_STACK_SIZE(THIS_DS_STACK()));
 }
 
-ARGINFO_NONE_RETURN_DS(copy, php_ds_stack_t)
+ARGINFO_NONE_RETURN_DS(copy, ds_stack_t)
 METHOD(copy)
 {
     PARSE_NONE;
@@ -89,14 +89,14 @@ ARGINFO_NONE(clear)
 METHOD(clear)
 {
     PARSE_NONE;
-    php_ds_stack_clear(THIS_DS_STACK());
+    ds_stack_clear(THIS_DS_STACK());
 }
 
 ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
-    php_ds_stack_to_array(THIS_DS_STACK(), return_value);
+    ds_stack_to_array(THIS_DS_STACK(), return_value);
 }
 
 ARGINFO_NONE_RETURN_BOOL(isEmpty)
@@ -110,7 +110,7 @@ ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;
-    php_ds_stack_to_array(THIS_DS_STACK(), return_value);
+    ds_stack_to_array(THIS_DS_STACK(), return_value);
 }
 
 void php_ds_register_stack()
@@ -140,5 +140,5 @@ void php_ds_register_stack()
     php_ds_stack_ce->unserialize    = php_ds_stack_unserialize;
 
     zend_class_implements(php_ds_stack_ce, 1, collection_ce);
-    php_register_php_ds_stack_handlers();
+    php_register_ds_stack_handlers();
 }

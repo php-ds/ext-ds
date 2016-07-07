@@ -6,7 +6,7 @@ zend_class_entry *collection_ce;
 #define COLLECTION_ABSTRACT_ME(name) \
     PHP_ABSTRACT_ME(Collection, name, arginfo_Collection_##name)
 
-void register_collection()
+void php_ds_register_collection()
 {
     zend_class_entry ce;
 

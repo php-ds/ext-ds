@@ -5,6 +5,6 @@
 
 extern zend_class_entry *ds_ce;
 
-void register_ds();
+void php_ds_register_ds();
 
 #endif

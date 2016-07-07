@@ -1,5 +1,5 @@
-#ifndef PHP_DS_DS_STACK_CE_H
-#define PHP_DS_DS_STACK_CE_H
+#ifndef PHP_DS_STACK_CE_H
+#define PHP_DS_STACK_CE_H
 
 #include "php.h"
 

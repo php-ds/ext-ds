@@ -5,6 +5,6 @@
 
 extern zend_class_entry *php_ds_priority_queue_ce;
 
-void register_priority_queue();
+void php_ds_register_priority_queue();
 
 #endif

@@ -5,6 +5,6 @@
 
 extern zend_object_handlers php_queue_handlers;
 
-void register_queue_handlers();
+void php_ds_register_queue_handlers();
 
 #endif

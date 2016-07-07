@@ -74,7 +74,7 @@ static zend_object *ds_map_clone_obj(zval *obj)
     return php_ds_map_create_clone(Z_DS_MAP_P(obj));
 }
 
-void register_map_handlers()
+void php_ds_register_map_handlers()
 {
     memcpy(&php_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

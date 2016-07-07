@@ -136,6 +136,6 @@ ARGINFO_VARIADIC_ZVAL(
     Sequence_unshift, values
 );
 
-void register_sequence();
+void php_ds_register_sequence();
 
 #endif

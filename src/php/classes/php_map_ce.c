@@ -264,7 +264,7 @@ METHOD(xor)
     RETURN_DS_MAP(ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
-void register_map()
+void php_ds_register_map()
 {
     zend_class_entry ce;
 
@@ -316,5 +316,5 @@ void register_map()
     );
 
     zend_class_implements(php_ds_map_ce, 1, collection_ce);
-    register_map_handlers();
+    php_ds_register_map_handlers();
 }

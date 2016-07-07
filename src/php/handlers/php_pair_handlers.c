@@ -133,7 +133,7 @@ static zend_object *ds_pair_clone_object(zval *object)
     return php_ds_pair_create_clone(pair);
 }
 
-void register_pair_handlers()
+void php_ds_register_pair_handlers()
 {
     memcpy(&php_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

@@ -5,6 +5,6 @@
 
 extern zend_class_entry *php_ds_deque_ce;
 
-void register_deque();
+void php_ds_register_deque();
 
 #endif

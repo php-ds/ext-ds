@@ -113,7 +113,7 @@ METHOD(jsonSerialize)
     ds_queue_to_array(THIS_DS_QUEUE(), return_value);
 }
 
-void register_queue()
+void php_ds_register_queue()
 {
     zend_class_entry ce;
 
@@ -140,5 +140,5 @@ void register_queue()
     php_ds_queue_ce->unserialize    = php_ds_queue_unserialize;
 
     zend_class_implements(php_ds_queue_ce, 1, collection_ce);
-    register_queue_handlers();
+    php_ds_register_queue_handlers();
 }

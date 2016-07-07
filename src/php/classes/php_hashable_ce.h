@@ -5,6 +5,6 @@
 
 extern zend_class_entry *hashable_ce;
 
-void register_hashable();
+void php_ds_register_hashable();
 
 #endif

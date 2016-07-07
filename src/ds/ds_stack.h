@@ -1,29 +1,12 @@
-#ifndef PHP_DS_STACK_H
-#define PHP_DS_STACK_H
+#ifndef DS_STACK_H
+#define DS_STACK_H
 
 #include "../common.h"
 #include "ds_vector.h"
 
-typedef struct php_ds_stack {
-    zend_object     std;
-    ds_vector_t    *vector;
-} php_ds_stack_t;
-
-#define DS_STACK_SIZE(s) ((s)->vector->size)
+#define DS_STACK_SIZE(s)     ((s)->vector->size)
+#define DS_STACK_CAPACITY(s) ((s)->vector->capacity)
 #define DS_STACK_IS_EMPTY(s) (DS_STACK_SIZE(s) == 0)
-
-#define Z_DS_STACK(z)   ((php_ds_stack_t*)(Z_OBJ(z)))
-#define Z_DS_STACK_P(z) Z_DS_STACK(*z)
-#define THIS_DS_STACK() Z_DS_STACK_P(getThis())
-
-#define ZVAL_DS_STACK(z, stack)  ZVAL_OBJ(z, &stack->std)
-#define ZVAL_NEW_DS_STACK(z)     ZVAL_DS_STACK(z, php_ds_stack_init())
-
-#define RETURN_DS_STACK(stack) \
-do { \
-    ZVAL_DS_STACK(return_value, stack); \
-    return; \
-} while(0)
 
 #define DS_STACK_FOREACH(stack, value)                 \
 do {                                                \
@@ -43,21 +26,22 @@ do {                                                \
     zval_ptr_dtor(&_tmp);       \
 } while (0)                     \
 
-php_ds_stack_t *php_ds_stack_init();
-zend_object *php_ds_stack_create_object(zend_class_entry *ce);
-zend_object *php_ds_stack_create_clone(php_ds_stack_t *stack);
-void php_ds_stack_push(php_ds_stack_t *stack, VA_PARAMS);
-void php_ds_stack_allocate(php_ds_stack_t *stack, zend_long capacity);
-zend_long php_ds_stack_capacity(php_ds_stack_t *stack);
-void php_ds_stack_push_one(php_ds_stack_t *stack, zval *value);
-void php_ds_stack_clear(php_ds_stack_t *stack);
-void php_ds_stack_pop(php_ds_stack_t *stack, zval *return_value);
-zval *php_ds_stack_peek(php_ds_stack_t *stack);
-void php_ds_stack_push_all(php_ds_stack_t *stack, zval *value);
-void php_ds_stack_to_array(php_ds_stack_t *stack, zval *return_value);
-void php_ds_stack_destroy(php_ds_stack_t *stack);
+typedef struct _ds_stack_t {
+    ds_vector_t *vector;
+} ds_stack_t;
 
-int php_ds_stack_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
-int php_ds_stack_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
+ds_stack_t *ds_stack_ex(ds_vector_t *vector);
+ds_stack_t *ds_stack();
+ds_stack_t *ds_stack_clone(ds_stack_t *stack);
+
+void  ds_stack_push(ds_stack_t *stack, VA_PARAMS);
+void  ds_stack_allocate(ds_stack_t *stack, zend_long capacity);
+void  ds_stack_push_one(ds_stack_t *stack, zval *value);
+void  ds_stack_clear(ds_stack_t *stack);
+void  ds_stack_pop(ds_stack_t *stack, zval *return_value);
+zval *ds_stack_peek(ds_stack_t *stack);
+void  ds_stack_push_all(ds_stack_t *stack, zval *value);
+void  ds_stack_to_array(ds_stack_t *stack, zval *return_value);
+void  ds_stack_destroy(ds_stack_t *stack);
 
 #endif

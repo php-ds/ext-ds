@@ -5,6 +5,6 @@
 
 extern zend_object_handlers php_map_handlers;
 
-void register_map_handlers();
+void php_ds_register_map_handlers();
 
 #endif

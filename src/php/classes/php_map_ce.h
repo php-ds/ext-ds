@@ -5,6 +5,6 @@
 
 extern zend_class_entry *php_ds_map_ce;
 
-void register_map();
+void php_ds_register_map();
 
 #endif

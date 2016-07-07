@@ -161,7 +161,7 @@ static int ds_set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval 
     return retval;
 }
 
-void register_set_handlers()
+void php_ds_register_set_handlers()
 {
     memcpy(&php_ds_set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

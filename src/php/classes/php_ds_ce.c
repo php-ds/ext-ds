@@ -88,14 +88,14 @@ METHOD(deque)
 ARGINFO_OPTIONAL_ZVAL_RETURN_DS(stack, values, Stack);
 METHOD(stack)
 {
-    php_ds_stack_t *stack = php_ds_stack_init();
+    ds_stack_t *stack = ds_stack();
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            php_ds_stack_allocate(stack, Z_LVAL_P(values));
+            ds_stack_allocate(stack, Z_LVAL_P(values));
         } else {
-            php_ds_stack_push_all(stack, values);
+            ds_stack_push_all(stack, values);
         }
     }
 
@@ -181,7 +181,7 @@ METHOD(pair)
     ZVAL_DS_PAIR(return_value, ds_pair_ex(key, value));
 }
 
-void register_ds()
+void php_ds_register_ds()
 {
     zend_class_entry ce;
 

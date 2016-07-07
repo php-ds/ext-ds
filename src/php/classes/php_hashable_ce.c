@@ -14,7 +14,7 @@ static zend_function_entry hashable_methods[] = {
     PHP_FE_END
 };
 
-void register_hashable()
+void php_ds_register_hashable()
 {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, DS_NS(Hashable), hashable_methods);

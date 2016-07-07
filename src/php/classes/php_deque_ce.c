@@ -233,7 +233,7 @@ METHOD(jsonSerialize)
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
 }
 
-void register_deque()
+void php_ds_register_deque()
 {
     zend_class_entry ce;
 
@@ -255,5 +255,5 @@ void register_deque()
     zend_declare_class_constant_long(php_ds_deque_ce, STR_AND_LEN("MIN_CAPACITY"), DS_DEQUE_MIN_CAPACITY);
     zend_class_implements(php_ds_deque_ce, 1, sequence_ce);
 
-    register_deque_handlers();
+    php_ds_register_deque_handlers();
 }

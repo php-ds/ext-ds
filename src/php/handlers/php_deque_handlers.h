@@ -5,6 +5,6 @@
 
 extern zend_object_handlers php_deque_handlers;
 
-void register_deque_handlers();
+void php_ds_register_deque_handlers();
 
 #endif

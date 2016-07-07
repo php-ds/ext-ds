@@ -36,7 +36,7 @@ static HashTable *ds_priority_queue_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(array);
 }
 
-void register_priority_queue_handlers()
+void php_ds_register_priority_queue_handlers()
 {
     memcpy(&php_priority_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 

@@ -97,7 +97,7 @@ METHOD(jsonSerialize)
     ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
-void register_priority_queue()
+void php_ds_register_priority_queue()
 {
     zend_class_entry ce;
 
@@ -129,5 +129,5 @@ void register_priority_queue()
     );
 
     zend_class_implements(php_ds_priority_queue_ce, 1, collection_ce);
-    register_priority_queue_handlers();
+    php_ds_register_priority_queue_handlers();
 }

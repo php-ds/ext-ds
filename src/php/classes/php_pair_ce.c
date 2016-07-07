@@ -47,7 +47,7 @@ METHOD(jsonSerialize)
     ds_pair_to_array(THIS_DS_PAIR(), return_value);
 }
 
-void register_pair()
+void php_ds_register_pair()
 {
     zend_class_entry ce;
 
@@ -67,5 +67,5 @@ void register_pair()
     php_ds_pair_ce->unserialize       = php_ds_pair_unserialize;
 
     zend_class_implements(php_ds_pair_ce, 1, php_json_serializable_ce);
-    register_pair_handlers();
+    php_ds_register_pair_handlers();
 }

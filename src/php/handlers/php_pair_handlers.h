@@ -5,6 +5,6 @@
 
 extern zend_object_handlers php_pair_handlers;
 
-void register_pair_handlers();
+void php_ds_register_pair_handlers();
 
 #endif

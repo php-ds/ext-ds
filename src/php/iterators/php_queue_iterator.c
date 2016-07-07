@@ -22,12 +22,12 @@ static zval *ds_queue_iterator_get_current_data(zend_object_iterator *iter)
 }
 
 static void ds_queue_iterator_get_current_key(zend_object_iterator *iter, zval *key) {
-    ZVAL_LONG(key, ((ds_queue_tIterator *) iter)->position);
+    ZVAL_LONG(key, ((ds_queue_iterator_t *) iter)->position);
 }
 
 static void ds_queue_iterator_move_forward(zend_object_iterator *iter)
 {
-    ds_queue_tIterator *iterator = (ds_queue_tIterator *) iter;
+    ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
 
     if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
         ds_queue_pop(iterator->queue, &iter->data);
@@ -39,7 +39,7 @@ static void ds_queue_iterator_move_forward(zend_object_iterator *iter)
 
 static void ds_queue_iterator_rewind(zend_object_iterator *iter)
 {
-    ds_queue_tIterator *iterator = (ds_queue_tIterator *) iter;
+    ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
 
     if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
         ds_queue_pop(iterator->queue, &iter->data);
@@ -59,14 +59,14 @@ static zend_object_iterator_funcs iterator_funcs = {
 
 zend_object_iterator *php_ds_queue_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
 {
-    ds_queue_tIterator *iterator;
+    ds_queue_iterator_t *iterator;
 
     if (by_ref) {
         ITERATION_BY_REF_NOT_SUPPORTED();
         return NULL;
     }
 
-    iterator = ecalloc(1, sizeof(ds_queue_tIterator));
+    iterator = ecalloc(1, sizeof(ds_queue_iterator_t));
     zend_iterator_init((zend_object_iterator*) iterator);
 
     ZVAL_UNDEF(&iterator->intern.data);
