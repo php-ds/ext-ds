@@ -103,9 +103,9 @@ do { \
 /**
  * Reallocates a zval buffer to a specified length.
  */
-#define REALLOC_ZVAL_BUFFER(ptr, n) \
-do { \
-    ptr = erealloc(ptr, n * sizeof(zval)); \
+#define REALLOC_ZVAL_BUFFER(ptr, n)          \
+do {                                         \
+    ptr = erealloc(ptr, (n) * sizeof(zval)); \
 } while (0)
 
 /**

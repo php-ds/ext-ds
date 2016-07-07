@@ -65,18 +65,16 @@ METHOD(vector)
 ARGINFO_OPTIONAL_ZVAL_RETURN_DS(deque, values, Deque);
 METHOD(deque)
 {
-    ds_deque_t *deque;
+    ds_deque_t *deque = ds_deque();
+
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            deque = ds_deque_ex(Z_LVAL_P(values));
+            ds_deque_allocate(deque, Z_LVAL_P(values));
         } else {
-            deque = ds_deque();
             ds_deque_push_all(deque, values);
         }
-    } else {
-        deque = ds_deque();
     }
 
     RETURN_DS_DEQUE(deque);
