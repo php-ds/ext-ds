@@ -22,7 +22,7 @@ METHOD(__construct)
     if ( ! values) {
         return;
     } else if (Z_TYPE_P(values) == IS_LONG) {
-        ds_deque_user_allocate(THIS_DS_DEQUE(), Z_LVAL_P(values));
+        ds_deque_allocate(THIS_DS_DEQUE(), Z_LVAL_P(values));
     } else {
         ds_deque_push_all(THIS_DS_DEQUE(), values);
     }
@@ -47,7 +47,7 @@ METHOD(rotate)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    ds_deque_user_allocate(THIS_DS_DEQUE(), capacity);
+    ds_deque_allocate(THIS_DS_DEQUE(), capacity);
 }
 
 METHOD(capacity)

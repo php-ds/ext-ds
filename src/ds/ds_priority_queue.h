@@ -27,7 +27,7 @@ typedef struct _ds_priority_queue_t {
 
 ds_priority_queue_t *ds_priority_queue();
 
-void ds_priority_queue_user_allocate(ds_priority_queue_t *pq, uint32_t capacity);
+void ds_priority_queue_allocate(ds_priority_queue_t *pq, uint32_t capacity);
 uint32_t ds_priority_queue_capacity(ds_priority_queue_t *pq);
 zval *ds_priority_queue_peek(ds_priority_queue_t *pq);
 void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value);

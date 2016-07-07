@@ -154,9 +154,6 @@ v = &_b->value;                             \
 } while (0)
 
 ds_htable_t *ds_htable();
-
-void ds_htable_create_key_set(ds_htable_t *table, zval *return_value);
-
 ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table);
 
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity);

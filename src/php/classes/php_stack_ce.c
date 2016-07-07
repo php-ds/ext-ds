@@ -22,7 +22,7 @@ METHOD(__construct)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            php_ds_stack_user_allocate(THIS_DS_STACK(), Z_LVAL_P(values));
+            php_ds_stack_allocate(THIS_DS_STACK(), Z_LVAL_P(values));
         } else {
             php_ds_stack_push_all(THIS_DS_STACK(), values);
         }
@@ -33,7 +33,7 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    php_ds_stack_user_allocate(THIS_DS_STACK(), capacity);
+    php_ds_stack_allocate(THIS_DS_STACK(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)

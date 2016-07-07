@@ -695,12 +695,6 @@ static zval *create_zval_buffer_of_keys(ds_htable_t *table)
     return buffer;
 }
 
-void ds_htable_create_key_set(ds_htable_t *table, zval *obj)
-{
-    ds_htable_t *clone = ds_htable_clone(table);
-    ZVAL_OBJ(obj, set_create_object_ex(clone));
-}
-
 ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table)
 {
     zval *buffer = create_zval_buffer_of_values(table);

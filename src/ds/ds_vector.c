@@ -69,7 +69,7 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long length)
     return ds_vector_from_buffer_ex(buffer, length, capacity);
 }
 
-void ds_vector_user_allocate(ds_vector_t *vector, zend_long capacity)
+void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
         ds_vector_reallocate(vector, capacity);

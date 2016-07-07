@@ -93,7 +93,7 @@ METHOD(stack)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            php_ds_stack_user_allocate(stack, Z_LVAL_P(values));
+            php_ds_stack_allocate(stack, Z_LVAL_P(values));
         } else {
             php_ds_stack_push_all(stack, values);
         }
@@ -113,7 +113,7 @@ METHOD(queue)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            ds_queue_user_allocate(queue, Z_LVAL_P(values));
+            ds_queue_allocate(queue, Z_LVAL_P(values));
         } else {
             ds_queue_push_all(queue, values);
         }
@@ -142,7 +142,7 @@ METHOD(map)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            ds_map_user_allocate(map, Z_LVAL_P(values));
+            ds_map_allocate(map, Z_LVAL_P(values));
         } else {
             ds_map_put_all(map, values);
         }
@@ -157,18 +157,18 @@ METHOD(map)
 ARGINFO_OPTIONAL_ZVAL_RETURN_DS(set, values, Set);
 METHOD(set)
 {
-    Set *set = set_init();
+    ds_set_t *set = ds_set();
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            set_user_allocate(set, Z_LVAL_P(values));
+            ds_set_allocate(set, Z_LVAL_P(values));
         } else {
-            set_add_all(set, values);
+            ds_set_add_all(set, values);
         }
     }
 
-    RETURN_SET(set);
+    RETURN_DS_SET(set);
 }
 
 /**

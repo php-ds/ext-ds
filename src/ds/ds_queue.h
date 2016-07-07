@@ -27,7 +27,7 @@ ds_queue_t *ds_queue_ex(ds_deque_t *deque);
 ds_queue_t *ds_queue();
 ds_queue_t *ds_queue_clone(ds_queue_t *queue);
 
-void ds_queue_user_allocate(ds_queue_t *queue, zend_long capacity);
+void ds_queue_allocate(ds_queue_t *queue, zend_long capacity);
 zend_long ds_queue_capacity(ds_queue_t *queue);
 
 void  ds_queue_push(ds_queue_t *queue, VA_PARAMS);

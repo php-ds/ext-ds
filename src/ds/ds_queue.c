@@ -24,9 +24,9 @@ ds_queue_t *ds_queue_clone(ds_queue_t *queue)
     return ds_queue_ex(ds_deque_clone(queue->deque));
 }
 
-void ds_queue_user_allocate(ds_queue_t *queue, zend_long capacity)
+void ds_queue_allocate(ds_queue_t *queue, zend_long capacity)
 {
-    ds_deque_user_allocate(queue->deque, capacity);
+    ds_deque_allocate(queue->deque, capacity);
 }
 
 zend_long ds_queue_capacity(ds_queue_t *queue)

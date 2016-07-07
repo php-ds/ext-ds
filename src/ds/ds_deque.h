@@ -79,7 +79,7 @@ void ds_deque_destroy(ds_deque_t *deque);
 /**
  * Ensures that a deque's buffer has at least a specified amount of capacity.
  */
-void ds_deque_user_allocate(ds_deque_t *deque, zend_long capacity);
+void ds_deque_allocate(ds_deque_t *deque, zend_long capacity);
 
 /**
  * Sets the value in a deque by index.

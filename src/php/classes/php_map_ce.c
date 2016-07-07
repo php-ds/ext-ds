@@ -6,6 +6,7 @@
 #include "../objects/php_vector.h"
 #include "../objects/php_map.h"
 #include "../objects/php_pair.h"
+#include "../objects/php_set.h"
 
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
@@ -24,7 +25,7 @@ METHOD(__construct)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            ds_map_user_allocate(THIS_DS_MAP(), Z_LVAL_P(values));
+            ds_map_allocate(THIS_DS_MAP(), Z_LVAL_P(values));
         } else {
             ds_map_put_all(THIS_DS_MAP(), values);
         }
@@ -35,7 +36,7 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    ds_map_user_allocate(THIS_DS_MAP(), capacity);
+    ds_map_allocate(THIS_DS_MAP(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)
@@ -134,7 +135,7 @@ ARGINFO_NONE_RETURN_DS(keys, Set)
 METHOD(keys)
 {
     PARSE_NONE;
-    ds_map_create_key_set(THIS_DS_MAP(), return_value);
+    RETURN_DS_SET(ds_set_ex(ds_htable_clone(THIS_DS_MAP()->table)));
 }
 
 ARGINFO_NONE_RETURN_DS(last, Pair)

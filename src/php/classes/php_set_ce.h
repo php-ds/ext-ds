@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_class_entry *set_ce;
+extern zend_class_entry *php_ds_set_ce;
 
 void register_set();
 

@@ -21,7 +21,7 @@ METHOD(__construct)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            ds_vector_user_allocate(THIS_DS_VECTOR(), Z_LVAL_P(values));
+            ds_vector_allocate(THIS_DS_VECTOR(), Z_LVAL_P(values));
         } else {
             ds_vector_push_all(THIS_DS_VECTOR(), values);
         }
@@ -31,7 +31,7 @@ METHOD(__construct)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    ds_vector_user_allocate(THIS_DS_VECTOR(), capacity);
+    ds_vector_allocate(THIS_DS_VECTOR(), capacity);
 }
 
 METHOD(capacity)

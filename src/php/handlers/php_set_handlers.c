@@ -1,19 +1,17 @@
-#include "php_set_handlers.h"
 #include "php_common_handlers.h"
-// #include "php.h"
-// #include "ext/spl/spl_exceptions.h"
+#include "php_set_handlers.h"
 #include "../../ds/ds_set.h"
+#include "../objects/php_set.h"
 #include "../classes/php_set_ce.h"
-// #include "php_set_handlers.h"
 
-zend_object_handlers set_handlers;
+zend_object_handlers php_ds_set_handlers;
 
-static zval *set_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
+static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
-    Set *set = Z_SET_P(obj);
+    ds_set_t *set = Z_DS_SET_P(obj);
 
     if (offset == NULL) {
-        set_add(set, obj);
+        ds_set_add(set, obj);
         return NULL;
     }
 
@@ -22,119 +20,119 @@ static zval *set_read_dimension(zval *obj, zval *offset, int type, zval *return_
         return NULL;
     }
 
-    return set_get(set, Z_LVAL_P(offset));
+    return ds_set_get(set, Z_LVAL_P(offset));
 }
 
-static void set_write_dimension(zval *obj, zval *offset, zval *value)
+static void ds_set_write_dimension(zval *obj, zval *offset, zval *value)
 {
-    Set *set = Z_SET_P(obj);
+    ds_set_t *set = Z_DS_SET_P(obj);
 
     if (offset == NULL) {
-        set_add(set, value);
+        ds_set_add(set, value);
         return;
     }
 
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
-static int set_count_elements(zval *obj, zend_long *count)
+static int ds_set_count_elements(zval *obj, zend_long *count)
 {
-    *count = SET_SIZE(Z_SET_P(obj));
+    *count = DS_SET_SIZE(Z_DS_SET_P(obj));
     return SUCCESS;
 }
 
-static void set_free_object(zend_object *object)
+static void ds_set_free_object(zend_object *object)
 {
-    Set *set = (Set*) object;
-    zend_object_std_dtor(&set->std);
-    set_free(set);
+    php_ds_set_t *obj = (php_ds_set_t*) object;
+    zend_object_std_dtor(&obj->std);
+    ds_set_free(obj->set);
 }
 
-static HashTable *set_get_debug_info(zval *obj, int *is_temp)
+static HashTable *ds_set_get_debug_info(zval *obj, int *is_temp)
 {
     zval arr;
-    Set *set = Z_SET_P(obj);
+    ds_set_t *set = Z_DS_SET_P(obj);
 
     *is_temp = 1;
 
-    set_to_array(set, &arr);
+    ds_set_to_array(set, &arr);
     return Z_ARRVAL(arr);
 }
 
-static zend_object *set_clone_obj(zval *obj)
+static zend_object *ds_set_clone_obj(zval *obj)
 {
-    Set *set = Z_SET_P(obj);
-    return set_create_clone(set);
+    return php_ds_set_create_clone(Z_DS_SET_P(obj));
 }
 
-static inline bool is_set(zval *op)
+static inline bool is_php_ds_set(zval *op)
 {
-    return Z_TYPE_P(op) == IS_OBJECT && instanceof_function(Z_OBJCE_P(op), set_ce);
+    return Z_TYPE_P(op) == IS_OBJECT &&
+        instanceof_function(Z_OBJCE_P(op), php_ds_set_ce);
 }
 
-static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval *op2)
+static int ds_set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval *op2)
 {
-    Set *set = Z_SET_P(op1);
+    ds_set_t *set = Z_DS_SET_P(op1);
 
     switch (opcode) {
 
-        // &, intersect which creates a new Set.
+        // &, intersect which creates a new set.
         case ZEND_BW_AND:
-            if (is_set(op2)) {
+            if (is_php_ds_set(op2)) {
                 if (op1 == result) {
-                    // &=, intersect which modifies the Set.
-                    set_assign_intersect(set, Z_SET_P(op2));
+                    // &=, intersect which modifies the set.
+                    ds_set_assign_intersect(set, Z_DS_SET_P(op2));
                 } else {
-                    set_intersect(set, Z_SET_P(op2), result);
+                    ZVAL_DS_SET(result, ds_set_intersect(set, Z_DS_SET_P(op2)));
                 }
                 return SUCCESS;
             }
             break;
 
-        // |, union which creates a new Set.
+        // |, union which creates a new set.
         case ZEND_BW_OR:
-            if (is_set(op2)) {
-                set_union(set, Z_SET_P(op2), result);
+            if (is_php_ds_set(op2)) {
+                ZVAL_DS_SET(result, ds_set_union(set, Z_DS_SET_P(op2)));
                 return SUCCESS;
             }
             break;
 
-        // |=, union which modifies the Set.
+        // |=, union which modifies the set.
         case ZEND_ASSIGN_BW_OR:
-            if (is_set(op2)) {
-                set_assign_union(set, Z_SET_P(op2));
+            if (is_php_ds_set(op2)) {
+                ds_set_assign_union(set, Z_DS_SET_P(op2));
                 return SUCCESS;
             }
             break;
 
-        // ^, xor which creates a new Set.
+        // ^, xor which creates a new set.
         case ZEND_BW_XOR:
-            if (is_set(op2)) {
-                set_xor(set, Z_SET_P(op2), result);
+            if (is_php_ds_set(op2)) {
+                ZVAL_DS_SET(result, ds_set_xor(set, Z_DS_SET_P(op2)));
                 return SUCCESS;
             }
             break;
 
-        // ^=, xor which modifies the Set.
+        // ^=, xor which modifies the set.
         case ZEND_ASSIGN_BW_XOR:
-            if (is_set(op2)) {
-                set_assign_xor(set, Z_SET_P(op2));
+            if (is_php_ds_set(op2)) {
+                ds_set_assign_xor(set, Z_DS_SET_P(op2));
                 return SUCCESS;
             }
             break;
 
-        // -, diff which creates a new Set.
+        // -, diff which creates a new set.
         case ZEND_SUB:
-            if (is_set(op2)) {
-                set_diff(set, Z_SET_P(op2), result);
+            if (is_php_ds_set(op2)) {
+                ZVAL_DS_SET(result, ds_set_diff(set, Z_DS_SET_P(op2)));
                 return SUCCESS;
             }
             break;
 
-        // -=, diff which modifies the Set.
+        // -=, diff which modifies the set.
         case ZEND_ASSIGN_SUB:
-            if (is_set(op2)) {
-                set_assign_diff(set, Z_SET_P(op2));
+            if (is_php_ds_set(op2)) {
+                ds_set_assign_diff(set, Z_DS_SET_P(op2));
                 return SUCCESS;
             }
             break;
@@ -144,7 +142,7 @@ static int set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval 
     return FAILURE;
 }
 
-static int set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
+static int ds_set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
 {
     zval op1_copy;
     int retval;
@@ -154,7 +152,7 @@ static int set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op
         op1 = &op1_copy;
     }
 
-    retval = set_do_operation_ex(opcode, result, op1, op2);
+    retval = ds_set_do_operation_ex(opcode, result, op1, op2);
 
     if (retval == SUCCESS && op1 == &op1_copy) {
         zval_dtor(op1);
@@ -165,16 +163,16 @@ static int set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op
 
 void register_set_handlers()
 {
-    memcpy(&set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    set_handlers.offset = XtOffsetOf(Set, std);
+    php_ds_set_handlers.offset = XtOffsetOf(php_ds_set_t, std);
 
-    set_handlers.free_obj            = set_free_object;
-    set_handlers.clone_obj           = set_clone_obj;
-    set_handlers.get_debug_info      = set_get_debug_info;
-    set_handlers.count_elements      = set_count_elements;
-    set_handlers.read_dimension      = set_read_dimension;
-    set_handlers.write_dimension     = set_write_dimension;
-    set_handlers.cast_object         = ds_default_cast_object;
-    // set_handlers.do_operation        = set_do_operation;
+    php_ds_set_handlers.free_obj            = ds_set_free_object;
+    php_ds_set_handlers.clone_obj           = ds_set_clone_obj;
+    php_ds_set_handlers.get_debug_info      = ds_set_get_debug_info;
+    php_ds_set_handlers.count_elements      = ds_set_count_elements;
+    php_ds_set_handlers.read_dimension      = ds_set_read_dimension;
+    php_ds_set_handlers.write_dimension     = ds_set_write_dimension;
+    php_ds_set_handlers.cast_object         = ds_default_cast_object;
+    // php_ds_set_handlers.do_operation        = ds_set_do_operation;
 }

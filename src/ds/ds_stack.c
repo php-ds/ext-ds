@@ -31,9 +31,9 @@ zend_object *php_ds_stack_create_clone(php_ds_stack_t *stack)
     return &php_ds_stack_init_ex(cloned)->std;
 }
 
-void php_ds_stack_user_allocate(php_ds_stack_t *stack, zend_long capacity)
+void php_ds_stack_allocate(php_ds_stack_t *stack, zend_long capacity)
 {
-    ds_vector_user_allocate(stack->vector, capacity);
+    ds_vector_allocate(stack->vector, capacity);
 }
 
 zend_long php_ds_stack_capacity(php_ds_stack_t *stack)

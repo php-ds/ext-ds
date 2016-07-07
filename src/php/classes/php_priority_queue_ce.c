@@ -17,9 +17,6 @@ zend_class_entry *php_ds_priority_queue_ce;
 ARGINFO_NONE(__construct)
 METHOD(__construct)
 {
-    /* Constructing using an iterator is difficult to do, and in most cases
-       doesn't make any sense. Would you use the values? Default priority?
-    */
     PARSE_NONE;
 }
 
@@ -27,7 +24,7 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    ds_priority_queue_user_allocate(THIS_DS_PRIORITY_QUEUE(), capacity);
+    ds_priority_queue_allocate(THIS_DS_PRIORITY_QUEUE(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)

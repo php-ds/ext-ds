@@ -22,7 +22,7 @@ METHOD(__construct)
 
     if (values) {
         if (Z_TYPE_P(values) == IS_LONG) {
-            ds_queue_user_allocate(THIS_DS_QUEUE(), Z_LVAL_P(values));
+            ds_queue_allocate(THIS_DS_QUEUE(), Z_LVAL_P(values));
         } else {
             ds_queue_push_all(THIS_DS_QUEUE(), values);
         }
@@ -33,7 +33,7 @@ ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
-    ds_queue_user_allocate(THIS_DS_QUEUE(), capacity);
+    ds_queue_allocate(THIS_DS_QUEUE(), capacity);
 }
 
 ARGINFO_NONE_RETURN_LONG(capacity)

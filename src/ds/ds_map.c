@@ -28,7 +28,7 @@ ds_map_t *ds_map_clone(ds_map_t *map)
     return ds_map_ex(ds_htable_clone(map->table));
 }
 
-void ds_map_user_allocate(ds_map_t *map, zend_long capacity)
+void ds_map_allocate(ds_map_t *map, zend_long capacity)
 {
     ds_htable_ensure_capacity(map->table, capacity);
 }
@@ -171,11 +171,6 @@ ds_map_t *ds_map_sorted_by_key(ds_map_t *map)
 void ds_map_to_array(ds_map_t *map, zval *return_value)
 {
     ds_htable_to_array(map->table, return_value);
-}
-
-void ds_map_create_key_set(ds_map_t *map, zval *obj)
-{
-    ds_htable_create_key_set(map->table, obj);
 }
 
 ds_vector_t *ds_map_values_to_vector(ds_map_t *map)

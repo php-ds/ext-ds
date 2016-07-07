@@ -47,7 +47,7 @@ php_ds_stack_t *php_ds_stack_init();
 zend_object *php_ds_stack_create_object(zend_class_entry *ce);
 zend_object *php_ds_stack_create_clone(php_ds_stack_t *stack);
 void php_ds_stack_push(php_ds_stack_t *stack, VA_PARAMS);
-void php_ds_stack_user_allocate(php_ds_stack_t *stack, zend_long capacity);
+void php_ds_stack_allocate(php_ds_stack_t *stack, zend_long capacity);
 zend_long php_ds_stack_capacity(php_ds_stack_t *stack);
 void php_ds_stack_push_one(php_ds_stack_t *stack, zval *value);
 void php_ds_stack_clear(php_ds_stack_t *stack);

@@ -56,7 +56,7 @@ static inline void increase_capacity(ds_priority_queue_t *queue)
     reallocate_to_capacity(queue, queue->capacity << 1);
 }
 
-void ds_priority_queue_user_allocate(ds_priority_queue_t *queue, uint32_t capacity)
+void ds_priority_queue_allocate(ds_priority_queue_t *queue, uint32_t capacity)
 {
     if (capacity > queue->capacity) {
         reallocate_to_capacity(queue, capacity_for_size(capacity));

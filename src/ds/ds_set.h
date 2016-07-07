@@ -4,84 +4,64 @@
 #include "../common.h"
 #include "ds_htable.h"
 
-typedef struct _Set {
-    zend_object  std;
-    ds_htable_t      *table;
-} Set;
+#define DS_SET_SIZE(s)     ((s)->table->size)
+#define DS_SET_CAPACITY(s) ((s)->table->capacity)
+#define SET_IS_EMPTY(s)    (DS_SET_SIZE(s) == 0)
 
-#define SET_SIZE(s) ((s)->table->size)
-#define SET_IS_EMPTY(s) (SET_SIZE(s) == 0)
+#define DS_SET_FOREACH(set, value) \
+    DS_HTABLE_FOREACH_KEY(set->table, value)
 
-#define Z_SET(z)   ((Set*)(Z_OBJ(z)))
-#define Z_SET_P(z) Z_SET(*z)
-#define THIS_SET() Z_SET_P(getThis())
+#define DS_SET_FOREACH_END() \
+    DS_HTABLE_FOREACH_END()
 
-#define ZVAL_SET(z, set)  ZVAL_OBJ(z, &set->std)
-#define ZVAL_NEW_SET(z)   ZVAL_SET(z, set_init())
+typedef struct _ds_set_t {
+    ds_htable_t *table;
+} ds_set_t;
 
-#define RETURN_SET(set) \
-do { \
-    ZVAL_SET(return_value, set); \
-    return; \
-} while(0)
+ds_set_t *ds_set_ex(ds_htable_t *table);
+ds_set_t *ds_set();
+void      ds_set_free(ds_set_t *set);
+ds_set_t *ds_set_clone(ds_set_t *set);
 
-#define SET_FOREACH(set, value) DS_HTABLE_FOREACH_KEY(set->table, value)
-#define SET_FOREACH_END() DS_HTABLE_FOREACH_END()
+void ds_set_allocate(ds_set_t *set, zend_long capacity);
 
-#define SET_SIZE(s) ((s)->table->size)
-#define SET_IS_EMPTY(s) (SET_SIZE(s) == 0)
+void ds_set_add(ds_set_t *set, zval *value);
+void ds_set_add_va(ds_set_t *set, VA_PARAMS);
+bool ds_set_contains_all(ds_set_t *set, VA_PARAMS);
+bool ds_set_contains(ds_set_t *set, zval *value);
+void ds_set_remove_va(ds_set_t *set, VA_PARAMS);
+void ds_set_clear(ds_set_t *set);
+void ds_set_to_array(ds_set_t *set, zval *arr);
+void ds_set_add_all(ds_set_t *set, zval *value);
 
-Set *set_init();
+zval *ds_set_get(ds_set_t *set, zend_long index);
+zval *ds_set_get_first(ds_set_t *set);
+zval *ds_set_get_last(ds_set_t *set);
 
-zend_object *set_create_object_ex(ds_htable_t *table);
-zend_object *set_create_object(zend_class_entry *ce);
-zend_object *set_create_clone(Set *set);
-void set_init_zval_ex(zval *obj, Set *set);
-void set_user_allocate(Set *set, zend_long capacity);
-uint32_t set_capacity(Set *set);
+ds_set_t *ds_set_slice(ds_set_t *set, zend_long index, zend_long length);
 
-Set *set_clone(Set *set);
-void set_free(Set *set);
-void set_add(Set *set, zval *value);
-void set_add_va(Set *set, VA_PARAMS);
-bool set_contains_all(Set *set, VA_PARAMS);
-bool set_contains(Set *set, zval *value);
-void set_remove_va(Set *set, VA_PARAMS);
-void set_clear(Set *set);
-void set_to_array(Set *set, zval *arr);
-void set_add_all(Set *set, zval *value);
-void set_init_zval_ex(zval *obj, Set *set);
-void set_init_zval(zval *obj);
+void      ds_set_sort_callback(ds_set_t *set);
+void      ds_set_sort(ds_set_t *set);
+ds_set_t *ds_set_sorted_callback(ds_set_t *set);
+ds_set_t *ds_set_sorted(ds_set_t *set);
 
-zval *set_get(Set *set, zend_long index);
-zval *set_get_first(Set *set);
-zval *set_get_last(Set *set);
+void ds_set_join  (ds_set_t *set, const char *glue, const size_t len, zval *return_value);
+void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value);
 
-void set_slice(Set *set, zend_long index, zend_long length, zval *obj);
-void set_join(Set *set, const char *glue, const size_t len, zval *return_value);
-void set_sort_callback(Set *set);
-void set_sort(Set *set);
-void set_sorted_callback(Set *set, zval *obj);
-void set_sorted(Set *set, zval *obj);
+ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS);
+ds_set_t *ds_set_filter(ds_set_t *set);
 
-void set_reduce(Set *set, FCI_PARAMS, zval *initial, zval *return_value);
-void set_filter_callback(Set *set, FCI_PARAMS, zval *return_value);
-void set_filter(Set *set, zval *return_value);
+void      ds_set_reverse (ds_set_t *set);
+ds_set_t *ds_set_reversed(ds_set_t *set);
 
-void set_reverse(Set *set);
-void set_reversed(Set *set, zval *return_value);
+ds_set_t *ds_set_diff(ds_set_t *set, ds_set_t *other);
+ds_set_t *ds_set_intersect(ds_set_t *set, ds_set_t *other);
+ds_set_t *ds_set_xor(ds_set_t *set, ds_set_t *other);
+ds_set_t *ds_set_union(ds_set_t *set, ds_set_t *other);
 
-int set_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
-int set_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);
-
-void set_diff(Set *set, Set *other, zval *obj);
-void set_intersect(Set *set, Set *other, zval *obj);
-void set_xor(Set *set, Set *other, zval *obj);
-void set_union(Set *set, Set *other, zval *obj);
-
-void set_assign_diff(Set *set, Set *other);
-void set_assign_intersect(Set *set, Set *other);
-void set_assign_xor(Set *set, Set *other);
-void set_assign_union(Set *set, Set *other);
+void ds_set_assign_diff(ds_set_t *set, ds_set_t *other);
+void ds_set_assign_intersect(ds_set_t *set, ds_set_t *other);
+void ds_set_assign_xor(ds_set_t *set, ds_set_t *other);
+void ds_set_assign_union(ds_set_t *set, ds_set_t *other);
 
 #endif

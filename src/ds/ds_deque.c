@@ -199,10 +199,10 @@ static inline void ds_deque_ensure_capacity(ds_deque_t *deque, zend_long size)
     }
 }
 
-void ds_deque_user_allocate(ds_deque_t *deque, zend_long size)
+void ds_deque_allocate(ds_deque_t *deque, zend_long capacity)
 {
     // -1 because an extra slot will be allocated for the tail.
-    ds_deque_ensure_capacity(deque, size - 1);
+    ds_deque_ensure_capacity(deque, capacity - 1);
 }
 
 static inline void auto_truncate(ds_deque_t *deque)

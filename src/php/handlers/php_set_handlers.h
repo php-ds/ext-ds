@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_object_handlers set_handlers;
+extern zend_object_handlers php_ds_set_handlers;
 
 void register_set_handlers();
 

@@ -26,8 +26,8 @@ bool ds_map_has_values(ds_map_t *map, VA_PARAMS);
 void ds_map_clear(ds_map_t *map);
 void ds_map_to_array(ds_map_t *map, zval *return_value);
 void ds_map_put_all(ds_map_t *map, zval *values);
+
 ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length);
-void ds_map_create_key_set(ds_map_t *map, zval *return_value);
 
 ds_vector_t *ds_map_values_to_vector(ds_map_t *map);
 
@@ -35,7 +35,7 @@ ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS);
 ds_map_t *ds_map_filter_callback(ds_map_t *map, FCI_PARAMS);
 void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
 
-void ds_map_user_allocate(ds_map_t *map, zend_long capacity);
+void ds_map_allocate(ds_map_t *map, zend_long capacity);
 zend_long ds_map_capacity(ds_map_t *map);
 
 ds_map_t *ds_map_sorted_by_value_callback(ds_map_t *map);
