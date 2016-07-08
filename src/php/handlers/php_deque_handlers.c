@@ -58,7 +58,7 @@ static void ds_deque_unset_dimension(zval *obj, zval *offset)
 
     index = Z_LVAL_P(offset);
 
-    if (index >= 0 && index < DS_DEQUE_SIZE(deque)) {
+    if (index >= 0 && index < deque->size) {
         ds_deque_remove(deque, index, NULL);
     }
 }
@@ -66,7 +66,7 @@ static void ds_deque_unset_dimension(zval *obj, zval *offset)
 static int ds_deque_count_elements(zval *obj, zend_long *count)
 {
     ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-    *count = DS_DEQUE_SIZE(deque);
+    *count = deque->size;
     return SUCCESS;
 }
 

@@ -90,9 +90,10 @@ do { \
  * Used to replace a buffer with a new one.
  */
 #define FREE_AND_REPLACE(ptr, repl) \
-do { \
-    efree(ptr); \
-    ptr = repl; \
+do {                                \
+    void *_repl = repl;             \
+    efree(ptr);                     \
+    ptr = _repl;                    \
 } while (0)
 
 /**

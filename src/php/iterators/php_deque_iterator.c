@@ -15,7 +15,7 @@ static int ds_deque_iterator_valid(zend_object_iterator *iter)
     ds_deque_t *deque             = iterator->deque;
     zend_long position       = iterator->position;
 
-    return position < DS_DEQUE_SIZE(deque) ? SUCCESS : FAILURE;
+    return position < deque->size ? SUCCESS : FAILURE;
 }
 
 static zval *ds_deque_iterator_get_current_data(zend_object_iterator *iter)

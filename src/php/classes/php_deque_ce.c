@@ -100,7 +100,7 @@ METHOD(slice)
         RETURN_DS_DEQUE(ds_deque_slice(deque, index, length));
     } else {
         PARSE_LONG(index);
-        RETURN_DS_DEQUE(ds_deque_slice(deque, index, DS_DEQUE_SIZE(deque)));
+        RETURN_DS_DEQUE(ds_deque_slice(deque, index, deque->size));
     }
 }
 
@@ -121,7 +121,11 @@ METHOD(sort)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
-    ds_deque_push_va(THIS_DS_DEQUE(), argc, argv);
+    if (argc == 1) {
+        ds_deque_push(THIS_DS_DEQUE(), argv);
+    } else {
+        ds_deque_push_va(THIS_DS_DEQUE(), argc, argv);
+    }
 }
 
 METHOD(unshift)
@@ -158,7 +162,7 @@ METHOD(count)
 {
     ds_deque_t *deque = THIS_DS_DEQUE();
     PARSE_NONE;
-    RETURN_LONG(DS_DEQUE_SIZE(deque));
+    RETURN_LONG(deque->size);
 }
 
 METHOD(clear)
