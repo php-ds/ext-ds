@@ -4,21 +4,7 @@
 #include "../common.h"
 #include "ds_vector.h"
 
-typedef struct _ds_htable_bucket_t {
-    zval key;
-    zval value;
-} ds_htable_bucket_t;
-
-typedef struct _ds_htable_t {
-    ds_htable_bucket_t  *buckets;       // Buffer for the buckets
-    uint32_t            *lookup;        // Separated hash lookup table
-    uint32_t             next;          // Next open index in the bucket buffer
-    uint32_t             size;          // Number of active pairs in the table
-    uint32_t             capacity;      // Number of buckets in the table
-    uint32_t             min_deleted;   // Lowest deleted bucket buffer index
-} ds_htable_t;
-
-#define DS_HTABLE_MIN_CAPACITY  8  // Must be a power of 2
+#define DS_HTABLE_MIN_CAPACITY  16  // Must be a power of 2
 
 /**
  * Marker to indicate an invalid index in the buffer.
@@ -89,69 +75,81 @@ do {                                                            \
     DTOR_AND_UNDEF(&(b)->key);                              \
     DS_HTABLE_BUCKET_NEXT((b)) = DS_HTABLE_INVALID_INDEX
 
-/**
- *
- */
-#define DS_HTABLE_FOREACH_BUCKET(h, b)         \
-do {                                        \
-    ds_htable_t  *_h = h;                        \
-    ds_htable_bucket_t *_x = _h->buckets;              \
-    ds_htable_bucket_t *_y = _x + _h->next;            \
-    for (; _x < _y; ++_x) {                 \
-        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;   \
+#define DS_HTABLE_FOREACH_BUCKET(h, b)                  \
+do {                                                    \
+    ds_htable_t *_h = h;                                \
+    ds_htable_bucket_t *_x = _h->buckets;               \
+    ds_htable_bucket_t *_y = _h->buckets + _h->next;    \
+    for (; _x < _y; ++_x) {                             \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;     \
         b = _x;
 
-#define DS_HTABLE_FOREACH_BUCKET_BY_INDEX(h, i, b) \
-do {                                            \
-    uint32_t _i = 0;                            \
-    ds_htable_t  *_h = h;                            \
-    ds_htable_bucket_t *_x = _h->buckets;                  \
-    ds_htable_bucket_t *_y = _x + _h->next;                \
-    for (; _x < _y; ++_x) {                     \
-        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;       \
-        b = _x;                                 \
-        i = _i++;
-
-#define DS_HTABLE_FOREACH_BUCKET_REVERSED(h, b)    \
-do {                                            \
-    ds_htable_t  *_h  = h;                           \
-    ds_htable_bucket_t *_x = _h->buckets;                  \
-    ds_htable_bucket_t *_y = _x + _h->next - 1;            \
-    for (; _y >= _x; --_y) {                    \
-        if (DS_HTABLE_BUCKET_DELETED(_y)) continue;       \
+#define DS_HTABLE_FOREACH_BUCKET_REVERSED(h, b)         \
+do {                                                    \
+    ds_htable_t *_h  = h;                               \
+    ds_htable_bucket_t *_x = _h->buckets;               \
+    ds_htable_bucket_t *_y = _x + _h->next - 1;         \
+    for (; _y >= _x; --_y) {                            \
+        if (DS_HTABLE_BUCKET_DELETED(_y)) continue;     \
         b = _y;
 
-#define DS_HTABLE_FOREACH(h, i, k, v)          \
-do {                                        \
-    uint32_t _i;                            \
-    ds_htable_bucket_t *_b = (h)->buckets;             \
-    const uint32_t _n = (h)->size;          \
-                                            \
-    for (_i = 0; _i < _n; ++_b) {           \
-        if (DS_HTABLE_BUCKET_DELETED(_b)) continue;   \
-        k = &_b->key;                       \
-        v = &_b->value;                     \
-        i = _i++;                           \
+#define DS_HTABLE_FOREACH(h, i, k, v)                   \
+do {                                                    \
+    uint32_t _i;                                        \
+    uint32_t _n = (h)->size;                            \
+    ds_htable_bucket_t *_b = (h)->buckets;              \
+                                                        \
+    for (_i = 0; _i < _n; ++_b) {                       \
+        if (DS_HTABLE_BUCKET_DELETED(_b)) continue;     \
+        k = &_b->key;                                   \
+        v = &_b->value;                                 \
+        i = _i++;
 
-// To avoid redefinition when using multiple foreach in the same scope.
-static ds_htable_bucket_t *_b;
+#define DS_HTABLE_FOREACH_KEY(h, k)                     \
+do {                                                    \
+    ds_htable_t *_h = h;                                \
+    ds_htable_bucket_t *_x = _h->buckets;               \
+    ds_htable_bucket_t *_y = _h->buckets + _h->next;    \
+    for (; _x < _y; ++_x) {                             \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;     \
+        k = &_x->key;
 
-#define DS_HTABLE_FOREACH_KEY(h, k) \
-DS_HTABLE_FOREACH_BUCKET(h, _b);    \
-k = &_b->key;                    \
+#define DS_HTABLE_FOREACH_VALUE(h, v)                   \
+do {                                                    \
+    ds_htable_t *_h = h;                                \
+    ds_htable_bucket_t *_x = _h->buckets;               \
+    ds_htable_bucket_t *_y = _h->buckets + _h->next;    \
+    for (; _x < _y; ++_x) {                             \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;     \
+        v = &_x->value;
 
-#define DS_HTABLE_FOREACH_VALUE(h, v) \
-DS_HTABLE_FOREACH_BUCKET(h, _b);      \
-v = &_b->value;                    \
-
-#define DS_HTABLE_FOREACH_KEY_VALUE(h, k, v)   \
-DS_HTABLE_FOREACH_BUCKET(h, _b);               \
-k = &_b->key;                               \
-v = &_b->value;                             \
+#define DS_HTABLE_FOREACH_KEY_VALUE(h, k, v)    \
+do {                                                    \
+    ds_htable_t *_h = h;                                \
+    ds_htable_bucket_t *_x = _h->buckets;               \
+    ds_htable_bucket_t *_y = _h->buckets + _h->next;    \
+    for (; _x < _y; ++_x) {                             \
+        if (DS_HTABLE_BUCKET_DELETED(_x)) continue;     \
+        k = &_x->key;                                   \
+        v = &_x->value;
 
 #define DS_HTABLE_FOREACH_END() \
-    }                        \
+    }                           \
 } while (0)
+
+typedef struct _ds_htable_bucket_t {
+    zval key;
+    zval value;
+} ds_htable_bucket_t;
+
+typedef struct _ds_htable_t {
+    ds_htable_bucket_t  *buckets;       // Buffer for the buckets
+    uint32_t            *lookup;        // Separated hash lookup table
+    uint32_t             next;          // Next open index in the bucket buffer
+    uint32_t             size;          // Number of active pairs in the table
+    uint32_t             capacity;      // Number of buckets in the table
+    uint32_t             min_deleted;   // Lowest deleted bucket buffer index
+} ds_htable_t;
 
 ds_htable_t *ds_htable();
 ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table);

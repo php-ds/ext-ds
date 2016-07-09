@@ -28,19 +28,6 @@ zend_object *php_ds_pair_create_object_ex(ds_pair_t *pair);
 zend_object *php_ds_pair_create_object(zend_class_entry *ce);
 zend_object *php_ds_pair_create_clone(ds_pair_t *pair);
 
-int php_ds_pair_serialize(
-    zval                    *object,
-    unsigned char          **buffer,
-    size_t                  *length,
-    zend_serialize_data     *data
-);
-
-int php_ds_pair_unserialize(
-    zval                    *object,
-    zend_class_entry        *ce,
-    const unsigned char     *buffer,
-    size_t                   length,
-    zend_unserialize_data   *data
-);
+PHP_DS_SERIALIZE_FUNCIONS(php_ds_pair);
 
 #endif

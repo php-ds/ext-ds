@@ -52,13 +52,13 @@ void php_ds_register_pair()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME(Pair, __construct)
-        COLLECTION_ME(Pair, jsonSerialize)
-        COLLECTION_ME(Pair, toArray)
+        PHP_DS_ME(Pair, __construct)
+        PHP_DS_ME(Pair, jsonSerialize)
+        PHP_DS_ME(Pair, toArray)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Pair), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Pair), methods);
     php_ds_pair_ce = zend_register_internal_class(&ce);
 
     php_ds_pair_ce->ce_flags         |= ZEND_ACC_FINAL;

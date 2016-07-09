@@ -241,11 +241,11 @@ void php_ds_register_vector()
 
     zend_function_entry methods[] = {
         SEQUENCE_ME_LIST(Vector)
-        COLLECTION_ME_LIST(Vector)
+        PHP_DS_ME_LIST(Vector)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Vector), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Vector), methods);
 
     php_ds_vector_ce = zend_register_internal_class(&ce);
     php_ds_vector_ce->ce_flags      |= ZEND_ACC_FINAL;

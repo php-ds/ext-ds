@@ -242,12 +242,12 @@ void php_ds_register_deque()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME_LIST(Deque)
+        PHP_DS_ME_LIST(Deque)
         SEQUENCE_ME_LIST(Deque)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Deque), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Deque), methods);
 
     php_ds_deque_ce = zend_register_internal_class(&ce);
     php_ds_deque_ce->ce_flags      |= ZEND_ACC_FINAL;

@@ -7,15 +7,7 @@
 #define Z_DS_VECTOR_P(z) Z_DS_VECTOR(*z)
 #define THIS_DS_VECTOR() Z_DS_VECTOR_P(getThis())
 
-#define ZVAL_DS_VECTOR(z, v)  \
-do { \
-    ZVAL_OBJ(z, php_ds_vector_create_object_ex(v)); \
-} while(0)
-
-#define ZVAL_NEW_DS_VECTOR(z) \
-do { \
-    ZVAL_OBJ(z, php_ds_vector_create_object_ex(ds_vector())); \
-} while(0)
+#define ZVAL_DS_VECTOR(z, v) ZVAL_OBJ(z, php_ds_vector_create_object_ex(v))
 
 #define RETURN_DS_VECTOR(v)                 \
 do {                                        \
@@ -36,19 +28,6 @@ zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector);
 zend_object *php_ds_vector_create_object(zend_class_entry *ce);
 zend_object *php_ds_vector_create_clone(ds_vector_t *vector);
 
-int php_ds_vector_serialize(
-    zval                    *object,
-    unsigned char          **buffer,
-    size_t                  *length,
-    zend_serialize_data     *data
-);
-
-int php_ds_vector_unserialize(
-    zval                    *object,
-    zend_class_entry        *ce,
-    const unsigned char     *buffer,
-    size_t                   length,
-    zend_unserialize_data   *data
-);
+PHP_DS_SERIALIZE_FUNCIONS(php_ds_vector);
 
 #endif

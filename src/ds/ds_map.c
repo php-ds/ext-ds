@@ -185,7 +185,7 @@ ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length)
 
 ds_map_t *ds_map_merge(ds_map_t *map, zval *values)
 {
-    if (ds_zval_is_array(values) || ds_zval_is_traversable(values)) {
+    if (ds_is_array(values) || ds_is_traversable(values)) {
         ds_map_t *merged = ds_map_clone(map);
         ds_map_put_all(merged, values);
         return merged;
@@ -293,13 +293,13 @@ void ds_map_put_all(ds_map_t *map, zval *values)
         return;
     }
 
-    if (ds_zval_is_array(values)) {
+    if (ds_is_array(values)) {
         HashTable *ht = Z_ARRVAL_P(values);
         add_ht_to_map(map, ht);
         return;
     }
 
-    if (ds_zval_is_traversable(values)) {
+    if (ds_is_traversable(values)) {
         add_traversable_to_map(map, values);
         return;
     }

@@ -8,7 +8,6 @@
 #define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
 
 #define ZVAL_DS_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
-#define ZVAL_NEW_DS_DEQUE(z) ZVAL_OBJ(z, php_ds_deque_create_object_ex(ds_deque()))
 
 #define RETURN_DS_DEQUE(deque)              \
 do {                                        \
@@ -44,25 +43,6 @@ zend_object *php_ds_deque_create_object(zend_class_entry *ce);
  */
 zend_object *php_ds_deque_create_clone(ds_deque_t *deque);
 
-/**
- * Serializses a deque object.
- */
-int php_ds_deque_serialize(
-    zval                    *object,
-    unsigned char          **buffer,
-    size_t                  *length,
-    zend_serialize_data     *data
-);
-
-/**
- * Unserializes a string as a deque object.
- */
-int php_ds_deque_unserialize(
-    zval                    *object,
-    zend_class_entry        *ce,
-    const unsigned char     *buffer,
-    size_t                   length,
-    zend_unserialize_data   *data
-);
+PHP_DS_SERIALIZE_FUNCIONS(php_ds_deque);
 
 #endif

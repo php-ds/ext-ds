@@ -4,14 +4,14 @@
 #include "../common.h"
 #include "ds_deque.h"
 
-#define QUEUE_SIZE(queue) (DS_DEQUE_SIZE((queue)->deque))
-#define QUEUE_IS_EMPTY(queue) (QUEUE_SIZE(queue) == 0)
+#define QUEUE_SIZE(q)     ((q)->deque->size)
+#define QUEUE_IS_EMPTY(q) ((q)->deque->size == 0)
 
 #define QUEUE_FOREACH(queue, value)                 \
 do {                                                \
     zval _tmp;                                      \
-    while ( ! DS_DEQUE_IS_EMPTY(queue->deque)) {       \
-        ds_deque_shift(queue->deque, &_tmp);           \
+    while ( ! DS_DEQUE_IS_EMPTY(queue->deque)) {    \
+        ds_deque_shift(queue->deque, &_tmp);        \
         value = &_tmp;
 
 #define QUEUE_FOREACH_END()     \

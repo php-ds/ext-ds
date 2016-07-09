@@ -28,12 +28,6 @@
  */
 #define METHOD(name) PHP_METHOD(ds, name)
 
-/**
- *
- */
-#define DS_ME(name) \
-    PHP_ME(ds, name, arginfo##_##name, ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
-
 zend_class_entry *ds_ce;
 
 /**
@@ -184,14 +178,14 @@ void php_ds_register_ds()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        DS_ME(vector)
-        DS_ME(deque)
-        DS_ME(stack)
-        DS_ME(queue)
-        DS_ME(priority_queue)
-        DS_ME(map)
-        DS_ME(set)
-        DS_ME(pair)
+        PHP_ME(ds, vector,          arginfo_vector,         ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, deque,           arginfo_deque,          ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, stack,           arginfo_stack,          ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, queue,           arginfo_queue,          ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, priority_queue,  arginfo_priority_queue, ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, map,             arginfo_map,            ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, set,             arginfo_set,            ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
+        PHP_ME(ds, pair,            arginfo_pair,           ZEND_ACC_STATIC | ZEND_ACC_PUBLIC)
         PHP_FE_END
     };
 

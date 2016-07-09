@@ -2,7 +2,6 @@
 
 #include "../parameters.h"
 #include "../arginfo.h"
-// #include "../../ds/ds_queue.h"
 
 #include "../iterators/php_queue_iterator.h"
 #include "../handlers/php_queue_handlers.h"
@@ -118,19 +117,19 @@ void php_ds_register_queue()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME(Queue, __construct)
-        COLLECTION_ME(Queue, allocate)
-        COLLECTION_ME(Queue, capacity)
-        COLLECTION_ME(Queue, peek)
-        COLLECTION_ME(Queue, pop)
-        COLLECTION_ME(Queue, push)
-        COLLECTION_ME(Queue, pushAll)
+        PHP_DS_ME(Queue, __construct)
+        PHP_DS_ME(Queue, allocate)
+        PHP_DS_ME(Queue, capacity)
+        PHP_DS_ME(Queue, peek)
+        PHP_DS_ME(Queue, pop)
+        PHP_DS_ME(Queue, push)
+        PHP_DS_ME(Queue, pushAll)
 
-        COLLECTION_ME_LIST(Queue)
+        PHP_DS_ME_LIST(Queue)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Queue), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Queue), methods);
 
     php_ds_queue_ce = zend_register_internal_class(&ce);
     php_ds_queue_ce->ce_flags      |= ZEND_ACC_FINAL;
@@ -139,6 +138,8 @@ void php_ds_register_queue()
     php_ds_queue_ce->serialize      = php_ds_queue_serialize;
     php_ds_queue_ce->unserialize    = php_ds_queue_unserialize;
 
+    zend_declare_class_constant_long(php_ds_queue_ce, STR_AND_LEN("MIN_CAPACITY"), DS_DEQUE_MIN_CAPACITY);
     zend_class_implements(php_ds_queue_ce, 1, collection_ce);
+
     php_ds_register_queue_handlers();
 }

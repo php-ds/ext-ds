@@ -78,7 +78,6 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS);
 ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length);
 ds_vector_t *ds_vector_filter(ds_vector_t *vector);
 ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS);
-
 ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values);
 
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS);

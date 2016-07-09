@@ -426,12 +426,12 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
         return;
     }
 
-    if (ds_zval_is_array(values)) {
+    if (ds_is_array(values)) {
         add_array_to_vector(vector, Z_ARRVAL_P(values));
         return;
     }
 
-    if (ds_zval_is_traversable(values)) {
+    if (ds_is_traversable(values)) {
         add_traversable_to_vector(vector, values);
         return;
     }
@@ -441,7 +441,7 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values)
 
 ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values)
 {
-    if (values && (ds_zval_is_array(values) || ds_zval_is_traversable(values))) {
+    if (values && (ds_is_array(values) || ds_is_traversable(values))) {
         ds_vector_t *merged = ds_vector_clone(vector);
         ds_vector_push_all(merged, values);
         return merged;

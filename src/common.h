@@ -2,19 +2,11 @@
 #define DS_COMMON_H
 
 #include "php.h"
-// #include "main/php.h"
 #include "zend_exceptions.h"
-// #include "zend_interfaces.h"
-// #include "zend_operators.h"
-// #include "ext/standard/info.h"
 #include "ext/standard/php_var.h"
-// #include "ext/spl/spl_iterators.h"
 #include "ext/spl/spl_exceptions.h"
 #include "zend_smart_str.h"
-// #include "json/php_json.h"
-
 #include "../php_ds.h"
-
 
 /**
  * Used for consistent naming when working with callables.
@@ -25,12 +17,13 @@
 /**
  * Used for consistent naming when working with variadics.
  */
-#define VA_PARAMS  zend_long argc, zval *argv
+#define VA_PARAMS zend_long argc, zval *argv
+#define VA_ARGS   argc, argv
 
 /**
  * Default namespace.
  */
-#define DS_NS(cls) "Ds\\" #cls
+#define PHP_DS_NS(cls) "Ds\\" #cls
 
 /**
  *
@@ -40,7 +33,7 @@
 /**
  * Combined class, name, and arginfo method entry.
  */
-#define COLLECTION_ME(cls, name) \
+#define PHP_DS_ME(cls, name) \
     PHP_ME(cls, name, arginfo_##name, ZEND_ACC_PUBLIC)
 
 #define DTOR_AND_UNDEF(z) \
@@ -128,11 +121,6 @@ do { \
  */
 #define ZVAL_EQUALS_STRING(z, s) (strcmp(Z_STR_P((z))->val, (s)) == 0)
 
-
-#define SERIALIZE_SET_ZSTR(s) \
-*buffer = (unsigned char *) estrndup(ZSTR_VAL((s)), ZSTR_LEN((s))); \
-*length = ZSTR_LEN((s));
-
 /**
  * Copies a zval into the return_value.
  */
@@ -146,10 +134,26 @@ do { \
     } \
 } while (0)
 
+#define SERIALIZE_SET_ZSTR(s) \
+*buffer = (unsigned char *) estrndup(ZSTR_VAL((s)), ZSTR_LEN((s))); \
+*length = ZSTR_LEN((s));
+
+#define PHP_DS_SERIALIZE_FUNCIONS(name) \
+int name##_serialize(                   \
+    zval                    *object,    \
+    unsigned char          **buffer,    \
+    size_t                  *length,    \
+    zend_serialize_data     *data       \
+);                                      \
+int name##_unserialize(                 \
+    zval                    *object,    \
+    zend_class_entry        *ce,        \
+    const unsigned char     *buffer,    \
+    size_t                   length,    \
+    zend_unserialize_data   *data       \
+)
 
 /** EXCEPTIONS **************************************************************/
-
-
 
 #define ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
@@ -267,7 +271,7 @@ int ds_zval_isset(zval *value, int check_empty);
 /**
  * Determines if a zval is an array.
  */
-bool ds_zval_is_array(zval *value);
+bool ds_is_array(zval *value);
 
 /**
  * Determines if an array uses keys, similar to how json_encode does it.
@@ -277,6 +281,6 @@ bool ds_php_array_uses_keys(HashTable *ht);
 /**
  * Determines if a zval is an object and implements Traversable.
  */
-bool ds_zval_is_traversable(zval *value);
+bool ds_is_traversable(zval *value);
 
 #endif

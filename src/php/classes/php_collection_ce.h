@@ -9,7 +9,7 @@ extern zend_class_entry *collection_ce;
 #define COLLECTION_INTERFACE_ME(cls, name) \
     PHP_ME(cls, name, arginfo_Collection_##name, ZEND_ACC_PUBLIC)
 
-#define COLLECTION_ME_LIST(cls) \
+#define PHP_DS_ME_LIST(cls) \
 COLLECTION_INTERFACE_ME(cls, clear) \
 COLLECTION_INTERFACE_ME(cls, copy) \
 COLLECTION_INTERFACE_ME(cls, count) \

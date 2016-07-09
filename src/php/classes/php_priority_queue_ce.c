@@ -102,18 +102,18 @@ void php_ds_register_priority_queue()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME(PriorityQueue, __construct)
-        COLLECTION_ME(PriorityQueue, allocate)
-        COLLECTION_ME(PriorityQueue, capacity)
-        COLLECTION_ME(PriorityQueue, peek)
-        COLLECTION_ME(PriorityQueue, pop)
-        COLLECTION_ME(PriorityQueue, push)
+        PHP_DS_ME(PriorityQueue, __construct)
+        PHP_DS_ME(PriorityQueue, allocate)
+        PHP_DS_ME(PriorityQueue, capacity)
+        PHP_DS_ME(PriorityQueue, peek)
+        PHP_DS_ME(PriorityQueue, pop)
+        PHP_DS_ME(PriorityQueue, push)
 
-        COLLECTION_ME_LIST(PriorityQueue)
+        PHP_DS_ME_LIST(PriorityQueue)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(PriorityQueue), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(PriorityQueue), methods);
 
     php_ds_priority_queue_ce = zend_register_internal_class(&ce);
     php_ds_priority_queue_ce->ce_flags      |= ZEND_ACC_FINAL;

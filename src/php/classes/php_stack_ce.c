@@ -118,19 +118,19 @@ void php_ds_register_stack()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME(Stack, __construct)
-        COLLECTION_ME(Stack, allocate)
-        COLLECTION_ME(Stack, capacity)
-        COLLECTION_ME(Stack, peek)
-        COLLECTION_ME(Stack, pop)
-        COLLECTION_ME(Stack, push)
-        COLLECTION_ME(Stack, pushAll)
+        PHP_DS_ME(Stack, __construct)
+        PHP_DS_ME(Stack, allocate)
+        PHP_DS_ME(Stack, capacity)
+        PHP_DS_ME(Stack, peek)
+        PHP_DS_ME(Stack, pop)
+        PHP_DS_ME(Stack, push)
+        PHP_DS_ME(Stack, pushAll)
 
-        COLLECTION_ME_LIST(Stack)
+        PHP_DS_ME_LIST(Stack)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Stack), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Stack), methods);
 
     php_ds_stack_ce = zend_register_internal_class(&ce);
     php_ds_stack_ce->ce_flags      |= ZEND_ACC_FINAL;

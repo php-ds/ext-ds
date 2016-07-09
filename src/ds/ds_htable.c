@@ -738,12 +738,11 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
             }
         } while (++pos != end);
 
-        // Append last value
+        // Append last keys
         smart_str_append(&str, zval_get_string(&end->key));
 
     } else {
-        // No glue, so just append the values.
-
+        // No glue, so just append the keys.
         zval *key;
         DS_HTABLE_FOREACH_KEY(table, key) {
             smart_str_append(&str, zval_get_string(key));

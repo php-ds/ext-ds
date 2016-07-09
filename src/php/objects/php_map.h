@@ -31,19 +31,6 @@ zend_object *php_ds_map_create_clone(ds_map_t *map);
 ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map);
 HashTable   *ds_map_pairs_to_php_hashtable(ds_map_t *map);
 
-int php_ds_map_serialize(
-    zval                    *object,
-    unsigned char          **buffer,
-    size_t                  *length,
-    zend_serialize_data     *data
-);
-
-int php_ds_map_unserialize(
-    zval                    *object,
-    zend_class_entry        *ce,
-    const unsigned char     *buffer,
-    size_t                   length,
-    zend_unserialize_data   *data
-);
+PHP_DS_SERIALIZE_FUNCIONS(php_ds_map);
 
 #endif

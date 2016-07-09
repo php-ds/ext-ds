@@ -56,7 +56,7 @@ void ds_queue_push_all(ds_queue_t *queue, zval *value)
 
 void ds_queue_to_array(ds_queue_t *queue, zval *return_value)
 {
-    zend_ulong size = QUEUE_SIZE(queue);
+    zend_long size = QUEUE_SIZE(queue);
 
     if (size == 0) {
         array_init(return_value);

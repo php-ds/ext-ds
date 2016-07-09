@@ -226,32 +226,32 @@ void php_ds_register_set()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        COLLECTION_ME(Set, __construct)
-        COLLECTION_ME(Set, add)
-        COLLECTION_ME(Set, addAll)
-        COLLECTION_ME(Set, allocate)
-        COLLECTION_ME(Set, capacity)
-        COLLECTION_ME(Set, contains)
-        COLLECTION_ME(Set, diff)
-        COLLECTION_ME(Set, filter)
-        COLLECTION_ME(Set, first)
-        COLLECTION_ME(Set, get)
-        COLLECTION_ME(Set, intersect)
-        COLLECTION_ME(Set, join)
-        COLLECTION_ME(Set, last)
-        COLLECTION_ME(Set, reduce)
-        COLLECTION_ME(Set, remove)
-        COLLECTION_ME(Set, reverse)
-        COLLECTION_ME(Set, slice)
-        COLLECTION_ME(Set, sort)
-        COLLECTION_ME(Set, union)
-        COLLECTION_ME(Set, xor)
+        PHP_DS_ME(Set, __construct)
+        PHP_DS_ME(Set, add)
+        PHP_DS_ME(Set, addAll)
+        PHP_DS_ME(Set, allocate)
+        PHP_DS_ME(Set, capacity)
+        PHP_DS_ME(Set, contains)
+        PHP_DS_ME(Set, diff)
+        PHP_DS_ME(Set, filter)
+        PHP_DS_ME(Set, first)
+        PHP_DS_ME(Set, get)
+        PHP_DS_ME(Set, intersect)
+        PHP_DS_ME(Set, join)
+        PHP_DS_ME(Set, last)
+        PHP_DS_ME(Set, reduce)
+        PHP_DS_ME(Set, remove)
+        PHP_DS_ME(Set, reverse)
+        PHP_DS_ME(Set, slice)
+        PHP_DS_ME(Set, sort)
+        PHP_DS_ME(Set, union)
+        PHP_DS_ME(Set, xor)
 
-        COLLECTION_ME_LIST(Set)
+        PHP_DS_ME_LIST(Set)
         PHP_FE_END
     };
 
-    INIT_CLASS_ENTRY(ce, DS_NS(Set), methods);
+    INIT_CLASS_ENTRY(ce, PHP_DS_NS(Set), methods);
 
     php_ds_set_ce = zend_register_internal_class(&ce);
     php_ds_set_ce->ce_flags      |= ZEND_ACC_FINAL;

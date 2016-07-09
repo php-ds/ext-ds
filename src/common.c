@@ -141,13 +141,13 @@ zend_string *ds_join_zval_buffer(
     return str.s;
 }
 
-bool ds_zval_is_traversable(zval *value)
+bool ds_is_traversable(zval *value)
 {
     return Z_TYPE_P(value) == IS_OBJECT &&
         instanceof_function(Z_OBJCE_P(value), zend_ce_traversable);
 }
 
-bool ds_zval_is_array(zval *value)
+bool ds_is_array(zval *value)
 {
     return Z_TYPE_P(value) == IS_ARRAY;
 }
