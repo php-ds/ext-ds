@@ -168,13 +168,6 @@ METHOD(sort)
     }
 }
 
-ARGINFO_NONE_RETURN_DS(copy, Set)
-METHOD(copy)
-{
-    PARSE_NONE;
-    RETURN_OBJ(php_ds_set_create_clone(THIS_DS_SET()));
-}
-
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
 METHOD(reduce)
 {

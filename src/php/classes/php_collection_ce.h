@@ -11,35 +11,16 @@ extern zend_class_entry *collection_ce;
 
 #define PHP_DS_ME_LIST(cls) \
 COLLECTION_INTERFACE_ME(cls, clear) \
-COLLECTION_INTERFACE_ME(cls, copy) \
 COLLECTION_INTERFACE_ME(cls, count) \
 COLLECTION_INTERFACE_ME(cls, isEmpty) \
 COLLECTION_INTERFACE_ME(cls, jsonSerialize) \
 COLLECTION_INTERFACE_ME(cls, toArray)
 
-ARGINFO_NONE(
-    Collection_clear
-);
-
-ARGINFO_NONE_RETURN_DS(
-    Collection_copy, Collection
-);
-
-ARGINFO_NONE_RETURN_LONG(
-    Collection_count
-);
-
-ARGINFO_NONE_RETURN_BOOL(
-    Collection_isEmpty
-);
-
-ARGINFO_NONE(
-    Collection_jsonSerialize
-);
-
-ARGINFO_NONE_RETURN_ARRAY(
-    Collection_toArray
-);
+ARGINFO_NONE(               Collection_clear);
+ARGINFO_NONE_RETURN_LONG(   Collection_count);
+ARGINFO_NONE_RETURN_BOOL(   Collection_isEmpty);
+ARGINFO_NONE(               Collection_jsonSerialize);
+ARGINFO_NONE_RETURN_ARRAY(  Collection_toArray);
 
 void php_ds_register_collection();
 

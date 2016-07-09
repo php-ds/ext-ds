@@ -225,12 +225,6 @@ METHOD(isEmpty)
     RETURN_BOOL(DS_DEQUE_IS_EMPTY(THIS_DS_DEQUE()));
 }
 
-METHOD(copy)
-{
-    PARSE_NONE;
-    RETURN_OBJ(php_ds_deque_create_clone(THIS_DS_DEQUE()));
-}
-
 METHOD(jsonSerialize)
 {
     PARSE_NONE;

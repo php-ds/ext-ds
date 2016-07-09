@@ -34,13 +34,6 @@ METHOD(capacity)
     RETURN_LONG(ds_priority_queue_capacity(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_DS(copy, PriorityQueue)
-METHOD(copy)
-{
-    PARSE_NONE;
-    RETURN_OBJ(php_ds_priority_queue_create_clone(THIS_DS_PRIORITY_QUEUE()));
-}
-
 ARGINFO_ZVAL_LONG(push, value, priority)
 METHOD(push)
 {

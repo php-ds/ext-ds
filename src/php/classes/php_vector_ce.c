@@ -52,12 +52,6 @@ METHOD(contains)
     RETURN_BOOL(ds_vector_contains_va(THIS_DS_VECTOR(), argc, argv));
 }
 
-METHOD(copy)
-{
-    PARSE_NONE;
-    RETURN_OBJ(php_ds_vector_create_clone(THIS_DS_VECTOR()));
-}
-
 METHOD(count)
 {
     PARSE_NONE;

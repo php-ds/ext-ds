@@ -70,13 +70,6 @@ METHOD(peek)
     RETURN_ZVAL_COPY(ds_queue_peek(THIS_DS_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_DS(copy, Queue)
-METHOD(copy)
-{
-    PARSE_NONE;
-    RETURN_OBJ(php_ds_queue_create_clone(THIS_DS_QUEUE()));
-}
-
 ARGINFO_NONE_RETURN_LONG(count)
 METHOD(count)
 {
