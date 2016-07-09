@@ -85,7 +85,6 @@ if (PHP_DS != "no") {
         "php_pair_ce.c",
         "php_priority_queue_ce.c",
         "php_queue_ce.c",
-        "php_ds_ce.c",
     ]);
 }
 

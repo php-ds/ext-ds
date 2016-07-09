@@ -12,6 +12,6 @@
         "php-ds/tests": "dev-master"
     },
     "scripts": {
-        "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml --color=always"
+        "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
     }
 }

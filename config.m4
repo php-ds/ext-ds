@@ -61,10 +61,9 @@ dnl Classes
   src/php/classes/php_pair_ce.c                   \
   src/php/classes/php_priority_queue_ce.c         \
   src/php/classes/php_queue_ce.c                  \
-  src/php/classes/php_ds_ce.c                     \
-                                              \
-  php_ds.c                                    \
-                                              \
+                                                  \
+  php_ds.c                                        \
+                                                  \
   , $ext_shared, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
 

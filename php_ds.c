@@ -19,7 +19,6 @@
 #include "src/php/classes/php_pair_ce.h"
 #include "src/php/classes/php_priority_queue_ce.h"
 #include "src/php/classes/php_queue_ce.h"
-#include "src/php/classes/php_ds_ce.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(ds);
 
@@ -45,9 +44,6 @@ PHP_MINIT_FUNCTION(ds)
     php_ds_register_set();
     php_ds_register_priority_queue();
     php_ds_register_pair();
-
-    // Shortcuts
-    php_ds_register_ds();
 
     return SUCCESS;
 }
