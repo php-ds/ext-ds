@@ -68,7 +68,7 @@ ARGINFO_NONE(
     Sequence_first
 );
 
-ARGINFO_OPTIONAL_STRING(
+ARGINFO_OPTIONAL_STRING_RETURN_STRING(
     Sequence_join, glue
 );
 
