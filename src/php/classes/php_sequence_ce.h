@@ -23,7 +23,6 @@ SEQUENCE_ME(cls, map) \
 SEQUENCE_ME(cls, merge) \
 SEQUENCE_ME(cls, pop) \
 SEQUENCE_ME(cls, push) \
-SEQUENCE_ME(cls, pushAll) \
 SEQUENCE_ME(cls, reduce) \
 SEQUENCE_ME(cls, remove) \
 SEQUENCE_ME(cls, reverse) \
@@ -98,10 +97,6 @@ ARGINFO_NONE(
 
 ARGINFO_VARIADIC_ZVAL(
     Sequence_push, values
-);
-
-ARGINFO_ZVAL(
-    Sequence_pushAll, values
 );
 
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(

@@ -144,12 +144,6 @@ METHOD(push)
     ds_vector_push_va(THIS_DS_VECTOR(), argc, argv);
 }
 
-METHOD(pushAll)
-{
-    PARSE_ZVAL(values);
-    ds_vector_push_all(THIS_DS_VECTOR(), values);
-}
-
 METHOD(reduce)
 {
     PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);

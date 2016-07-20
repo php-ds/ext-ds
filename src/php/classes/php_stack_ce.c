@@ -50,13 +50,6 @@ METHOD(push)
     ds_stack_push(THIS_DS_STACK(), argc, argv);
 }
 
-ARGINFO_ZVAL(pushAll, values)
-METHOD(pushAll)
-{
-    PARSE_ZVAL(values);
-    ds_stack_push_all(THIS_DS_STACK(), values);
-}
-
 ARGINFO_NONE(pop)
 METHOD(pop)
 {
@@ -117,7 +110,6 @@ void php_ds_register_stack()
         PHP_DS_ME(Stack, peek)
         PHP_DS_ME(Stack, pop)
         PHP_DS_ME(Stack, push)
-        PHP_DS_ME(Stack, pushAll)
 
         PHP_DS_ME_LIST(Stack)
         PHP_FE_END

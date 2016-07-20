@@ -49,13 +49,6 @@ METHOD(push)
     ds_queue_push(THIS_DS_QUEUE(), argc, argv);
 }
 
-ARGINFO_ZVAL(pushAll, values)
-METHOD(pushAll)
-{
-    PARSE_ZVAL(values);
-    ds_queue_push_all(THIS_DS_QUEUE(), values);
-}
-
 ARGINFO_NONE(pop)
 METHOD(pop)
 {
@@ -116,7 +109,6 @@ void php_ds_register_queue()
         PHP_DS_ME(Queue, peek)
         PHP_DS_ME(Queue, pop)
         PHP_DS_ME(Queue, push)
-        PHP_DS_ME(Queue, pushAll)
 
         PHP_DS_ME_LIST(Queue)
         PHP_FE_END
