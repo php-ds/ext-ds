@@ -45,28 +45,24 @@ static ds_vector_t *ds_vector_from_buffer_ex(
     zend_long size,
     zend_long capacity
 ) {
-    ds_vector_t *vector   = ecalloc(1, sizeof(ds_vector_t));
-    vector->buffer   = buffer;
-    vector->capacity = capacity;
-    vector->size     = size;
+    ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
+    vector->buffer      = buffer;
+    vector->capacity    = capacity;
+    vector->size        = size;
 
     return vector;
 }
 
-ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long length)
+ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
 {
-    zend_long capacity = length;
+    zend_long capacity = size;
 
-    if (capacity < DS_VECTOR_MIN_CAPACITY) {
+    if (size < DS_VECTOR_MIN_CAPACITY) {
         capacity = DS_VECTOR_MIN_CAPACITY;
-        REALLOC_ZVAL_BUFFER(buffer, capacity);
-
-    } else if (length < capacity >> 2) {
-        capacity = capacity >> 1;
         REALLOC_ZVAL_BUFFER(buffer, capacity);
     }
 
-    return ds_vector_from_buffer_ex(buffer, length, capacity);
+    return ds_vector_from_buffer_ex(buffer, size, capacity);
 }
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
@@ -99,23 +95,23 @@ ds_vector_t *ds_vector_clone(ds_vector_t *vector)
 
 static inline void ds_vector_increase_capacity(ds_vector_t *vector)
 {
-    ds_vector_reallocate(vector, vector->capacity + (vector->capacity >> 1));
+    ds_vector_reallocate(vector, vector->capacity + (vector->capacity / 2));
 }
 
 static inline void ds_vector_ensure_capacity(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
-        zend_long boundary = vector->capacity + (vector->capacity >> 1);
+        zend_long boundary = vector->capacity + (vector->capacity / 2);
         ds_vector_reallocate(vector, MAX(capacity, boundary));
     }
 }
 
 static inline void ds_vector_check_compact(ds_vector_t *vector)
 {
-    if (vector->size < vector->capacity >> 2) {
+    if (vector->size < vector->capacity / 4) {
 
-        if (vector->capacity >> 1 > DS_VECTOR_MIN_CAPACITY) {
-            ds_vector_reallocate(vector, vector->capacity >> 1);
+        if (vector->capacity / 2 > DS_VECTOR_MIN_CAPACITY) {
+            ds_vector_reallocate(vector, vector->capacity / 2);
         }
     }
 }
