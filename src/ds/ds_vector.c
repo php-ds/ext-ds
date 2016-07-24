@@ -288,8 +288,7 @@ void ds_vector_insert(ds_vector_t *vector, zend_long index, zval *value)
 void ds_vector_push(ds_vector_t *vector, zval *value)
 {
     increase_capacity_if_full(vector);
-    ZVAL_COPY(&vector->buffer[vector->size], value);
-    vector->size++;
+    ZVAL_COPY(&vector->buffer[vector->size++], value);
 }
 
 void ds_vector_push_va(ds_vector_t *vector, VA_PARAMS)

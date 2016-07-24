@@ -20,11 +20,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
-        if (Z_TYPE_P(values) == IS_LONG) {
-            ds_queue_allocate(THIS_DS_QUEUE(), Z_LVAL_P(values));
-        } else {
-            ds_queue_push_all(THIS_DS_QUEUE(), values);
-        }
+        ds_queue_push_all(THIS_DS_QUEUE(), values);
     }
 }
 
@@ -110,7 +106,7 @@ void php_ds_register_queue()
         PHP_DS_ME(Queue, pop)
         PHP_DS_ME(Queue, push)
 
-        PHP_DS_ME_LIST(Queue)
+        PHP_DS_COLLECTION_ME_LIST(Queue)
         PHP_FE_END
     };
 

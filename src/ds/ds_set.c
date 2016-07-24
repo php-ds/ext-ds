@@ -98,7 +98,7 @@ void ds_set_add_all(ds_set_t *set, zval *values)
         return;
     }
 
-    if (Z_TYPE_P(values) == IS_ARRAY) {
+    if (ds_is_array(values)) {
         add_array_to_set(set, Z_ARRVAL_P(values));
         return;
     }
@@ -121,7 +121,7 @@ bool ds_set_contains(ds_set_t *set, zval *value)
     return _set_contains(set, value);
 }
 
-bool ds_set_contains_all(ds_set_t *set, VA_PARAMS)
+bool ds_set_contains_va(ds_set_t *set, VA_PARAMS)
 {
     return ds_htable_has_keys(set->table, argc, argv);
 }

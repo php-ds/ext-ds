@@ -20,9 +20,7 @@ METHOD(__construct)
 {
     PARSE_OPTIONAL_ZVAL(values);
 
-    if (values && Z_TYPE_P(values) == IS_LONG) {
-        ds_set_allocate(THIS_DS_SET(), Z_LVAL_P(values));
-    } else {
+    if (values) {
         ds_set_add_all(THIS_DS_SET(), values);
     }
 }
@@ -84,7 +82,7 @@ ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(contains, values)
 METHOD(contains)
 {
     PARSE_VARIADIC_ZVAL();
-    RETURN_BOOL(ds_set_contains_all(THIS_DS_SET(), argc, argv));
+    RETURN_BOOL(ds_set_contains_va(THIS_DS_SET(), argc, argv));
 }
 
 ARGINFO_DS_RETURN_DS(diff, set, Set, Set)
@@ -240,7 +238,7 @@ void php_ds_register_set()
         PHP_DS_ME(Set, union)
         PHP_DS_ME(Set, xor)
 
-        PHP_DS_ME_LIST(Set)
+        PHP_DS_COLLECTION_ME_LIST(Set)
         PHP_FE_END
     };
 

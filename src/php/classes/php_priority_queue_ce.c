@@ -102,7 +102,7 @@ void php_ds_register_priority_queue()
         PHP_DS_ME(PriorityQueue, pop)
         PHP_DS_ME(PriorityQueue, push)
 
-        PHP_DS_ME_LIST(PriorityQueue)
+        PHP_DS_COLLECTION_ME_LIST(PriorityQueue)
         PHP_FE_END
     };
 

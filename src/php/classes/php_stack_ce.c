@@ -21,11 +21,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
-        if (Z_TYPE_P(values) == IS_LONG) {
-            ds_stack_allocate(THIS_DS_STACK(), Z_LVAL_P(values));
-        } else {
-            ds_stack_push_all(THIS_DS_STACK(), values);
-        }
+        ds_stack_push_all(THIS_DS_STACK(), values);
     }
 }
 
@@ -111,7 +107,7 @@ void php_ds_register_stack()
         PHP_DS_ME(Stack, pop)
         PHP_DS_ME(Stack, push)
 
-        PHP_DS_ME_LIST(Stack)
+        PHP_DS_COLLECTION_ME_LIST(Stack)
         PHP_FE_END
     };
 

@@ -6,15 +6,15 @@
 
 extern zend_class_entry *collection_ce;
 
-#define COLLECTION_INTERFACE_ME(cls, name) \
+#define PHP_DS_COLLECTION_INTERFACE_ME(cls, name) \
     PHP_ME(cls, name, arginfo_Collection_##name, ZEND_ACC_PUBLIC)
 
-#define PHP_DS_ME_LIST(cls) \
-COLLECTION_INTERFACE_ME(cls, clear) \
-COLLECTION_INTERFACE_ME(cls, count) \
-COLLECTION_INTERFACE_ME(cls, isEmpty) \
-COLLECTION_INTERFACE_ME(cls, jsonSerialize) \
-COLLECTION_INTERFACE_ME(cls, toArray)
+#define PHP_DS_COLLECTION_ME_LIST(cls) \
+PHP_DS_COLLECTION_INTERFACE_ME(cls, clear) \
+PHP_DS_COLLECTION_INTERFACE_ME(cls, count) \
+PHP_DS_COLLECTION_INTERFACE_ME(cls, isEmpty) \
+PHP_DS_COLLECTION_INTERFACE_ME(cls, jsonSerialize) \
+PHP_DS_COLLECTION_INTERFACE_ME(cls, toArray)
 
 ARGINFO_NONE(               Collection_clear);
 ARGINFO_NONE_RETURN_LONG(   Collection_count);

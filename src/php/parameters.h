@@ -54,11 +54,11 @@ zval *argv = NULL; \
 zend_long argc = 0; \
 PARSE_2("*", &argv, &argc)
 
-#define PARSE_LONG_AND_VARARGS(l) \
+#define PARSE_LONG_AND_VARIADIC_ZVAL(_l) \
 zval *argv = NULL; \
 zend_long argc = 0; \
-zend_long l = 0; \
-PARSE_3("l*", &l, &argv, &argc)
+zend_long _l = 0; \
+PARSE_3("l*", &_l, &argv, &argc)
 
 #define PARSE_LONG(a) \
 zend_long a = 0; \

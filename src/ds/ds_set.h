@@ -25,7 +25,7 @@ void ds_set_allocate(ds_set_t *set, zend_long capacity);
 
 void ds_set_add(ds_set_t *set, zval *value);
 void ds_set_add_va(ds_set_t *set, VA_PARAMS);
-bool ds_set_contains_all(ds_set_t *set, VA_PARAMS);
+bool ds_set_contains_va(ds_set_t *set, VA_PARAMS);
 bool ds_set_contains(ds_set_t *set, zval *value);
 void ds_set_remove_va(ds_set_t *set, VA_PARAMS);
 

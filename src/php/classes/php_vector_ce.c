@@ -20,11 +20,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
-        if (Z_TYPE_P(values) == IS_LONG) {
-            ds_vector_allocate(THIS_DS_VECTOR(), Z_LVAL_P(values));
-        } else {
-            ds_vector_push_all(THIS_DS_VECTOR(), values);
-        }
+        ds_vector_push_all(THIS_DS_VECTOR(), values);
     }
 }
 
@@ -88,7 +84,7 @@ METHOD(get)
 
 METHOD(insert)
 {
-    PARSE_LONG_AND_VARARGS(index);
+    PARSE_LONG_AND_VARIADIC_ZVAL(index);
     ds_vector_insert_va(THIS_DS_VECTOR(), index, argc, argv);
 }
 
@@ -142,6 +138,12 @@ METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
     ds_vector_push_va(THIS_DS_VECTOR(), argc, argv);
+}
+
+METHOD(push_one)
+{
+    PARSE_ZVAL(value);
+    ds_vector_push(THIS_DS_VECTOR(), value);
 }
 
 METHOD(reduce)
@@ -223,13 +225,20 @@ METHOD(unshift)
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 
+ARGINFO_ZVAL(
+    push_one, value
+);
+
 void php_ds_register_vector()
 {
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
         SEQUENCE_ME_LIST(Vector)
-        PHP_DS_ME_LIST(Vector)
+        PHP_DS_COLLECTION_ME_LIST(Vector)
+
+        PHP_ME(Vector, push_one, arginfo_push_one, ZEND_ACC_PUBLIC)
+
         PHP_FE_END
     };
 

@@ -24,11 +24,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
-        if (Z_TYPE_P(values) == IS_LONG) {
-            ds_map_allocate(THIS_DS_MAP(), Z_LVAL_P(values));
-        } else {
-            ds_map_put_all(THIS_DS_MAP(), values);
-        }
+        ds_map_put_all(THIS_DS_MAP(), values);
     }
 }
 
@@ -289,7 +285,7 @@ void php_ds_register_map()
         PHP_DS_ME(Map, values)
         PHP_DS_ME(Map, xor)
 
-        PHP_DS_ME_LIST(Map)
+        PHP_DS_COLLECTION_ME_LIST(Map)
         PHP_FE_END
     };
 

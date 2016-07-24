@@ -19,11 +19,7 @@ METHOD(__construct)
 {
     PARSE_OPTIONAL_ZVAL(values);
 
-    if ( ! values) {
-        return;
-    } else if (Z_TYPE_P(values) == IS_LONG) {
-        ds_deque_allocate(THIS_DS_DEQUE(), Z_LVAL_P(values));
-    } else {
+    if (values) {
         ds_deque_push_all(THIS_DS_DEQUE(), values);
     }
 }
@@ -209,7 +205,7 @@ METHOD(remove)
 
 METHOD(insert)
 {
-    PARSE_LONG_AND_VARARGS(index);
+    PARSE_LONG_AND_VARIADIC_ZVAL(index);
     ds_deque_insert_va(THIS_DS_DEQUE(), index, argc, argv);
 }
 
@@ -236,7 +232,7 @@ void php_ds_register_deque()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        PHP_DS_ME_LIST(Deque)
+        PHP_DS_COLLECTION_ME_LIST(Deque)
         SEQUENCE_ME_LIST(Deque)
         PHP_FE_END
     };
