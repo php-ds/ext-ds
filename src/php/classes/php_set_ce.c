@@ -57,13 +57,6 @@ METHOD(add)
     ds_set_add_va(THIS_DS_SET(), argc, argv);
 }
 
-ARGINFO_ZVAL(addAll, values)
-METHOD(addAll)
-{
-    PARSE_ZVAL(values);
-    ds_set_add_all(THIS_DS_SET(), values);
-}
-
 ARGINFO_VARIADIC_ZVAL(remove, values)
 METHOD(remove)
 {
@@ -219,7 +212,6 @@ void php_ds_register_set()
     zend_function_entry methods[] = {
         PHP_DS_ME(Set, __construct)
         PHP_DS_ME(Set, add)
-        PHP_DS_ME(Set, addAll)
         PHP_DS_ME(Set, allocate)
         PHP_DS_ME(Set, capacity)
         PHP_DS_ME(Set, contains)
