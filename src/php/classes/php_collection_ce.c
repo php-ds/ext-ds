@@ -12,6 +12,7 @@ void php_ds_register_collection()
 
     zend_function_entry methods[] = {
         COLLECTION_ABSTRACT_ME(clear)
+        COLLECTION_ABSTRACT_ME(copy)
         COLLECTION_ABSTRACT_ME(isEmpty)
         COLLECTION_ABSTRACT_ME(toArray)
         PHP_FE_END

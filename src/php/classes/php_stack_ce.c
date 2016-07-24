@@ -67,6 +67,13 @@ METHOD(count)
     RETURN_LONG(DS_STACK_SIZE(THIS_DS_STACK()));
 }
 
+ARGINFO_NONE_RETURN_DS(copy, ds_stack_t)
+METHOD(copy)
+{
+    PARSE_NONE;
+    RETURN_OBJ(php_ds_stack_create_clone(THIS_DS_STACK()));
+}
+
 ARGINFO_NONE(clear)
 METHOD(clear)
 {

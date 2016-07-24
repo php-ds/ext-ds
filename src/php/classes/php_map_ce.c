@@ -176,6 +176,13 @@ METHOD(isEmpty)
     RETURN_BOOL(DS_MAP_IS_EMPTY(THIS_DS_MAP()));
 }
 
+ARGINFO_NONE_RETURN_DS(copy, Map)
+METHOD(copy)
+{
+    PARSE_NONE;
+    RETURN_OBJ(php_ds_map_create_clone(THIS_DS_MAP()));
+}
+
 ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
