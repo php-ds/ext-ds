@@ -30,6 +30,12 @@ METHOD(allocate)
     ds_vector_allocate(THIS_DS_VECTOR(), capacity);
 }
 
+METHOD(apply)
+{
+    PARSE_CALLABLE();
+    ds_vector_apply(THIS_DS_VECTOR(), FCI_ARGS);
+}
+
 METHOD(capacity)
 {
     PARSE_NONE;
@@ -167,11 +173,13 @@ METHOD(remove)
 METHOD(reverse)
 {
     PARSE_NONE;
-    {
-        ds_vector_t *vector = ds_vector_clone(THIS_DS_VECTOR());
-        ds_vector_reverse(vector);
-        RETURN_DS_VECTOR(vector);
-    }
+    ds_vector_reverse(THIS_DS_VECTOR());
+}
+
+METHOD(reversed)
+{
+    PARSE_NONE;
+    RETURN_DS_VECTOR(ds_vector_reversed(THIS_DS_VECTOR()));
 }
 
 METHOD(rotate)
@@ -207,6 +215,18 @@ METHOD(slice)
 
 METHOD(sort)
 {
+    ds_vector_t *vector = THIS_DS_VECTOR();
+
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        ds_vector_sort_callback(vector);
+    } else {
+        ds_vector_sort(vector);
+    }
+}
+
+METHOD(sorted)
+{
     ds_vector_t *vector = ds_vector_clone(THIS_DS_VECTOR());
 
     if (ZEND_NUM_ARGS()) {
@@ -217,6 +237,12 @@ METHOD(sort)
     }
 
     RETURN_DS_VECTOR(vector);
+}
+
+METHOD(sum)
+{
+    PARSE_NONE;
+    ds_vector_sum(THIS_DS_VECTOR(), return_value);
 }
 
 METHOD(toArray)

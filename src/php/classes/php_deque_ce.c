@@ -34,16 +34,16 @@ METHOD(join)
     }
 }
 
-METHOD(rotate)
-{
-    PARSE_LONG(rotations);
-    ds_deque_rotate(THIS_DS_DEQUE(), rotations);
-}
-
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
     ds_deque_allocate(THIS_DS_DEQUE(), capacity);
+}
+
+METHOD(apply)
+{
+    PARSE_CALLABLE();
+    ds_deque_apply(THIS_DS_DEQUE(), FCI_ARGS);
 }
 
 METHOD(capacity)
@@ -101,6 +101,18 @@ METHOD(slice)
 }
 
 METHOD(sort)
+{
+    ds_deque_t *sorted = THIS_DS_DEQUE();
+
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        ds_deque_sort_callback(sorted);
+    } else {
+        ds_deque_sort(sorted);
+    }
+}
+
+METHOD(sorted)
 {
     ds_deque_t *sorted = ds_deque_clone(THIS_DS_DEQUE());
 
@@ -173,6 +185,12 @@ METHOD(contains)
     RETURN_BOOL(ds_deque_contains_va(THIS_DS_DEQUE(), argc, argv));
 }
 
+METHOD(sum)
+{
+    PARSE_NONE;
+    ds_deque_sum(THIS_DS_DEQUE(), return_value);
+}
+
 METHOD(toArray)
 {
     PARSE_NONE;
@@ -212,7 +230,19 @@ METHOD(insert)
 METHOD(reverse)
 {
     PARSE_NONE;
+    ds_deque_reverse(THIS_DS_DEQUE());
+}
+
+METHOD(reversed)
+{
+    PARSE_NONE;
     RETURN_DS_DEQUE(ds_deque_reversed(THIS_DS_DEQUE()));
+}
+
+METHOD(rotate)
+{
+    PARSE_LONG(rotations);
+    ds_deque_rotate(THIS_DS_DEQUE(), rotations);
 }
 
 METHOD(isEmpty)

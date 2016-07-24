@@ -506,6 +506,44 @@ void ds_vector_reverse(ds_vector_t *vector)
     ds_reverse_zval_range(vector->buffer, vector->buffer + vector->size);
 }
 
+ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
+{
+    zval *src;
+    zval *buf = ALLOC_ZVAL_BUFFER(vector->capacity);
+    zval *dst = &buf[vector->size - 1];
+
+    DS_VECTOR_FOREACH(vector, src) {
+        ZVAL_COPY(dst, src);
+        dst--;
+    }
+    DS_VECTOR_FOREACH_END();
+
+    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
+}
+
+void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
+{
+    zval *value;
+
+    DS_VECTOR_FOREACH(vector, value) {
+        zval param;
+        zval retval;
+
+        ZVAL_COPY_VALUE(&param, value);
+
+        fci.param_count = 1;
+        fci.params      = &param;
+        fci.retval      = &retval;
+
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            return;
+        } else {
+            ZVAL_COPY_VALUE(value, &retval);
+        }
+    }
+    DS_VECTOR_FOREACH_END();
+}
+
 ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
     zval *value;
@@ -650,6 +688,24 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
 
         return ds_vector_from_buffer(buffer, length);
     }
+}
+
+void ds_vector_sum(ds_vector_t *vector, zval *return_value)
+{
+    zval *value, temp;
+
+    ZVAL_LONG(return_value, 0);
+
+    DS_VECTOR_FOREACH(vector, value) {
+        if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {
+            continue;
+        }
+
+        ZVAL_COPY(&temp, value);
+        convert_scalar_to_number(&temp);
+        fast_add_function(return_value, return_value, &temp);
+    }
+    DS_VECTOR_FOREACH_END();
 }
 
 void ds_vector_destroy(ds_vector_t *vector)

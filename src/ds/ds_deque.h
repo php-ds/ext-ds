@@ -59,8 +59,6 @@ zval *ds_deque_get_first(ds_deque_t *deque);
 bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS);
 bool ds_deque_isset(ds_deque_t *deque, zend_long index, int check_empty);
 
-void ds_deque_join(ds_deque_t *deque, char *str, size_t len, zval *return_value);
-
 ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS);
 ds_deque_t *ds_deque_filter(ds_deque_t *deque);
 ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS);
@@ -68,11 +66,14 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
 ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values);
 ds_deque_t *ds_deque_reversed(ds_deque_t *deque);
 
+void ds_deque_join(ds_deque_t *deque, char *str, size_t len, zval *return_value);
 void ds_deque_reduce(ds_deque_t *deque, zval *initial, zval *return_value, FCI_PARAMS);
 void ds_deque_rotate(ds_deque_t *deque, zend_long rotations);
 void ds_deque_sort_callback(ds_deque_t *deque);
 void ds_deque_sort(ds_deque_t *deque);
 void ds_deque_reverse(ds_deque_t *deque);
 void ds_deque_to_array(ds_deque_t *deque, zval *return_value);
+void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS);
+void ds_deque_sum(ds_deque_t *deque, zval *return_value);
 
 #endif

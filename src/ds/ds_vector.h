@@ -79,11 +79,15 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
 ds_vector_t *ds_vector_filter(ds_vector_t *vector);
 ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS);
 ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values);
+ds_vector_t *ds_vector_reversed(ds_vector_t *vector);
 
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS);
 void ds_vector_reverse(ds_vector_t *vector);
 void ds_vector_rotate(ds_vector_t *vector, zend_long rotations);
 void ds_vector_join(ds_vector_t *vector, char *str, size_t len, zval *return_value);
+void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS);
+
+void ds_vector_sum(ds_vector_t *vector, zval *return_value);
 
 void ds_vector_sort(ds_vector_t *vector);
 void ds_vector_sort_callback(ds_vector_t *vector);

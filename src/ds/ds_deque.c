@@ -268,17 +268,17 @@ void ds_deque_reverse(ds_deque_t *deque)
 
 ds_deque_t *ds_deque_reversed(ds_deque_t *deque)
 {
-    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
-    zval *target = &buffer[deque->size - 1];
-    zval *source;
+    zval *src;
+    zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *dst = &buf[deque->size - 1];
 
-    DS_DEQUE_FOREACH(deque, source) {
-        ZVAL_COPY(target, source);
-        target--;
+    DS_DEQUE_FOREACH(deque, src) {
+        ZVAL_COPY(dst, src);
+        dst--;
     }
     DS_DEQUE_FOREACH_END();
 
-    return ds_deque_from_buffer_ex(buffer, deque->size, deque->capacity);
+    return ds_deque_from_buffer_ex(buf, deque->size, deque->capacity);
 }
 
 static inline void _ds_deque_shift(ds_deque_t *deque, zval *return_value)
@@ -679,6 +679,29 @@ void ds_deque_sort(ds_deque_t *deque)
     ds_sort_zval_buffer(deque->buffer, deque->size);
 }
 
+void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
+{
+    zval *value;
+
+    DS_DEQUE_FOREACH(deque, value) {
+        zval param;
+        zval retval;
+
+        ZVAL_COPY_VALUE(&param, value);
+
+        fci.param_count = 1;
+        fci.params      = &param;
+        fci.retval      = &retval;
+
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            return;
+        } else {
+            ZVAL_COPY_VALUE(value, &retval);
+        }
+    }
+    DS_DEQUE_FOREACH_END();
+}
+
 ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
 {
     zval *src;
@@ -834,4 +857,22 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
 
         return ds_deque_from_buffer_ex(buffer, length, capacity);
     }
+}
+
+void ds_deque_sum(ds_deque_t *deque, zval *return_value)
+{
+    zval *value, temp;
+
+    ZVAL_LONG(return_value, 0);
+
+    DS_DEQUE_FOREACH(deque, value) {
+        if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {
+            continue;
+        }
+
+        ZVAL_COPY(&temp, value);
+        convert_scalar_to_number(&temp);
+        fast_add_function(return_value, return_value, &temp);
+    }
+    DS_DEQUE_FOREACH_END();
 }
