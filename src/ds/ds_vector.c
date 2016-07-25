@@ -692,18 +692,12 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
 
 void ds_vector_sum(ds_vector_t *vector, zval *return_value)
 {
-    zval *value, temp;
+    zval *value;
 
     ZVAL_LONG(return_value, 0);
 
     DS_VECTOR_FOREACH(vector, value) {
-        if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {
-            continue;
-        }
-
-        ZVAL_COPY(&temp, value);
-        convert_scalar_to_number(&temp);
-        fast_add_function(return_value, return_value, &temp);
+        DS_ADD_TO_SUM(value, return_value);
     }
     DS_VECTOR_FOREACH_END();
 }

@@ -861,18 +861,12 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
 
 void ds_deque_sum(ds_deque_t *deque, zval *return_value)
 {
-    zval *value, temp;
+    zval *value;
 
     ZVAL_LONG(return_value, 0);
 
     DS_DEQUE_FOREACH(deque, value) {
-        if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {
-            continue;
-        }
-
-        ZVAL_COPY(&temp, value);
-        convert_scalar_to_number(&temp);
-        fast_add_function(return_value, return_value, &temp);
+        DS_ADD_TO_SUM(value, return_value);
     }
     DS_DEQUE_FOREACH_END();
 }

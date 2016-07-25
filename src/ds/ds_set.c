@@ -375,3 +375,15 @@ void ds_set_to_array(ds_set_t *set, zval *arr)
     }
     DS_HTABLE_FOREACH_END();
 }
+
+void ds_set_sum(ds_set_t *set, zval *return_value)
+{
+    zval *value;
+
+    ZVAL_LONG(return_value, 0);
+
+    DS_SET_FOREACH(set, value) {
+        DS_ADD_TO_SUM(value, return_value);
+    }
+    DS_SET_FOREACH_END();
+}

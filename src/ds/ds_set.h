@@ -63,4 +63,6 @@ void ds_set_assign_intersect(ds_set_t *set, ds_set_t *other);
 void ds_set_assign_xor(ds_set_t *set, ds_set_t *other);
 void ds_set_assign_union(ds_set_t *set, ds_set_t *other);
 
+void ds_set_sum(ds_set_t *set, zval *return_value);
+
 #endif

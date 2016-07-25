@@ -148,8 +148,19 @@ METHOD(isEmpty)
     RETURN_BOOL(SET_IS_EMPTY(THIS_DS_SET()));
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sort, comparator, Set)
+ARGINFO_OPTIONAL_CALLABLE(sort, comparator)
 METHOD(sort)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        ds_set_sort_callback(THIS_DS_SET());
+    } else {
+        ds_set_sort(THIS_DS_SET());
+    }
+}
+
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sorted, comparator, Set)
+METHOD(sorted)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
@@ -198,11 +209,25 @@ METHOD(filter)
     }
 }
 
-ARGINFO_NONE_RETURN_DS(reverse, Set)
+ARGINFO_NONE(reverse)
 METHOD(reverse)
 {
     PARSE_NONE;
+    ds_set_reverse(THIS_DS_SET());
+}
+
+ARGINFO_NONE_RETURN_DS(reversed, Set)
+METHOD(reversed)
+{
+    PARSE_NONE;
     RETURN_DS_SET(ds_set_reversed(THIS_DS_SET()));
+}
+
+ARGINFO_NONE(sum)
+METHOD(sum)
+{
+    PARSE_NONE;
+    ds_set_sum(THIS_DS_SET(), return_value);
 }
 
 ARGINFO_NONE(jsonSerialize)
@@ -232,8 +257,11 @@ void php_ds_register_set()
         PHP_DS_ME(Set, reduce)
         PHP_DS_ME(Set, remove)
         PHP_DS_ME(Set, reverse)
+        PHP_DS_ME(Set, reversed)
         PHP_DS_ME(Set, slice)
         PHP_DS_ME(Set, sort)
+        PHP_DS_ME(Set, sorted)
+        PHP_DS_ME(Set, sum)
         PHP_DS_ME(Set, union)
         PHP_DS_ME(Set, xor)
 

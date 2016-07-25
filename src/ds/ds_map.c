@@ -140,6 +140,26 @@ void ds_map_clear(ds_map_t *map)
     ds_htable_clear(map->table);
 }
 
+void ds_map_sort_by_value_callback(ds_map_t *map)
+{
+    ds_htable_sort_callback_by_value(map->table);
+}
+
+void ds_map_sort_by_value(ds_map_t *map)
+{
+    ds_htable_sort_by_value(map->table);
+}
+
+void ds_map_sort_by_key_callback(ds_map_t *map)
+{
+    ds_htable_sort_callback_by_key(map->table);
+}
+
+void ds_map_sort_by_key(ds_map_t *map)
+{
+    ds_htable_sort_by_key(map->table);
+}
+
 ds_map_t *ds_map_sorted_by_value_callback(ds_map_t *map)
 {
     ds_map_t *sorted = ds_map_clone(map);
@@ -305,6 +325,18 @@ void ds_map_put_all(ds_map_t *map, zval *values)
     }
 
     ARRAY_OR_TRAVERSABLE_REQUIRED();
+}
+
+void ds_map_sum(ds_map_t *map, zval *return_value)
+{
+    zval *value;
+
+    ZVAL_LONG(return_value, 0);
+
+    DS_HTABLE_FOREACH_VALUE(map->table, value) {
+        DS_ADD_TO_SUM(value, return_value);
+    }
+    DS_HTABLE_FOREACH_END();
 }
 
 void ds_map_destroy(ds_map_t *map)

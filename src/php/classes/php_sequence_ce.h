@@ -66,7 +66,7 @@ ARGINFO_NONE(                           Sequence_shift);
 ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(   Sequence_slice, index, length, Sequence);
 ARGINFO_OPTIONAL_CALLABLE(              Sequence_sort, comparator);
 ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(    Sequence_sorted, comparator, Sequence);
-ARGINFO_NONE_RETURN_LONG(               Sequence_sum);
+ARGINFO_NONE(                           Sequence_sum);
 ARGINFO_VARIADIC_ZVAL(                  Sequence_unshift, values);
 
 void php_ds_register_sequence();

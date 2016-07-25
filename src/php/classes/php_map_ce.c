@@ -105,8 +105,19 @@ METHOD(clear)
     ds_map_clear(THIS_DS_MAP());
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sort, comparator, Map)
+ARGINFO_OPTIONAL_CALLABLE(sort, comparator)
 METHOD(sort)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        ds_map_sort_by_value_callback(THIS_DS_MAP());
+    } else {
+        ds_map_sort_by_value(THIS_DS_MAP());
+    }
+}
+
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sorted, comparator, Map)
+METHOD(sorted)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
@@ -116,8 +127,19 @@ METHOD(sort)
     }
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(ksort, comparator, Map)
+ARGINFO_OPTIONAL_CALLABLE(ksort, comparator)
 METHOD(ksort)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_COMPARE_CALLABLE();
+        ds_map_sort_by_key_callback(THIS_DS_MAP());
+    } else {
+        ds_map_sort_by_key(THIS_DS_MAP());
+    }
+}
+
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(ksorted, comparator, Map)
+METHOD(ksorted)
 {
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
@@ -211,8 +233,15 @@ METHOD(reduce)
     ds_map_reduce(THIS_DS_MAP(), FCI_ARGS, initial, return_value);
 }
 
-ARGINFO_NONE_RETURN_DS(reverse, Map)
+ARGINFO_NONE(reverse)
 METHOD(reverse)
+{
+    PARSE_NONE;
+    ds_map_reverse(THIS_DS_MAP());
+}
+
+ARGINFO_NONE_RETURN_DS(reversed, Map)
+METHOD(reversed)
 {
     PARSE_NONE;
     RETURN_DS_MAP(ds_map_reversed(THIS_DS_MAP()));
@@ -246,6 +275,13 @@ METHOD(slice)
     }
 }
 
+ARGINFO_NONE(sum)
+METHOD(sum)
+{
+    PARSE_NONE;
+    ds_map_sum(THIS_DS_MAP(), return_value);
+}
+
 ARGINFO_NONE_RETURN_DS(values, Sequence)
 METHOD(values)
 {
@@ -268,15 +304,16 @@ void php_ds_register_map()
         PHP_DS_ME(Map, __construct)
         PHP_DS_ME(Map, allocate)
         PHP_DS_ME(Map, capacity)
-        PHP_DS_ME(Map, hasKey)
-        PHP_DS_ME(Map, hasValue)
         PHP_DS_ME(Map, diff)
         PHP_DS_ME(Map, filter)
         PHP_DS_ME(Map, first)
         PHP_DS_ME(Map, get)
+        PHP_DS_ME(Map, hasKey)
+        PHP_DS_ME(Map, hasValue)
         PHP_DS_ME(Map, intersect)
         PHP_DS_ME(Map, keys)
         PHP_DS_ME(Map, ksort)
+        PHP_DS_ME(Map, ksorted)
         PHP_DS_ME(Map, last)
         PHP_DS_ME(Map, map)
         PHP_DS_ME(Map, merge)
@@ -286,9 +323,12 @@ void php_ds_register_map()
         PHP_DS_ME(Map, reduce)
         PHP_DS_ME(Map, remove)
         PHP_DS_ME(Map, reverse)
+        PHP_DS_ME(Map, reversed)
         PHP_DS_ME(Map, skip)
         PHP_DS_ME(Map, slice)
         PHP_DS_ME(Map, sort)
+        PHP_DS_ME(Map, sorted)
+        PHP_DS_ME(Map, sum)
         PHP_DS_ME(Map, values)
         PHP_DS_ME(Map, xor)
 

@@ -18,6 +18,7 @@ ds_map_t *ds_map_clone(ds_map_t *map);
 
 void ds_map_reverse(ds_map_t *map);
 ds_map_t *ds_map_reversed(ds_map_t *map);
+
 zval *ds_map_get(ds_map_t *map, zval *key, zval *def);
 void ds_map_put(ds_map_t *map, zval *key, zval *value);
 void ds_map_remove(ds_map_t *map, zval *key, zval *def, zval *return_value);
@@ -38,6 +39,11 @@ void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value)
 void ds_map_allocate(ds_map_t *map, zend_long capacity);
 zend_long ds_map_capacity(ds_map_t *map);
 
+void ds_map_sort_by_value_callback(ds_map_t *map);
+void ds_map_sort_by_value(ds_map_t *map);
+void ds_map_sort_by_key_callback(ds_map_t *map);
+void ds_map_sort_by_key(ds_map_t *map);
+
 ds_map_t *ds_map_sorted_by_value_callback(ds_map_t *map);
 ds_map_t *ds_map_sorted_by_value(ds_map_t *map);
 ds_map_t *ds_map_sorted_by_key_callback(ds_map_t *map);
@@ -51,6 +57,8 @@ ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other);
 ds_pair_t *ds_map_first(ds_map_t *map);
 ds_pair_t *ds_map_last(ds_map_t *map);
 ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
+
+void ds_map_sum(ds_map_t *map, zval *return_value);
 
 void ds_map_destroy(ds_map_t *map);
 

@@ -80,6 +80,22 @@ do { \
 } while (0)
 
 /**
+ *
+ */
+#define DS_ADD_TO_SUM(value, sum)                                       \
+do {                                                                    \
+    zval number;                                                        \
+                                                                        \
+    if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {  \
+        continue;                                                       \
+    }                                                                   \
+                                                                        \
+    ZVAL_COPY(&number, value);                                          \
+    convert_scalar_to_number(&number);                                  \
+    fast_add_function(sum, sum, &number);                               \
+} while (0)                                                             \
+
+/**
  * Used to replace a buffer with a new one.
  */
 #define FREE_AND_REPLACE(ptr, repl) \
@@ -282,5 +298,6 @@ bool ds_php_array_uses_keys(HashTable *ht);
  * Determines if a zval is an object and implements Traversable.
  */
 bool ds_is_traversable(zval *value);
+
 
 #endif
