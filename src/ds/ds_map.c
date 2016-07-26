@@ -217,20 +217,22 @@ ds_map_t *ds_map_merge(ds_map_t *map, zval *values)
 
 ds_map_t *ds_map_xor(ds_map_t *map, ds_map_t *other)
 {
-    ds_htable_t *xor = ds_htable_xor(map->table, other->table);
-    return ds_map_ex(xor);
+    return ds_map_ex(ds_htable_xor(map->table, other->table));
 }
 
 ds_map_t *ds_map_diff(ds_map_t *map, ds_map_t *other)
 {
-    ds_htable_t *diff = ds_htable_diff(map->table, other->table);
-    return ds_map_ex(diff);
+    return ds_map_ex(ds_htable_diff(map->table, other->table));
 }
 
 ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other)
 {
-    ds_htable_t *intersection = ds_htable_intersect(map->table, other->table);
-    return ds_map_ex(intersection);
+    return ds_map_ex(ds_htable_intersect(map->table, other->table));
+}
+
+ds_map_t *ds_map_union(ds_map_t *map, ds_map_t *other)
+{
+    return ds_map_ex(ds_htable_merge(map->table, other->table));
 }
 
 ds_pair_t *ds_map_first(ds_map_t *map)

@@ -282,6 +282,13 @@ METHOD(sum)
     ds_map_sum(THIS_DS_MAP(), return_value);
 }
 
+ARGINFO_ZVAL_RETURN_DS(union, map, Map)
+METHOD(union)
+{
+    PARSE_OBJ(obj, php_ds_map_ce);
+    RETURN_DS_MAP(ds_map_union(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
+}
+
 ARGINFO_NONE_RETURN_DS(values, Sequence)
 METHOD(values)
 {
@@ -329,6 +336,7 @@ void php_ds_register_map()
         PHP_DS_ME(Map, sort)
         PHP_DS_ME(Map, sorted)
         PHP_DS_ME(Map, sum)
+        PHP_DS_ME(Map, union)
         PHP_DS_ME(Map, values)
         PHP_DS_ME(Map, xor)
 

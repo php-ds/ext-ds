@@ -777,7 +777,6 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
             DS_HTABLE_BUCKET_NEXT(prev) = DS_HTABLE_BUCKET_NEXT(bucket);
         }
 
-        //
         DS_HTABLE_BUCKET_DELETE(bucket);
 
         // If we're removing the last bucket, we might be able to move the

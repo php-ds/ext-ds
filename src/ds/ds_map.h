@@ -53,6 +53,7 @@ ds_map_t *ds_map_merge(ds_map_t *map, zval *values);
 ds_map_t *ds_map_xor(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_diff(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other);
+ds_map_t *ds_map_union(ds_map_t *map, ds_map_t *other);
 
 ds_pair_t *ds_map_first(ds_map_t *map);
 ds_pair_t *ds_map_last(ds_map_t *map);
