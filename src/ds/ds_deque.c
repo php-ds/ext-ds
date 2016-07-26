@@ -521,17 +521,13 @@ void ds_deque_find(ds_deque_t *deque, zval *value, zval *return_value)
 
 bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS)
 {
-    if (argc == 0) {
-        return 0;
-    }
-
-    while (argc--) {
+    while (argc-- > 0) {
         if (ds_deque_find_index(deque, argv++) == FAILURE) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
 void ds_deque_rotate(ds_deque_t *deque, zend_long n)

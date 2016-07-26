@@ -237,10 +237,10 @@ bool ds_vector_contains(ds_vector_t *vector, zval *value)
 
 bool ds_vector_contains_va(ds_vector_t *vector, VA_PARAMS)
 {
-    if (argc == 0) return false;
-
-    while (argc--) {
-        if ( ! ds_vector_contains(vector, argv++)) return false;
+    while (argc-- > 0) {
+        if ( ! ds_vector_contains(vector, argv++)) {
+            return false;
+        }
     }
 
     return true;

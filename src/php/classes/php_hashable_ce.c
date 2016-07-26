@@ -5,7 +5,7 @@
 
 zend_class_entry *hashable_ce;
 
-ARGINFO_NONE_RETURN_STRING(hash);
+ARGINFO_NONE(hash);
 ARGINFO_ZVAL_RETURN_BOOL(equals, obj);
 
 static zend_function_entry hashable_methods[] = {

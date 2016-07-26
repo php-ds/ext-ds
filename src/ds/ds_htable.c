@@ -288,6 +288,9 @@ static uint32_t get_object_hash(zval *obj)
             case IS_NULL:
                 return 0;
 
+            case IS_OBJECT:
+                return get_object_hash(&hash);
+
             default:
                 OBJ_HASH_MUST_BE_SCALAR(&hash);
                 return 0;
@@ -426,11 +429,7 @@ bool ds_htable_has_key(ds_htable_t *table, zval *key)
 
 bool ds_htable_has_keys(ds_htable_t *table, VA_PARAMS)
 {
-    if (argc == 0) {
-        return false;
-    }
-
-    while (argc--) {
+    while (argc-- > 0) {
         if ( ! ds_htable_has_key(table, argv++)) {
             return false;
         }
@@ -446,11 +445,7 @@ bool ds_htable_has_value(ds_htable_t *table, zval *value)
 
 bool ds_htable_has_values(ds_htable_t *table, VA_PARAMS)
 {
-    if (argc == 0) {
-        return false;
-    }
-
-    while (argc--) {
+    while (argc-- > 0) {
         if ( ! ds_htable_lookup_by_value(table, argv++)) {
             return false;
         }

@@ -37,8 +37,6 @@ SEQUENCE_ME(cls, sorted) \
 SEQUENCE_ME(cls, sum) \
 SEQUENCE_ME(cls, unshift)
 
-/* Argument info */
-
 
 ARGINFO_OPTIONAL_ZVAL(                  Sequence___construct, values);
 ARGINFO_LONG(                           Sequence_allocate, capacity);
