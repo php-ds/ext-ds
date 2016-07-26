@@ -22,8 +22,13 @@ ds_map_t *ds_map_reversed(ds_map_t *map);
 zval *ds_map_get(ds_map_t *map, zval *key, zval *def);
 void ds_map_put(ds_map_t *map, zval *key, zval *value);
 void ds_map_remove(ds_map_t *map, zval *key, zval *def, zval *return_value);
+
+bool ds_map_has_key(ds_map_t *map, zval *key);
+bool ds_map_has_value(ds_map_t *map, zval *value);
+
 bool ds_map_has_keys(ds_map_t *map, VA_PARAMS);
 bool ds_map_has_values(ds_map_t *map, VA_PARAMS);
+
 void ds_map_clear(ds_map_t *map);
 void ds_map_to_array(ds_map_t *map, zval *return_value);
 void ds_map_put_all(ds_map_t *map, zval *values);

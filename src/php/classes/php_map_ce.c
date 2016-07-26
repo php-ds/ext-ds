@@ -77,18 +77,18 @@ METHOD(remove)
     ds_map_remove(THIS_DS_MAP(), key, def, return_value);
 }
 
-ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(hasKey, keys)
+ARGINFO_ZVAL_RETURN_BOOL(hasKey, key)
 METHOD(hasKey)
 {
-    PARSE_VARIADIC_ZVAL();
-    RETURN_BOOL(ds_map_has_keys(THIS_DS_MAP(), argc, argv));
+    PARSE_ZVAL(key);
+    RETURN_BOOL(ds_map_has_key(THIS_DS_MAP(), key));
 }
 
-ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(hasValue, values)
+ARGINFO_ZVAL_RETURN_BOOL(hasValue, value)
 METHOD(hasValue)
 {
-    PARSE_VARIADIC_ZVAL();
-    RETURN_BOOL(ds_map_has_values(THIS_DS_MAP(), argc, argv));
+    PARSE_ZVAL(value);
+    RETURN_BOOL(ds_map_has_value(THIS_DS_MAP(), value));
 }
 
 ARGINFO_DS_RETURN_DS(diff, map, Map, Map)

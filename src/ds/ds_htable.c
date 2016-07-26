@@ -407,6 +407,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *table, zval *value)
         }
     }
     DS_HTABLE_FOREACH_END();
+
     return NULL;
 }
 
@@ -440,7 +441,7 @@ bool ds_htable_has_keys(ds_htable_t *table, VA_PARAMS)
 
 bool ds_htable_has_value(ds_htable_t *table, zval *value)
 {
-    return ds_htable_lookup_by_key(table, value) != NULL;
+    return ds_htable_lookup_by_value(table, value) != NULL;
 }
 
 bool ds_htable_has_values(ds_htable_t *table, VA_PARAMS)
