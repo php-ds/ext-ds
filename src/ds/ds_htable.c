@@ -919,35 +919,52 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
     return clone;
 }
 
+ds_htable_t *ds_htable_filter(ds_htable_t *table)
+{
+    ds_htable_bucket_t *src, *dst;
+
+    ds_htable_t *filtered = ds_htable_ex(table->capacity);
+
+    DS_HTABLE_FOREACH_BUCKET(table, src) {
+        if (zend_is_true(&src->value)) {
+            dst = init_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
+            ZVAL_COPY(&dst->value, &src->value);
+        }
+    }
+    DS_HTABLE_FOREACH_END();
+
+    return filtered;
+}
+
 ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
 {
-    ds_htable_bucket_t *bucket;
+    ds_htable_bucket_t *src, *dst;
 
     zval params[2];
     zval retval;
 
-    ds_htable_t *clone = ds_htable_ex(table->capacity);
+    ds_htable_t *filtered = ds_htable_ex(table->capacity);
 
-    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
-        ZVAL_COPY_VALUE(&params[0], &bucket->key);
-        ZVAL_COPY_VALUE(&params[1], &bucket->value);
+    DS_HTABLE_FOREACH_BUCKET(table, src) {
+        ZVAL_COPY_VALUE(&params[0], &src->key);
+        ZVAL_COPY_VALUE(&params[1], &src->value);
 
         fci.param_count = 2;
         fci.params      = params;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            ds_htable_destroy(clone);
+            ds_htable_destroy(filtered);
             return NULL;
         } else {
             if (zend_is_true(&retval)) {
-                ds_htable_bucket_t *dst = init_next_bucket(clone, &bucket->key, DS_HTABLE_BUCKET_HASH(bucket));
-                ZVAL_COPY(&dst->value, &bucket->value);
+                dst = init_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
+                ZVAL_COPY(&dst->value, &src->value);
             }
         }
     }
     DS_HTABLE_FOREACH_END();
-    return clone;
+    return filtered;
 }
 
 void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *return_value)

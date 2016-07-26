@@ -212,11 +212,15 @@ METHOD(jsonSerialize)
     ds_map_to_array(THIS_DS_MAP(), return_value);
 }
 
-ARGINFO_CALLABLE_RETURN_DS(filter, callback, Map)
+ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(filter, callback, Map)
 METHOD(filter)
 {
-    PARSE_CALLABLE();
-    RETURN_DS_MAP(ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS));
+    if (ZEND_NUM_ARGS()) {
+        PARSE_CALLABLE();
+        RETURN_DS_MAP(ds_map_filter_callback(THIS_DS_MAP(), FCI_ARGS));
+    } else {
+        RETURN_DS_MAP(ds_map_filter(THIS_DS_MAP()));
+    }
 }
 
 ARGINFO_NONE_RETURN_DS(first, Pair)

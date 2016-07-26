@@ -33,8 +33,8 @@ ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length);
 ds_vector_t *ds_map_values_to_vector(ds_map_t *map);
 
 ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS);
+ds_map_t *ds_map_filter(ds_map_t *map);
 ds_map_t *ds_map_filter_callback(ds_map_t *map, FCI_PARAMS);
-void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
 
 void ds_map_allocate(ds_map_t *map, zend_long capacity);
 zend_long ds_map_capacity(ds_map_t *map);
@@ -60,6 +60,7 @@ ds_pair_t *ds_map_last(ds_map_t *map);
 ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
 
 void ds_map_sum(ds_map_t *map, zval *return_value);
+void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
 
 void ds_map_destroy(ds_map_t *map);
 

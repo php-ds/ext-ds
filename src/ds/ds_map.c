@@ -69,6 +69,11 @@ ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS)
     return NULL;
 }
 
+ds_map_t *ds_map_filter(ds_map_t *map)
+{
+    return ds_map_ex(ds_htable_filter(map->table));
+}
+
 ds_map_t *ds_map_filter_callback(ds_map_t *map, FCI_PARAMS)
 {
     ds_htable_t *table = ds_htable_filter_callback(map->table, FCI_ARGS);

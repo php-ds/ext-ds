@@ -190,6 +190,7 @@ ds_htable_bucket_t *ds_htable_first(ds_htable_t *table);
 ds_htable_bucket_t *ds_htable_last(ds_htable_t *table);
 
 ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS);
+ds_htable_t *ds_htable_filter(ds_htable_t *table);
 ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS);
 void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *return_value);
 
