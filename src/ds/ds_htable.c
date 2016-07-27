@@ -288,9 +288,6 @@ static uint32_t get_object_hash(zval *obj)
             case IS_NULL:
                 return 0;
 
-            case IS_OBJECT:
-                return get_object_hash(&hash);
-
             default:
                 OBJ_HASH_MUST_BE_SCALAR(&hash);
                 return 0;

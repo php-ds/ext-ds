@@ -2,8 +2,8 @@
 <package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.4" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
     <name>ds</name>
     <channel>pecl.php.net</channel>
-    <summary>Data structures</summary>
-    <description>Data structures for PHP</description>
+    <summary>Data Structures</summary>
+    <description>Data Structures for PHP</description>
     <lead>
         <name>Rudi Theunissen</name>
         <user>rtheunissen</user>
@@ -30,89 +30,104 @@
     <notes />
     <contents>
         <dir name="/">
-            <file name="src/internal/php_deque.c" role="src" />
-            <file name="src/internal/php_deque.h" role="src" />
-            <file name="src/internal/php_vector.c" role="src" />
-            <file name="src/internal/php_vector.h" role="src" />
-            <file name="src/internal/php_htable.c" role="src" />
-            <file name="src/internal/php_htable.h" role="src" />
-            <file name="src/internal/php_set.c" role="src" />
-            <file name="src/internal/php_set.h" role="src" />
-            <file name="src/internal/php_map.c" role="src" />
-            <file name="src/internal/php_map.h" role="src" />
-            <file name="src/internal/php_stack.c" role="src" />
-            <file name="src/internal/php_stack.h" role="src" />
-            <file name="src/internal/php_pair.c" role="src" />
-            <file name="src/internal/php_pair.h" role="src" />
-            <file name="src/internal/php_priority_queue.c" role="src" />
-            <file name="src/internal/php_priority_queue.h" role="src" />
-            <file name="src/internal/php_queue.c" role="src" />
-            <file name="src/internal/php_queue.h" role="src" />
+            <file name="src/ds/ds_deque.c" role="src" />
+            <file name="src/ds/ds_deque.h" role="src" />
+            <file name="src/ds/ds_htable.c" role="src" />
+            <file name="src/ds/ds_htable.h" role="src" />
+            <file name="src/ds/ds_map.c" role="src" />
+            <file name="src/ds/ds_map.h" role="src" />
+            <file name="src/ds/ds_pair.c" role="src" />
+            <file name="src/ds/ds_pair.h" role="src" />
+            <file name="src/ds/ds_priority_queue.c" role="src" />
+            <file name="src/ds/ds_priority_queue.h" role="src" />
+            <file name="src/ds/ds_queue.c" role="src" />
+            <file name="src/ds/ds_queue.h" role="src" />
+            <file name="src/ds/ds_set.c" role="src" />
+            <file name="src/ds/ds_set.h" role="src" />
+            <file name="src/ds/ds_stack.c" role="src" />
+            <file name="src/ds/ds_stack.h" role="src" />
+            <file name="src/ds/ds_vector.c" role="src" />
+            <file name="src/ds/ds_vector.h" role="src" />
 
-            <file name="src/iterators/php_vector_iterator.c" role="src" />
-            <file name="src/iterators/php_vector_iterator.h" role="src" />
-            <file name="src/iterators/php_deque_iterator.c" role="src" />
-            <file name="src/iterators/php_deque_iterator.h" role="src" />
-            <file name="src/iterators/php_set_iterator.c" role="src" />
-            <file name="src/iterators/php_set_iterator.h" role="src" />
-            <file name="src/iterators/php_map_iterator.c" role="src" />
-            <file name="src/iterators/php_map_iterator.h" role="src" />
-            <file name="src/iterators/php_stack_iterator.c" role="src" />
-            <file name="src/iterators/php_stack_iterator.h" role="src" />
-            <file name="src/iterators/php_htable_iterator.c" role="src" />
-            <file name="src/iterators/php_htable_iterator.h" role="src" />
-            <file name="src/iterators/php_priority_queue_iterator.c" role="src" />
-            <file name="src/iterators/php_priority_queue_iterator.h" role="src" />
-            <file name="src/iterators/php_queue_iterator.c" role="src" />
-            <file name="src/iterators/php_queue_iterator.h" role="src" />
+            <file name="src/php/iterators/php_deque_iterator.c" role="src" />
+            <file name="src/php/iterators/php_deque_iterator.h" role="src" />
+            <file name="src/php/iterators/php_htable_iterator.c" role="src" />
+            <file name="src/php/iterators/php_htable_iterator.h" role="src" />
+            <file name="src/php/iterators/php_map_iterator.c" role="src" />
+            <file name="src/php/iterators/php_map_iterator.h" role="src" />
+            <file name="src/php/iterators/php_priority_queue_iterator.c" role="src" />
+            <file name="src/php/iterators/php_priority_queue_iterator.h" role="src" />
+            <file name="src/php/iterators/php_queue_iterator.c" role="src" />
+            <file name="src/php/iterators/php_queue_iterator.h" role="src" />
+            <file name="src/php/iterators/php_set_iterator.c" role="src" />
+            <file name="src/php/iterators/php_set_iterator.h" role="src" />
+            <file name="src/php/iterators/php_stack_iterator.c" role="src" />
+            <file name="src/php/iterators/php_stack_iterator.h" role="src" />
+            <file name="src/php/iterators/php_vector_iterator.c" role="src" />
+            <file name="src/php/iterators/php_vector_iterator.h" role="src" />
 
-            <file name="src/handlers/php_vector_handlers.c" role="src" />
-            <file name="src/handlers/php_vector_handlers.h" role="src" />
-            <file name="src/handlers/php_deque_handlers.c" role="src" />
-            <file name="src/handlers/php_deque_handlers.h" role="src" />
-            <file name="src/handlers/php_set_handlers.c" role="src" />
-            <file name="src/handlers/php_set_handlers.h" role="src" />
-            <file name="src/handlers/php_map_handlers.c" role="src" />
-            <file name="src/handlers/php_map_handlers.h" role="src" />
-            <file name="src/handlers/php_stack_handlers.c" role="src" />
-            <file name="src/handlers/php_stack_handlers.h" role="src" />
-            <file name="src/handlers/php_pair_handlers.c" role="src" />
-            <file name="src/handlers/php_pair_handlers.h" role="src" />
-            <file name="src/handlers/php_priority_queue_handlers.c" role="src" />
-            <file name="src/handlers/php_priority_queue_handlers.h" role="src" />
-            <file name="src/handlers/php_queue_handlers.c" role="src" />
-            <file name="src/handlers/php_queue_handlers.h" role="src" />
+            <file name="src/php/handlers/php_deque_handlers.c" role="src" />
+            <file name="src/php/handlers/php_deque_handlers.h" role="src" />
+            <file name="src/php/handlers/php_map_handlers.c" role="src" />
+            <file name="src/php/handlers/php_map_handlers.h" role="src" />
+            <file name="src/php/handlers/php_pair_handlers.c" role="src" />
+            <file name="src/php/handlers/php_pair_handlers.h" role="src" />
+            <file name="src/php/handlers/php_priority_queue_handlers.c" role="src" />
+            <file name="src/php/handlers/php_priority_queue_handlers.h" role="src" />
+            <file name="src/php/handlers/php_queue_handlers.c" role="src" />
+            <file name="src/php/handlers/php_queue_handlers.h" role="src" />
+            <file name="src/php/handlers/php_set_handlers.c" role="src" />
+            <file name="src/php/handlers/php_set_handlers.h" role="src" />
+            <file name="src/php/handlers/php_stack_handlers.c" role="src" />
+            <file name="src/php/handlers/php_stack_handlers.h" role="src" />
+            <file name="src/php/handlers/php_vector_handlers.c" role="src" />
+            <file name="src/php/handlers/php_vector_handlers.h" role="src" />
 
-            <file name="src/classes/php_ce_hashable.c" role="src" />
-            <file name="src/classes/php_ce_hashable.h" role="src" />
-            <file name="src/classes/php_ce_collection.c" role="src" />
-            <file name="src/classes/php_ce_collection.h" role="src" />
-            <file name="src/classes/php_ce_sequence.c" role="src" />
-            <file name="src/classes/php_ce_sequence.h" role="src" />
-            <file name="src/classes/php_ce_vector.c" role="src" />
-            <file name="src/classes/php_ce_vector.h" role="src" />
-            <file name="src/classes/php_ce_deque.c" role="src" />
-            <file name="src/classes/php_ce_deque.h" role="src" />
-            <file name="src/classes/php_ce_set.c" role="src" />
-            <file name="src/classes/php_ce_set.h" role="src" />
-            <file name="src/classes/php_ce_map.c" role="src" />
-            <file name="src/classes/php_ce_map.h" role="src" />
-            <file name="src/classes/php_ce_stack.c" role="src" />
-            <file name="src/classes/php_ce_stack.h" role="src" />
-            <file name="src/classes/php_ce_pair.c" role="src" />
-            <file name="src/classes/php_ce_pair.h" role="src" />
-            <file name="src/classes/php_ce_priority_queue.c" role="src" />
-            <file name="src/classes/php_ce_priority_queue.h" role="src" />
-            <file name="src/classes/php_ce_queue.c" role="src" />
-            <file name="src/classes/php_ce_queue.h" role="src" />
-            <file name="src/classes/php_ce_ds.c" role="src" />
-            <file name="src/classes/php_ce_ds.h" role="src" />
+            <file name="src/php/classes/php_collection_ce.c" role="src" />
+            <file name="src/php/classes/php_collection_ce.h" role="src" />
+            <file name="src/php/classes/php_deque_ce.c" role="src" />
+            <file name="src/php/classes/php_deque_ce.h" role="src" />
+            <file name="src/php/classes/php_hashable_ce.c" role="src" />
+            <file name="src/php/classes/php_hashable_ce.h" role="src" />
+            <file name="src/php/classes/php_map_ce.c" role="src" />
+            <file name="src/php/classes/php_map_ce.h" role="src" />
+            <file name="src/php/classes/php_pair_ce.c" role="src" />
+            <file name="src/php/classes/php_pair_ce.h" role="src" />
+            <file name="src/php/classes/php_priority_queue_ce.c" role="src" />
+            <file name="src/php/classes/php_priority_queue_ce.h" role="src" />
+            <file name="src/php/classes/php_queue_ce.c" role="src" />
+            <file name="src/php/classes/php_queue_ce.h" role="src" />
+            <file name="src/php/classes/php_sequence_ce.c" role="src" />
+            <file name="src/php/classes/php_sequence_ce.h" role="src" />
+            <file name="src/php/classes/php_set_ce.c" role="src" />
+            <file name="src/php/classes/php_set_ce.h" role="src" />
+            <file name="src/php/classes/php_stack_ce.c" role="src" />
+            <file name="src/php/classes/php_stack_ce.h" role="src" />
+            <file name="src/php/classes/php_vector_ce.c" role="src" />
+            <file name="src/php/classes/php_vector_ce.h" role="src" />
+
+            <file name="src/php/objects/php_deque.c" role="src" />
+            <file name="src/php/objects/php_deque.h" role="src" />
+            <file name="src/php/objects/php_map.c" role="src" />
+            <file name="src/php/objects/php_map.h" role="src" />
+            <file name="src/php/objects/php_pair.c" role="src" />
+            <file name="src/php/objects/php_pair.h" role="src" />
+            <file name="src/php/objects/php_priority_queue.c" role="src" />
+            <file name="src/php/objects/php_priority_queue.h" role="src" />
+            <file name="src/php/objects/php_queue.c" role="src" />
+            <file name="src/php/objects/php_queue.h" role="src" />
+            <file name="src/php/objects/php_set.c" role="src" />
+            <file name="src/php/objects/php_set.h" role="src" />
+            <file name="src/php/objects/php_stack.c" role="src" />
+            <file name="src/php/objects/php_stack.h" role="src" />
+            <file name="src/php/objects/php_vector.c" role="src" />
+            <file name="src/php/objects/php_vector.h" role="src" />
+
+            <file name="src/php/arginfo.h" role="src" />
+            <file name="src/php/parameters.h" role="src" />
 
             <file name="src/common.c" role="src" />
             <file name="src/common.h" role="src" />
-            <file name="src/arginfo.h" role="src" />
-            <file name="src/exceptions.h" role="src" />
-            <file name="src/parameters.h" role="src" />
 
             <file name="php_ds.c" role="src" />
             <file name="php_ds.h" role="src" />
