@@ -23,12 +23,12 @@
         <api>1.0.0</api>
     </version>
     <stability>
-        <release>devel</release>
-        <api>devel</api>
+        <release>alpha</release>
+        <api>alpha</api>
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Development release
+        Alpha test release
     </notes>
     <contents>
         <dir name="/">
@@ -95,7 +95,7 @@
                     </dir>
                     <dir name="handlers">
                         <file role="src" name="php_common_handlers.c"/>
-                        <file role="src" name="php_common_handlers.c"/>
+                        <file role="src" name="php_common_handlers.h"/>
                         <file role="src" name="php_deque_handlers.c"/>
                         <file role="src" name="php_deque_handlers.h"/>
                         <file role="src" name="php_map_handlers.c"/>

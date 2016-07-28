@@ -882,6 +882,30 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
     }
 }
 
+void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
+{
+    zval params[2];
+    zval retval;
+
+    ds_htable_bucket_t *bucket;
+
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+        ZVAL_COPY_VALUE(&params[0], &bucket->key);
+        ZVAL_COPY_VALUE(&params[1], &bucket->value);
+
+        fci.param_count = 2;
+        fci.params      = params;
+        fci.retval      = &retval;
+
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            return;
+        } else {
+            ZVAL_DTOR_COPY(&bucket->value, &retval);
+        }
+    }
+    DS_HTABLE_FOREACH_END();
+}
+
 ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 {
     zval params[2];

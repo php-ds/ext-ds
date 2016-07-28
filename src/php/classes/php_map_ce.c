@@ -35,18 +35,18 @@ METHOD(allocate)
     ds_map_allocate(THIS_DS_MAP(), capacity);
 }
 
+ARGINFO_CALLABLE(apply, callback)
+METHOD(apply)
+{
+    PARSE_CALLABLE();
+    ds_map_apply(THIS_DS_MAP(), FCI_ARGS);
+}
+
 ARGINFO_NONE_RETURN_LONG(capacity)
 METHOD(capacity)
 {
     PARSE_NONE;
     RETURN_LONG(ds_map_capacity(THIS_DS_MAP()));
-}
-
-ARGINFO_ZVAL(putAll, values)
-METHOD(putAll)
-{
-    PARSE_ZVAL(values);
-    ds_map_put_all(THIS_DS_MAP(), values);
 }
 
 ARGINFO_ZVAL_ZVAL(put, key, value)
@@ -314,6 +314,7 @@ void php_ds_register_map()
     zend_function_entry methods[] = {
         PHP_DS_ME(Map, __construct)
         PHP_DS_ME(Map, allocate)
+        PHP_DS_ME(Map, apply)
         PHP_DS_ME(Map, capacity)
         PHP_DS_ME(Map, diff)
         PHP_DS_ME(Map, filter)

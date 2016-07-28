@@ -58,6 +58,11 @@ void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value)
     ds_htable_reduce(map->table, FCI_ARGS, initial, return_value);
 }
 
+void ds_map_apply(ds_map_t *map, FCI_PARAMS)
+{
+    ds_htable_apply(map->table, FCI_ARGS);
+}
+
 ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS)
 {
     ds_htable_t *table = ds_htable_map(map->table, FCI_ARGS);

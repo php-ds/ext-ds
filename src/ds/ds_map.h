@@ -66,7 +66,7 @@ ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
 
 void ds_map_sum(ds_map_t *map, zval *return_value);
 void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
-
+void ds_map_apply(ds_map_t *map, FCI_PARAMS);
 void ds_map_destroy(ds_map_t *map);
 
 #endif
