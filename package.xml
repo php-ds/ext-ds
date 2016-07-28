@@ -95,7 +95,7 @@
                     </dir>
                     <dir name="handlers">
                         <file role="src" name="php_common_handlers.c"/>
-                        <file role="src" name="php_common_handlers.c"/>
+                        <file role="src" name="php_common_handlers.h"/>
                         <file role="src" name="php_deque_handlers.c"/>
                         <file role="src" name="php_deque_handlers.h"/>
                         <file role="src" name="php_map_handlers.c"/>
