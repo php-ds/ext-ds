@@ -17,18 +17,18 @@
         <active>yes</active>
     </lead>
     <date>2016-07-28</date>
-    <time>13:58:26</time>
+    <time>22:00:00</time>
     <version>
-        <release>1.0.0</release>
-        <api>1.0.0</api>
+        <release>1.0.1</release>
+        <api>1.0.1</api>
     </version>
     <stability>
-        <release>alpha</release>
-        <api>alpha</api>
+        <release>devel</release>
+        <api>devel</api>
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Alpha test release
+        Fixed Map::apply
     </notes>
     <contents>
         <dir name="/">
