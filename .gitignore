@@ -45,3 +45,4 @@ modules
 run-tests.php
 test
 vendor
+~.tgz

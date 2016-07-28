@@ -65,6 +65,14 @@ dnl Classes
   php_ds.c                                        \
                                                   \
   , $ext_shared, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+
+  PHP_ADD_BUILD_DIR($ext_builddir/src, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/ds, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/php, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/php/objects, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/php/classes, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/php/iterators, 1)
+  PHP_ADD_BUILD_DIR($ext_builddir/src/php/handlers, 1)
 fi
 
 
