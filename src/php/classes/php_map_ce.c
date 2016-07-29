@@ -56,6 +56,13 @@ METHOD(put)
     ds_map_put(THIS_DS_MAP(), key, value);
 }
 
+ARGINFO_ZVAL(putAll, values)
+METHOD(putAll)
+{
+    PARSE_ZVAL(values);
+    ds_map_put_all(THIS_DS_MAP(), values);
+}
+
 ARGINFO_ZVAL_OPTIONAL_ZVAL(get, key, default)
 METHOD(get)
 {
