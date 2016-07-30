@@ -4,8 +4,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 [![PECL](https://img.shields.io/badge/PECL-1.0.2-blue.svg)](https://pecl.php.net/package/ds)
 
----
-
 ## Install
 
 The easiest way to install the extension is to use PECL:
