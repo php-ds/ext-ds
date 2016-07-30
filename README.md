@@ -1,19 +1,25 @@
-### Data structures for PHP 7
-##### Extension
+# Data Structures for PHP
 
 [![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
+[![PECL](https://img.shields.io/badge/PECL-1.0.2-blue.svg)](https://pecl.php.net/package/ds)
 
 ---
 
-[**Blog post**](https://medium.com/@rtheunissen/efficient-data-structures-for-php-7-9dda7af674cd) that covers the behaviour and performance benefits of each data structure.
+## Install
 
-### Installation
+The easiest way to install the extension is to use PECL:
+
+```
+pecl install ds
+```
+
+If you're on Windows, you can download a compiled .dll [on PECL](https://pecl.php.net/package/ds).
+
+You can also build directly from source:
 
 ```bash
 # Dependencies you might need to install
-# sudo add-apt-repository ppa:ondrej/php
-# sudo apt-get update
 # sudo apt-get install git build-essential php7.0-dev
 
 git clone https://github.com/php-ds/extension "php-ds"
@@ -22,18 +28,18 @@ cd php-ds
 # Build and install the extension
 phpize
 ./configure
-sudo make install
+make 
+make install
 
 # Clean up the build files
 make clean
 phpize --clean
 ```
 
-### Usage
+## Enable
 
-##### Enabling the extension
-
-The best way to enable the extension is to create an *ini* file.
+You'll need to add `extension=ds.so`  (or .dll if you're on Windows) to your primary *ini* file.
+You can also create a separate *ini* file for the extension, which allows you to control load order.
 
 ```bash
 # To see where additional .ini files are located
@@ -51,20 +57,20 @@ You can also enable the extension temporarily using the command line:
 php -d extension=ds.so
 ```
 
-### Testing
+## Testing
 
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
-
-The extension has to be installed to run the tests.
-
-#### Running the tests
 
 ``` bash
 composer install
 composer test
 ```
 
-### Contributing
+## Compatibility
+
+It's highly recommended that you include the [polyfill](https://github.com/php-ds/polyfill) as a dependency in your project. This allows your codebase to still function in an environment where the extension is not installed. 
+
+## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
