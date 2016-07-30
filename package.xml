@@ -16,19 +16,19 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2016-07-28</date>
-    <time>22:00:00</time>
+    <date>2016-07-31</date>
+    <time>00:13:22</time>
     <version>
-        <release>1.0.1</release>
-        <api>1.0.1</api>
+        <release>1.0.2</release>
+        <api>1.0.2</api>
     </version>
     <stability>
-        <release>devel</release>
-        <api>devel</api>
+        <release>stable</release>
+        <api>stable</api>
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Fixed Map::apply
+        Add Map::putAll
     </notes>
     <contents>
         <dir name="/">
