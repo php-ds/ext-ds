@@ -12,7 +12,7 @@ The easiest way to install the extension is to use PECL:
 pecl install ds
 ```
 
-If you're on Windows, you can download a compiled .dll [on PECL](https://pecl.php.net/package/ds).
+If you're on Windows, you can [download a compiled .dll on PECL](https://pecl.php.net/package/ds).
 
 You can also build directly from source:
 
