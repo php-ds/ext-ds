@@ -28,7 +28,8 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Add Map::putAll
+        Fix intersect, diff, xor before contains bug (see docs #4)
+        Add Set::merge
     </notes>
     <contents>
         <dir name="/">
