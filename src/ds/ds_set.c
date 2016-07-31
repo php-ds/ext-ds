@@ -247,6 +247,18 @@ ds_set_t *ds_set_union(ds_set_t *set, ds_set_t *other)
     return ds_set_ex(ds_htable_merge(set->table, other->table));
 }
 
+ds_set_t *ds_set_merge(ds_set_t *set, zval *values)
+{
+    if (values && (ds_is_array(values) || ds_is_traversable(values))) {
+        ds_set_t *merged = ds_set_clone(set);
+        ds_set_add_all(merged, values);
+        return merged;
+    }
+
+    ARRAY_OR_TRAVERSABLE_REQUIRED();
+    return NULL;
+}
+
 void ds_set_assign_union(ds_set_t *set, ds_set_t *other)
 {
     zval *value;

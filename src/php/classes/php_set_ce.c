@@ -113,6 +113,13 @@ METHOD(last)
     RETURN_ZVAL_COPY(ds_set_get_last(THIS_DS_SET()));
 }
 
+ARGINFO_ZVAL_RETURN_DS(merge, values, Set)
+METHOD(merge)
+{
+    PARSE_ZVAL(values);
+    RETURN_DS_SET(ds_set_merge(THIS_DS_SET(), values));
+}
+
 ARGINFO_DS_RETURN_DS(union, set, Set, Set)
 METHOD(union)
 {
@@ -254,6 +261,7 @@ void php_ds_register_set()
         PHP_DS_ME(Set, intersect)
         PHP_DS_ME(Set, join)
         PHP_DS_ME(Set, last)
+        PHP_DS_ME(Set, merge)
         PHP_DS_ME(Set, reduce)
         PHP_DS_ME(Set, remove)
         PHP_DS_ME(Set, reverse)

@@ -257,10 +257,6 @@ METHOD(unshift)
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 
-ARGINFO_ZVAL(
-    push_one, value
-);
-
 void php_ds_register_vector()
 {
     zend_class_entry ce;
@@ -268,9 +264,6 @@ void php_ds_register_vector()
     zend_function_entry methods[] = {
         SEQUENCE_ME_LIST(Vector)
         PHP_DS_COLLECTION_ME_LIST(Vector)
-
-        PHP_ME(Vector, push_one, arginfo_push_one, ZEND_ACC_PUBLIC)
-
         PHP_FE_END
     };
 

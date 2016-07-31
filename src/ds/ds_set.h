@@ -57,6 +57,7 @@ ds_set_t *ds_set_diff(ds_set_t *set, ds_set_t *other);
 ds_set_t *ds_set_intersect(ds_set_t *set, ds_set_t *other);
 ds_set_t *ds_set_xor(ds_set_t *set, ds_set_t *other);
 ds_set_t *ds_set_union(ds_set_t *set, ds_set_t *other);
+ds_set_t *ds_set_merge(ds_set_t *set, zval *values);
 
 void ds_set_assign_diff(ds_set_t *set, ds_set_t *other);
 void ds_set_assign_intersect(ds_set_t *set, ds_set_t *other);
