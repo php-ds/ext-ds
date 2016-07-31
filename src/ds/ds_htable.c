@@ -607,6 +607,7 @@ void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
 static void ds_htable_put_next(ds_htable_t *table, ds_htable_bucket_t *bucket)
 {
     DS_HTABLE_BUCKET_COPY(&table->buckets[table->next], bucket);
+    DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
 
     table->next++;
     table->size++;
@@ -1064,6 +1065,7 @@ ds_htable_t *ds_htable_diff(ds_htable_t *table, ds_htable_t *other)
 ds_htable_t *ds_htable_intersect(ds_htable_t *table, ds_htable_t *other)
 {
     ds_htable_bucket_t *bucket;
+
     ds_htable_t *intersection = ds_htable();
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
