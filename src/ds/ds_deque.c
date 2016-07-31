@@ -47,32 +47,6 @@ ds_deque_t *ds_deque()
     return deque;
 }
 
-static void ds_deque_copy(ds_deque_t *src, ds_deque_t *dst)
-{
-    zend_long tail = src->tail;
-    zend_long head = src->head;
-    zend_long mask = src->capacity - 1;
-
-    for (; head != tail; head = (head + 1) & mask) {
-        ZVAL_COPY(&dst->buffer[head], &src->buffer[head]);
-    }
-}
-
-ds_deque_t *ds_deque_clone(ds_deque_t *deque)
-{
-    ds_deque_t *cloned = ecalloc(1, sizeof(ds_deque_t));
-
-    cloned->buffer   = ALLOC_ZVAL_BUFFER(deque->capacity);
-    cloned->capacity = deque->capacity;
-    cloned->head     = deque->head;
-    cloned->tail     = deque->tail;
-    cloned->size     = deque->size;
-
-    ds_deque_copy(deque, cloned);
-
-    return cloned;
-}
-
 static ds_deque_t *ds_deque_from_buffer_ex(
     zval *buffer,
     zend_long size,
@@ -94,6 +68,22 @@ ds_deque_t *ds_deque_from_buffer(zval *buffer, zend_long size)
     zend_long capacity = ds_deque_required_capacity(size);
     return ds_deque_from_buffer_ex(buffer, size, capacity);
 }
+
+ds_deque_t *ds_deque_clone(ds_deque_t *deque)
+{
+    zval *source;
+    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *target = buffer;
+
+    DS_DEQUE_FOREACH(deque, source) {
+        ZVAL_COPY(target, source);
+        target++;
+    }
+    DS_DEQUE_FOREACH_END();
+
+    return ds_deque_from_buffer_ex(buffer, deque->size, deque->capacity);
+}
+
 
 static inline bool ds_deque_valid_index(ds_deque_t *deque, zend_long index)
 {
@@ -281,24 +271,6 @@ ds_deque_t *ds_deque_reversed(ds_deque_t *deque)
     return ds_deque_from_buffer_ex(buf, deque->size, deque->capacity);
 }
 
-static inline void _ds_deque_shift(ds_deque_t *deque, zval *return_value)
-{
-    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->head]);
-    ds_deque_increment_head(deque);
-
-    deque->size--;
-    ds_deque_auto_truncate(deque);
-}
-
-static inline void _ds_deque_pop(ds_deque_t *deque, zval *return_value)
-{
-    ds_deque_decrement_tail(deque);
-    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->tail]);
-
-    deque->size--;
-    ds_deque_auto_truncate(deque);
-}
-
 void ds_deque_shift(ds_deque_t *deque, zval *return_value)
 {
     if (deque->size == 0) {
@@ -306,7 +278,11 @@ void ds_deque_shift(ds_deque_t *deque, zval *return_value)
         return;
     }
 
-    _ds_deque_shift(deque, return_value);
+    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->head]);
+    ds_deque_increment_head(deque);
+
+    deque->size--;
+    ds_deque_auto_truncate(deque);
 }
 
 void ds_deque_pop(ds_deque_t *deque, zval *return_value)
@@ -316,7 +292,11 @@ void ds_deque_pop(ds_deque_t *deque, zval *return_value)
         return;
     }
 
-    _ds_deque_pop(deque, return_value);
+    ds_deque_decrement_tail(deque);
+    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->tail]);
+
+    deque->size--;
+    ds_deque_auto_truncate(deque);
 }
 
 void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
@@ -327,43 +307,43 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
 
     // Basic shift if it's the first element in the sequence.
     if (index == 0) {
-        _ds_deque_shift(deque, return_value);
+        ds_deque_shift(deque, return_value);
+        return;
+    }
 
     // Basic pop if it's the last element in the sequence.
-    } else if (index == deque->size - 1) {
-        _ds_deque_pop(deque, return_value);
+    if (index == deque->size - 1) {
+        ds_deque_pop(deque, return_value);
+        return;
+    }
+
+    // Translate the positional index to a buffer index.
+    index = ds_deque_lookup_index(deque, index);
+
+    // Copy the value into the return value, then destruct.
+    ZVAL_COPY_DTOR(return_value, &deque->buffer[index]);
+
+    if (index < deque->tail) {
+        // Shift all values between the index and the tail.
+        _memmove(deque, index, index + 1, deque->tail - index);
+        deque->tail--;
 
     } else {
-        index = (deque->head + index) & (deque->capacity - 1); // Buffer index
+        // Index comes after tail, and we know at this point that the index
+        // is valid, so it must be after the head which has wrapped around.
 
-        ZVAL_COPY_DTOR(return_value, &deque->buffer[index]);
-
-        if (index < deque->tail) {
-            // Index comes before the tail, so it must be between 0 and tail,
-            // otherwise it would have wrapped around.
-
-            // Shift all values between the index and the tail.
-            _memmove(deque, index, index + 1, deque->tail - index);
-            deque->tail--;
-
-        } else {
-            // Index comes after tail, and we know at this point that the index
-            // is valid, so it ,ust be after the head which has wrapped around.
-
-            // Unshift all values between the head and the index.
-            _memmove(deque, deque->head + 1, deque->head, index - deque->head);
-            deque->head++;
-        }
-
-        deque->size--;
-        ds_deque_auto_truncate(deque);
+        // Unshift all values between the head and the index.
+        _memmove(deque, deque->head + 1, deque->head, index - deque->head);
+        deque->head++;
     }
+
+    deque->size--;
+    ds_deque_auto_truncate(deque);
 }
 
 void ds_deque_unshift_va(ds_deque_t *deque, VA_PARAMS)
 {
     ds_deque_ensure_capacity(deque, deque->size + argc);
-
     deque->size += argc;
 
     while (argc--) {
@@ -462,7 +442,6 @@ void ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
         return;
     }
 
-    // It's valid to insert at the end of the sequence.
     if (ds_deque_valid_index(deque, position)) {
         _ds_deque_insert_va(deque, position, VA_ARGS);
     }
@@ -470,28 +449,14 @@ void ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
 
 static zend_long ds_deque_find_index(ds_deque_t *deque, zval *value)
 {
-    zend_long tail  = deque->tail;
-    zend_long head  = deque->head;
-    zend_long mask  = deque->capacity - 1;
-    zend_long index = 0;
+    zend_long head = deque->head;
+    zend_long mask = deque->capacity - 1;
 
-    if (head < tail) {
-        // No need to mod because the head is before the tail.
-        do {
-            if (zend_is_identical(value, &deque->buffer[head++])) {
-                return index;
-            }
-            index++;
+    zend_long index;
 
-        } while (head < tail);
-
-    } else {
-        while (head != tail) {
-            if (zend_is_identical(value, &deque->buffer[head])) {
-                return index;
-            }
-            head = (head + 1) & mask;
-            index++;
+    for (index = 0; index < deque->size; index++, head++) {
+        if (zend_is_identical(value, &deque->buffer[head & mask])) {
+            return index;
         }
     }
 
@@ -532,8 +497,6 @@ bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS)
 
 void ds_deque_rotate(ds_deque_t *deque, zend_long n)
 {
-    zval *buffer   = deque->buffer;
-
     if (n < 0) {
         for (n = llabs(n) % deque->size; n > 0; n--) {
 
@@ -542,13 +505,13 @@ void ds_deque_rotate(ds_deque_t *deque, zend_long n)
             ds_deque_decrement_tail(deque);
 
             // Tail is now at last value, head is before the first.
-            SWAP_ZVAL(buffer[deque->tail], buffer[deque->head]);
+            SWAP_ZVAL(deque->buffer[deque->tail], deque->buffer[deque->head]);
         }
     } else if (n > 0) {
         for (n = n % deque->size; n > 0; n--) {
 
             // Tail is one past the last value, head is at first value.
-            SWAP_ZVAL(buffer[deque->tail], buffer[deque->head]);
+            SWAP_ZVAL(deque->buffer[deque->tail], deque->buffer[deque->head]);
 
             // Shift, push
             ds_deque_increment_head(deque);
