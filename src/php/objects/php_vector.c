@@ -84,6 +84,7 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
     return SUCCESS;
 
 error:
+    ds_vector_destroy(vector);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;

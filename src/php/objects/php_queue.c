@@ -86,6 +86,7 @@ int php_ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned 
     return SUCCESS;
 
 error:
+    ds_queue_destroy(queue);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;

@@ -85,6 +85,7 @@ int php_ds_set_unserialize(zval *object, zend_class_entry *ce, const unsigned ch
     return SUCCESS;
 
 error:
+    ds_set_destroy(set);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;

@@ -109,6 +109,7 @@ int php_ds_priority_queue_unserialize(zval *object, zend_class_entry *ce, const 
     return SUCCESS;
 
 error:
+    ds_priority_queue_destroy(queue);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;

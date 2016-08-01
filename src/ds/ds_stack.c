@@ -23,6 +23,11 @@ ds_stack_t *ds_stack_clone(ds_stack_t *stack)
     return ds_stack_ex(ds_vector_clone(stack->vector));
 }
 
+void ds_stack_destroy(ds_stack_t *stack)
+{
+    ds_vector_destroy(stack->vector);
+}
+
 void ds_stack_allocate(ds_stack_t *stack, zend_long capacity)
 {
     ds_vector_allocate(stack->vector, capacity);
@@ -70,11 +75,6 @@ void ds_stack_to_array(ds_stack_t *stack, zval *return_value)
 void ds_stack_pop(ds_stack_t *stack, zval *return_value)
 {
     ds_vector_pop(stack->vector, return_value);
-}
-
-void ds_stack_destroy(ds_stack_t *stack)
-{
-    ds_vector_destroy(stack->vector);
 }
 
 zval *ds_stack_peek(ds_stack_t *stack)

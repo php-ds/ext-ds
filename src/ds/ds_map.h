@@ -16,6 +16,9 @@ typedef struct _ds_map_t {
 ds_map_t *ds_map();
 ds_map_t *ds_map_clone(ds_map_t *map);
 
+void ds_map_clear(ds_map_t *map);
+void ds_map_destroy(ds_map_t *map);
+
 void ds_map_reverse(ds_map_t *map);
 ds_map_t *ds_map_reversed(ds_map_t *map);
 
@@ -29,7 +32,7 @@ bool ds_map_has_value(ds_map_t *map, zval *value);
 bool ds_map_has_keys(ds_map_t *map, VA_PARAMS);
 bool ds_map_has_values(ds_map_t *map, VA_PARAMS);
 
-void ds_map_clear(ds_map_t *map);
+
 void ds_map_to_array(ds_map_t *map, zval *return_value);
 void ds_map_put_all(ds_map_t *map, zval *values);
 
@@ -67,6 +70,6 @@ ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
 void ds_map_sum(ds_map_t *map, zval *return_value);
 void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
 void ds_map_apply(ds_map_t *map, FCI_PARAMS);
-void ds_map_destroy(ds_map_t *map);
+
 
 #endif

@@ -271,7 +271,7 @@ void ds_set_clear(ds_set_t *set)
     ds_htable_clear(set->table);
 }
 
-void ds_set_free(ds_set_t *set)
+void ds_set_destroy(ds_set_t *set)
 {
     ds_htable_destroy(set->table);
 }
@@ -330,7 +330,7 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
             fci.retval      = &retval;
 
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                ds_set_free(filtered);
+                ds_set_destroy(filtered);
                 return NULL;
 
             //

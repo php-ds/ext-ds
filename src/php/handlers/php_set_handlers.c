@@ -41,11 +41,11 @@ static int ds_set_count_elements(zval *obj, zend_long *count)
     return SUCCESS;
 }
 
-static void ds_set_free_object(zend_object *object)
+static void ds_set_destroy_object(zend_object *object)
 {
     php_ds_set_t *obj = (php_ds_set_t*) object;
     zend_object_std_dtor(&obj->std);
-    ds_set_free(obj->set);
+    ds_set_destroy(obj->set);
 }
 
 static HashTable *ds_set_get_debug_info(zval *obj, int *is_temp)
@@ -167,7 +167,7 @@ void php_ds_register_set_handlers()
 
     php_ds_set_handlers.offset = XtOffsetOf(php_ds_set_t, std);
 
-    php_ds_set_handlers.free_obj            = ds_set_free_object;
+    php_ds_set_handlers.free_obj            = ds_set_destroy_object;
     php_ds_set_handlers.clone_obj           = ds_set_clone_obj;
     php_ds_set_handlers.get_debug_info      = ds_set_get_debug_info;
     php_ds_set_handlers.count_elements      = ds_set_count_elements;

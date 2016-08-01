@@ -64,13 +64,18 @@ ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
 
 int php_ds_map_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)
 {
-    ds_map_t *map = Z_DS_MAP_P(object);
-    return ds_htable_serialize(map->table, buffer, length, data);
+    return ds_htable_serialize(Z_DS_MAP_P(object)->table, buffer, length, data);
 }
 
 int php_ds_map_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data)
 {
     ds_map_t *map = ds_map();
+
+    if (ds_htable_unserialize(map->table, buffer, length, data) == FAILURE) {
+        ds_map_destroy(map);
+        return FAILURE;
+    }
+
     ZVAL_DS_MAP(object, map);
-    return ds_htable_unserialize(map->table, buffer, length, data);
+    return SUCCESS;
 }

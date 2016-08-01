@@ -85,6 +85,7 @@ int php_ds_deque_unserialize(zval *object, zend_class_entry *ce, const unsigned 
     return SUCCESS;
 
 error:
+    ds_deque_destroy(deque);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;
