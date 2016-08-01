@@ -56,20 +56,12 @@ int php_ds_pair_unserialize(zval *object, zend_class_entry *ce, const unsigned c
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
     key = var_tmp_var(&unserialize_data);
-    if (php_var_unserialize(key, &pos, max, &unserialize_data)) {
-        var_push_dtor(&unserialize_data, key);
-    } else {
+    if ( ! php_var_unserialize(key, &pos, max, &unserialize_data)) {
         goto error;
     }
 
     value = var_tmp_var(&unserialize_data);
-    if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
-        var_push_dtor(&unserialize_data, value);
-    } else {
-        goto error;
-    }
-
-    if (*(++pos) != '\0') {
+    if ( ! php_var_unserialize(value, &pos, max, &unserialize_data)) {
         goto error;
     }
 

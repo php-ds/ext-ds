@@ -64,20 +64,13 @@ int php_ds_stack_unserialize(zval *object, zend_class_entry *ce, const unsigned 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
     while (*pos != '}') {
-
         zval *value = var_tmp_var(&unserialize_data);
 
-        if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
-            var_push_dtor(&unserialize_data, value);
-        } else {
+        if ( ! php_var_unserialize(value, &pos, max, &unserialize_data)) {
             goto error;
         }
 
         ds_stack_push_one(stack, value);
-    }
-
-    if (*(++pos) != '\0') {
-        goto error;
     }
 
     ZVAL_DS_STACK(object, stack);
