@@ -335,9 +335,10 @@ static uint32_t get_hash(zval *value)
     }
 }
 
-static inline ds_htable_bucket_t *ds_htable_lookup_bucket_by_hash(ds_htable_t *table, zval *key, const uint32_t hash)
+static ds_htable_bucket_t *ds_htable_lookup_bucket_by_hash(ds_htable_t *table, zval *key, const uint32_t hash)
 {
     ds_htable_bucket_t *bucket;
+
     uint32_t index = DS_HTABLE_BUCKET_LOOKUP(table, hash);
 
     for (; index != DS_HTABLE_INVALID_INDEX; index = DS_HTABLE_BUCKET_NEXT(bucket)) {
@@ -602,9 +603,9 @@ void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
 }
 
 /**
- *
+ * Adds a bucket to the table knowing that its key doesn't already exist.
  */
-static void ds_htable_put_next(ds_htable_t *table, ds_htable_bucket_t *bucket)
+static void ds_htable_put_distinct(ds_htable_t *table, ds_htable_bucket_t *bucket)
 {
     DS_HTABLE_BUCKET_COPY(&table->buckets[table->next], bucket);
     DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
@@ -617,7 +618,7 @@ static void ds_htable_put_next(ds_htable_t *table, ds_htable_bucket_t *bucket)
     }
 }
 
-static inline ds_htable_bucket_t *init_next_bucket(ds_htable_t *table, zval *key, const uint32_t hash)
+static ds_htable_bucket_t *ds_htable_next_bucket(ds_htable_t *table, zval *key, const uint32_t hash)
 {
     ds_htable_bucket_t *bucket = &table->buckets[table->next];
 
@@ -631,13 +632,12 @@ static inline ds_htable_bucket_t *init_next_bucket(ds_htable_t *table, zval *key
     return bucket;
 }
 
-bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **return_value)
+bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **bucket)
 {
     const uint32_t hash = get_hash(key);
 
-    ds_htable_bucket_t *bucket = ds_htable_lookup_bucket_by_hash(table, key, hash);
-    if (bucket) {
-        *return_value = bucket;
+    // Attempt to find the bucket
+    if ((*bucket = ds_htable_lookup_bucket_by_hash(table, key, hash))) {
         return true;
     }
 
@@ -645,13 +645,16 @@ bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t 
         ds_htable_increase_capacity(table);
     }
 
-    *return_value = init_next_bucket(table, key, hash);
+    // Bucket couldn't be found, so create as new bucket in the buffer.
+    *bucket = ds_htable_next_bucket(table, key, hash);
+
     return false;
 }
 
 void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
 {
     ds_htable_bucket_t *bucket;
+
     bool found = ds_htable_lookup_or_next(table, key, &bucket);
 
     if (found) {
@@ -828,7 +831,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (; length-- > 0; src++) {
-                ds_htable_bucket_t *dst = init_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
+                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
                 ZVAL_COPY(&dst->value, &src->value);
             }
 
@@ -840,7 +843,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (;;) {
-                ds_htable_bucket_t *dst = init_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
+                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
                 ZVAL_COPY(&dst->value, &src->value);
 
                 if (--length == 0) {
@@ -873,7 +876,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
                     continue;
                 }
 
-                ds_htable_bucket_t *dst = init_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
+                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
                 ZVAL_COPY(&dst->value, &src->value);
                 length--;
             }
@@ -950,7 +953,7 @@ ds_htable_t *ds_htable_filter(ds_htable_t *table)
 
     DS_HTABLE_FOREACH_BUCKET(table, src) {
         if (zend_is_true(&src->value)) {
-            dst = init_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
+            dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
             ZVAL_COPY(&dst->value, &src->value);
         }
     }
@@ -981,7 +984,7 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
             return NULL;
         } else {
             if (zend_is_true(&retval)) {
-                dst = init_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
+                dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
                 ZVAL_COPY(&dst->value, &src->value);
             }
         }
@@ -1032,14 +1035,14 @@ ds_htable_t *ds_htable_xor(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if ( ! ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_next(xor, bucket);
+            ds_htable_put_distinct(xor, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
 
     DS_HTABLE_FOREACH_BUCKET(other, bucket) {
         if ( ! ds_htable_has_key(table, &bucket->key)) {
-            ds_htable_put_next(xor, bucket);
+            ds_htable_put_distinct(xor, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -1054,7 +1057,7 @@ ds_htable_t *ds_htable_diff(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if ( ! ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_next(diff, bucket);
+            ds_htable_put_distinct(diff, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -1070,7 +1073,7 @@ ds_htable_t *ds_htable_intersect(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if (ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_next(intersection, bucket);
+            ds_htable_put_distinct(intersection, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();

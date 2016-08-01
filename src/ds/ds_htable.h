@@ -50,13 +50,13 @@
  */
 #define DS_HTABLE_BUCKET_REHASH(_table, _bucket, _mask, _idx)                 \
 do {                                                                          \
-    uint32_t *_pos = &_table->lookup[DS_HTABLE_BUCKET_HASH(_bucket) & _mask]; \
-    DS_HTABLE_BUCKET_NEXT(_bucket) = *_pos;                                   \
-    *_pos = _idx;                                                             \
+    uint32_t *head = &_table->lookup[DS_HTABLE_BUCKET_HASH(_bucket) & _mask]; \
+    DS_HTABLE_BUCKET_NEXT(_bucket) = *head;                                   \
+    *head = _idx;                                                             \
 } while (0)
 
 /**
- * Copies a bucket's state into another, including: key, value, hash.
+ * Copies a bucket's state into another, including: key, value, hash and next.
  */
 #define DS_HTABLE_BUCKET_COPY(dst, src)                         \
 do {                                                            \
@@ -64,6 +64,7 @@ do {                                                            \
     ds_htable_bucket_t *_dst = dst;                             \
     ZVAL_COPY(&_dst->key, &_src->key);                          \
     ZVAL_COPY(&_dst->value, &_src->value);                      \
+    DS_HTABLE_BUCKET_NEXT(_dst) = DS_HTABLE_BUCKET_NEXT(_src);  \
     DS_HTABLE_BUCKET_HASH(_dst) = DS_HTABLE_BUCKET_HASH(_src);  \
 } while (0)
 
