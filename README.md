@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
-[![PECL](https://img.shields.io/badge/PECL-1.0.3-blue.svg)](https://pecl.php.net/package/ds)
+[![PECL](https://img.shields.io/badge/PECL-1.0.4-blue.svg)](https://pecl.php.net/package/ds)
 
 ## Documentation
 
