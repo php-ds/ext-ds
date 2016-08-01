@@ -3,7 +3,7 @@
     <name>ds</name>
     <channel>pecl.php.net</channel>
     <summary>Data Structures</summary>
-    <description>Data Structures for PHP</description>
+    <description>Data Structures for PHP 7</description>
     <lead>
         <name>Rudi Theunissen</name>
         <user>rtheunissen</user>
@@ -17,9 +17,9 @@
         <active>yes</active>
     </lead>
     <date>2016-08-01</date>
-    <time>00:08:00</time>
+    <time>17:52:00</time>
     <version>
-        <release>1.0.3</release>
+        <release>1.0.4</release>
         <api>1.0.3</api>
     </version>
     <stability>
@@ -28,8 +28,8 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Fix intersect, diff, xor before contains bug (see docs #4)
-        Add Set::merge
+        Fix memory leak when unserialize fails
+        Fix bad hash table bucket copy
     </notes>
     <contents>
         <dir name="/">
