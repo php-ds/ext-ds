@@ -240,8 +240,6 @@ void ds_set_assign_xor(ds_set_t *set, ds_set_t *other)
     DS_SET_FOREACH_END();
 }
 
-// Creates a new ds_set_t that contains the values of the current ds_set_t as well as
-// the values of the provided ds_set_t.
 ds_set_t *ds_set_union(ds_set_t *set, ds_set_t *other)
 {
     return ds_set_ex(ds_htable_merge(set->table, other->table));
