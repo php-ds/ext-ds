@@ -63,20 +63,18 @@ do { \
  * Used to replace an existing value.
  */
 #define ZVAL_DTOR_COPY(dst, src) \
-do { \
-    zval *_dst = dst; \
-    zval *_src = src; \
-    if (_dst) { \
-        zval_ptr_dtor(_dst); \
-    } \
-    ZVAL_COPY(_dst, _src); \
+do {                             \
+    zval *_dst = dst;            \
+    zval *_src = src;            \
+    zval_ptr_dtor(_dst);         \
+    ZVAL_COPY(_dst, _src);       \
 } while (0)
 
 #define SWAP_ZVAL(a, b) \
-do { \
-    zval _t = a; \
-    a = b; \
-    b = _t; \
+do {                    \
+    zval _t = a;        \
+    a = b;              \
+    b = _t;             \
 } while (0)
 
 /**
@@ -135,7 +133,7 @@ do { \
  * Used to determine if a string zval is equal to a string literal.
  * Eg. ZVAL_EQUALS_STRING(value, "test")
  */
-#define ZVAL_EQUALS_STRING(z, s) (strcmp(Z_STR_P((z))->val, (s)) == 0)
+#define ZVAL_EQUALS_STRING(z, s) zend_string_equals_literal(Z_STR_P(z), s)
 
 /**
  * Copies a zval into the return_value.
