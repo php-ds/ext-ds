@@ -76,11 +76,11 @@ It's highly recommended that you include the [polyfill](https://github.com/php-d
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
-### Credits
+## Credits
 
 - [Rudi Theunissen](https://github.com/rtheunissen)
 - [Joe Watkins](https://github.com/krakjoe)
 
-### License
+## License
 
 The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
