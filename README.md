@@ -4,9 +4,11 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 [![PECL](https://img.shields.io/badge/PECL-1.0.5-blue.svg)](https://pecl.php.net/package/ds)
 
+PHP extension providing specialized data structures as efficient alternatives to the *array*.
+
 ## Documentation
 
-Documentation is available on [php.net](http://docs.php.net/manual/en/book.ds.php). You can include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration and autocomplete support. The polyfill will not be loaded if the extension is enabled, but it's still useful to have the PHP source in your working directory.
+Documentation is available on [php.net](http://docs.php.net/manual/en/book.ds.php). You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for compatibility and IDE integration. The polyfill will not be loaded if the extension is enabled
 
 ## Installation
 
