@@ -20,7 +20,7 @@ extern zend_module_entry ds_module_entry;
 #define phpext_ds_ptr &ds_module_entry
 
 /* Replace with version number for your extension */
-#define PHP_DS_VERSION "1.1.0"
+#define PHP_DS_VERSION "1.1.1"
 
 #ifdef PHP_WIN32
 #  define PHP_API __declspec(dllexport)

@@ -351,8 +351,8 @@ void ds_map_sum(ds_map_t *map, zval *return_value)
     DS_HTABLE_FOREACH_END();
 }
 
-void ds_map_destroy(ds_map_t *map)
+void ds_map_free(ds_map_t *map)
 {
-    ds_htable_destroy(map->table);
+    ds_htable_free(map->table);
     efree(map);
 }

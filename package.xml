@@ -17,9 +17,9 @@
         <active>yes</active>
     </lead>
     <date>2016-08-04</date>
-    <time>05:02:13</time>
+    <time>05:35:40</time>
     <version>
-        <release>1.1.0</release>
+        <release>1.1.1</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Add Pair::copy
+        Fix memory leaks where objects were not free'd correctly
     </notes>
     <contents>
         <dir name="/">

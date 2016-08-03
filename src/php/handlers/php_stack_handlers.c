@@ -21,7 +21,7 @@ static void ds_stack_free_object(zend_object *object)
 {
     php_ds_stack_t *obj = (php_ds_stack_t*) object;
     zend_object_std_dtor(&obj->std);
-    ds_stack_destroy(obj->stack);
+    ds_stack_free(obj->stack);
 }
 
 static int ds_stack_count_elements(zval *obj, zend_long *count)

@@ -473,7 +473,7 @@ void ds_htable_clear(ds_htable_t *table)
     table->next = 0;
 }
 
-void ds_htable_destroy(ds_htable_t *table)
+void ds_htable_free(ds_htable_t *table)
 {
     ds_htable_clear(table);
 
@@ -934,7 +934,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            ds_htable_destroy(clone);
+            ds_htable_free(clone);
             return NULL;
         } else {
             zval_ptr_dtor(&dst->value);
@@ -980,7 +980,7 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            ds_htable_destroy(filtered);
+            ds_htable_free(filtered);
             return NULL;
         } else {
             if (zend_is_true(&retval)) {

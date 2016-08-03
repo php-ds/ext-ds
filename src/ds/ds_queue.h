@@ -37,7 +37,7 @@ void  ds_queue_pop(ds_queue_t *queue, zval *return_value);
 zval *ds_queue_peek(ds_queue_t *queue);
 void  ds_queue_push_all(ds_queue_t *queue, zval *value);
 void  ds_queue_to_array(ds_queue_t *queue, zval *return_value);
-void  ds_queue_destroy(ds_queue_t *queue);
+void  ds_queue_free(ds_queue_t *queue);
 
 int ds_queue_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data);
 int ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned char *buffer, size_t length, zend_unserialize_data *data);

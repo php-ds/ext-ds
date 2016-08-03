@@ -10,7 +10,7 @@ static void ds_priority_queue_free_object(zend_object *object)
 {
     php_ds_priority_queue_t *queue = (php_ds_priority_queue_t*) object;
     zend_object_std_dtor(&queue->std);
-    ds_priority_queue_destroy(queue->pq);
+    ds_priority_queue_free(queue->pq);
 }
 
 static int ds_priority_queue_count_elements(zval *obj, zend_long *count)

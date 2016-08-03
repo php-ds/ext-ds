@@ -100,7 +100,7 @@ static void ds_pair_free_object(zend_object *object)
 {
     php_ds_pair_t *obj = (php_ds_pair_t*) object;
     zend_object_std_dtor(&obj->std);
-    ds_pair_destroy(obj->pair);
+    ds_pair_free(obj->pair);
 }
 
 static int ds_pair_count_elements(zval *object, zend_long *count)

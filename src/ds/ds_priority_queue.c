@@ -251,7 +251,7 @@ void ds_priority_queue_clear(ds_priority_queue_t *queue)
     reallocate_to_capacity(queue, DS_PRIORITY_QUEUE_MIN_CAPACITY);
 }
 
-void ds_priority_queue_destroy(ds_priority_queue_t *queue)
+void ds_priority_queue_free(ds_priority_queue_t *queue)
 {
     ds_priority_queue_clear(queue);
     efree(queue->nodes);

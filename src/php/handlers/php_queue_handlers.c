@@ -22,7 +22,7 @@ static void ds_queue_free_object(zend_object *object)
 {
     php_ds_queue_t *q = (php_ds_queue_t*) object;
     zend_object_std_dtor(&q->std);
-    ds_queue_destroy(q->queue);
+    ds_queue_free(q->queue);
 }
 
 static int ds_queue_count_elements(zval *obj, zend_long *count)

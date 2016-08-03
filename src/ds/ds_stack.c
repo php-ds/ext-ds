@@ -23,9 +23,10 @@ ds_stack_t *ds_stack_clone(ds_stack_t *stack)
     return ds_stack_ex(ds_vector_clone(stack->vector));
 }
 
-void ds_stack_destroy(ds_stack_t *stack)
+void ds_stack_free(ds_stack_t *stack)
 {
-    ds_vector_destroy(stack->vector);
+    ds_vector_free(stack->vector);
+    efree(stack);
 }
 
 void ds_stack_allocate(ds_stack_t *stack, zend_long capacity)

@@ -702,7 +702,7 @@ void ds_vector_sum(ds_vector_t *vector, zval *return_value)
     DS_VECTOR_FOREACH_END();
 }
 
-void ds_vector_destroy(ds_vector_t *vector)
+void ds_vector_free(ds_vector_t *vector)
 {
     ds_vector_clear(vector);
     efree(vector->buffer);

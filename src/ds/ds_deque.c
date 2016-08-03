@@ -194,10 +194,11 @@ void ds_deque_clear(ds_deque_t *deque)
     deque->size     = 0;
 }
 
-void ds_deque_destroy(ds_deque_t *deque)
+void ds_deque_free(ds_deque_t *deque)
 {
     ds_deque_clear(deque);
     efree(deque->buffer);
+    efree(deque);
 }
 
 /**

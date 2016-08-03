@@ -78,9 +78,10 @@ void ds_queue_pop(ds_queue_t *queue, zval *return_value)
     ds_deque_shift(queue->deque, return_value);
 }
 
-void ds_queue_destroy(ds_queue_t *queue)
+void ds_queue_free(ds_queue_t *queue)
 {
-    ds_deque_destroy(queue->deque);
+    ds_deque_free(queue->deque);
+    efree(queue);
 }
 
 zval *ds_queue_peek(ds_queue_t *queue)

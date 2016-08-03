@@ -46,7 +46,7 @@ void ds_pair_to_array(ds_pair_t *pair, zval *array)
     Z_TRY_ADDREF_P(&pair->value);
 }
 
-void ds_pair_destroy(ds_pair_t *pair)
+void ds_pair_free(ds_pair_t *pair)
 {
     DTOR_AND_UNDEF(&pair->key);
     DTOR_AND_UNDEF(&pair->value);

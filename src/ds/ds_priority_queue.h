@@ -33,7 +33,7 @@ zval *ds_priority_queue_peek(ds_priority_queue_t *pq);
 void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value);
 void ds_priority_queue_push(ds_priority_queue_t *pq, zval *value, zend_long priority);
 void ds_priority_queue_to_array(ds_priority_queue_t *pq, zval *array);
-void ds_priority_queue_destroy(ds_priority_queue_t *pq);
+void ds_priority_queue_free(ds_priority_queue_t *pq);
 void ds_priority_queue_clear(ds_priority_queue_t *pq);
 ds_priority_queue_t *ds_priority_queue_clone(ds_priority_queue_t * pq);
 ds_priority_queue_node_t* ds_priority_queue_create_sorted_buffer(ds_priority_queue_t *pq);

@@ -74,8 +74,7 @@ static void ds_deque_free_object(zend_object *object)
 {
     php_ds_deque_t *intern = (php_ds_deque_t*) object;
     zend_object_std_dtor(&intern->std);
-    ds_deque_destroy(intern->deque);
-    efree(intern->deque);
+    ds_deque_free(intern->deque);
 }
 
 static HashTable *ds_deque_get_debug_info(zval *obj, int *is_temp)

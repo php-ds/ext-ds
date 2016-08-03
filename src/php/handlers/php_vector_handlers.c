@@ -78,7 +78,7 @@ static void ds_vector_free_object(zend_object *obj)
 {
     php_ds_vector_t *intern = (php_ds_vector_t*) obj;
     zend_object_std_dtor(&intern->std);
-    ds_vector_destroy(intern->vector);
+    ds_vector_free(intern->vector);
 }
 
 static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)

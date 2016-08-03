@@ -176,7 +176,7 @@ bool ds_htable_has_value(ds_htable_t *h, zval *value);
 int  ds_htable_remove(ds_htable_t *h, zval *key, zval *return_value);
 void ds_htable_put(ds_htable_t *h, zval *key, zval *value);
 void ds_htable_to_array(ds_htable_t *h, zval *arr);
-void ds_htable_destroy(ds_htable_t *h);
+void ds_htable_free(ds_htable_t *h);
 zval *ds_htable_get(ds_htable_t *h, zval *key);
 ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long length);
 

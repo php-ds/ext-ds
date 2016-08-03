@@ -37,7 +37,7 @@ ds_deque_t *ds_deque_clone(ds_deque_t *src);
 ds_deque_t *ds_deque_from_buffer(zval *buffer, zend_long size);
 
 void ds_deque_clear(ds_deque_t *deque);
-void ds_deque_destroy(ds_deque_t *deque);
+void ds_deque_free(ds_deque_t *deque);
 void ds_deque_allocate(ds_deque_t *deque, zend_long capacity);
 
 void ds_deque_push(ds_deque_t *deque, zval *value);

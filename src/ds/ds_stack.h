@@ -42,6 +42,6 @@ void  ds_stack_pop(ds_stack_t *stack, zval *return_value);
 zval *ds_stack_peek(ds_stack_t *stack);
 void  ds_stack_push_all(ds_stack_t *stack, zval *value);
 void  ds_stack_to_array(ds_stack_t *stack, zval *return_value);
-void  ds_stack_destroy(ds_stack_t *stack);
+void  ds_stack_free(ds_stack_t *stack);
 
 #endif

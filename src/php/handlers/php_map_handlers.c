@@ -60,7 +60,7 @@ static void ds_map_free_object(zend_object *object)
 {
     php_ds_map_t *intern = (php_ds_map_t*) object;
     zend_object_std_dtor(&intern->std);
-    ds_map_destroy(intern->map);
+    ds_map_free(intern->map);
 }
 
 static HashTable *ds_map_get_debug_info(zval *obj, int *is_temp)

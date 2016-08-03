@@ -78,7 +78,7 @@ int php_ds_stack_unserialize(zval *object, zend_class_entry *ce, const unsigned 
     return SUCCESS;
 
 error:
-    ds_stack_destroy(stack);
+    ds_stack_free(stack);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     UNSERIALIZE_ERROR();
     return FAILURE;

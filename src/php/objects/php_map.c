@@ -72,7 +72,7 @@ int php_ds_map_unserialize(zval *object, zend_class_entry *ce, const unsigned ch
     ds_map_t *map = ds_map();
 
     if (ds_htable_unserialize(map->table, buffer, length, data) == FAILURE) {
-        ds_map_destroy(map);
+        ds_map_free(map);
         return FAILURE;
     }
 
