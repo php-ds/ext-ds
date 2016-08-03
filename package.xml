@@ -19,8 +19,8 @@
     <date>2016-08-01</date>
     <time>17:52:00</time>
     <version>
-        <release>1.0.4</release>
-        <api>1.0.3</api>
+        <release>1.1.0</release>
+        <api>1.1.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,8 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Fix memory leak when unserialize fails
-        Fix bad hash table bucket copy
+        Add Pair::copy
     </notes>
     <contents>
         <dir name="/">
