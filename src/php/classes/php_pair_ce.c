@@ -33,6 +33,13 @@ METHOD(__construct)
     }
 }
 
+ARGINFO_NONE_RETURN_DS(copy, Pair)
+METHOD(copy)
+{
+    PARSE_NONE;
+    RETURN_DS_PAIR(ds_pair_clone(THIS_DS_PAIR()));
+}
+
 ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
@@ -53,6 +60,7 @@ void php_ds_register_pair()
 
     zend_function_entry methods[] = {
         PHP_DS_ME(Pair, __construct)
+        PHP_DS_ME(Pair, copy)
         PHP_DS_ME(Pair, jsonSerialize)
         PHP_DS_ME(Pair, toArray)
         PHP_FE_END
