@@ -221,13 +221,11 @@ void ds_priority_queue_to_array(ds_priority_queue_t *queue, zval *array)
         array_init(array);
 
     } else {
+        ds_priority_queue_node_t *pos, *end, *buf;
 
-        ds_priority_queue_node_t *pos, *end;
-
-        ds_priority_queue_node_t *buffer = ds_priority_queue_create_sorted_buffer(queue);
-
-        pos = buffer;
-        end = pos + queue->size;
+        buf = ds_priority_queue_create_sorted_buffer(queue);
+        pos = buf;
+        end = buf + queue->size;
 
         array_init_size(array, queue->size);
 
@@ -236,7 +234,7 @@ void ds_priority_queue_to_array(ds_priority_queue_t *queue, zval *array)
             Z_TRY_ADDREF_P(&pos->value);
         }
 
-        efree(buffer);
+        efree(buf);
     }
 }
 
