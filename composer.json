@@ -13,6 +13,6 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml",
-        "memtest": "USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 valgrind --error-exitcode=1 --leak-check=full --track-origins=yes --trace-children=yes php vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
+        "memtest": "USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 valgrind --error-exitcode=1 php vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
     }
 }
