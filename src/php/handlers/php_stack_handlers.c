@@ -10,7 +10,7 @@ static void ds_stack_write_dimension(zval *obj, zval *offset, zval *value)
     ds_stack_t *stack = Z_DS_STACK_P(obj);
 
     if (offset == NULL) {
-        ds_stack_push_one(stack, value);
+        ds_stack_push(stack, value);
         return;
     }
 

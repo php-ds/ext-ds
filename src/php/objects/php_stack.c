@@ -70,7 +70,7 @@ int php_ds_stack_unserialize(zval *object, zend_class_entry *ce, const unsigned 
             goto error;
         }
 
-        ds_stack_push_one(stack, value);
+        ds_stack_push(stack, value);
     }
 
     ZVAL_DS_STACK(object, stack);

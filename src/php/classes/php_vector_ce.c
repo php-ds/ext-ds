@@ -85,7 +85,7 @@ METHOD(find)
 METHOD(first)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_vector_get_first(THIS_DS_VECTOR()));
+    RETURN_ZVAL_COPY(ds_vector_get_first_throw(THIS_DS_VECTOR()));
 }
 
 METHOD(get)
@@ -125,7 +125,7 @@ METHOD(jsonSerialize)
 METHOD(last)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_vector_get_last(THIS_DS_VECTOR()));
+    RETURN_ZVAL_COPY(ds_vector_get_last_throw(THIS_DS_VECTOR()));
 }
 
 METHOD(map)
@@ -143,7 +143,7 @@ METHOD(merge)
 METHOD(pop)
 {
     PARSE_NONE;
-    ds_vector_pop(THIS_DS_VECTOR(), return_value);
+    ds_vector_pop_throw(THIS_DS_VECTOR(), return_value);
 }
 
 METHOD(push)
@@ -197,7 +197,7 @@ METHOD(set)
 METHOD(shift)
 {
     PARSE_NONE;
-    ds_vector_shift(THIS_DS_VECTOR(), return_value);
+    ds_vector_shift_throw(THIS_DS_VECTOR(), return_value);
 }
 
 METHOD(slice)

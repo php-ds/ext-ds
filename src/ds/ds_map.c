@@ -283,13 +283,12 @@ ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
-    ds_map_t *map = (ds_map_t *) puser;
-    zval *value   = iterator->funcs->get_current_data(iterator);
-
     zval key;
-    iterator->funcs->get_current_key(iterator, &key);
+    zval *value = iterator->funcs->get_current_data(iterator);
+                  iterator->funcs->get_current_key(iterator, &key);
 
-    ds_map_put(map, &key, value);
+    ds_map_put((ds_map_t *) puser, &key, value);
+    zval_ptr_dtor(&key);
 
     return ZEND_HASH_APPLY_KEEP;
 }
@@ -303,19 +302,17 @@ static inline void add_ht_to_map(ds_map_t *map, HashTable *ht)
 {
     uint32_t index;
     zend_string *key;
-    zval zkey;
     zval *value;
+    zval temp;
 
     ZEND_HASH_FOREACH_KEY_VAL(ht, index, key, value) {
         if (key) {
-            ZVAL_STR(&zkey, key);
+            ZVAL_STR(&temp, key);
         } else {
-            ZVAL_LONG(&zkey, index);
+            ZVAL_LONG(&temp, index);
         }
-
-        ds_map_put(map, &zkey, value);
+        ds_map_put(map, &temp, value);
     }
-
     ZEND_HASH_FOREACH_END();
 }
 
@@ -326,8 +323,7 @@ void ds_map_put_all(ds_map_t *map, zval *values)
     }
 
     if (ds_is_array(values)) {
-        HashTable *ht = Z_ARRVAL_P(values);
-        add_ht_to_map(map, ht);
+        add_ht_to_map(map, Z_ARRVAL_P(values));
         return;
     }
 

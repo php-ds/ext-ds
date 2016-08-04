@@ -108,11 +108,11 @@ static inline void ds_vector_ensure_capacity(ds_vector_t *vector, zend_long capa
 
 static inline void ds_vector_check_compact(ds_vector_t *vector)
 {
-    if (vector->size < vector->capacity / 4) {
+    const zend_long c = vector->capacity;
+    const zend_long n = vector->size;
 
-        if (vector->capacity / 2 > DS_VECTOR_MIN_CAPACITY) {
-            ds_vector_reallocate(vector, vector->capacity / 2);
-        }
+    if (n < c / 4 && c / 2 > DS_VECTOR_MIN_CAPACITY) {
+        ds_vector_reallocate(vector, c / 2);
     }
 }
 
@@ -186,16 +186,16 @@ void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
  */
 void ds_vector_to_array(ds_vector_t *vector, zval *return_value)
 {
-    zend_long n = vector->size;
+    zend_long size = vector->size;
 
-    if (n == 0) {
+    if (size == 0) {
         array_init(return_value);
 
     } else {
         zval *pos = vector->buffer;
-        zval *end = pos + n;
+        zval *end = pos + size;
 
-        array_init_size(return_value, n);
+        array_init_size(return_value, size);
 
         for (; pos != end; ++pos) {
             add_next_index_zval(return_value, pos);
@@ -448,57 +448,82 @@ ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values)
 
 void ds_vector_pop(ds_vector_t *vector, zval *return_value)
 {
+    zval *value = &vector->buffer[--vector->size];
+
+    if (return_value) {
+        ZVAL_COPY_VALUE(return_value, value);
+        ZVAL_UNDEF(value);
+    } else {
+        DTOR_AND_UNDEF(value);
+    }
+
+    ds_vector_check_compact(vector);
+}
+
+void ds_vector_pop_throw(ds_vector_t *vector, zval *return_value)
+{
     if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
-
-    } else {
-        zval *value = &vector->buffer[--vector->size];
-
-        if (return_value) {
-            ZVAL_COPY(return_value, value);
-        }
-
-        zval_ptr_dtor(value);
-        ds_vector_check_compact(vector);
     }
+
+    ds_vector_pop(vector, return_value);
 }
 
 void ds_vector_shift(ds_vector_t *vector, zval *return_value)
 {
     zval *first = vector->buffer;
 
+    if (return_value) {
+        ZVAL_COPY_VALUE(return_value, first);
+        ZVAL_UNDEF(first);
+    } else {
+        DTOR_AND_UNDEF(first);
+    }
+
+    vector->size--;
+    memmove(first, first + 1, vector->size * sizeof(zval));
+    ds_vector_check_compact(vector);
+}
+
+void ds_vector_shift_throw(ds_vector_t *vector, zval *return_value)
+{
     if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
     }
 
-    ZVAL_COPY(return_value, first);
-    zval_ptr_dtor(first);
-
-    memmove(first, first + 1, sizeof(zval) * (--vector->size));
-
-    ds_vector_check_compact(vector);
+    ds_vector_shift(vector, return_value);
 }
 
 zval *ds_vector_get_last(ds_vector_t *vector)
 {
-    if (DS_VECTOR_IS_EMPTY(vector)) {
-        NOT_ALLOWED_WHEN_EMPTY();
-        return NULL;
-    }
-
     return &vector->buffer[vector->size - 1];
 }
 
-zval *ds_vector_get_first(ds_vector_t *vector)
+zval *ds_vector_get_last_throw(ds_vector_t *vector)
 {
     if (DS_VECTOR_IS_EMPTY(vector)) {
         NOT_ALLOWED_WHEN_EMPTY();
         return NULL;
     }
 
+    return ds_vector_get_last(vector);
+}
+
+zval *ds_vector_get_first(ds_vector_t *vector)
+{
     return &vector->buffer[0];
+}
+
+zval *ds_vector_get_first_throw(ds_vector_t *vector)
+{
+    if (DS_VECTOR_IS_EMPTY(vector)) {
+        NOT_ALLOWED_WHEN_EMPTY();
+        return NULL;
+    }
+
+    return ds_vector_get_first(vector);
 }
 
 void ds_vector_reverse(ds_vector_t *vector)
@@ -564,7 +589,7 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
             efree(buf);
             return NULL;
         } else {
-            ZVAL_COPY(pos, &retval);
+            ZVAL_COPY_VALUE(pos, &retval);
         }
 
         pos++;

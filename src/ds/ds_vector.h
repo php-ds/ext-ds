@@ -53,7 +53,9 @@ void ds_vector_free(ds_vector_t *vector);
 
 void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value);
 void ds_vector_pop(ds_vector_t *vector, zval *return_value);
+void ds_vector_pop_throw(ds_vector_t *vector, zval *return_value);
 void ds_vector_shift(ds_vector_t *vector, zval *return_value);
+void ds_vector_shift_throw(ds_vector_t *vector, zval *return_value);
 void ds_vector_find(ds_vector_t *vector, zval *value, zval *return_value);
 void ds_vector_remove(ds_vector_t *vector, zend_long index, zval *return_value);
 
@@ -73,6 +75,8 @@ void ds_vector_push_all(ds_vector_t *vector, zval *values);
 zval *ds_vector_get(ds_vector_t *vector, zend_long index);
 zval *ds_vector_get_last(ds_vector_t *vector);
 zval *ds_vector_get_first(ds_vector_t *vector);
+zval *ds_vector_get_last_throw(ds_vector_t *vector);
+zval *ds_vector_get_first_throw(ds_vector_t *vector);
 
 ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS);
 ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long length);

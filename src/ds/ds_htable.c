@@ -468,11 +468,14 @@ void ds_htable_clear(ds_htable_t *table)
     }
     DS_HTABLE_FOREACH_END();
 
-    ds_htable_realloc(table, DS_HTABLE_MIN_CAPACITY);
-    table->min_deleted = table->capacity;
+    if (table->capacity > DS_HTABLE_MIN_CAPACITY) {
+        ds_htable_realloc(table, DS_HTABLE_MIN_CAPACITY);
+    }
 
     table->size = 0;
     table->next = 0;
+
+    table->min_deleted = table->capacity;
 }
 
 void ds_htable_free(ds_htable_t *table)
@@ -1171,15 +1174,17 @@ ds_htable_t *ds_htable_reversed(ds_htable_t *table)
     return reversed;
 }
 
-void ds_htable_to_array(ds_htable_t *table, zval *arr)
+void ds_htable_to_array(ds_htable_t *table, zval *return_value)
 {
+    HashTable *array;
     zval *key;
     zval *val;
 
-    array_init_size(arr, table->size);
+    array_init_size(return_value, table->size);
+    array = Z_ARR_P(return_value);
 
     DS_HTABLE_FOREACH_KEY_VALUE(table, key, val) {
-        array_set_zval_key(Z_ARR_P(arr), key, val);
+        array_set_zval_key(array, key, val);
     }
     DS_HTABLE_FOREACH_END();
 }

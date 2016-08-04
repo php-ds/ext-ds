@@ -177,6 +177,11 @@ void ds_throw_exception(zend_class_entry *ce, const char *format, ...)
 {
     va_list ap;
     zend_string *str;
-    va_start(ap, format); str = vstrpprintf(0, format, ap); va_end(ap);
+
+    va_start(ap, format);
+    str = vstrpprintf(0, format, ap);
+    va_end(ap);
+
     zend_throw_exception(ce, str->val, 0);
+    zend_string_free(str);
 }

@@ -43,21 +43,21 @@ ARGINFO_VARIADIC_ZVAL(push, values)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
-    ds_stack_push(THIS_DS_STACK(), argc, argv);
+    ds_stack_push_va(THIS_DS_STACK(), argc, argv);
 }
 
 ARGINFO_NONE(pop)
 METHOD(pop)
 {
     PARSE_NONE;
-    ds_stack_pop(THIS_DS_STACK(), return_value);
+    ds_stack_pop_throw(THIS_DS_STACK(), return_value);
 }
 
 ARGINFO_NONE(peek)
 METHOD(peek)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_stack_peek(THIS_DS_STACK()));
+    RETURN_ZVAL_COPY(ds_stack_peek_throw(THIS_DS_STACK()));
 }
 
 ARGINFO_NONE_RETURN_LONG(count)

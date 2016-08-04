@@ -30,16 +30,18 @@ typedef struct _ds_stack_t {
     ds_vector_t *vector;
 } ds_stack_t;
 
-ds_stack_t *ds_stack_ex(ds_vector_t *vector);
 ds_stack_t *ds_stack();
+ds_stack_t *ds_stack_ex(ds_vector_t *vector);
 ds_stack_t *ds_stack_clone(ds_stack_t *stack);
 
-void  ds_stack_push(ds_stack_t *stack, VA_PARAMS);
+void  ds_stack_push(ds_stack_t *stack, zval *value);
+void  ds_stack_push_va(ds_stack_t *stack, VA_PARAMS);
 void  ds_stack_allocate(ds_stack_t *stack, zend_long capacity);
-void  ds_stack_push_one(ds_stack_t *stack, zval *value);
 void  ds_stack_clear(ds_stack_t *stack);
 void  ds_stack_pop(ds_stack_t *stack, zval *return_value);
+void  ds_stack_pop_throw(ds_stack_t *stack, zval *return_value);
 zval *ds_stack_peek(ds_stack_t *stack);
+zval *ds_stack_peek_throw(ds_stack_t *stack);
 void  ds_stack_push_all(ds_stack_t *stack, zval *value);
 void  ds_stack_to_array(ds_stack_t *stack, zval *return_value);
 void  ds_stack_free(ds_stack_t *stack);

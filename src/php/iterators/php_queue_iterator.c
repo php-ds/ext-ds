@@ -1,14 +1,10 @@
 #include "../../common.h"
-
-// #include "../../ds/ds_queue.h"
 #include "../objects/php_queue.h"
-
 #include "php_queue_iterator.h"
-// #include "php_htable_iterator.h"
 
 static void ds_queue_iterator_dtor(zend_object_iterator *iter)
 {
-    DTOR_AND_UNDEF(&iter->data);
+
 }
 
 static int ds_queue_iterator_valid(zend_object_iterator *iter)
@@ -30,7 +26,10 @@ static void ds_queue_iterator_move_forward(zend_object_iterator *iter)
     ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
 
     if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
-        ds_queue_pop(iterator->queue, &iter->data);
+
+        // Don't pop into the data because we don't want to increment its rc
+        ZVAL_COPY_VALUE(&iter->data, ds_queue_peek(iterator->queue));
+        ds_queue_pop(iterator->queue, NULL);
         iterator->position++;
     } else {
         ZVAL_UNDEF(&iter->data);
@@ -42,7 +41,12 @@ static void ds_queue_iterator_rewind(zend_object_iterator *iter)
     ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
 
     if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
-        ds_queue_pop(iterator->queue, &iter->data);
+
+        // Don't pop into the data because we don't want to increment its rc
+        ZVAL_COPY_VALUE(&iter->data, ds_queue_peek(iterator->queue));
+        ds_queue_pop(iterator->queue, NULL);
+    } else {
+        ZVAL_UNDEF(&iter->data);
     }
 
     iterator->position = 0;

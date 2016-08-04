@@ -34,12 +34,12 @@ void ds_stack_allocate(ds_stack_t *stack, zend_long capacity)
     ds_vector_allocate(stack->vector, capacity);
 }
 
-void ds_stack_push(ds_stack_t *stack, VA_PARAMS)
+void ds_stack_push_va(ds_stack_t *stack, VA_PARAMS)
 {
     ds_vector_push_va(stack->vector, argc, argv);
 }
 
-void ds_stack_push_one(ds_stack_t *stack, zval *value)
+void ds_stack_push(ds_stack_t *stack, zval *value)
 {
     ds_vector_push(stack->vector, value);
 }
@@ -56,7 +56,7 @@ void ds_stack_push_all(ds_stack_t *stack, zval *value)
 
 void ds_stack_to_array(ds_stack_t *stack, zval *return_value)
 {
-    zend_ulong size = DS_STACK_SIZE(stack);
+    zend_long size = DS_STACK_SIZE(stack);
 
     if (size == 0) {
         array_init(return_value);
@@ -73,6 +73,11 @@ void ds_stack_to_array(ds_stack_t *stack, zval *return_value)
     }
 }
 
+void ds_stack_pop_throw(ds_stack_t *stack, zval *return_value)
+{
+    ds_vector_pop_throw(stack->vector, return_value);
+}
+
 void ds_stack_pop(ds_stack_t *stack, zval *return_value)
 {
     ds_vector_pop(stack->vector, return_value);
@@ -81,4 +86,9 @@ void ds_stack_pop(ds_stack_t *stack, zval *return_value)
 zval *ds_stack_peek(ds_stack_t *stack)
 {
     return ds_vector_get_last(stack->vector);
+}
+
+zval *ds_stack_peek_throw(ds_stack_t *stack)
+{
+    return ds_vector_get_last_throw(stack->vector);
 }
