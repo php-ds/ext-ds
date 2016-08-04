@@ -4,6 +4,11 @@ php:
   - 7.0
   - nightly
 
+addons:
+  apt:
+    packages:
+      - valgrind
+
 before_install:
   - phpenv config-rm xdebug.ini
 
