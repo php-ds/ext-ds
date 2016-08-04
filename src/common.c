@@ -99,9 +99,18 @@ void ds_normalize_slice_args(
 
 void smart_str_appendz(smart_str *buffer, zval *value)
 {
+    switch (Z_TYPE_P(value)) {
+        case IS_STRING:
+            smart_str_append(buffer, Z_STR_P(value));
+            return;
+        case IS_LONG:
+            smart_str_append_long(buffer, Z_LVAL_P(value));
+            return;
+    }
+
     zend_string *str = zval_get_string(value);
     smart_str_append(buffer, str);
-    // zend_string_free(str);
+    zend_string_free(str);
 }
 
 zend_string *ds_join_zval_buffer(

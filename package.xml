@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2016-08-04</date>
-    <time>05:35:40</time>
+    <date>2016-08-05</date>
+    <time>11:02:12</time>
     <version>
-        <release>1.1.1</release>
+        <release>1.1.2</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,9 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Fix memory leaks where objects were not free'd correctly
+        Fixed many memory leaks
+        Fixed json dependency
+        Minor performance improvements
     </notes>
     <contents>
         <dir name="/">

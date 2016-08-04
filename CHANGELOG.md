@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.2] - 2016-08-05
+### Fixed
+- Many, many memory leaks.
+- Added valgrind to travis.yml
+- Small performance improvements
+- JSON dependency now handled correctly (thanks @NikiC)
+
 ## [1.1.1] - 2016-08-04
 ### Fixed
 - Multiple memory leaks where objects were not free'd correctly. #30
