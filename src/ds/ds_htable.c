@@ -941,10 +941,10 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             ds_htable_free(clone);
             return NULL;
-        } else {
-            zval_ptr_dtor(&dst->value);
-            ZVAL_COPY(&dst->value, &retval);
         }
+
+        ZVAL_COPY(&dst->value, &retval);
+        zval_ptr_dtor(&retval);
     }
 
     return clone;
@@ -987,12 +987,14 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             ds_htable_free(filtered);
             return NULL;
-        } else {
-            if (zend_is_true(&retval)) {
-                dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
-                ZVAL_COPY(&dst->value, &src->value);
-            }
         }
+
+        if (zend_is_true(&retval)) {
+            dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
+            ZVAL_COPY(&dst->value, &src->value);
+        }
+
+        zval_ptr_dtor(&retval);
     }
     DS_HTABLE_FOREACH_END();
     return filtered;

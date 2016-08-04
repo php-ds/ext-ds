@@ -27,6 +27,7 @@ static void ds_stack_iterator_set_current(ds_stack_t *stack, zval *data)
         ZVAL_UNDEF(data);
     } else {
         ds_stack_pop(stack, data);
+        Z_TRY_DELREF_P(data);
     }
 }
 
@@ -64,8 +65,6 @@ zend_object_iterator *php_ds_stack_get_iterator(zend_class_entry *ce, zval *obje
 
     iterator = ecalloc(1, sizeof(php_ds_stack_iterator_t));
     zend_iterator_init((zend_object_iterator*) iterator);
-
-    ZVAL_UNDEF(&iterator->intern.data);
 
     iterator->intern.funcs = &iterator_funcs;
     iterator->stack        = Z_DS_STACK_P(object);

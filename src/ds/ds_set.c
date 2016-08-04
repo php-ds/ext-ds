@@ -330,11 +330,13 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
                 ds_set_free(filtered);
                 return NULL;
+            }
 
-            //
-            } else if (zend_is_true(&retval)) {
+            if (zend_is_true(&retval)) {
                 _set_add(filtered, value);
             }
+
+            zval_ptr_dtor(&retval);
         }
         DS_SET_FOREACH_END();
 

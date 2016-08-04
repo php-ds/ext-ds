@@ -705,7 +705,8 @@ ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
             return NULL;
         }
 
-        ZVAL_COPY_VALUE(target++, &retval);
+        ZVAL_COPY(target++, &retval);
+        zval_ptr_dtor(&retval);
     }
     DS_DEQUE_FOREACH_END();
 
@@ -741,6 +742,8 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
             if (zend_is_true(&retval)) {
                 ZVAL_COPY(dst++, src);
             }
+
+            zval_ptr_dtor(&retval);
         }
 
         DS_DEQUE_FOREACH_END();

@@ -29,6 +29,7 @@ static void php_ds_priority_queue_iterator_set_current(ds_priority_queue_t *queu
         ZVAL_UNDEF(data);
     } else {
         ds_priority_queue_pop(queue, data);
+        Z_TRY_DELREF_P(data);
     }
 }
 

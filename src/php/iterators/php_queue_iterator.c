@@ -27,6 +27,7 @@ static void ds_queue_iterator_set_current(ds_queue_t *queue, zval *data)
         ZVAL_UNDEF(data);
     } else {
         ds_queue_pop(queue, data);
+        Z_TRY_DELREF_P(data);
     }
 }
 
