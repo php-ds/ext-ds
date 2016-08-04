@@ -6,7 +6,7 @@
 
 zend_object_handlers php_ds_set_handlers;
 
-static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
+static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *rv)
 {
     ds_set_t *set = Z_DS_SET_P(obj);
 
@@ -20,15 +20,18 @@ static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *retu
         return NULL;
     }
 
+    // Only support read, not write.
+    if (type != BP_VAR_R) {
+        return &EG(uninitialized_zval);
+    }
+
     return ds_set_get(set, Z_LVAL_P(offset));
 }
 
 static void ds_set_write_dimension(zval *obj, zval *offset, zval *value)
 {
-    ds_set_t *set = Z_DS_SET_P(obj);
-
     if (offset == NULL) {
-        ds_set_add(set, value);
+        ds_set_add(Z_DS_SET_P(obj), value);
         return;
     }
 

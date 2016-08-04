@@ -370,13 +370,14 @@ ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t po
         uint32_t index;
 
         // Determine from which end to traverse the buffer
-        if (position > table->size >> 1) {
+        if (position > table->size / 2) {
 
             // Start at the back
             index = table->size - 1;
             DS_HTABLE_FOREACH_BUCKET_REVERSED(table, bucket) {
-                if (index == position) return bucket;
-                index--;
+                if (index-- == position) {
+                    return bucket;
+                }
             }
             DS_HTABLE_FOREACH_END();
 
@@ -385,8 +386,9 @@ ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t po
             // Start at the front
             index = 0;
             DS_HTABLE_FOREACH_BUCKET(table, bucket) {
-                if (index == position) return bucket;
-                index++;
+                if (index++ == position) {
+                    return bucket;
+                }
             }
             DS_HTABLE_FOREACH_END();
         }

@@ -142,12 +142,12 @@ zval *ds_set_get(ds_set_t *set, zend_long index)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(set->table, index);
 
-    if ( ! bucket) {
-        INDEX_OUT_OF_RANGE(index, set->table->size);
-        return NULL;
+    if (bucket) {
+        return &bucket->key;
     }
 
-    return &bucket->key;
+    INDEX_OUT_OF_RANGE(index, set->table->size);
+    return NULL;
 }
 
 zval *ds_set_get_first(ds_set_t *set)

@@ -138,14 +138,13 @@ do { \
 /**
  * Copies a zval into the return_value.
  */
-#define RETURN_ZVAL_COPY(z) \
-do { \
-    zval *_z = z; \
-    if (_z) { \
-        RETURN_ZVAL(_z, 1, 0); \
-    } else { \
-        return; \
-    } \
+#define RETURN_ZVAL_COPY(z)          \
+do {                                 \
+    zval *_z = z;                    \
+    if (_z) {                        \
+        ZVAL_COPY(return_value, _z); \
+    }                                \
+    return;                          \
 } while (0)
 
 #define SERIALIZE_SET_ZSTR(s) \
