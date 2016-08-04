@@ -39,30 +39,31 @@
 /**
  *
  */
-#define DTOR_AND_UNDEF(z) \
-do { \
-    zval *_z = z; \
-    if (_z && ! Z_ISUNDEF_P(_z)) { \
-        zval_ptr_dtor(_z); \
-        ZVAL_UNDEF(_z); \
-    } \
+#define DTOR_AND_UNDEF(z)           \
+do {                                \
+    zval *_z = z;                   \
+    if (_z && ! Z_ISUNDEF_P(_z)) {  \
+        zval_ptr_dtor(_z);          \
+        ZVAL_UNDEF(_z);             \
+    }                               \
 } while (0)
 
 /**
  *
  */
-#define SET_AS_RETURN_AND_DTOR(z)           \
+#define SET_AS_RETURN_AND_UNDEF(z)          \
 do {                                        \
     zval *_z = z;                           \
     if (return_value) {                     \
         ZVAL_COPY_VALUE(return_value, _z);  \
         ZVAL_UNDEF(_z);                     \
     } else {                                \
-        DTOR_AND_UNDEF(_z);                 \
+        if ( ! Z_ISUNDEF_P(_z)) {           \
+            zval_ptr_dtor(_z);              \
+            ZVAL_UNDEF(_z);                 \
+        }                                   \
     }                                       \
 } while (0)
-
-
 
 /**
  * Destructs 'dst', then copies 'src' to it.

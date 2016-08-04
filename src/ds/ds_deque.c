@@ -279,7 +279,7 @@ ds_deque_t *ds_deque_reversed(ds_deque_t *deque)
 
 void ds_deque_shift(ds_deque_t *deque, zval *return_value)
 {
-    SET_AS_RETURN_AND_DTOR(&deque->buffer[deque->head]);
+    SET_AS_RETURN_AND_UNDEF(&deque->buffer[deque->head]);
     ds_deque_increment_head(deque);
 
     deque->size--;
@@ -299,7 +299,7 @@ void ds_deque_shift_throw(ds_deque_t *deque, zval *return_value)
 void ds_deque_pop(ds_deque_t *deque, zval *return_value)
 {
     ds_deque_decrement_tail(deque);
-    SET_AS_RETURN_AND_DTOR(&deque->buffer[deque->tail]);
+    SET_AS_RETURN_AND_UNDEF(&deque->buffer[deque->tail]);
 
     deque->size--;
     ds_deque_auto_truncate(deque);
@@ -337,7 +337,7 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
     index = ds_deque_lookup_index(deque, index);
 
     // Copy the value into the return value, then destruct.
-    SET_AS_RETURN_AND_DTOR(&deque->buffer[index]);
+    SET_AS_RETURN_AND_UNDEF(&deque->buffer[index]);
 
     if (index < deque->tail) {
         // Shift all values between the index and the tail.

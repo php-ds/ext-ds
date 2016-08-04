@@ -101,7 +101,7 @@ static HashTable *ds_deque_get_gc(zval *obj, zval **gc_data, int *gc_count)
         ds_deque_reset_head(deque);
     }
 
-    *gc_data = deque->buffer;
+    *gc_data  = deque->buffer;
     *gc_count = (int) deque->size;
 
     return NULL;

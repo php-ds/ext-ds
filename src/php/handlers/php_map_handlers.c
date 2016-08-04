@@ -74,6 +74,22 @@ static zend_object *ds_map_clone_obj(zval *obj)
     return php_ds_map_create_clone(Z_DS_MAP_P(obj));
 }
 
+static HashTable *ds_map_get_gc(zval *obj, zval **gc_data, int *gc_count)
+{
+    ds_map_t *map = Z_DS_MAP_P(obj);
+
+    if (DS_MAP_IS_EMPTY(map)) {
+        *gc_data  = NULL;
+        *gc_count = 0;
+
+    } else {
+        *gc_data  = (zval*) map->table->buckets;
+        *gc_count = (int) ((map->table->next - 1) * 2);
+    }
+
+    return NULL;
+}
+
 void php_ds_register_map_handlers()
 {
     memcpy(&php_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -81,6 +97,7 @@ void php_ds_register_map_handlers()
     php_map_handlers.offset = XtOffsetOf(php_ds_map_t, std);
 
     php_map_handlers.dtor_obj            = zend_objects_destroy_object;
+    php_map_handlers.get_gc              = ds_map_get_gc;
     php_map_handlers.free_obj            = ds_map_free_object;
     php_map_handlers.clone_obj           = ds_map_clone_obj;
     php_map_handlers.get_debug_info      = ds_map_get_debug_info;
