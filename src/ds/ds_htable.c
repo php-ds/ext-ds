@@ -726,8 +726,7 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
     }
 
     if (table->size == 1) {
-        ds_htable_bucket_t *last = get_last_bucket(table);
-        return zval_get_string(&last->key);
+        return zval_get_string(&get_last_bucket(table)->key);
     }
 
     if (glue && len) {
@@ -735,19 +734,19 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
         ds_htable_bucket_t *end = get_last_bucket(table);
         do {
             if ( ! DS_HTABLE_BUCKET_DELETED(pos)) {
-                smart_str_append (&str, zval_get_string(&pos->key));
+                smart_str_appendz(&str, &pos->key);
                 smart_str_appendl(&str, glue, len);
             }
         } while (++pos != end);
 
         // Append last keys
-        smart_str_append(&str, zval_get_string(&end->key));
+        smart_str_appendz(&str, &end->key);
 
     } else {
         // No glue, so just append the keys.
         zval *key;
         DS_HTABLE_FOREACH_KEY(table, key) {
-            smart_str_append(&str, zval_get_string(key));
+            smart_str_appendz(&str, key);
         }
         DS_HTABLE_FOREACH_END();
     }
@@ -1002,9 +1001,7 @@ void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *retur
 {
     zval *key, *value;
     zval carry;
-
     zval params[3];
-    zval retval;
 
     if (initial == NULL) {
         ZVAL_NULL(&carry);
@@ -1019,17 +1016,16 @@ void ds_htable_reduce(ds_htable_t *table, FCI_PARAMS, zval *initial, zval *retur
 
         fci.param_count = 3;
         fci.params      = params;
-        fci.retval      = &retval;
+        fci.retval      = &carry;
 
-        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
             ZVAL_NULL(return_value);
             return;
-        } else {
-            ZVAL_COPY_VALUE(&carry, &retval);
         }
+
+        Z_TRY_DELREF_P(&carry);
     }
     DS_HTABLE_FOREACH_END();
-
     ZVAL_COPY(return_value, &carry);
 }
 

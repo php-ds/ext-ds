@@ -17,10 +17,8 @@ static inline bool index_out_of_range(zend_long index, zend_long max)
 
 static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
 {
-    if (capacity > vector->capacity) {
-        REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
-        vector->capacity = capacity;
-    }
+    REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
+    vector->capacity = capacity;
 }
 
 ds_vector_t *ds_vector_ex(zend_long capacity)
@@ -55,6 +53,23 @@ static ds_vector_t *ds_vector_from_buffer_ex(
     return vector;
 }
 
+ds_vector_t *ds_vector_clone(ds_vector_t *vector)
+{
+    if (DS_VECTOR_IS_EMPTY(vector)) {
+        return ds_vector();
+
+    } else {
+        ds_vector_t *clone = ecalloc(1, sizeof(ds_vector_t));
+
+        clone->buffer   = ALLOC_ZVAL_BUFFER(vector->capacity);
+        clone->capacity = vector->capacity;
+        clone->size     = vector->size;
+
+        COPY_ZVAL_BUFFER(clone->buffer, vector->buffer, vector->size);
+        return clone;
+    }
+}
+
 ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
 {
     zend_long capacity = size;
@@ -69,27 +84,8 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
 {
-    ds_vector_reallocate(vector, capacity);
-}
-
-ds_vector_t *ds_vector_clone(ds_vector_t *vector)
-{
-    if (DS_VECTOR_IS_EMPTY(vector)) {
-        return ds_vector();
-
-    } else {
-        zend_long size     = vector->size;
-        zend_long capacity = vector->capacity;
-
-        ds_vector_t *copy = ds_vector_ex(capacity);
-
-        copy->buffer   = ALLOC_ZVAL_BUFFER(capacity);
-        copy->capacity = capacity;
-        copy->size     = size;
-
-        COPY_ZVAL_BUFFER(copy->buffer, vector->buffer, size);
-
-        return copy;
+    if (capacity > vector->capacity) {
+        ds_vector_reallocate(vector, capacity);
     }
 }
 
@@ -173,14 +169,19 @@ static inline void ds_vector_clear_buffer(ds_vector_t *vector)
 
 void ds_vector_clear(ds_vector_t *vector)
 {
-    ds_vector_clear_buffer(vector);
-    ds_vector_reallocate(vector, DS_VECTOR_MIN_CAPACITY);
+    if (vector->size > 0) {
+        ds_vector_clear_buffer(vector);
+
+        if (vector->capacity > DS_VECTOR_MIN_CAPACITY) {
+            ds_vector_reallocate(vector, DS_VECTOR_MIN_CAPACITY);
+        }
+    }
 }
 
 void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
 {
     if ( ! index_out_of_range(index, vector->size)) {
-        ZVAL_COPY_VALUE(vector->buffer + index, value);
+        ZVAL_DTOR_COPY(vector->buffer + index, value);
     }
 }
 
@@ -376,7 +377,7 @@ bool ds_vector_index_exists(ds_vector_t *vector, zend_long index)
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
     ds_vector_push((ds_vector_t *) puser, iterator->funcs->get_current_data(iterator));
-    return SUCCESS;
+    return ZEND_HASH_APPLY_KEEP;
 }
 
 static inline void add_traversable_to_vector(ds_vector_t *vector, zval *obj)
@@ -552,22 +553,20 @@ ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
 void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
 {
     zval *value;
+    zval retval;
 
     DS_VECTOR_FOREACH(vector, value) {
-        zval param;
-        zval retval;
-
-        ZVAL_COPY_VALUE(&param, value);
 
         fci.param_count = 1;
-        fci.params      = &param;
+        fci.params      = value;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             return;
-        } else {
-            ZVAL_COPY_VALUE(value, &retval);
         }
+
+        zval_ptr_dtor(value);
+        ZVAL_COPY_VALUE(value, &retval);
     }
     DS_VECTOR_FOREACH_END();
 }
@@ -575,8 +574,8 @@ void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
 ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
     zval *value;
-    zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
-    zval *pos = buf;
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+    zval *target = buffer;
 
     DS_VECTOR_FOREACH(vector, value) {
         zval param;
@@ -589,15 +588,15 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            efree(buf);
+            efree(buffer);
             return NULL;
-        } else {
-            ZVAL_COPY_VALUE(pos++, &retval);
         }
+
+        ZVAL_COPY_VALUE(target++, &retval);
     }
     DS_VECTOR_FOREACH_END();
 
-    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
+    return ds_vector_from_buffer_ex(buffer, vector->size, vector->capacity);
 }
 
 ds_vector_t *ds_vector_filter(ds_vector_t *vector)
@@ -631,8 +630,8 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 
     } else {
         zval *value;
-        zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
-        zval *pos = buf;
+        zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *target = buffer;
 
         DS_VECTOR_FOREACH(vector, value) {
             zval param;
@@ -646,24 +645,27 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 
             // Catch potential exceptions or other errors during comparison.
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                efree(buf);
+                efree(buffer);
                 return NULL;
-            } else if (zend_is_true(&retval)) {
-                ZVAL_COPY(pos++, value);
+            }
+
+            //
+            if (zend_is_true(&retval)) {
+                ZVAL_COPY(target, value);
+                target++;
             }
         }
         DS_VECTOR_FOREACH_END();
 
-        return ds_vector_from_buffer_ex(buf, (pos - buf), vector->size);
+        return ds_vector_from_buffer_ex(buffer, (target - buffer), vector->size);
     }
 }
 
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS)
 {
+    zval *value;
     zval carry;
-
-    zval *pos = vector->buffer;
-    zval *end = pos + vector->size;
+    zval params[2];
 
     if (initial == NULL) {
         ZVAL_NULL(&carry);
@@ -671,25 +673,22 @@ void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FC
         ZVAL_COPY_VALUE(&carry, initial);
     }
 
-    for (; pos < end; ++pos) {
-        zval params[2];
-        zval retval;
-
+    DS_VECTOR_FOREACH(vector, value) {
         ZVAL_COPY_VALUE(&params[0], &carry);
-        ZVAL_COPY_VALUE(&params[1], pos);
+        ZVAL_COPY_VALUE(&params[1], value);
 
         fci.param_count = 2;
         fci.params      = params;
-        fci.retval      = &retval;
+        fci.retval      = &carry;
 
-        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
             ZVAL_NULL(return_value);
             return;
-        } else {
-            ZVAL_COPY_VALUE(&carry, &retval);
         }
-    }
 
+        Z_TRY_DELREF_P(&carry);
+    }
+    DS_VECTOR_FOREACH_END();
     ZVAL_COPY(return_value, &carry);
 }
 

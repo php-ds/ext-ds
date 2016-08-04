@@ -11,8 +11,9 @@
 
 #define RETURN_DS_STACK(s)                  \
 do {                                        \
-    if (s) {                                \
-        ZVAL_DS_STACK(return_value, s);     \
+    ds_stack_t *_s = s;                     \
+    if (_s) {                               \
+        ZVAL_DS_STACK(return_value, _s);    \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

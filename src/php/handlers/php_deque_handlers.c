@@ -49,17 +49,16 @@ static int ds_deque_has_dimension(zval *obj, zval *offset, int check_empty)
 
 static void ds_deque_unset_dimension(zval *obj, zval *offset)
 {
-    zend_long index;
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-
     if (Z_TYPE_P(offset) != IS_LONG) {
         return;
-    }
 
-    index = Z_LVAL_P(offset);
+    } else {
+        zend_long   index = Z_LVAL_P(offset);
+        ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
-    if (index >= 0 && index < deque->size) {
-        ds_deque_remove(deque, index, NULL);
+        if (index >= 0 && index < deque->size) {
+            ds_deque_remove(deque, index, NULL);
+        }
     }
 }
 
@@ -72,9 +71,9 @@ static int ds_deque_count_elements(zval *obj, zend_long *count)
 
 static void ds_deque_free_object(zend_object *object)
 {
-    php_ds_deque_t *intern = (php_ds_deque_t*) object;
-    zend_object_std_dtor(&intern->std);
-    ds_deque_free(intern->deque);
+    php_ds_deque_t *obj = (php_ds_deque_t*) object;
+    zend_object_std_dtor(&obj->std);
+    ds_deque_free(obj->deque);
 }
 
 static HashTable *ds_deque_get_debug_info(zval *obj, int *is_temp)
@@ -94,6 +93,20 @@ static zend_object *ds_deque_clone_obj(zval *obj)
     return php_ds_deque_create_clone(deque);
 }
 
+static HashTable *ds_deque_get_gc(zval *obj, zval **gc_data, int *gc_count)
+{
+    ds_deque_t *deque  = Z_DS_DEQUE_P(obj);
+
+    if (deque->head != 0) {
+        ds_deque_reset_head(deque);
+    }
+
+    *gc_data = deque->buffer;
+    *gc_count = (int) deque->size;
+
+    return NULL;
+}
+
 void php_ds_register_deque_handlers()
 {
     memcpy(&php_deque_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
@@ -102,6 +115,7 @@ void php_ds_register_deque_handlers()
 
     php_deque_handlers.dtor_obj         = zend_objects_destroy_object;
     php_deque_handlers.free_obj         = ds_deque_free_object;
+    php_deque_handlers.get_gc           = ds_deque_get_gc;
     php_deque_handlers.cast_object      = ds_default_cast_object;
     php_deque_handlers.clone_obj        = ds_deque_clone_obj;
     php_deque_handlers.get_debug_info   = ds_deque_get_debug_info;

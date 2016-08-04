@@ -46,19 +46,6 @@ do { \
 } while (0)
 
 /**
- * Copies 'src' into 'dst', then destructs 'src'
- */
-#define ZVAL_COPY_DTOR(dst, src) \
-do { \
-    zval *_dst = dst; \
-    zval *_src = src; \
-    if (_dst) { \
-        ZVAL_COPY(_dst, _src); \
-    } \
-    zval_ptr_dtor(_src); \
-} while (0)
-
-/**
  * Destructs 'dst', then copies 'src' to it.
  * Used to replace an existing value.
  */
@@ -296,5 +283,9 @@ bool ds_php_array_uses_keys(HashTable *ht);
  */
 bool ds_is_traversable(zval *value);
 
+/**
+ *
+ */
+void smart_str_appendz(smart_str *buffer, zval *value);
 
 #endif

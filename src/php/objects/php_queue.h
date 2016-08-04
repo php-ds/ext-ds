@@ -12,8 +12,9 @@
 
 #define RETURN_DS_QUEUE(q)                  \
 do {                                        \
-    if (q) {                                \
-        ZVAL_DS_QUEUE(return_value, q);        \
+    ds_queue_t *_q = q;                     \
+    if (_q) {                               \
+        ZVAL_DS_QUEUE(return_value, _q);    \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

@@ -9,10 +9,11 @@
 
 #define ZVAL_DS_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
 
-#define RETURN_DS_DEQUE(deque)              \
+#define RETURN_DS_DEQUE(d)                  \
 do {                                        \
-    if (deque) {                            \
-        ZVAL_DS_DEQUE(return_value, deque); \
+    ds_deque_t *_d = d;                     \
+    if (_d) {                               \
+        ZVAL_DS_DEQUE(return_value, _d);    \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

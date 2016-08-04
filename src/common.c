@@ -97,6 +97,13 @@ void ds_normalize_slice_args(
     *length = len;
 }
 
+void smart_str_appendz(smart_str *buffer, zval *value)
+{
+    zend_string *str = zval_get_string(value);
+    smart_str_append(buffer, str);
+    zend_string_free(str);
+}
+
 zend_string *ds_join_zval_buffer(
     zval        *buffer,
     zend_long    size,
@@ -120,12 +127,12 @@ zend_string *ds_join_zval_buffer(
 
         // Append each part and the glue right up to the last value.
         do {
-            smart_str_append (&str, zval_get_string(pos));
+            smart_str_appendz(&str, pos);
             smart_str_appendl(&str, glue, len);
         } while (++pos != end);
 
         // Append last value
-        smart_str_append(&str, zval_get_string(pos));
+        smart_str_appendz(&str, pos);
 
     } else {
         zval *pos = buffer;
@@ -133,7 +140,7 @@ zend_string *ds_join_zval_buffer(
 
         // Append each part including the last, without glue.
         do {
-            smart_str_append(&str, zval_get_string(pos));
+            smart_str_appendz(&str, pos);
         } while (++pos != end);
     }
 

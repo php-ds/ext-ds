@@ -9,10 +9,11 @@
 
 #define ZVAL_DS_SET(z, set) ZVAL_OBJ(z, php_ds_set_create_object_ex(set))
 
-#define RETURN_DS_SET(set)                  \
+#define RETURN_DS_SET(s)                    \
 do {                                        \
-    if (set) {                              \
-        ZVAL_DS_SET(return_value, set);     \
+    ds_set_t *_s = s;                       \
+    if (_s) {                               \
+        ZVAL_DS_SET(return_value, _s);      \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

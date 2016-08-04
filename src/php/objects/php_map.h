@@ -11,8 +11,9 @@
 
 #define RETURN_DS_MAP(m)                    \
 do {                                        \
-    if (m) {                                \
-        ZVAL_DS_MAP(return_value, m);       \
+    ds_map_t *_m = m;                       \
+    if (_m) {                               \
+        ZVAL_DS_MAP(return_value, _m);      \
     } else {                                \
         ZVAL_NULL(return_value);            \
     }                                       \

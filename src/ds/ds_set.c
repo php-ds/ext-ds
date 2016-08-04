@@ -279,8 +279,9 @@ void ds_set_free(ds_set_t *set)
 
 void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
 {
-    zval carry;
     zval *value;
+    zval carry;
+    zval params[2];
 
     if (initial == NULL) {
         ZVAL_NULL(&carry);
@@ -289,23 +290,19 @@ void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
     }
 
     DS_SET_FOREACH(set, value) {
-        zval params[2];
-        zval retval;
-
         ZVAL_COPY_VALUE(&params[0], &carry);
         ZVAL_COPY_VALUE(&params[1], value);
 
         fci.param_count = 2;
         fci.params      = params;
-        fci.retval      = &retval;
+        fci.retval      = &carry;
 
-        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
             ZVAL_NULL(return_value);
             return;
-        } else {
-            ZVAL_COPY_VALUE(&carry, &retval);
         }
 
+        Z_TRY_DELREF_P(&carry);
     }
     DS_SET_FOREACH_END();
     ZVAL_COPY(return_value, &carry);

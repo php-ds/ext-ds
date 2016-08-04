@@ -12,8 +12,9 @@
 
 #define RETURN_DS_PRIORITY_QUEUE(pq)                \
 do {                                                \
-    if (pq) {                                       \
-        ZVAL_DS_PRIORITY_QUEUE(return_value, pq);   \
+    ds_priority_queue_t *_pq = pq;                  \
+    if (_pq) {                                      \
+        ZVAL_DS_PRIORITY_QUEUE(return_value, _pq);  \
     } else {                                        \
         ZVAL_NULL(return_value);                    \
     }                                               \

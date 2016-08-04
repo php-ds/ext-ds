@@ -96,7 +96,7 @@ static inline bool ds_deque_valid_index(ds_deque_t *deque, zend_long index)
 }
 
 // Makes sure that the deque's head is at index 0.
-static void ds_deque_align_to_zero(ds_deque_t *deque)
+void ds_deque_reset_head(ds_deque_t *deque)
 {
     if (deque->head == 0) {
         return;
@@ -134,7 +134,7 @@ static void ds_deque_align_to_zero(ds_deque_t *deque)
 
 static void ds_deque_reallocate(ds_deque_t *deque, zend_long capacity)
 {
-    ds_deque_align_to_zero(deque);
+    ds_deque_reset_head(deque);
     REALLOC_ZVAL_BUFFER(deque->buffer, capacity);
 
     deque->capacity = capacity;
@@ -172,26 +172,30 @@ static inline void ds_deque_auto_truncate(ds_deque_t *deque)
     }
 }
 
-void ds_deque_clear(ds_deque_t *deque)
+static void ds_deque_clear_buffer(ds_deque_t *deque)
 {
     zval *value;
 
-    if (deque->size == 0) {
-        return;
-    }
-
     DS_DEQUE_FOREACH(deque, value) {
-        zval_ptr_dtor(value);
+        DTOR_AND_UNDEF(value);
     }
     DS_DEQUE_FOREACH_END();
 
-    // Clearing the deque should also truncate the buffer back to initial size.
-    REALLOC_ZVAL_BUFFER(deque->buffer, DS_DEQUE_MIN_CAPACITY);
+    deque->head = 0;
+    deque->tail = 0;
+    deque->size = 0;
+}
 
-    deque->capacity = DS_DEQUE_MIN_CAPACITY;
-    deque->head     = 0;
-    deque->tail     = 0;
-    deque->size     = 0;
+void ds_deque_clear(ds_deque_t *deque)
+{
+    if (deque->size > 0) {
+        ds_deque_clear_buffer(deque);
+
+        if (deque->capacity > DS_DEQUE_MIN_CAPACITY) {
+            REALLOC_ZVAL_BUFFER(deque->buffer, DS_DEQUE_MIN_CAPACITY);
+            deque->capacity = DS_DEQUE_MIN_CAPACITY;
+        }
+    }
 }
 
 void ds_deque_free(ds_deque_t *deque)
@@ -277,13 +281,21 @@ void ds_deque_shift(ds_deque_t *deque, zval *return_value)
     if (deque->size == 0) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
+
+    } else {
+        zval *head = &deque->buffer[deque->head];
+
+        if (return_value) {
+            ZVAL_COPY_VALUE(return_value, head);
+            ZVAL_UNDEF(head);
+        } else {
+            DTOR_AND_UNDEF(head);
+        }
+
+        deque->size--;
+        ds_deque_increment_head(deque);
+        ds_deque_auto_truncate(deque);
     }
-
-    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->head]);
-    ds_deque_increment_head(deque);
-
-    deque->size--;
-    ds_deque_auto_truncate(deque);
 }
 
 void ds_deque_pop(ds_deque_t *deque, zval *return_value)
@@ -291,13 +303,24 @@ void ds_deque_pop(ds_deque_t *deque, zval *return_value)
     if (deque->size == 0) {
         NOT_ALLOWED_WHEN_EMPTY();
         return;
+
+    } else {
+        zval *tail;
+
+        ds_deque_decrement_tail(deque);
+
+        tail = &deque->buffer[deque->tail];
+
+        if (return_value) {
+            ZVAL_COPY_VALUE(return_value, tail);
+            ZVAL_UNDEF(tail);
+        } else {
+            DTOR_AND_UNDEF(tail);
+        }
+
+        deque->size--;
+        ds_deque_auto_truncate(deque);
     }
-
-    ds_deque_decrement_tail(deque);
-    ZVAL_COPY_DTOR(return_value, &deque->buffer[deque->tail]);
-
-    deque->size--;
-    ds_deque_auto_truncate(deque);
 }
 
 void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
@@ -322,7 +345,12 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
     index = ds_deque_lookup_index(deque, index);
 
     // Copy the value into the return value, then destruct.
-    ZVAL_COPY_DTOR(return_value, &deque->buffer[index]);
+    if (return_value) {
+        ZVAL_COPY_VALUE(return_value, &deque->buffer[index]);
+        ZVAL_UNDEF(&deque->buffer[index]);
+    } else {
+        DTOR_AND_UNDEF(&deque->buffer[index]);
+    }
 
     if (index < deque->tail) {
         // Shift all values between the index and the tail.
@@ -466,7 +494,7 @@ static zend_long ds_deque_find_index(ds_deque_t *deque, zval *value)
 
 void ds_deque_join(ds_deque_t *deque, char *str, size_t len, zval *return_value)
 {
-    ds_deque_align_to_zero(deque);
+    ds_deque_reset_head(deque);
 
     ZVAL_STR(
         return_value,
@@ -575,10 +603,7 @@ zval *ds_deque_get_first(ds_deque_t *deque)
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
-    ds_deque_t *deque = (ds_deque_t *) puser;
-    zval *value = iterator->funcs->get_current_data(iterator);
-    ds_deque_push(deque, value);
-
+    ds_deque_push((ds_deque_t *) puser, iterator->funcs->get_current_data(iterator));
     return ZEND_HASH_APPLY_KEEP;
 }
 
@@ -629,19 +654,42 @@ ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values)
 
 void ds_deque_sort_callback(ds_deque_t *deque)
 {
-    ds_deque_align_to_zero(deque);
+    ds_deque_reset_head(deque);
     ds_user_sort_zval_buffer(deque->buffer, deque->size);
 }
 
 void ds_deque_sort(ds_deque_t *deque)
 {
-    ds_deque_align_to_zero(deque);
+    ds_deque_reset_head(deque);
     ds_sort_zval_buffer(deque->buffer, deque->size);
 }
 
 void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
 {
     zval *value;
+    zval retval;
+
+    DS_DEQUE_FOREACH(deque, value) {
+
+        fci.param_count = 1;
+        fci.params      = value;
+        fci.retval      = &retval;
+
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            return;
+        }
+
+        zval_ptr_dtor(value);
+        ZVAL_COPY_VALUE(value, &retval);
+    }
+    DS_DEQUE_FOREACH_END();
+}
+
+ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
+{
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *target = buffer;
 
     DS_DEQUE_FOREACH(deque, value) {
         zval param;
@@ -654,42 +702,15 @@ void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            return;
-        } else {
-            ZVAL_COPY_VALUE(value, &retval);
-        }
-    }
-    DS_DEQUE_FOREACH_END();
-}
-
-ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
-{
-    zval *src;
-    zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
-    zval *dst = buf;
-
-    DS_DEQUE_FOREACH(deque, src) {
-
-        zval param;
-        zval retval;
-
-        ZVAL_COPY_VALUE(&param, src);
-
-        fci.param_count = 1;
-        fci.params      = &param;
-        fci.retval      = &retval;
-
-        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            efree(buffer);
             return NULL;
-        } else {
-            ZVAL_COPY_VALUE(dst, &retval);
         }
 
-        dst++;
+        ZVAL_COPY_VALUE(target++, &retval);
     }
     DS_DEQUE_FOREACH_END();
 
-    return ds_deque_from_buffer_ex(buf, deque->size, deque->capacity);
+    return ds_deque_from_buffer_ex(buffer, deque->size, deque->capacity);
 }
 
 ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
@@ -751,8 +772,9 @@ ds_deque_t *ds_deque_filter(ds_deque_t *deque)
 
 void ds_deque_reduce(ds_deque_t *deque, zval *initial, zval *return_value, FCI_PARAMS)
 {
-    zval carry;
     zval *value;
+    zval carry;
+    zval params[2];
 
     if (initial == NULL) {
         ZVAL_NULL(&carry);
@@ -761,22 +783,19 @@ void ds_deque_reduce(ds_deque_t *deque, zval *initial, zval *return_value, FCI_P
     }
 
     DS_DEQUE_FOREACH(deque, value) {
-        zval params[2];
-        zval retval;
-
         ZVAL_COPY_VALUE(&params[0], &carry);
         ZVAL_COPY_VALUE(&params[1], value);
 
         fci.param_count = 2;
         fci.params      = params;
-        fci.retval      = &retval;
+        fci.retval      = &carry;
 
-        if (zend_call_function(&fci, &fci_cache) == FAILURE) {
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
             ZVAL_NULL(return_value);
             return;
-        } else {
-            ZVAL_COPY_VALUE(&carry, &retval);
         }
+
+        Z_TRY_DELREF_P(&carry);
     }
     DS_DEQUE_FOREACH_END();
     ZVAL_COPY(return_value, &carry);
