@@ -9,10 +9,10 @@
         }
     ],
     "require-dev": {
-        "php-ds/tests": "dev-master"
+        "php-ds/tests": "^1.1"
     },
     "scripts": {
         "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml",
-        "memtest": "USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 valgrind --error-exitcode=1 --leak-check=full --track-origins=yes php vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
+        "memtest": "USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 valgrind --error-exitcode=1 --tool=memcheck --trace-children=yes --vex-iropt-precise-memory-exns=yes --track-origins=yes php vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml"
     }
 }
