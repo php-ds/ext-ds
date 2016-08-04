@@ -669,7 +669,6 @@ void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
     zval retval;
 
     DS_DEQUE_FOREACH(deque, value) {
-
         fci.param_count = 1;
         fci.params      = value;
         fci.retval      = &retval;

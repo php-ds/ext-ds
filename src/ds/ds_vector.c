@@ -454,15 +454,7 @@ ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values)
 
 void ds_vector_pop(ds_vector_t *vector, zval *return_value)
 {
-    zval *value = &vector->buffer[--vector->size];
-
-    if (return_value) {
-        ZVAL_COPY_VALUE(return_value, value);
-        ZVAL_UNDEF(value);
-    } else {
-        DTOR_AND_UNDEF(value);
-    }
-
+    SET_AS_RETURN_AND_UNDEF(&vector->buffer[--vector->size]);
     ds_vector_check_compact(vector);
 }
 
@@ -480,12 +472,7 @@ void ds_vector_shift(ds_vector_t *vector, zval *return_value)
 {
     zval *first = vector->buffer;
 
-    if (return_value) {
-        ZVAL_COPY_VALUE(return_value, first);
-        ZVAL_UNDEF(first);
-    } else {
-        DTOR_AND_UNDEF(first);
-    }
+    SET_AS_RETURN_AND_UNDEF(first);
 
     vector->size--;
     memmove(first, first + 1, vector->size * sizeof(zval));
@@ -615,7 +602,7 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 
         DS_VECTOR_FOREACH(vector, value) {
             if (zend_is_true(value)) {
-                ZVAL_COPY(pos++, value);
+                ZVAL_COPY_VALUE(pos++, value);
                 size++;
             }
         }
@@ -653,8 +640,7 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 
             //
             if (zend_is_true(&retval)) {
-                ZVAL_COPY(target, value);
-                target++;
+                ZVAL_COPY_VALUE(target++, value);
             }
         }
         DS_VECTOR_FOREACH_END();
