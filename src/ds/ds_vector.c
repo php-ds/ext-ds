@@ -567,6 +567,7 @@ void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
             return;
         }
 
+        zval_ptr_dtor(value);
         ZVAL_COPY_VALUE(value, &retval);
     }
     DS_VECTOR_FOREACH_END();

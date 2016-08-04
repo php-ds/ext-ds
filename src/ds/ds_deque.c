@@ -678,6 +678,7 @@ void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
             return;
         }
 
+        zval_ptr_dtor(value);
         ZVAL_COPY_VALUE(value, &retval);
     }
 

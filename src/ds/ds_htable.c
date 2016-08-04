@@ -895,11 +895,11 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
     zval params[2];
     zval retval;
 
-    ds_htable_bucket_t *bucket;
+    zval *key, *value;
 
-    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
-        ZVAL_COPY_VALUE(&params[0], &bucket->key);
-        ZVAL_COPY_VALUE(&params[1], &bucket->value);
+    DS_HTABLE_FOREACH_KEY_VALUE(table, key, value) {
+        ZVAL_COPY_VALUE(&params[0], key);
+        ZVAL_COPY_VALUE(&params[1], value);
 
         fci.param_count = 2;
         fci.params      = params;
@@ -909,7 +909,8 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
             return;
         }
 
-        ZVAL_COPY_VALUE(&bucket->value, &retval);
+        zval_ptr_dtor(value);
+        ZVAL_COPY_VALUE(value, &retval);
     }
     DS_HTABLE_FOREACH_END();
 }
