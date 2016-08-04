@@ -74,11 +74,11 @@ static int ds_vector_count_elements(zval *obj, zend_long *count)
     return SUCCESS;
 }
 
-static void ds_vector_free_object(zend_object *obj)
+static void ds_vector_free_object(zend_object *object)
 {
-    php_ds_vector_t *intern = (php_ds_vector_t*) obj;
-    zend_object_std_dtor(&intern->std);
-    ds_vector_free(intern->vector);
+    php_ds_vector_t *obj = (php_ds_vector_t*) object;
+    zend_object_std_dtor(&obj->std);
+    ds_vector_free(obj->vector);
 }
 
 static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)

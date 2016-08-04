@@ -17,8 +17,10 @@ static inline bool index_out_of_range(zend_long index, zend_long max)
 
 static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
 {
-    REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
-    vector->capacity = capacity;
+    if (capacity > vector->capacity) {
+        REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
+        vector->capacity = capacity;
+    }
 }
 
 ds_vector_t *ds_vector_ex(zend_long capacity)
@@ -67,9 +69,7 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
 {
-    if (capacity > vector->capacity) {
-        ds_vector_reallocate(vector, capacity);
-    }
+    ds_vector_reallocate(vector, capacity);
 }
 
 ds_vector_t *ds_vector_clone(ds_vector_t *vector)
@@ -159,25 +159,28 @@ static inline void increase_capacity_if_full(ds_vector_t *vector)
     }
 }
 
-void ds_vector_clear(ds_vector_t *vector)
+static inline void ds_vector_clear_buffer(ds_vector_t *vector)
 {
     zval *pos = vector->buffer;
-    zval *end = pos + vector->size;
+    zval *end = vector->buffer + vector->size;
 
     for (; pos != end; ++pos) {
-        zval_ptr_dtor(pos);
+        DTOR_AND_UNDEF(pos);
     }
 
     vector->size = 0;
+}
+
+void ds_vector_clear(ds_vector_t *vector)
+{
+    ds_vector_clear_buffer(vector);
     ds_vector_reallocate(vector, DS_VECTOR_MIN_CAPACITY);
 }
 
 void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
 {
     if ( ! index_out_of_range(index, vector->size)) {
-        zval *current = vector->buffer + index;
-        zval_ptr_dtor(current);
-        ZVAL_COPY(current, value);
+        ZVAL_COPY_VALUE(vector->buffer + index, value);
     }
 }
 
@@ -589,10 +592,8 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
             efree(buf);
             return NULL;
         } else {
-            ZVAL_COPY_VALUE(pos, &retval);
+            ZVAL_COPY_VALUE(pos++, &retval);
         }
-
-        pos++;
     }
     DS_VECTOR_FOREACH_END();
 
@@ -729,7 +730,7 @@ void ds_vector_sum(ds_vector_t *vector, zval *return_value)
 
 void ds_vector_free(ds_vector_t *vector)
 {
-    ds_vector_clear(vector);
+    ds_vector_clear_buffer(vector);
     efree(vector->buffer);
     efree(vector);
 }
