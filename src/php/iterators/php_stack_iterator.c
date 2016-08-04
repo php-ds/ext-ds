@@ -21,34 +21,26 @@ static void ds_stack_iterator_get_current_key(zend_object_iterator *iter, zval *
     ZVAL_LONG(key, ((php_ds_stack_iterator_t *) iter)->position);
 }
 
+static void ds_stack_iterator_set_current(ds_stack_t *stack, zval *data)
+{
+    if (DS_STACK_IS_EMPTY(stack)) {
+        ZVAL_UNDEF(data);
+    } else {
+        ds_stack_pop(stack, data);
+    }
+}
+
 static void ds_stack_iterator_move_forward(zend_object_iterator *iter)
 {
     php_ds_stack_iterator_t *iterator = (php_ds_stack_iterator_t *) iter;
-
-    if ( ! DS_STACK_IS_EMPTY(iterator->stack)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_stack_peek(iterator->stack));
-        ds_stack_pop(iterator->stack, NULL);
-        iterator->position++;
-    } else {
-        ZVAL_UNDEF(&iter->data);
-    }
+    ds_stack_iterator_set_current(iterator->stack, &iter->data);
+    iterator->position++;
 }
 
 static void ds_stack_iterator_rewind(zend_object_iterator *iter)
 {
     php_ds_stack_iterator_t *iterator = (php_ds_stack_iterator_t *) iter;
-
-    if ( ! DS_STACK_IS_EMPTY(iterator->stack)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_stack_peek(iterator->stack));
-        ds_stack_pop(iterator->stack, NULL);
-    } else {
-        ZVAL_UNDEF(&iter->data);
-    }
-
+    ds_stack_iterator_set_current(iterator->stack, &iter->data);
     iterator->position = 0;
 }
 

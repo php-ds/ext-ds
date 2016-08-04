@@ -23,32 +23,26 @@ static void php_ds_priority_queue_iterator_get_current_key(zend_object_iterator 
     ZVAL_LONG(key, ((php_ds_priority_queue_iterator *) iter)->position);
 }
 
+static void php_ds_priority_queue_iterator_set_current(ds_priority_queue_t *queue, zval *data)
+{
+    if (DS_PRIORITY_QUEUE_IS_EMPTY(queue)) {
+        ZVAL_UNDEF(data);
+    } else {
+        ds_priority_queue_pop(queue, data);
+    }
+}
+
 static void php_ds_priority_queue_iterator_move_forward(zend_object_iterator *iter)
 {
     php_ds_priority_queue_iterator *iterator = (php_ds_priority_queue_iterator *) iter;
-
-    if ( ! DS_PRIORITY_QUEUE_IS_EMPTY(iterator->queue)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_priority_queue_peek(iterator->queue));
-        ds_priority_queue_pop(iterator->queue, NULL);
-        iterator->position++;
-    } else {
-        DTOR_AND_UNDEF(&iter->data);
-    }
+    php_ds_priority_queue_iterator_set_current(iterator->queue, &iter->data);
+    iterator->position++;
 }
 
 static void php_ds_priority_queue_iterator_rewind(zend_object_iterator *iter)
 {
     php_ds_priority_queue_iterator *iterator = (php_ds_priority_queue_iterator *) iter;
-
-    if ( ! DS_PRIORITY_QUEUE_IS_EMPTY(iterator->queue)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_priority_queue_peek(iterator->queue));
-        ds_priority_queue_pop(iterator->queue, NULL);
-    }
-
+    php_ds_priority_queue_iterator_set_current(iterator->queue, &iter->data);
     iterator->position = 0;
 }
 

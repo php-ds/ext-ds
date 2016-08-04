@@ -26,10 +26,7 @@ static void ds_queue_iterator_set_current(ds_queue_t *queue, zval *data)
     if (QUEUE_IS_EMPTY(queue)) {
         ZVAL_UNDEF(data);
     } else {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(data, ds_queue_peek(queue));
-        ds_queue_pop(queue, NULL);
+        ds_queue_pop(queue, data);
     }
 }
 
