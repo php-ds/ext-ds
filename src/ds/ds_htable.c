@@ -909,7 +909,7 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
             return;
         }
 
-        ZVAL_REPLACE(&bucket->value, &retval);
+        ZVAL_COPY_VALUE(&bucket->value, &retval);
     }
     DS_HTABLE_FOREACH_END();
 }

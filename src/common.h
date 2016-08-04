@@ -66,17 +66,8 @@ do {                                        \
 } while (0)
 
 /**
- * Destructs 'dst', then copies 'src' to it.
- * Used to replace an existing value.
+ *
  */
-#define ZVAL_REPLACE(dst, src) \
-do {                             \
-    zval *_dst = dst;            \
-    zval *_src = src;            \
-    zval_ptr_dtor(_dst);         \
-    ZVAL_COPY(_dst, _src);       \
-} while (0)
-
 #define SWAP_ZVAL(a, b) \
 do {                    \
     zval _t = a;        \
