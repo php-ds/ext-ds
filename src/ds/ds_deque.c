@@ -233,7 +233,7 @@ zval *ds_deque_get(ds_deque_t *deque, zend_long index)
 void ds_deque_set(ds_deque_t *deque, zend_long index, zval *value)
 {
     if (ds_deque_valid_index(deque, index)) {
-        ZVAL_DTOR_COPY(ds_deque_lookup(deque, index), value);
+        ZVAL_REPLACE(ds_deque_lookup(deque, index), value);
     }
 }
 
@@ -676,8 +676,7 @@ void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
             return;
         }
 
-        zval_ptr_dtor(value);
-        ZVAL_COPY_VALUE(value, &retval);
+        ZVAL_REPLACE(value, &retval);
     }
     DS_DEQUE_FOREACH_END();
 }

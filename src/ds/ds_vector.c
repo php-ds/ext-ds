@@ -181,7 +181,7 @@ void ds_vector_clear(ds_vector_t *vector)
 void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
 {
     if ( ! index_out_of_range(index, vector->size)) {
-        ZVAL_DTOR_COPY(vector->buffer + index, value);
+        ZVAL_REPLACE(vector->buffer + index, value);
     }
 }
 
@@ -565,8 +565,7 @@ void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
             return;
         }
 
-        zval_ptr_dtor(value);
-        ZVAL_COPY_VALUE(value, &retval);
+        ZVAL_REPLACE(value, &retval);
     }
     DS_VECTOR_FOREACH_END();
 }

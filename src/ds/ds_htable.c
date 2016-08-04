@@ -907,9 +907,9 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             return;
-        } else {
-            ZVAL_DTOR_COPY(&bucket->value, &retval);
         }
+
+        ZVAL_REPLACE(&bucket->value, &retval);
     }
     DS_HTABLE_FOREACH_END();
 }

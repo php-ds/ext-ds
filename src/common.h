@@ -69,7 +69,7 @@ do {                                        \
  * Destructs 'dst', then copies 'src' to it.
  * Used to replace an existing value.
  */
-#define ZVAL_DTOR_COPY(dst, src) \
+#define ZVAL_REPLACE(dst, src) \
 do {                             \
     zval *_dst = dst;            \
     zval *_src = src;            \
