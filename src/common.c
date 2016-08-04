@@ -101,7 +101,7 @@ void smart_str_appendz(smart_str *buffer, zval *value)
 {
     zend_string *str = zval_get_string(value);
     smart_str_append(buffer, str);
-    zend_string_free(str);
+    // zend_string_free(str);
 }
 
 zend_string *ds_join_zval_buffer(
