@@ -69,8 +69,16 @@ PHP_MINFO_FUNCTION(ds)
     php_info_print_table_end();
 }
 
+static const zend_module_dep ds_deps[] = {
+    ZEND_MOD_REQUIRED("json")
+    ZEND_MOD_REQUIRED("spl")
+    ZEND_MOD_END
+};
+
 zend_module_entry ds_module_entry = {
-    STANDARD_MODULE_HEADER,
+    STANDARD_MODULE_HEADER_EX,
+    NULL,
+    ds_deps,
     "ds",
     NULL,
     PHP_MINIT(ds),
