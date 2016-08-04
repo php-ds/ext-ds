@@ -36,6 +36,9 @@
 #define PHP_DS_ME(cls, name) \
     PHP_ME(cls, name, arginfo_##name, ZEND_ACC_PUBLIC)
 
+/**
+ *
+ */
 #define DTOR_AND_UNDEF(z) \
 do { \
     zval *_z = z; \
@@ -44,6 +47,22 @@ do { \
         ZVAL_UNDEF(_z); \
     } \
 } while (0)
+
+/**
+ *
+ */
+#define SET_AS_RETURN_AND_DTOR(z)           \
+do {                                        \
+    zval *_z = z;                           \
+    if (return_value) {                     \
+        ZVAL_COPY_VALUE(return_value, _z);  \
+        ZVAL_UNDEF(_z);                     \
+    } else {                                \
+        DTOR_AND_UNDEF(_z);                 \
+    }                                       \
+} while (0)
+
+
 
 /**
  * Destructs 'dst', then copies 'src' to it.

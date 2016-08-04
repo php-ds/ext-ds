@@ -145,25 +145,25 @@ METHOD(unshift)
 METHOD(pop)
 {
     PARSE_NONE;
-    ds_deque_pop(THIS_DS_DEQUE(), return_value);
+    ds_deque_pop_throw(THIS_DS_DEQUE(), return_value);
 }
 
 METHOD(shift)
 {
     PARSE_NONE;
-    ds_deque_shift(THIS_DS_DEQUE(), return_value);
+    ds_deque_shift_throw(THIS_DS_DEQUE(), return_value);
 }
 
 METHOD(first)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_deque_get_first(THIS_DS_DEQUE()));
+    RETURN_ZVAL_COPY(ds_deque_get_first_throw(THIS_DS_DEQUE()));
 }
 
 METHOD(last)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_deque_get_last(THIS_DS_DEQUE()));
+    RETURN_ZVAL_COPY(ds_deque_get_last_throw(THIS_DS_DEQUE()));
 }
 
 METHOD(count)

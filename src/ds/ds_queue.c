@@ -24,6 +24,12 @@ ds_queue_t *ds_queue_clone(ds_queue_t *queue)
     return ds_queue_ex(ds_deque_clone(queue->deque));
 }
 
+void ds_queue_free(ds_queue_t *queue)
+{
+    ds_deque_free(queue->deque);
+    efree(queue);
+}
+
 void ds_queue_allocate(ds_queue_t *queue, zend_long capacity)
 {
     ds_deque_allocate(queue->deque, capacity);
@@ -73,15 +79,19 @@ void ds_queue_to_array(ds_queue_t *queue, zval *return_value)
     }
 }
 
+void ds_queue_pop_throw(ds_queue_t *queue, zval *return_value)
+{
+    ds_deque_shift_throw(queue->deque, return_value);
+}
+
 void ds_queue_pop(ds_queue_t *queue, zval *return_value)
 {
     ds_deque_shift(queue->deque, return_value);
 }
 
-void ds_queue_free(ds_queue_t *queue)
+zval *ds_queue_peek_throw(ds_queue_t *queue)
 {
-    ds_deque_free(queue->deque);
-    efree(queue);
+    return ds_deque_get_first_throw(queue->deque);
 }
 
 zval *ds_queue_peek(ds_queue_t *queue)

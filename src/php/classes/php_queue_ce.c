@@ -49,14 +49,14 @@ ARGINFO_NONE(pop)
 METHOD(pop)
 {
     PARSE_NONE;
-    ds_queue_pop(THIS_DS_QUEUE(), return_value);
+    ds_queue_pop_throw(THIS_DS_QUEUE(), return_value);
 }
 
 ARGINFO_NONE(peek)
 METHOD(peek)
 {
     PARSE_NONE;
-    RETURN_ZVAL_COPY(ds_queue_peek(THIS_DS_QUEUE()));
+    RETURN_ZVAL_COPY(ds_queue_peek_throw(THIS_DS_QUEUE()));
 }
 
 ARGINFO_NONE_RETURN_DS(copy, Queue)

@@ -47,7 +47,9 @@ void ds_deque_push_all(ds_deque_t *deque, zval *values);
 
 void ds_deque_set(ds_deque_t *deque, zend_long index, zval *value);
 void ds_deque_pop(ds_deque_t *deque, zval *return_value);
+void ds_deque_pop_throw(ds_deque_t *deque, zval *return_value);
 void ds_deque_shift(ds_deque_t *deque, zval *return_value);
+void ds_deque_shift_throw(ds_deque_t *deque, zval *return_value);
 void ds_deque_find(ds_deque_t *deque, zval *value, zval *return_value);
 void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value);
 void ds_deque_insert_va(ds_deque_t *deque, zend_long index, VA_PARAMS);
@@ -55,7 +57,9 @@ void ds_deque_unshift_va(ds_deque_t *deque, VA_PARAMS);
 
 zval *ds_deque_get(ds_deque_t *deque, zend_long index);
 zval *ds_deque_get_last(ds_deque_t *deque);
+zval *ds_deque_get_last_throw(ds_deque_t *deque);
 zval *ds_deque_get_first(ds_deque_t *deque);
+zval *ds_deque_get_first_throw(ds_deque_t *deque);
 
 bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS);
 bool ds_deque_isset(ds_deque_t *deque, zend_long index, int check_empty);

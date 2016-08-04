@@ -21,34 +21,29 @@ static void ds_queue_iterator_get_current_key(zend_object_iterator *iter, zval *
     ZVAL_LONG(key, ((ds_queue_iterator_t *) iter)->position);
 }
 
+static void ds_queue_iterator_set_current(ds_queue_t *queue, zval *data)
+{
+    if (QUEUE_IS_EMPTY(queue)) {
+        ZVAL_UNDEF(data);
+    } else {
+
+        // Don't pop into the data because we don't want to increment its rc
+        ZVAL_COPY_VALUE(data, ds_queue_peek(queue));
+        ds_queue_pop(queue, NULL);
+    }
+}
+
 static void ds_queue_iterator_move_forward(zend_object_iterator *iter)
 {
     ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
-
-    if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_queue_peek(iterator->queue));
-        ds_queue_pop(iterator->queue, NULL);
-        iterator->position++;
-    } else {
-        ZVAL_UNDEF(&iter->data);
-    }
+    ds_queue_iterator_set_current(iterator->queue, &iter->data);
+    iterator->position++;
 }
 
 static void ds_queue_iterator_rewind(zend_object_iterator *iter)
 {
     ds_queue_iterator_t *iterator = (ds_queue_iterator_t *) iter;
-
-    if ( ! QUEUE_IS_EMPTY(iterator->queue)) {
-
-        // Don't pop into the data because we don't want to increment its rc
-        ZVAL_COPY_VALUE(&iter->data, ds_queue_peek(iterator->queue));
-        ds_queue_pop(iterator->queue, NULL);
-    } else {
-        ZVAL_UNDEF(&iter->data);
-    }
-
+    ds_queue_iterator_set_current(iterator->queue, &iter->data);
     iterator->position = 0;
 }
 
@@ -72,8 +67,6 @@ zend_object_iterator *php_ds_queue_get_iterator(zend_class_entry *ce, zval *obje
 
     iterator = ecalloc(1, sizeof(ds_queue_iterator_t));
     zend_iterator_init((zend_object_iterator*) iterator);
-
-    ZVAL_UNDEF(&iterator->intern.data);
 
     iterator->intern.funcs = &iterator_funcs;
     iterator->queue        = Z_DS_QUEUE_P(object);
