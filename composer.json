@@ -9,7 +9,7 @@
         }
     ],
     "require-dev": {
-        "php-ds/tests": "^1.1"
+        "php-ds/tests": "dev-master"
     },
     "scripts": {
         "test": "vendor/bin/phpunit -c ./vendor/php-ds/tests/phpunit.xml",
