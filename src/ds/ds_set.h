@@ -6,7 +6,7 @@
 
 #define DS_SET_SIZE(s)     ((s)->table->size)
 #define DS_SET_CAPACITY(s) ((s)->table->capacity)
-#define SET_IS_EMPTY(s)    (DS_SET_SIZE(s) == 0)
+#define DS_SET_IS_EMPTY(s)    (DS_SET_SIZE(s) == 0)
 
 #define DS_SET_FOREACH(set, value)  DS_HTABLE_FOREACH_KEY(set->table, value)
 #define DS_SET_FOREACH_END()        DS_HTABLE_FOREACH_END()

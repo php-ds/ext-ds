@@ -164,12 +164,29 @@ static int ds_set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval 
     return retval;
 }
 
+static HashTable *ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
+{
+    ds_set_t *set = Z_DS_SET_P(obj);
+
+    if (DS_SET_IS_EMPTY(set)) {
+        *gc_data  = NULL;
+        *gc_count = 0;
+
+    } else {
+        *gc_data  = (zval*) set->table->buckets;
+        *gc_count = (int)   set->table->next * 2;
+    }
+
+    return NULL;
+}
+
 void php_ds_register_set_handlers()
 {
     memcpy(&php_ds_set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
     php_ds_set_handlers.offset = XtOffsetOf(php_ds_set_t, std);
 
+    php_ds_set_handlers.get_gc              = ds_set_get_gc;
     php_ds_set_handlers.free_obj            = ds_set_free_object;
     php_ds_set_handlers.clone_obj           = ds_set_clone_obj;
     php_ds_set_handlers.get_debug_info      = ds_set_get_debug_info;

@@ -310,7 +310,7 @@ void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
 
 ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
 {
-    if (SET_IS_EMPTY(set)) {
+    if (DS_SET_IS_EMPTY(set)) {
         return ds_set();
 
     } else {
@@ -346,7 +346,7 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
 
 ds_set_t *ds_set_filter(ds_set_t *set)
 {
-    if (SET_IS_EMPTY(set)) {
+    if (DS_SET_IS_EMPTY(set)) {
         return ds_set();
 
     } else {
