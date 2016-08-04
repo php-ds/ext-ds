@@ -581,7 +581,8 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
             return NULL;
         }
 
-        ZVAL_COPY_VALUE(target++, &retval);
+        ZVAL_COPY(target++, &retval);
+        zval_ptr_dtor(&retval);
     }
     DS_VECTOR_FOREACH_END();
 
@@ -602,7 +603,7 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 
         DS_VECTOR_FOREACH(vector, value) {
             if (zend_is_true(value)) {
-                ZVAL_COPY_VALUE(pos++, value);
+                ZVAL_COPY(pos++, value);
                 size++;
             }
         }
@@ -640,8 +641,10 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
 
             //
             if (zend_is_true(&retval)) {
-                ZVAL_COPY_VALUE(target++, value);
+                ZVAL_COPY(target++, value);
             }
+
+            zval_ptr_dtor(&retval);
         }
         DS_VECTOR_FOREACH_END();
 
