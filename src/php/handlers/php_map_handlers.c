@@ -84,7 +84,7 @@ static HashTable *ds_map_get_gc(zval *obj, zval **gc_data, int *gc_count)
 
     } else {
         *gc_data  = (zval*) map->table->buckets;
-        *gc_count = (int) ((map->table->next - 1) * 2);
+        *gc_count = (int)   map->table->next * 2;
     }
 
     return NULL;
