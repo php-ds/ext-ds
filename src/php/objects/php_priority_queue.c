@@ -4,12 +4,15 @@
 
 #include "php_priority_queue.h"
 
-zend_object *php_ds_priority_queue_create_object_ex(ds_priority_queue_t *pq)
+zend_object *php_ds_priority_queue_create_object_ex(ds_priority_queue_t *queue)
 {
     php_ds_priority_queue_t *obj = ecalloc(1, sizeof(php_ds_priority_queue_t));
     zend_object_std_init(&obj->std, php_ds_priority_queue_ce);
     obj->std.handlers = &php_priority_queue_handlers;
-    obj->pq = pq;
+
+    obj->queue   = queue;
+    obj->gc_data = NULL;
+    obj->gc_size = 0;
 
     return &obj->std;
 }
@@ -20,9 +23,9 @@ zend_object *php_ds_priority_queue_create_object(zend_class_entry *ce)
 }
 
 
-zend_object *php_ds_priority_queue_create_clone(ds_priority_queue_t *pq)
+zend_object *php_ds_priority_queue_create_clone(ds_priority_queue_t *queue)
 {
-    return php_ds_priority_queue_create_object_ex(ds_priority_queue_clone(pq));
+    return php_ds_priority_queue_create_object_ex(ds_priority_queue_clone(queue));
 }
 
 
@@ -37,7 +40,6 @@ int php_ds_priority_queue_serialize(zval *object, unsigned char **buffer, size_t
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {
-
         ds_priority_queue_node_t *nodes = ds_priority_queue_create_sorted_buffer(queue);
         ds_priority_queue_node_t *pos   = nodes;
         ds_priority_queue_node_t *end   = nodes + queue->size;

@@ -117,14 +117,14 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
     queue->size++;
 }
 
-void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value)
+void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
 {
     uint32_t index, swap;
 
     ds_priority_queue_node_t bottom;
-    ds_priority_queue_node_t *nodes = pq->nodes;
+    ds_priority_queue_node_t *nodes = queue->nodes;
 
-    const uint32_t size = pq->size;
+    const uint32_t size = queue->size;
     const uint32_t half = (size - 1) >> 1;
 
     if (size == 0) {
@@ -140,12 +140,12 @@ void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value)
     bottom = nodes[size - 1];
     DTOR_AND_UNDEF(&(nodes[0].value));
 
-    pq->size--;
+    queue->size--;
 
     for (index = 0; index < half; index = swap) {
         swap = LEFT(index);
 
-        if (swap < pq->size && compare(nodes[swap], nodes[swap + 1]) < 0) {
+        if (swap < queue->size && compare(nodes[swap], nodes[swap + 1]) < 0) {
             swap++;
         }
 
@@ -157,17 +157,17 @@ void ds_priority_queue_pop(ds_priority_queue_t *pq, zval *return_value)
     }
     nodes[index] = bottom;
 
-    if (pq->size <= pq->capacity >> 2) {
-        reallocate_to_capacity(pq, pq->capacity >> 1);
+    if (queue->size <= queue->capacity >> 2) {
+        reallocate_to_capacity(queue, queue->capacity >> 1);
     }
 }
 
-static ds_priority_queue_node_t *copy_nodes(ds_priority_queue_t *pq)
+static ds_priority_queue_node_t *copy_nodes(ds_priority_queue_t *queue)
 {
-    ds_priority_queue_node_t *copies = allocate_nodes(pq->capacity);
+    ds_priority_queue_node_t *copies = allocate_nodes(queue->capacity);
 
-    ds_priority_queue_node_t *src = pq->nodes;
-    ds_priority_queue_node_t *end = pq->nodes + pq->size;
+    ds_priority_queue_node_t *src = queue->nodes;
+    ds_priority_queue_node_t *end = queue->nodes + queue->size;
     ds_priority_queue_node_t *dst = copies;
 
     for (; src < end; ++src, ++dst) {
@@ -178,14 +178,14 @@ static ds_priority_queue_node_t *copy_nodes(ds_priority_queue_t *pq)
     return copies;
 }
 
-ds_priority_queue_t *ds_priority_queue_clone(ds_priority_queue_t * pq)
+ds_priority_queue_t *ds_priority_queue_clone(ds_priority_queue_t * queue)
 {
     ds_priority_queue_t *clone = ecalloc(1, sizeof(ds_priority_queue_t));
 
-    clone->nodes    = copy_nodes(pq);
-    clone->capacity = pq->capacity;
-    clone->size     = pq->size;
-    clone->next     = pq->next;
+    clone->nodes    = copy_nodes(queue);
+    clone->capacity = queue->capacity;
+    clone->size     = queue->size;
+    clone->next     = queue->next;
 
     return clone;
 }
