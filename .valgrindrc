@@ -1,5 +1,4 @@
 --memcheck:leak-check=full
+--memcheck:show-reachable=yes
 --memcheck:track-origins=yes
 --memcheck:error-exitcode=1
---memcheck:gen-suppressions=all
-
