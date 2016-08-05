@@ -980,12 +980,14 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
         fci.params      = (zval *) src;
         fci.retval      = &retval;
 
+        //
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             ds_htable_free(filtered);
             zval_ptr_dtor(&retval);
             return NULL;
         }
 
+        //
         if (zend_is_true(&retval)) {
             ds_htable_next_bucket(
                 filtered, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
