@@ -8,7 +8,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 - [x] Memory leaks when structures contain themselves
 
 ### Added
-- [ ] `Sequence::map` callbacks now get the index as optional second parameter.
+- [ ] `Sequence` callbacks now get the index as optional second parameter.
 
 ### Improvements
 - [x] `Map::map` is now slightly faster.
