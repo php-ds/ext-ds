@@ -629,13 +629,18 @@ static void ds_htable_put_distinct_bucket(ds_htable_t *table, ds_htable_bucket_t
     }
 }
 
-static ds_htable_bucket_t *ds_htable_next_bucket(ds_htable_t *table, zval *key, const uint32_t hash)
+static ds_htable_bucket_t *ds_htable_next_bucket(ds_htable_t *table, zval *key, zval *value, const uint32_t hash)
 {
     ds_htable_bucket_t *bucket = &table->buckets[table->next];
 
     DS_HTABLE_BUCKET_HASH(bucket) = hash;
-    ZVAL_COPY(&bucket->key, key);
     DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
+
+    ZVAL_COPY(&bucket->key, key);
+
+    if (value) {
+        ZVAL_COPY(&bucket->value, value);
+    }
 
     table->next++;
     table->size++;
@@ -657,7 +662,7 @@ bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t 
     }
 
     // Bucket couldn't be found, so create as new bucket in the buffer.
-    *bucket = ds_htable_next_bucket(table, key, hash);
+    *bucket = ds_htable_next_bucket(table, key, NULL, hash);
 
     return false;
 }
@@ -841,8 +846,8 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (; length-- > 0; src++) {
-                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
-                ZVAL_COPY(&dst->value, &src->value);
+                ds_htable_next_bucket(
+                    slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
             }
 
         /**
@@ -853,8 +858,8 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (;;) {
-                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
-                ZVAL_COPY(&dst->value, &src->value);
+                ds_htable_next_bucket(
+                    slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
 
                 if (--length == 0) {
                     break;
@@ -886,8 +891,9 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
                     continue;
                 }
 
-                ds_htable_bucket_t *dst = ds_htable_next_bucket(slice, &src->key, DS_HTABLE_BUCKET_HASH(src));
-                ZVAL_COPY(&dst->value, &src->value);
+                ds_htable_next_bucket(
+                    slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
+
                 length--;
             }
         }
@@ -919,8 +925,6 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
 ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 {
     ds_htable_bucket_t *bucket;
-    ds_htable_bucket_t *next;
-    uint32_t hash;
     zval retval;
 
     ds_htable_t *mapped = ds_htable_ex(table->capacity);
@@ -936,9 +940,10 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
             return NULL;
         }
 
-        hash = DS_HTABLE_BUCKET_HASH(bucket);
-        next = ds_htable_next_bucket(mapped, &bucket->key, hash);
-        ZVAL_COPY(&next->value, &retval);
+        //
+        ds_htable_next_bucket(
+            mapped, &bucket->key, &retval, DS_HTABLE_BUCKET_HASH(bucket));
+
         zval_ptr_dtor(&retval);
     }
     DS_HTABLE_FOREACH_END();
@@ -954,8 +959,8 @@ ds_htable_t *ds_htable_filter(ds_htable_t *table)
 
     DS_HTABLE_FOREACH_BUCKET(table, src) {
         if (zend_is_true(&src->value)) {
-            dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
-            ZVAL_COPY(&dst->value, &src->value);
+            ds_htable_next_bucket(
+                filtered, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -982,8 +987,8 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
         }
 
         if (zend_is_true(&retval)) {
-            dst = ds_htable_next_bucket(filtered, &src->key, DS_HTABLE_BUCKET_HASH(src));
-            ZVAL_COPY(&dst->value, &src->value);
+            ds_htable_next_bucket(
+                filtered, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
         }
 
         zval_ptr_dtor(&retval);
