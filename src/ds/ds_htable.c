@@ -455,7 +455,7 @@ bool ds_htable_has_values(ds_htable_t *table, VA_PARAMS)
     return true;
 }
 
-void ds_htable_clear(ds_htable_t *table)
+static void ds_htable_clear_buffer(ds_htable_t *table)
 {
     ds_htable_bucket_t *bucket;
 
@@ -468,19 +468,25 @@ void ds_htable_clear(ds_htable_t *table)
     }
     DS_HTABLE_FOREACH_END();
 
+    table->size = 0;
+    table->next = 0;
+    table->min_deleted = table->capacity;
+}
+
+void ds_htable_clear(ds_htable_t *table)
+{
+    ds_htable_clear_buffer(table);
+
     if (table->capacity > DS_HTABLE_MIN_CAPACITY) {
         ds_htable_realloc(table, DS_HTABLE_MIN_CAPACITY);
     }
-
-    table->size = 0;
-    table->next = 0;
 
     table->min_deleted = table->capacity;
 }
 
 void ds_htable_free(ds_htable_t *table)
 {
-    ds_htable_clear(table);
+    ds_htable_clear_buffer(table);
 
     efree(table->buckets);
     efree(table->lookup);
@@ -610,7 +616,7 @@ void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
 /**
  * Adds a bucket to the table knowing that its key doesn't already exist.
  */
-static void ds_htable_put_distinct(ds_htable_t *table, ds_htable_bucket_t *bucket)
+static void ds_htable_put_distinct_bucket(ds_htable_t *table, ds_htable_bucket_t *bucket)
 {
     DS_HTABLE_BUCKET_COPY(&table->buckets[table->next], bucket);
     DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
@@ -892,62 +898,52 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
 
 void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
 {
-    zval params[2];
     zval retval;
+    ds_htable_bucket_t *bucket;
 
-    zval *key, *value;
-
-    DS_HTABLE_FOREACH_KEY_VALUE(table, key, value) {
-        ZVAL_COPY_VALUE(&params[0], key);
-        ZVAL_COPY_VALUE(&params[1], value);
-
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         fci.param_count = 2;
-        fci.params      = params;
+        fci.params      = (zval *) bucket;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             return;
         }
 
-        zval_ptr_dtor(value);
-        ZVAL_COPY_VALUE(value, &retval);
+        zval_ptr_dtor(&bucket->value);
+        ZVAL_COPY_VALUE(&bucket->value, &retval);
     }
     DS_HTABLE_FOREACH_END();
 }
 
 ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 {
-    zval params[2];
+    ds_htable_bucket_t *bucket;
+    ds_htable_bucket_t *next;
+    uint32_t hash;
     zval retval;
 
-    ds_htable_t *clone = ds_htable_clone(table);
+    ds_htable_t *mapped = ds_htable_ex(table->capacity);
 
-    ds_htable_bucket_t *end = table->buckets + table->next;
-    ds_htable_bucket_t *src = table->buckets;
-    ds_htable_bucket_t *dst = clone->buckets;
-
-    for (; src != end; ++src, ++dst) {
-        if (DS_HTABLE_BUCKET_DELETED(src)) {
-            continue;
-        }
-
-        ZVAL_COPY_VALUE(&params[0], &src->key);
-        ZVAL_COPY_VALUE(&params[1], &src->value);
-
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         fci.param_count = 2;
-        fci.params      = params;
+        fci.params      = (zval *) bucket;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-            ds_htable_free(clone);
+            ds_htable_free(mapped);
+            zval_ptr_dtor(&retval);
             return NULL;
         }
 
-        ZVAL_COPY(&dst->value, &retval);
+        hash = DS_HTABLE_BUCKET_HASH(bucket);
+        next = ds_htable_next_bucket(mapped, &bucket->key, hash);
+        ZVAL_COPY(&next->value, &retval);
         zval_ptr_dtor(&retval);
     }
+    DS_HTABLE_FOREACH_END();
 
-    return clone;
+    return mapped;
 }
 
 ds_htable_t *ds_htable_filter(ds_htable_t *table)
@@ -970,22 +966,18 @@ ds_htable_t *ds_htable_filter(ds_htable_t *table)
 ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
 {
     ds_htable_bucket_t *src, *dst;
-
-    zval params[2];
     zval retval;
 
     ds_htable_t *filtered = ds_htable_ex(table->capacity);
 
     DS_HTABLE_FOREACH_BUCKET(table, src) {
-        ZVAL_COPY_VALUE(&params[0], &src->key);
-        ZVAL_COPY_VALUE(&params[1], &src->value);
-
         fci.param_count = 2;
-        fci.params      = params;
+        fci.params      = (zval *) src;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             ds_htable_free(filtered);
+            zval_ptr_dtor(&retval);
             return NULL;
         }
 
@@ -997,6 +989,7 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
         zval_ptr_dtor(&retval);
     }
     DS_HTABLE_FOREACH_END();
+
     return filtered;
 }
 
@@ -1039,14 +1032,14 @@ ds_htable_t *ds_htable_xor(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if ( ! ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_distinct(xor, bucket);
+            ds_htable_put_distinct_bucket(xor, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
 
     DS_HTABLE_FOREACH_BUCKET(other, bucket) {
         if ( ! ds_htable_has_key(table, &bucket->key)) {
-            ds_htable_put_distinct(xor, bucket);
+            ds_htable_put_distinct_bucket(xor, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -1061,7 +1054,7 @@ ds_htable_t *ds_htable_diff(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if ( ! ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_distinct(diff, bucket);
+            ds_htable_put_distinct_bucket(diff, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -1077,7 +1070,7 @@ ds_htable_t *ds_htable_intersect(ds_htable_t *table, ds_htable_t *other)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if (ds_htable_has_key(other, &bucket->key)) {
-            ds_htable_put_distinct(intersection, bucket);
+            ds_htable_put_distinct_bucket(intersection, bucket);
         }
     }
     DS_HTABLE_FOREACH_END();
