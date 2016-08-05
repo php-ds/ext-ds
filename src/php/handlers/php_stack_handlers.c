@@ -32,19 +32,28 @@ static int ds_stack_count_elements(zval *obj, zend_long *count)
 
 static zend_object *ds_stack_clone_obj(zval *obj)
 {
-    ds_stack_t *s = Z_DS_STACK_P(obj);
-    return php_ds_stack_create_clone(s);
+    return php_ds_stack_create_clone(Z_DS_STACK_P(obj));
 }
 
 static HashTable *ds_stack_get_debug_info(zval *obj, int *is_temp)
 {
     zval arr;
-    ds_stack_t *s = Z_DS_STACK_P(obj);
+    ds_stack_t *stack = Z_DS_STACK_P(obj);
 
     *is_temp = 1;
 
-    ds_stack_to_array(s, &arr);
+    ds_stack_to_array(stack, &arr);
     return Z_ARRVAL(arr);
+}
+
+static HashTable *ds_stack_get_gc(zval *obj, zval **gc_data, int *gc_count)
+{
+    ds_stack_t *stack = Z_DS_STACK_P(obj);
+
+    *gc_data  = (zval*) stack->vector->buffer;
+    *gc_count = (int)   stack->vector->size;
+
+    return NULL;
 }
 
 void php_register_ds_stack_handlers()
@@ -53,6 +62,7 @@ void php_register_ds_stack_handlers()
 
     php_ds_stack_handlers.offset = XtOffsetOf(php_ds_stack_t, std);
 
+    php_ds_stack_handlers.get_gc            = ds_stack_get_gc;
     php_ds_stack_handlers.dtor_obj          = zend_objects_destroy_object;
     php_ds_stack_handlers.free_obj          = ds_stack_free_object;
     php_ds_stack_handlers.clone_obj         = ds_stack_clone_obj;

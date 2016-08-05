@@ -95,14 +95,10 @@ static zend_object *ds_deque_clone_obj(zval *obj)
 
 static HashTable *ds_deque_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
-    ds_deque_t *deque  = Z_DS_DEQUE_P(obj);
-
-    if (deque->head != 0) {
-        ds_deque_reset_head(deque);
-    }
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     *gc_data  = deque->buffer;
-    *gc_count = (int) deque->size;
+    *gc_count = (int) deque->capacity;
 
     return NULL;
 }

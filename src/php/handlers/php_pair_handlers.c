@@ -81,21 +81,6 @@ static void ds_pair_unset_property(zval *object, zval *offset, void **cache_slot
     }
 }
 
-static void ds_pair_write_dimension(zval *object, zval *offset, zval *value)
-{
-    MUTABILITY_NOT_ALLOWED();
-}
-
-static int ds_pair_has_dimension(zval *object, zval *offset, int check_empty)
-{
-    return ds_zval_isset(get_property(Z_DS_PAIR_P(object), offset), check_empty);
-}
-
-static void ds_pair_unset_dimension(zval *object, zval *offset)
-{
-    MUTABILITY_NOT_ALLOWED();
-}
-
 static void ds_pair_free_object(zend_object *object)
 {
     php_ds_pair_t *obj = (php_ds_pair_t*) object;
@@ -129,8 +114,17 @@ static HashTable *ds_pair_get_debug_info(zval *object, int *is_temp)
 
 static zend_object *ds_pair_clone_object(zval *object)
 {
-    ds_pair_t *pair = Z_DS_PAIR_P(object);
-    return php_ds_pair_create_clone(pair);
+    return php_ds_pair_create_clone(Z_DS_PAIR_P(object));
+}
+
+static HashTable *ds_pair_get_gc(zval *obj, zval **gc_data, int *gc_count)
+{
+    ds_pair_t *pair = Z_DS_PAIR_P(obj);
+
+    *gc_data  = (zval*) pair;
+    *gc_count = (int) 2;
+
+    return NULL;
 }
 
 void php_ds_register_pair_handlers()
@@ -139,6 +133,7 @@ void php_ds_register_pair_handlers()
 
     php_pair_handlers.offset = XtOffsetOf(php_ds_pair_t, std);
 
+    php_pair_handlers.get_gc                  = ds_pair_get_gc;
     php_pair_handlers.dtor_obj                = zend_objects_destroy_object;
     php_pair_handlers.free_obj                = ds_pair_free_object;
     php_pair_handlers.clone_obj               = ds_pair_clone_object;

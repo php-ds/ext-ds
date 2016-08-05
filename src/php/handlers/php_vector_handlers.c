@@ -113,9 +113,9 @@ void php_register_vector_handlers()
 
     php_vector_handlers.offset = XtOffsetOf(php_ds_vector_t, std);
 
-    php_vector_handlers.dtor_obj = zend_objects_destroy_object;
-    php_vector_handlers.free_obj = ds_vector_free_object;
-    php_vector_handlers.get_gc   = ds_vector_get_gc;
+    php_vector_handlers.dtor_obj         = zend_objects_destroy_object;
+    php_vector_handlers.free_obj         = ds_vector_free_object;
+    php_vector_handlers.get_gc           = ds_vector_get_gc;
 
     php_vector_handlers.clone_obj        = ds_vector_clone_obj;
     php_vector_handlers.cast_object      = ds_default_cast_object;
