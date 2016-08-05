@@ -7,9 +7,6 @@ This project follows [Semantic Versioning](http://semver.org/).
 - [x] Memory leaks during map when callback throws an exception.
 - [x] Memory leaks when structures contain themselves
 
-### Added
-- [ ] `Sequence` callbacks now get the index as optional second parameter.
-
 ### Improvements
 - [x] `Map::map` and `Map::filter` are now slightly faster.
 
