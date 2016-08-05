@@ -1,13 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project follows [Semantic Versioning](http://semver.org/).
 
 ## [1.1.2] - 2016-08-05
 ### Fixed
 - Many, many memory leaks.
-- Added valgrind to travis.yml
-- Small performance improvements
-- JSON dependency now handled correctly (thanks @NikiC)
+- Added memory checks to CI.
+- Performance improvements.
+- JSON dependency now handled correctly (thanks @nikic).
 
 ## [1.1.1] - 2016-08-04
 ### Fixed
@@ -20,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.4] - 2016-08-01
 ### Fixed
 - `unserialize` memory leak when failed to unserialize.
-- `htable` bucket copy macro didn't copy the bucket's "next"
+- `htable` bucket copy macro didn't copy the bucket's "next".
 
 ## [1.0.3] - 2016-08-01
 ### Added
