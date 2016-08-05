@@ -11,7 +11,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 - [ ] `Sequence` callbacks now get the index as optional second parameter.
 
 ### Improvements
-- [x] `Map::map` and `Map::map` are now slightly faster.
+- [x] `Map::map` and `Map::filter` are now slightly faster.
 
 ## [1.1.2] - 2016-08-05
 ### Fixed
