@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - UNRELEASED
+### Fixed
+- [x] Memory leaks during map when callback throws an exception.
+- [x] Memory leaks when structures contain themselves
+
+### Added
+- [ ] `Sequence::map` callbacks now get the index as optional second parameter.
+
+### Improvements
+- [x] `Map::map` is now slightly faster.
+
 ## [1.1.2] - 2016-08-05
 ### Fixed
 - Many, many memory leaks.
