@@ -88,3 +88,5 @@ if (PHP_DS != "no") {
     ]);
 }
 
+PHP_ADD_EXTENSION_DEP('ds', 'spl')
+PHP_ADD_EXTENSION_DEP('ds', 'json')

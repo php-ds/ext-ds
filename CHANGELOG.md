@@ -2,10 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [1.2.0] - UNRELEASED
+## [1.1.3] - UNRELEASED
 ### Fixed
 - [x] Memory leaks during map when callback throws an exception.
-- [x] Memory leaks when structures contain themselves
+- [x] Memory leaks when structures contain themselves.
 
 ## Added
 - [ ] Show version info in `phpinfo()`
