@@ -1,7 +1,7 @@
 PHP_ARG_ENABLE(ds, whether to enable ds support,
 [  --enable-ds           Enable ds support])
 
-if test "$PHP_COLLECTIONS" != "no"; then
+if test "$PHP_DS" != "no"; then
   PHP_NEW_EXTENSION(ds,                       \
                                               \
   src/common.c                                \
