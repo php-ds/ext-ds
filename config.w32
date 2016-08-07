@@ -86,4 +86,7 @@ if (PHP_DS != "no") {
         "php_priority_queue_ce.c",
         "php_queue_ce.c",
     ]);
+
+    ADD_EXTENSION_DEP('ds', 'spl');
+    ADD_EXTENSION_DEP('ds', 'json');
 }
