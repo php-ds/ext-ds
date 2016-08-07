@@ -87,6 +87,3 @@ if (PHP_DS != "no") {
         "php_queue_ce.c",
     ]);
 }
-
-PHP_ADD_EXTENSION_DEP('ds', 'spl')
-PHP_ADD_EXTENSION_DEP('ds', 'json')
