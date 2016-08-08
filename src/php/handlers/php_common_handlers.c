@@ -1,7 +1,7 @@
 #include "php_common_handlers.h"
 #include "zend_smart_str.h"
 
-int ds_default_cast_object(zval *obj, zval *return_value, int type)
+int php_ds_default_cast_object(zval *obj, zval *return_value, int type)
 {
     switch (type) {
         case IS_STRING: {

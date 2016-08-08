@@ -6,7 +6,7 @@
 
 zend_object_handlers php_ds_set_handlers;
 
-static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *rv)
+static zval *php_ds_set_read_dimension(zval *obj, zval *offset, int type, zval *rv)
 {
     ds_set_t *set = Z_DS_SET_P(obj);
 
@@ -28,7 +28,7 @@ static zval *ds_set_read_dimension(zval *obj, zval *offset, int type, zval *rv)
     return ds_set_get(set, Z_LVAL_P(offset));
 }
 
-static void ds_set_write_dimension(zval *obj, zval *offset, zval *value)
+static void php_ds_set_write_dimension(zval *obj, zval *offset, zval *value)
 {
     if (offset == NULL) {
         ds_set_add(Z_DS_SET_P(obj), value);
@@ -38,20 +38,20 @@ static void ds_set_write_dimension(zval *obj, zval *offset, zval *value)
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
-static int ds_set_count_elements(zval *obj, zend_long *count)
+static int php_ds_set_count_elements(zval *obj, zend_long *count)
 {
     *count = DS_SET_SIZE(Z_DS_SET_P(obj));
     return SUCCESS;
 }
 
-static void ds_set_free_object(zend_object *object)
+static void php_ds_set_free_object(zend_object *object)
 {
     php_ds_set_t *obj = (php_ds_set_t*) object;
     zend_object_std_dtor(&obj->std);
     ds_set_free(obj->set);
 }
 
-static HashTable *ds_set_get_debug_info(zval *obj, int *is_temp)
+static HashTable *php_ds_set_get_debug_info(zval *obj, int *is_temp)
 {
     zval arr;
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -62,7 +62,7 @@ static HashTable *ds_set_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(arr);
 }
 
-static zend_object *ds_set_clone_obj(zval *obj)
+static zend_object *php_ds_set_clone_obj(zval *obj)
 {
     return php_ds_set_create_clone(Z_DS_SET_P(obj));
 }
@@ -164,7 +164,7 @@ static zend_object *ds_set_clone_obj(zval *obj)
 //     return retval;
 // }
 
-static HashTable *ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
+static HashTable *php_ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
     ds_set_t *set = Z_DS_SET_P(obj);
 
@@ -186,13 +186,13 @@ void php_ds_register_set_handlers()
 
     php_ds_set_handlers.offset = XtOffsetOf(php_ds_set_t, std);
 
-    php_ds_set_handlers.get_gc              = ds_set_get_gc;
-    php_ds_set_handlers.free_obj            = ds_set_free_object;
-    php_ds_set_handlers.clone_obj           = ds_set_clone_obj;
-    php_ds_set_handlers.get_debug_info      = ds_set_get_debug_info;
-    php_ds_set_handlers.count_elements      = ds_set_count_elements;
-    php_ds_set_handlers.read_dimension      = ds_set_read_dimension;
-    php_ds_set_handlers.write_dimension     = ds_set_write_dimension;
-    php_ds_set_handlers.cast_object         = ds_default_cast_object;
+    php_ds_set_handlers.get_gc              = php_ds_set_get_gc;
+    php_ds_set_handlers.free_obj            = php_ds_set_free_object;
+    php_ds_set_handlers.clone_obj           = php_ds_set_clone_obj;
+    php_ds_set_handlers.get_debug_info      = php_ds_set_get_debug_info;
+    php_ds_set_handlers.count_elements      = php_ds_set_count_elements;
+    php_ds_set_handlers.read_dimension      = php_ds_set_read_dimension;
+    php_ds_set_handlers.write_dimension     = php_ds_set_write_dimension;
+    php_ds_set_handlers.cast_object         = php_ds_default_cast_object;
     // php_ds_set_handlers.do_operation        = ds_set_do_operation;
 }

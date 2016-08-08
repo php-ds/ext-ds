@@ -2,17 +2,21 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.1.4] - 2016-08-09
+### Fixed
+- `Vector` and `Deque` rotate crashing when empty (mod zero).
+
 ## [1.1.3] - 2016-08-08
 ### Fixed
-- [x] Memory leaks during map when callback throws an exception.
-- [x] Memory leaks when structures contain themselves.
-- [x] Module dependencies.
+- Memory leaks during map when callback throws an exception.
+- Memory leaks when structures contain themselves.
+- Module dependencies.
 
 ## Added
-- [x] Version info in `phpinfo()`
+- Version info in `phpinfo()`
 
-### Improvements
-- [x] `Map::map` and `Map::filter` are now slightly faster.
+### Improved
+- `Map::map` and `Map::filter` are now slightly faster.
 
 ## [1.1.2] - 2016-08-05
 ### Fixed

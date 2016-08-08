@@ -4,51 +4,51 @@
 #include "../objects/php_vector.h"
 #include "php_vector_iterator.h"
 
-static void iterator_dtor(zend_object_iterator *i)
+static void php_ds_vector_iterator_dtor(zend_object_iterator *i)
 {
 
 }
 
-static int iterator_valid(zend_object_iterator *i)
+static int php_ds_vector_iterator_valid(zend_object_iterator *i)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     return iterator->position < iterator->vector->size ? SUCCESS : FAILURE;
 }
 
-static zval *iterator_get_current_data(zend_object_iterator *i)
+static zval *php_ds_vector_iterator_get_current_data(zend_object_iterator *i)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     return &iterator->vector->buffer[iterator->position];
 }
 
-static void iterator_get_current_key(zend_object_iterator *i, zval *key)
+static void php_ds_vector_iterator_get_current_key(zend_object_iterator *i, zval *key)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     ZVAL_LONG(key, iterator->position);
 }
 
-static void iterator_move_forward(zend_object_iterator *i)
+static void php_ds_vector_iterator_move_forward(zend_object_iterator *i)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     iterator->position++;
 }
 
-static void iterator_rewind(zend_object_iterator *i)
+static void php_ds_vector_iterator_rewind(zend_object_iterator *i)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
     iterator->position = 0;
 }
 
-static zend_object_iterator_funcs iterator_funcs = {
-    iterator_dtor,
-    iterator_valid,
-    iterator_get_current_data,
-    iterator_get_current_key,
-    iterator_move_forward,
-    iterator_rewind
+static zend_object_iterator_funcs php_ds_vector_iterator_funcs = {
+    php_ds_vector_iterator_dtor,
+    php_ds_vector_iterator_valid,
+    php_ds_vector_iterator_get_current_data,
+    php_ds_vector_iterator_get_current_key,
+    php_ds_vector_iterator_move_forward,
+    php_ds_vector_iterator_rewind
 };
 
-static zend_object_iterator *ds_vector_create_iterator(
+static zend_object_iterator *php_ds_vector_create_iterator(
     ds_vector_t *vector,
     zend_object_iterator_funcs *funcs,
     int by_ref
@@ -74,11 +74,11 @@ static zend_object_iterator *ds_vector_create_iterator(
 
 zend_object_iterator *php_ds_vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, ds_vector_t *vector)
 {
-    return ds_vector_create_iterator(vector, &iterator_funcs, by_ref);
+    return php_ds_vector_create_iterator(vector, &php_ds_vector_iterator_funcs, by_ref);
 }
 
 zend_object_iterator *php_ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
-    return ds_vector_create_iterator(vector, &iterator_funcs, by_ref);
+    return php_ds_vector_create_iterator(vector, &php_ds_vector_iterator_funcs, by_ref);
 }

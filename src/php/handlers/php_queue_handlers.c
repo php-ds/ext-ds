@@ -6,7 +6,7 @@
 
 zend_object_handlers php_queue_handlers;
 
-static void ds_queue_write_dimension(zval *obj, zval *offset, zval *value)
+static void php_ds_queue_write_dimension(zval *obj, zval *offset, zval *value)
 {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
 
@@ -18,25 +18,25 @@ static void ds_queue_write_dimension(zval *obj, zval *offset, zval *value)
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
-static void ds_queue_free_object(zend_object *object)
+static void php_ds_queue_free_object(zend_object *object)
 {
     php_ds_queue_t *queue = (php_ds_queue_t*) object;
     zend_object_std_dtor(&queue->std);
     ds_queue_free(queue->queue);
 }
 
-static int ds_queue_count_elements(zval *obj, zend_long *count)
+static int php_ds_queue_count_elements(zval *obj, zend_long *count)
 {
     *count = QUEUE_SIZE(Z_DS_QUEUE_P(obj));
     return SUCCESS;
 }
 
-static zend_object *ds_queue_clone_obj(zval *obj)
+static zend_object *php_ds_queue_clone_obj(zval *obj)
 {
     return php_ds_queue_create_clone(Z_DS_QUEUE_P(obj));
 }
 
-static HashTable *ds_queue_get_debug_info(zval *obj, int *is_temp)
+static HashTable *php_ds_queue_get_debug_info(zval *obj, int *is_temp)
 {
     zval array;
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
@@ -47,7 +47,7 @@ static HashTable *ds_queue_get_debug_info(zval *obj, int *is_temp)
     return Z_ARRVAL(array);
 }
 
-static HashTable *ds_queue_get_gc(zval *obj, zval **gc_data, int *gc_count)
+static HashTable *php_ds_queue_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
 
@@ -63,12 +63,12 @@ void php_ds_register_queue_handlers()
 
     php_queue_handlers.offset = XtOffsetOf(php_ds_queue_t, std);
 
-    php_queue_handlers.get_gc            = ds_queue_get_gc;
     php_queue_handlers.dtor_obj          = zend_objects_destroy_object;
-    php_queue_handlers.free_obj          = ds_queue_free_object;
-    php_queue_handlers.clone_obj         = ds_queue_clone_obj;
-    php_queue_handlers.cast_object       = ds_default_cast_object;
-    php_queue_handlers.get_debug_info    = ds_queue_get_debug_info;
-    php_queue_handlers.count_elements    = ds_queue_count_elements;
-    php_queue_handlers.write_dimension   = ds_queue_write_dimension;
+    php_queue_handlers.get_gc            = php_ds_queue_get_gc;
+    php_queue_handlers.free_obj          = php_ds_queue_free_object;
+    php_queue_handlers.clone_obj         = php_ds_queue_clone_obj;
+    php_queue_handlers.cast_object       = php_ds_default_cast_object;
+    php_queue_handlers.get_debug_info    = php_ds_queue_get_debug_info;
+    php_queue_handlers.count_elements    = php_ds_queue_count_elements;
+    php_queue_handlers.write_dimension   = php_ds_queue_write_dimension;
 }

@@ -4,12 +4,12 @@
 #include "../objects/php_deque.h"
 #include "php_deque_iterator.h"
 
-static void ds_deque_iterator_dtor(zend_object_iterator *intern)
+static void php_ds_deque_iterator_dtor(zend_object_iterator *intern)
 {
     //
 }
 
-static int ds_deque_iterator_valid(zend_object_iterator *iter)
+static int php_ds_deque_iterator_valid(zend_object_iterator *iter)
 {
     php_ds_deque_iterator_t *iterator = (php_ds_deque_iterator_t *) iter;
     ds_deque_t *deque             = iterator->deque;
@@ -18,7 +18,7 @@ static int ds_deque_iterator_valid(zend_object_iterator *iter)
     return position < deque->size ? SUCCESS : FAILURE;
 }
 
-static zval *ds_deque_iterator_get_current_data(zend_object_iterator *iter)
+static zval *php_ds_deque_iterator_get_current_data(zend_object_iterator *iter)
 {
     php_ds_deque_iterator_t *iterator = (php_ds_deque_iterator_t *) iter;
     ds_deque_t *deque            = iterator->deque;
@@ -27,27 +27,27 @@ static zval *ds_deque_iterator_get_current_data(zend_object_iterator *iter)
     return ds_deque_get(deque, position);
 }
 
-static void ds_deque_iterator_get_current_key(zend_object_iterator *iter, zval *key) {
+static void php_ds_deque_iterator_get_current_key(zend_object_iterator *iter, zval *key) {
     ZVAL_LONG(key, ((php_ds_deque_iterator_t *) iter)->position);
 }
 
-static void ds_deque_iterator_move_forward(zend_object_iterator *iter)
+static void php_ds_deque_iterator_move_forward(zend_object_iterator *iter)
 {
     ((php_ds_deque_iterator_t *) iter)->position++;
 }
 
-static void ds_deque_iterator_rewind(zend_object_iterator *iter)
+static void php_ds_deque_iterator_rewind(zend_object_iterator *iter)
 {
     ((php_ds_deque_iterator_t *) iter)->position = 0;
 }
 
 static zend_object_iterator_funcs iterator_funcs = {
-    ds_deque_iterator_dtor,
-    ds_deque_iterator_valid,
-    ds_deque_iterator_get_current_data,
-    ds_deque_iterator_get_current_key,
-    ds_deque_iterator_move_forward,
-    ds_deque_iterator_rewind
+    php_ds_deque_iterator_dtor,
+    php_ds_deque_iterator_valid,
+    php_ds_deque_iterator_get_current_data,
+    php_ds_deque_iterator_get_current_key,
+    php_ds_deque_iterator_move_forward,
+    php_ds_deque_iterator_rewind
 };
 
 static zend_object_iterator *create_iterator(ds_deque_t *deque, int by_ref)

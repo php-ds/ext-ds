@@ -6,6 +6,6 @@
 /**
  * Default object cast handler.
  */
-int ds_default_cast_object(zval *obj, zval *return_value, int type);
+int php_ds_default_cast_object(zval *obj, zval *return_value, int type);
 
 #endif

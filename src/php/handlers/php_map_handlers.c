@@ -5,7 +5,7 @@
 
 zend_object_handlers php_map_handlers;
 
-static zval *ds_map_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
+static zval *php_php_ds_map_write_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
     ds_map_t *map = Z_DS_MAP_P(obj);
 
@@ -102,10 +102,10 @@ void php_ds_register_map_handlers()
     php_map_handlers.clone_obj           = ds_map_clone_obj;
     php_map_handlers.get_debug_info      = ds_map_get_debug_info;
     php_map_handlers.count_elements      = ds_map_count_elements;
-    php_map_handlers.read_dimension      = ds_map_read_dimension;
+    php_map_handlers.read_dimension      = php_php_ds_map_write_dimension;
     php_map_handlers.write_dimension     = ds_map_write_dimension;
     php_map_handlers.has_dimension       = ds_map_has_dimension;
     php_map_handlers.unset_dimension     = ds_map_unset_dimension;
-    php_map_handlers.cast_object         = ds_default_cast_object;
+    php_map_handlers.cast_object         = php_ds_default_cast_object;
     // php_map_handlers.get_properties      = ds_map_get_properties;
 }
