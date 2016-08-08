@@ -3,7 +3,6 @@
 
 #include "../common.h"
 #include "ds_htable.h"
-#include "ds_vector.h"
 #include "ds_pair.h"
 
 typedef struct _ds_map_t {
@@ -38,7 +37,7 @@ void ds_map_put_all(ds_map_t *map, zval *values);
 
 ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length);
 
-ds_vector_t *ds_map_values_to_vector(ds_map_t *map);
+zval *ds_map_values(ds_map_t *map);
 
 ds_map_t *ds_map_map(ds_map_t *map, FCI_PARAMS);
 ds_map_t *ds_map_filter(ds_map_t *map);

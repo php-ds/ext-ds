@@ -29,8 +29,8 @@ zend_object *php_ds_map_create_object_ex(ds_map_t *map);
 zend_object *php_ds_map_create_object(zend_class_entry *ce);
 zend_object *php_ds_map_create_clone(ds_map_t *map);
 
-ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map);
-HashTable   *ds_map_pairs_to_php_hashtable(ds_map_t *map);
+zval      *ds_map_pairs(ds_map_t *map);
+HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map);
 
 PHP_DS_SERIALIZE_FUNCIONS(php_ds_map);
 

@@ -269,7 +269,7 @@ void php_ds_register_deque()
 
     zend_function_entry methods[] = {
         PHP_DS_COLLECTION_ME_LIST(Deque)
-        SEQUENCE_ME_LIST(Deque)
+        PHP_DS_SEQUENCE_ME_LIST(Deque)
         PHP_FE_END
     };
 

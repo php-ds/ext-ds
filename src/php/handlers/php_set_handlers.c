@@ -67,102 +67,102 @@ static zend_object *ds_set_clone_obj(zval *obj)
     return php_ds_set_create_clone(Z_DS_SET_P(obj));
 }
 
-static inline bool is_php_ds_set(zval *op)
-{
-    return Z_TYPE_P(op) == IS_OBJECT &&
-        instanceof_function(Z_OBJCE_P(op), php_ds_set_ce);
-}
+// static inline bool is_php_ds_set(zval *op)
+// {
+//     return Z_TYPE_P(op) == IS_OBJECT &&
+//         instanceof_function(Z_OBJCE_P(op), php_ds_set_ce);
+// }
 
-static int ds_set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval *op2)
-{
-    ds_set_t *set = Z_DS_SET_P(op1);
+// static int ds_set_do_operation_ex(zend_uchar opcode, zval *result, zval *op1, zval *op2)
+// {
+//     ds_set_t *set = Z_DS_SET_P(op1);
 
-    switch (opcode) {
+//     switch (opcode) {
 
-        // &, intersect which creates a new set.
-        case ZEND_BW_AND:
-            if (is_php_ds_set(op2)) {
-                if (op1 == result) {
-                    // &=, intersect which modifies the set.
-                    ds_set_assign_intersect(set, Z_DS_SET_P(op2));
-                } else {
-                    ZVAL_DS_SET(result, ds_set_intersect(set, Z_DS_SET_P(op2)));
-                }
-                return SUCCESS;
-            }
-            break;
+//         // &, intersect which creates a new set.
+//         case ZEND_BW_AND:
+//             if (is_php_ds_set(op2)) {
+//                 if (op1 == result) {
+//                     // &=, intersect which modifies the set.
+//                     ds_set_assign_intersect(set, Z_DS_SET_P(op2));
+//                 } else {
+//                     ZVAL_DS_SET(result, ds_set_intersect(set, Z_DS_SET_P(op2)));
+//                 }
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // |, union which creates a new set.
-        case ZEND_BW_OR:
-            if (is_php_ds_set(op2)) {
-                ZVAL_DS_SET(result, ds_set_union(set, Z_DS_SET_P(op2)));
-                return SUCCESS;
-            }
-            break;
+//         // |, union which creates a new set.
+//         case ZEND_BW_OR:
+//             if (is_php_ds_set(op2)) {
+//                 ZVAL_DS_SET(result, ds_set_union(set, Z_DS_SET_P(op2)));
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // |=, union which modifies the set.
-        case ZEND_ASSIGN_BW_OR:
-            if (is_php_ds_set(op2)) {
-                ds_set_assign_union(set, Z_DS_SET_P(op2));
-                return SUCCESS;
-            }
-            break;
+//         // |=, union which modifies the set.
+//         case ZEND_ASSIGN_BW_OR:
+//             if (is_php_ds_set(op2)) {
+//                 ds_set_assign_union(set, Z_DS_SET_P(op2));
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // ^, xor which creates a new set.
-        case ZEND_BW_XOR:
-            if (is_php_ds_set(op2)) {
-                ZVAL_DS_SET(result, ds_set_xor(set, Z_DS_SET_P(op2)));
-                return SUCCESS;
-            }
-            break;
+//         // ^, xor which creates a new set.
+//         case ZEND_BW_XOR:
+//             if (is_php_ds_set(op2)) {
+//                 ZVAL_DS_SET(result, ds_set_xor(set, Z_DS_SET_P(op2)));
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // ^=, xor which modifies the set.
-        case ZEND_ASSIGN_BW_XOR:
-            if (is_php_ds_set(op2)) {
-                ds_set_assign_xor(set, Z_DS_SET_P(op2));
-                return SUCCESS;
-            }
-            break;
+//         // ^=, xor which modifies the set.
+//         case ZEND_ASSIGN_BW_XOR:
+//             if (is_php_ds_set(op2)) {
+//                 ds_set_assign_xor(set, Z_DS_SET_P(op2));
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // -, diff which creates a new set.
-        case ZEND_SUB:
-            if (is_php_ds_set(op2)) {
-                ZVAL_DS_SET(result, ds_set_diff(set, Z_DS_SET_P(op2)));
-                return SUCCESS;
-            }
-            break;
+//         // -, diff which creates a new set.
+//         case ZEND_SUB:
+//             if (is_php_ds_set(op2)) {
+//                 ZVAL_DS_SET(result, ds_set_diff(set, Z_DS_SET_P(op2)));
+//                 return SUCCESS;
+//             }
+//             break;
 
-        // -=, diff which modifies the set.
-        case ZEND_ASSIGN_SUB:
-            if (is_php_ds_set(op2)) {
-                ds_set_assign_diff(set, Z_DS_SET_P(op2));
-                return SUCCESS;
-            }
-            break;
-    }
+//         // -=, diff which modifies the set.
+//         case ZEND_ASSIGN_SUB:
+//             if (is_php_ds_set(op2)) {
+//                 ds_set_assign_diff(set, Z_DS_SET_P(op2));
+//                 return SUCCESS;
+//             }
+//             break;
+//     }
 
-    // Operator not supported?
-    return FAILURE;
-}
+//     // Operator not supported?
+//     return FAILURE;
+// }
 
-static int ds_set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
-{
-    zval op1_copy;
-    int retval;
+// static int ds_set_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
+// {
+//     zval op1_copy;
+//     int retval;
 
-    if (result == op1) {
-        ZVAL_COPY_VALUE(&op1_copy, op1);
-        op1 = &op1_copy;
-    }
+//     if (result == op1) {
+//         ZVAL_COPY_VALUE(&op1_copy, op1);
+//         op1 = &op1_copy;
+//     }
 
-    retval = ds_set_do_operation_ex(opcode, result, op1, op2);
+//     retval = ds_set_do_operation_ex(opcode, result, op1, op2);
 
-    if (retval == SUCCESS && op1 == &op1_copy) {
-        zval_dtor(op1);
-    }
+//     if (retval == SUCCESS && op1 == &op1_copy) {
+//         zval_dtor(op1);
+//     }
 
-    return retval;
-}
+//     return retval;
+// }
 
 static HashTable *ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {

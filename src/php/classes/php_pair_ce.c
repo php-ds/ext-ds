@@ -12,7 +12,6 @@
 
 zend_class_entry *php_ds_pair_ce;
 
-ARGINFO_OPTIONAL_ZVAL_OPTIONAL_ZVAL(__construct, key, value)
 METHOD(__construct)
 {
     PARSE_OPTIONAL_ZVAL_OPTIONAL_ZVAL(key, value);
@@ -33,21 +32,18 @@ METHOD(__construct)
     }
 }
 
-ARGINFO_NONE_RETURN_DS(copy, Pair)
 METHOD(copy)
 {
     PARSE_NONE;
     RETURN_DS_PAIR(ds_pair_clone(THIS_DS_PAIR()));
 }
 
-ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
     ds_pair_to_array(THIS_DS_PAIR(), return_value);
 }
 
-ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;

@@ -168,6 +168,8 @@ static void ds_htable_copy(ds_htable_t *_src, ds_htable_t *_dst)
     for (; src != end; ++src, ++dst) {
         if ( ! DS_HTABLE_BUCKET_DELETED(src)) {
             DS_HTABLE_BUCKET_COPY(dst, src);
+        } else {
+            DS_HTABLE_BUCKET_DELETE(dst);
         }
     }
 }
@@ -680,7 +682,7 @@ void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
     ZVAL_COPY(&bucket->value, value);
 }
 
-static zval *create_zval_buffer_of_values(ds_htable_t *table)
+zval *ds_htable_values(ds_htable_t *table)
 {
     zval *buffer = ALLOC_ZVAL_BUFFER(table->size);
     zval *target = buffer;
@@ -692,26 +694,6 @@ static zval *create_zval_buffer_of_values(ds_htable_t *table)
     DS_HTABLE_FOREACH_END();
 
     return buffer;
-}
-
-static zval *create_zval_buffer_of_keys(ds_htable_t *table)
-{
-    zval *buffer = ALLOC_ZVAL_BUFFER(table->size);
-    zval *target = buffer;
-    zval *key;
-
-    DS_HTABLE_FOREACH_KEY(table, key) {
-        ZVAL_COPY(target++, key);
-    }
-    DS_HTABLE_FOREACH_END();
-
-    return buffer;
-}
-
-ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table)
-{
-    zval *buffer = create_zval_buffer_of_values(table);
-    return ds_vector_from_buffer(buffer, table->size);
 }
 
 static ds_htable_bucket_t *get_last_bucket(ds_htable_t *table)
@@ -839,10 +821,11 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
         /**
          * If the table doesn't have any deleted buckets or if the first deleted
          * bucket comes after the slice we're after, we can safely seek
-         * to the index and copy each bucket. We don't have to worry about
-         * increasing capacity or checking if a key already exists.
+         * to the index and copy each bucket.
          */
-        if (DS_HTABLE_IS_PACKED(table) || (index + length) <= table->min_deleted) {
+        if (DS_HTABLE_IS_PACKED(table) ||
+            ((uint32_t) (index + length)) <= table->min_deleted) {
+
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (; length-- > 0; src++) {
@@ -953,7 +936,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 
 ds_htable_t *ds_htable_filter(ds_htable_t *table)
 {
-    ds_htable_bucket_t *src, *dst;
+    ds_htable_bucket_t *src;
 
     ds_htable_t *filtered = ds_htable_ex(table->capacity);
 
@@ -970,7 +953,7 @@ ds_htable_t *ds_htable_filter(ds_htable_t *table)
 
 ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
 {
-    ds_htable_bucket_t *src, *dst;
+    ds_htable_bucket_t *src;
     zval retval;
 
     ds_htable_t *filtered = ds_htable_ex(table->capacity);

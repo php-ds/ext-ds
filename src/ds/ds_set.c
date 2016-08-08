@@ -225,7 +225,6 @@ ds_set_t *ds_set_xor(ds_set_t *set, ds_set_t *other)
 void ds_set_assign_xor(ds_set_t *set, ds_set_t *other)
 {
     zval *value;
-    ds_set_t *result = ds_set();
 
     DS_SET_FOREACH(set, value) {
         if (_set_contains(other, value)) {

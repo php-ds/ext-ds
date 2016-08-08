@@ -14,83 +14,71 @@
 
 zend_class_entry *php_ds_priority_queue_ce;
 
-ARGINFO_NONE(__construct)
 METHOD(__construct)
 {
     PARSE_NONE;
 }
 
-ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
     ds_priority_queue_allocate(THIS_DS_PRIORITY_QUEUE(), capacity);
 }
 
-ARGINFO_NONE_RETURN_LONG(capacity)
 METHOD(capacity)
 {
     PARSE_NONE;
     RETURN_LONG(ds_priority_queue_capacity(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_DS(copy, PriorityQueue)
 METHOD(copy)
 {
     PARSE_NONE;
     RETURN_OBJ(php_ds_priority_queue_create_clone(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_ZVAL_LONG(push, value, priority)
 METHOD(push)
 {
     PARSE_ZVAL_LONG(value, priority);
     ds_priority_queue_push(THIS_DS_PRIORITY_QUEUE(), value, priority);
 }
 
-ARGINFO_NONE(pop)
 METHOD(pop)
 {
     PARSE_NONE;
     ds_priority_queue_pop(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
-ARGINFO_NONE(peek)
 METHOD(peek)
 {
     PARSE_NONE;
     RETURN_ZVAL_COPY(ds_priority_queue_peek(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_BOOL(isEmpty)
 METHOD(isEmpty)
 {
     PARSE_NONE;
     RETURN_BOOL(DS_PRIORITY_QUEUE_IS_EMPTY(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
     ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
-ARGINFO_NONE_RETURN_LONG(count)
 METHOD(count)
 {
     PARSE_NONE;
     RETURN_LONG(DS_PRIORITY_QUEUE_SIZE(THIS_DS_PRIORITY_QUEUE()));
 }
 
-ARGINFO_NONE(clear)
 METHOD(clear)
 {
     PARSE_NONE;
     ds_priority_queue_clear(THIS_DS_PRIORITY_QUEUE());
 }
 
-ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;

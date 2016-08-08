@@ -2,7 +2,6 @@
 #define DS_HTABLE_H
 
 #include "../common.h"
-#include "ds_vector.h"
 
 #define DS_HTABLE_MIN_CAPACITY  16  // Must be a power of 2
 
@@ -153,7 +152,7 @@ typedef struct _ds_htable_t {
 } ds_htable_t;
 
 ds_htable_t *ds_htable();
-ds_vector_t *ds_htable_values_to_vector(ds_htable_t *table);
+zval *ds_htable_values(ds_htable_t *table);
 
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity);
 

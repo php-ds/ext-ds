@@ -34,7 +34,7 @@
  * Combined class, name, and arginfo method entry.
  */
 #define PHP_DS_ME(cls, name) \
-    PHP_ME(cls, name, arginfo_##name, ZEND_ACC_PUBLIC)
+    PHP_ME(cls, name, arginfo_##cls##_##name, ZEND_ACC_PUBLIC)
 
 /**
  *

@@ -15,7 +15,6 @@
 
 zend_class_entry *php_ds_set_ce;
 
-ARGINFO_OPTIONAL_ZVAL(__construct, values)
 METHOD(__construct)
 {
     PARSE_OPTIONAL_ZVAL(values);
@@ -25,7 +24,6 @@ METHOD(__construct)
     }
 }
 
-ARGINFO_OPTIONAL_STRING(join, glue)
 METHOD(join)
 {
     if (ZEND_NUM_ARGS()) {
@@ -36,126 +34,108 @@ METHOD(join)
     }
 }
 
-ARGINFO_LONG(allocate, capacity)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
     ds_set_allocate(THIS_DS_SET(), capacity);
 }
 
-ARGINFO_NONE_RETURN_LONG(capacity)
 METHOD(capacity)
 {
     PARSE_NONE;
     RETURN_LONG(DS_SET_CAPACITY(THIS_DS_SET()));
 }
 
-ARGINFO_VARIADIC_ZVAL(add, values)
 METHOD(add)
 {
     PARSE_VARIADIC_ZVAL();
     ds_set_add_va(THIS_DS_SET(), argc, argv);
 }
 
-ARGINFO_VARIADIC_ZVAL(remove, values)
 METHOD(remove)
 {
     PARSE_VARIADIC_ZVAL();
     ds_set_remove_va(THIS_DS_SET(), argc, argv);
 }
 
-ARGINFO_LONG(get, index)
 METHOD(get)
 {
     PARSE_LONG(index);
     RETURN_ZVAL_COPY(ds_set_get(THIS_DS_SET(), index));
 }
 
-ARGINFO_VARIADIC_ZVAL_RETURN_BOOL(contains, values)
 METHOD(contains)
 {
     PARSE_VARIADIC_ZVAL();
     RETURN_BOOL(ds_set_contains_va(THIS_DS_SET(), argc, argv));
 }
 
-ARGINFO_DS_RETURN_DS(diff, set, Set, Set)
 METHOD(diff)
 {
     PARSE_OBJ(obj, php_ds_set_ce);
     RETURN_DS_SET(ds_set_diff(THIS_DS_SET(), Z_DS_SET_P(obj)));
 }
 
-ARGINFO_DS_RETURN_DS(intersect, set, Set, Set)
 METHOD(intersect)
 {
     PARSE_OBJ(obj, php_ds_set_ce);
     RETURN_DS_SET(ds_set_intersect(THIS_DS_SET(), Z_DS_SET_P(obj)));
 }
 
-ARGINFO_DS_RETURN_DS(xor, set, Set, Set)
 METHOD(xor)
 {
     PARSE_OBJ(obj, php_ds_set_ce);
     RETURN_DS_SET(ds_set_xor(THIS_DS_SET(), Z_DS_SET_P(obj)));
 }
 
-ARGINFO_NONE(first)
 METHOD(first)
 {
     PARSE_NONE;
     RETURN_ZVAL_COPY(ds_set_get_first(THIS_DS_SET()));
 }
 
-ARGINFO_NONE(last)
 METHOD(last)
 {
     PARSE_NONE;
     RETURN_ZVAL_COPY(ds_set_get_last(THIS_DS_SET()));
 }
 
-ARGINFO_ZVAL_RETURN_DS(merge, values, Set)
 METHOD(merge)
 {
     PARSE_ZVAL(values);
     RETURN_DS_SET(ds_set_merge(THIS_DS_SET(), values));
 }
 
-ARGINFO_DS_RETURN_DS(union, set, Set, Set)
 METHOD(union)
 {
     PARSE_OBJ(obj, php_ds_set_ce);
     RETURN_DS_SET(ds_set_union(THIS_DS_SET(), Z_DS_SET_P(obj)));
 }
 
-ARGINFO_NONE(clear)
 METHOD(clear)
 {
     PARSE_NONE;
     ds_set_clear(THIS_DS_SET());
 }
 
-ARGINFO_NONE_RETURN_ARRAY(toArray)
 METHOD(toArray)
 {
     PARSE_NONE;
     ds_set_to_array(THIS_DS_SET(), return_value);
 }
 
-ARGINFO_NONE_RETURN_LONG(count)
 METHOD(count)
 {
     PARSE_NONE;
     RETURN_LONG(DS_SET_SIZE(THIS_DS_SET()));
 }
 
-ARGINFO_NONE_RETURN_BOOL(isEmpty)
 METHOD(isEmpty)
 {
     PARSE_NONE;
     RETURN_BOOL(DS_SET_IS_EMPTY(THIS_DS_SET()));
 }
 
-ARGINFO_OPTIONAL_CALLABLE(sort, comparator)
 METHOD(sort)
 {
     if (ZEND_NUM_ARGS()) {
@@ -166,7 +146,6 @@ METHOD(sort)
     }
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(sorted, comparator, Set)
 METHOD(sorted)
 {
     if (ZEND_NUM_ARGS()) {
@@ -177,21 +156,18 @@ METHOD(sorted)
     }
 }
 
-ARGINFO_NONE_RETURN_DS(copy, Set)
 METHOD(copy)
 {
     PARSE_NONE;
     RETURN_OBJ(php_ds_set_create_clone(THIS_DS_SET()));
 }
 
-ARGINFO_CALLABLE_OPTIONAL_ZVAL(reduce, callback, initial)
 METHOD(reduce)
 {
     PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);
     ds_set_reduce(THIS_DS_SET(), FCI_ARGS, initial, return_value);
 }
 
-ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(slice, index, length, Set)
 METHOD(slice)
 {
     ds_set_t *set = THIS_DS_SET();
@@ -205,7 +181,6 @@ METHOD(slice)
     }
 }
 
-ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(filter, callback, Set)
 METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
@@ -216,28 +191,24 @@ METHOD(filter)
     }
 }
 
-ARGINFO_NONE(reverse)
 METHOD(reverse)
 {
     PARSE_NONE;
     ds_set_reverse(THIS_DS_SET());
 }
 
-ARGINFO_NONE_RETURN_DS(reversed, Set)
 METHOD(reversed)
 {
     PARSE_NONE;
     RETURN_DS_SET(ds_set_reversed(THIS_DS_SET()));
 }
 
-ARGINFO_NONE(sum)
 METHOD(sum)
 {
     PARSE_NONE;
     ds_set_sum(THIS_DS_SET(), return_value);
 }
 
-ARGINFO_NONE(jsonSerialize)
 METHOD(jsonSerialize)
 {
     PARSE_NONE;

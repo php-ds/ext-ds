@@ -1,10 +1,8 @@
-// #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 #include "../classes/php_map_ce.h"
 
 #include "php_map.h"
 #include "php_pair.h"
-#include "php_vector.h"
 
 zend_object *php_ds_map_create_object_ex(ds_map_t *map)
 {
@@ -46,7 +44,7 @@ HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map)
     return array;
 }
 
-ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
+zval *ds_map_pairs(ds_map_t *map)
 {
     zval *buffer = ALLOC_ZVAL_BUFFER(DS_MAP_SIZE(map));
     zval *target = buffer;
@@ -59,7 +57,7 @@ ds_vector_t *ds_map_pairs_to_vector(ds_map_t *map)
     }
     DS_HTABLE_FOREACH_END();
 
-    return ds_vector_from_buffer(buffer, DS_MAP_SIZE(map));
+    return buffer;
 }
 
 int php_ds_map_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)

@@ -203,9 +203,9 @@ void ds_map_to_array(ds_map_t *map, zval *return_value)
     ds_htable_to_array(map->table, return_value);
 }
 
-ds_vector_t *ds_map_values_to_vector(ds_map_t *map)
+zval *ds_map_values(ds_map_t *map)
 {
-    return ds_htable_values_to_vector(map->table);
+    return ds_htable_values(map->table);
 }
 
 ds_map_t *ds_map_slice(ds_map_t *map, zend_long index, zend_long length)

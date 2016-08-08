@@ -6,9 +6,10 @@ This project follows [Semantic Versioning](http://semver.org/).
 ### Fixed
 - [x] Memory leaks during map when callback throws an exception.
 - [x] Memory leaks when structures contain themselves.
+- [x] Module dependencies.
 
 ## Added
-- [x] Show version info in `phpinfo()`
+- [x] Version info in `phpinfo()`
 
 ### Improvements
 - [x] `Map::map` and `Map::filter` are now slightly faster.

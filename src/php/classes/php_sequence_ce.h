@@ -1,42 +1,42 @@
-#ifndef DS_SEQUENCE_CE_H
-#define DS_SEQUENCE_CE_H
+#ifndef PHP_DS_SEQUENCE_CE_H
+#define PHP_DS_SEQUENCE_CE_H
 
 #include "php.h"
 
 extern zend_class_entry *sequence_ce;
 
-#define SEQUENCE_ME(cls, name) PHP_ME(cls, name, arginfo_Sequence_##name, ZEND_ACC_PUBLIC)
+#define PHP_DS_SEQUENCE_ME(cls, name) \
+    PHP_ME(cls, name, arginfo_Sequence_##name, ZEND_ACC_PUBLIC)
 
-#define SEQUENCE_ME_LIST(cls) \
-SEQUENCE_ME(cls, __construct) \
-SEQUENCE_ME(cls, allocate) \
-SEQUENCE_ME(cls, apply) \
-SEQUENCE_ME(cls, capacity) \
-SEQUENCE_ME(cls, contains) \
-SEQUENCE_ME(cls, filter) \
-SEQUENCE_ME(cls, find) \
-SEQUENCE_ME(cls, first) \
-SEQUENCE_ME(cls, get) \
-SEQUENCE_ME(cls, insert) \
-SEQUENCE_ME(cls, join) \
-SEQUENCE_ME(cls, last) \
-SEQUENCE_ME(cls, map) \
-SEQUENCE_ME(cls, merge) \
-SEQUENCE_ME(cls, pop) \
-SEQUENCE_ME(cls, push) \
-SEQUENCE_ME(cls, reduce) \
-SEQUENCE_ME(cls, remove) \
-SEQUENCE_ME(cls, reverse) \
-SEQUENCE_ME(cls, reversed) \
-SEQUENCE_ME(cls, rotate) \
-SEQUENCE_ME(cls, set) \
-SEQUENCE_ME(cls, shift) \
-SEQUENCE_ME(cls, slice) \
-SEQUENCE_ME(cls, sort) \
-SEQUENCE_ME(cls, sorted) \
-SEQUENCE_ME(cls, sum) \
-SEQUENCE_ME(cls, unshift)
-
+#define PHP_DS_SEQUENCE_ME_LIST(cls) \
+PHP_DS_SEQUENCE_ME(cls, __construct) \
+PHP_DS_SEQUENCE_ME(cls, allocate) \
+PHP_DS_SEQUENCE_ME(cls, apply) \
+PHP_DS_SEQUENCE_ME(cls, capacity) \
+PHP_DS_SEQUENCE_ME(cls, contains) \
+PHP_DS_SEQUENCE_ME(cls, filter) \
+PHP_DS_SEQUENCE_ME(cls, find) \
+PHP_DS_SEQUENCE_ME(cls, first) \
+PHP_DS_SEQUENCE_ME(cls, get) \
+PHP_DS_SEQUENCE_ME(cls, insert) \
+PHP_DS_SEQUENCE_ME(cls, join) \
+PHP_DS_SEQUENCE_ME(cls, last) \
+PHP_DS_SEQUENCE_ME(cls, map) \
+PHP_DS_SEQUENCE_ME(cls, merge) \
+PHP_DS_SEQUENCE_ME(cls, pop) \
+PHP_DS_SEQUENCE_ME(cls, push) \
+PHP_DS_SEQUENCE_ME(cls, reduce) \
+PHP_DS_SEQUENCE_ME(cls, remove) \
+PHP_DS_SEQUENCE_ME(cls, reverse) \
+PHP_DS_SEQUENCE_ME(cls, reversed) \
+PHP_DS_SEQUENCE_ME(cls, rotate) \
+PHP_DS_SEQUENCE_ME(cls, set) \
+PHP_DS_SEQUENCE_ME(cls, shift) \
+PHP_DS_SEQUENCE_ME(cls, slice) \
+PHP_DS_SEQUENCE_ME(cls, sort) \
+PHP_DS_SEQUENCE_ME(cls, sorted) \
+PHP_DS_SEQUENCE_ME(cls, sum) \
+PHP_DS_SEQUENCE_ME(cls, unshift)
 
 ARGINFO_OPTIONAL_ZVAL(                  Sequence___construct, values);
 ARGINFO_LONG(                           Sequence_allocate, capacity);

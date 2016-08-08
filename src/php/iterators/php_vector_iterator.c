@@ -39,12 +39,6 @@ static void iterator_rewind(zend_object_iterator *i)
     iterator->position = 0;
 }
 
-static zval *iterator_reversed_get_current_data(zend_object_iterator *i)
-{
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
-    return &iterator->vector->buffer[iterator->vector->size - iterator->position - 1];
-}
-
 static zend_object_iterator_funcs iterator_funcs = {
     iterator_dtor,
     iterator_valid,
