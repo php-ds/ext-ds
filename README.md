@@ -4,7 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 [![PECL](https://img.shields.io/badge/PECL-1.1.3-blue.svg)](https://pecl.php.net/package/ds)
 
-PHP extension providing specialized data structures as efficient alternatives to the *array*.
+An extension providing specialized data structures as efficient alternatives to the PHP array.
 
 ## Documentation
 
@@ -39,7 +39,8 @@ make clean
 phpize --clean
 ```
 
-If you're on Windows, you can [download a compiled .dll on PECL](https://pecl.php.net/package/ds).
+If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.php.net/package/ds) or under [releases](https://github.com/php-ds/extension/releases).
+
 ## Enable
 
 You'll need to add `extension=ds.so`  (or .dll if you're on Windows) to your primary *ini* file.
