@@ -515,6 +515,10 @@ bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS)
 
 void ds_deque_rotate(ds_deque_t *deque, zend_long n)
 {
+    if (deque->size < 2) {
+        return;
+    }
+
     if (n < 0) {
         for (n = llabs(n) % deque->size; n > 0; n--) {
 

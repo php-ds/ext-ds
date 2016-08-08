@@ -404,6 +404,9 @@ void ds_vector_rotate(ds_vector_t *vector, zend_long r)
 
     zend_long n = vector->size;
 
+    if (n < 2) {
+        return;
+    }
          // Negative rotation should rotate in the opposite direction
          if (r < 0) r = n - (llabs(r) % n);
     else if (r > n) r = r % n;

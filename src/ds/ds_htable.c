@@ -837,7 +837,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
          * If the table does have deleted buckets but the first one comes after
          * the index of the slice, we can safely seek to the index.
          */
-        } else if (index < table->min_deleted) {
+        } else if ((uint32_t) index < table->min_deleted) {
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (;;) {
@@ -857,15 +857,14 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
          * The best we can do is just skip any deleted buckets we encounter.
          */
         } else {
-            uint32_t pos = 0;
+            zend_long seek = 0;
             ds_htable_bucket_t *src = table->buckets;
 
             // We have to seek iteratively until we reach the index
-            while (pos < index) {
-                if (DS_HTABLE_BUCKET_DELETED(src++)) {
-                    continue;
+            for (; seek < index; ++src) {
+                if ( ! DS_HTABLE_BUCKET_DELETED(src)) {
+                    seek++;
                 }
-                pos++;
             }
 
             // We're at the index, so gather across.
@@ -874,6 +873,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
                     continue;
                 }
 
+                //
                 ds_htable_next_bucket(
                     slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
 
