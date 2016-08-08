@@ -23,5 +23,4 @@ before_script:
   - echo "extension=ds.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
-  - composer test
   - composer memtest

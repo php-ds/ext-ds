@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
-## [1.1.3] - UNRELEASED
+## [1.1.3] - 2016-08-08
 ### Fixed
 - [x] Memory leaks during map when callback throws an exception.
 - [x] Memory leaks when structures contain themselves.
