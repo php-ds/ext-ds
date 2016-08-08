@@ -1,3 +1,4 @@
 --memcheck:leak-check=full
 --memcheck:track-origins=yes
 --memcheck:error-exitcode=1
+--memcheck:suppressions=.travis.supp
