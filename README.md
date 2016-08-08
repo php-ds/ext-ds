@@ -47,11 +47,8 @@ You'll need to add `extension=ds.so`  (or .dll if you're on Windows) to your pri
 You can also create a separate *ini* file for the extension, which allows you to control load order.
 
 ```bash
-# To see where additional .ini files are located
-php -i | grep "dir for additional .ini files"
-
-# Create a new .ini file for the extension
-echo "extension=ds.so" > /path/to/ini/files/30-ds.ini
+# To see where .ini files are located
+php -i | grep "\.ini"
 ```
 
 ---
