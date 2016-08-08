@@ -15,6 +15,7 @@ before_install:
 install:
     - phpize
     - ./configure
+    - make
     - make install
     - composer install --no-interaction
 
@@ -23,4 +24,4 @@ before_script:
 
 script:
   - composer test
-#  - composer memtest
+  - composer memtest

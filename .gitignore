@@ -8,7 +8,6 @@
 *.mk
 *.o
 *.slo
-*.supp
 *.tgz
 *~
 .#*
