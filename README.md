@@ -23,8 +23,7 @@ If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.ph
 
 ## Enable
 
-You'll need to add `extension=ds.so` to your primary *ini* file.
-You can also create a separate *ini* file for the extension, which allows you to control load order.
+You'll need to add `extension=ds.so` to your primary *php.ini* file.
 
 ```bash
 # To see where .ini files are located
