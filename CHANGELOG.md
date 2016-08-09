@@ -27,7 +27,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 
 ## [1.1.1] - 2016-08-04
 ### Fixed
-- Multiple memory leaks where objects were not free'd correctly. #30
+- Multiple memory leaks where objects were not free'd correctly.
 
 ## [1.1.0] - 2016-08-04
 ### Added
