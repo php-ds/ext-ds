@@ -19,32 +19,11 @@ The easiest way to install the extension is to use PECL:
 pecl install ds
 ```
 
-
-You can also build directly from source:
-
-```bash
-# Dependencies you might need to install
-# sudo apt-get install git build-essential php7.0-dev
-
-git clone https://github.com/php-ds/extension "php-ds"
-cd php-ds
-
-# Build and install the extension
-phpize
-./configure
-make 
-make install
-
-# Clean up the build files
-make clean
-phpize --clean
-```
-
 If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.php.net/package/ds) or under [releases](https://github.com/php-ds/extension/releases).
 
 ## Enable
 
-You'll need to add `extension=ds.so`  (or .dll if you're on Windows) to your primary *ini* file.
+You'll need to add `extension=ds.so` to your primary *ini* file.
 You can also create a separate *ini* file for the extension, which allows you to control load order.
 
 ```bash
@@ -65,8 +44,9 @@ php -d extension=ds.so
 There is a suite of PHPUnit tests that can be installed using [**Composer**](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx).
 
 ``` bash
-composer install
-composer test
+composer install   # Install the test suite
+composer test      # Run the tests
+composer memtest   # Run the tests checking for memory leaks
 ```
 
 ## Compatibility
@@ -84,4 +64,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## License
 
-The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
+The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
