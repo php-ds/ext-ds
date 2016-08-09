@@ -8,10 +8,6 @@ if ( ! extension_loaded('ds')) {
     exit(1);
 }
 
-// Specify the test configuration file
-$_SERVER['argv'][] = '--configuration';
-$_SERVER['argv'][] = __DIR__ . '/vendor/php-ds/tests/phpunit.xml';
-
 // 'false' so that PHPUnit doesn't use "exit"
 PHPUnit_TextUI_Command::main(false);
 

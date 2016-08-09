@@ -28,10 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Fixed memory leaks during map when callback throws an exception.
-        Fixed memory leaks when structures contain themselves.
-        Fixed module dependencies.
-        Version info in phpinfo()
+        Vector and Deque rotate crashing when empty (mod zero).
     </notes>
     <contents>
         <dir name="/">

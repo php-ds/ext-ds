@@ -1,0 +1,11 @@
+<phpunit
+    cacheTokens             = "false"
+    backupGlobals           = "false"
+    backupStaticAttributes  = "false"
+    >
+    <testsuites>
+        <testsuite>
+            <directory>vendor/php-ds/tests/tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
