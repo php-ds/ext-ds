@@ -1,6 +1,5 @@
 #include "../../common.h"
 #include "php_collection_ce.h"
-#include "ext/json/php_json.h"
 
 zend_class_entry *collection_ce;
 
