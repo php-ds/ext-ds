@@ -25,8 +25,7 @@ If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.ph
 
 You'll need to add `extension=ds.so` to your primary *php.ini* file.
 
-If you encounter a "symbol not found" error, you'll need to make sure that the
-extension is loaded *after* its dependencies (spl and json). Create a separate ini file called *30-ds.ini* in the same directory as the other extension-specific ini files (usually in "conf.d" or "mods_available"). These files will be parsed alphabetically, so the "30" prefix is there to make sure it comes after SPL and JSON.
+If you see an "undefined symbol" error, see [#2](https://github.com/php-ds/extension/issues/2#issuecomment-181855047).
 
 ```bash
 # To see where .ini files are located
