@@ -1,5 +1,6 @@
 version: '{branch}.{build}'
 install:
+- cmd: choco feature enable -n=allowGlobalConfirmation
 - cmd: cinst wget
 - cmd: mkdir C:\projects\extension\bin
 - cmd: wget https://getcomposer.org/composer.phar -O C:\projects\extension\bin\composer.phar
