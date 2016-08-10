@@ -2,6 +2,7 @@
 #define DS_PAIR_CE_H
 
 #include "php.h"
+#include "ext/json/php_json.h"
 #include "../../common.h"
 #include "../arginfo.h"
 

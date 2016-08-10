@@ -13,7 +13,6 @@
 #include "ext/spl/spl_iterators.h"
 #include "ext/spl/spl_exceptions.h"
 #include "zend_smart_str.h"
-#include "ext/json/php_json.h"
 
 extern zend_module_entry ds_module_entry;
 
