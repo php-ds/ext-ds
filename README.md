@@ -25,7 +25,7 @@ If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.ph
 
 You'll need to add `extension=ds.so` to your primary *php.ini* file.
 
-If you see an "undefined symbol" error, see [#2](https://github.com/php-ds/extension/issues/2#issuecomment-181855047).
+If you encounter an "undefined symbol" error, see [#2](https://github.com/php-ds/extension/issues/2#issuecomment-181855047).
 
 ```bash
 # To see where .ini files are located
