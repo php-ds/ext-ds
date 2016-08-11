@@ -529,26 +529,24 @@ void ds_vector_reverse(ds_vector_t *vector)
 
 ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
 {
-    zval *src;
-    zval *buf = ALLOC_ZVAL_BUFFER(vector->capacity);
-    zval *dst = &buf[vector->size - 1];
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->capacity);
+    zval *target = &buffer[vector->size - 1];
 
-    DS_VECTOR_FOREACH(vector, src) {
-        ZVAL_COPY(dst, src);
-        dst--;
+    DS_VECTOR_FOREACH(vector, value) {
+        ZVAL_COPY(target--, value);
     }
     DS_VECTOR_FOREACH_END();
 
-    return ds_vector_from_buffer_ex(buf, vector->size, vector->capacity);
+    return ds_vector_from_buffer_ex(buffer, vector->size, vector->capacity);
 }
 
 void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
 {
-    zval *value;
     zval retval;
+    zval *value;
 
     DS_VECTOR_FOREACH(vector, value) {
-
         fci.param_count = 1;
         fci.params      = value;
         fci.retval      = &retval;
@@ -565,21 +563,24 @@ void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
 
 ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
+    zval retval;
     zval *value;
     zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
     zval *target = buffer;
 
     DS_VECTOR_FOREACH(vector, value) {
-        zval param;
-        zval retval;
-
-        ZVAL_COPY_VALUE(&param, value);
-
         fci.param_count = 1;
-        fci.params      = &param;
+        fci.params      = value;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+
+            // Release the values copied into the buffer on failure.
+            for (; target > buffer; target--) {
+                zval_ptr_dtor(target - 1);
+            }
+
+            zval_ptr_dtor(&retval);
             efree(buffer);
             return NULL;
         }
@@ -599,20 +600,17 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 
     } else {
         zval *value;
-        zval *buf = ALLOC_ZVAL_BUFFER(vector->size);
-        zval *pos = buf;
-
-        zend_long size = 0;
+        zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *target = buffer;
 
         DS_VECTOR_FOREACH(vector, value) {
             if (zend_is_true(value)) {
-                ZVAL_COPY(pos++, value);
-                size++;
+                ZVAL_COPY(target++, value);
             }
         }
         DS_VECTOR_FOREACH_END();
 
-        return ds_vector_from_buffer_ex(buf, size, vector->size);
+        return ds_vector_from_buffer_ex(buffer, target - buffer, vector->size);
     }
 }
 
@@ -622,27 +620,30 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
         return ds_vector();
 
     } else {
+        zval retval;
         zval *value;
         zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
         zval *target = buffer;
 
         DS_VECTOR_FOREACH(vector, value) {
-            zval param;
-            zval retval;
-
-            ZVAL_COPY_VALUE(&param, value);
-
             fci.param_count = 1;
-            fci.params      = &param;
+            fci.params      = value;
             fci.retval      = &retval;
 
             // Catch potential exceptions or other errors during comparison.
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+
+                // Release the values copied into the buffer on failure.
+                for (; target > buffer; target--) {
+                    zval_ptr_dtor(target - 1);
+                }
+
+                zval_ptr_dtor(&retval);
                 efree(buffer);
                 return NULL;
             }
 
-            //
+            // Copy the value into the buffer if the callback returned true.
             if (zend_is_true(&retval)) {
                 ZVAL_COPY(target++, value);
             }
@@ -676,6 +677,7 @@ void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FC
         fci.retval      = &carry;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
+            zval_ptr_dtor(&carry);
             ZVAL_NULL(return_value);
             return;
         }
@@ -698,8 +700,8 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
         zval *buffer = ALLOC_ZVAL_BUFFER(length);
 
         src = vector->buffer + index;
-        dst = buffer;
         end = src + length;
+        dst = buffer;
 
         for (; src < end; ++src, ++dst) {
             ZVAL_COPY(dst, src);

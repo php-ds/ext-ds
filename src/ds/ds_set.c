@@ -53,28 +53,21 @@ ds_set_t *ds_set_sorted(ds_set_t *set)
     return sorted;
 }
 
-static inline void _set_add(ds_set_t *set, zval *value)
-{
-    ds_htable_bucket_t *b;
-    ds_htable_lookup_or_next(set->table, value, &b);
-    ZVAL_NULL(&b->value);
-}
-
 void ds_set_add(ds_set_t *set, zval *value)
 {
-    _set_add(set, value);
+    ds_htable_put(set->table, value, NULL);
 }
 
 void ds_set_add_va(ds_set_t *set, VA_PARAMS)
 {
-    for (; argc != 0; argc--) {
-        _set_add(set, argv++);
+    for (; argc != 0; argc--, argv++) {
+        ds_set_add(set, argv);
     }
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
-    _set_add((ds_set_t *) puser, iterator->funcs->get_current_data(iterator));
+    ds_set_add((ds_set_t *) puser, iterator->funcs->get_current_data(iterator));
     return SUCCESS;
 }
 
@@ -87,7 +80,7 @@ static inline void add_array_to_set(ds_set_t *set, HashTable *array)
 {
     zval *value;
     ZEND_HASH_FOREACH_VAL(array, value) {
-        _set_add(set, value);
+        ds_set_add(set, value);
     }
     ZEND_HASH_FOREACH_END();
 }
@@ -111,14 +104,9 @@ void ds_set_add_all(ds_set_t *set, zval *values)
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-static inline bool _set_contains(ds_set_t *set, zval *value)
-{
-    return ds_htable_has_key(set->table, value);
-}
-
 bool ds_set_contains(ds_set_t *set, zval *value)
 {
-    return _set_contains(set, value);
+    return ds_htable_has_key(set->table, value);
 }
 
 bool ds_set_contains_va(ds_set_t *set, VA_PARAMS)
@@ -208,7 +196,7 @@ void ds_set_assign_intersect(ds_set_t *set, ds_set_t *other)
 {
     zval *value;
     DS_SET_FOREACH(set, value) {
-        if ( ! _set_contains(other, value)) {
+        if ( ! ds_set_contains(other, value)) {
             ds_set_remove(set, value);
         }
     }
@@ -227,7 +215,7 @@ void ds_set_assign_xor(ds_set_t *set, ds_set_t *other)
     zval *value;
 
     DS_SET_FOREACH(set, value) {
-        if (_set_contains(other, value)) {
+        if (ds_set_contains(other, value)) {
             ds_set_remove(set, value);
         }
     }
@@ -260,7 +248,7 @@ void ds_set_assign_union(ds_set_t *set, ds_set_t *other)
 {
     zval *value;
     DS_SET_FOREACH(other, value) {
-        _set_add(set, value);
+        ds_set_add(set, value);
     }
     DS_SET_FOREACH_END();
 }
@@ -332,7 +320,7 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
             }
 
             if (zend_is_true(&retval)) {
-                _set_add(filtered, value);
+                ds_set_add(filtered, value);
             }
 
             zval_ptr_dtor(&retval);
@@ -354,7 +342,7 @@ ds_set_t *ds_set_filter(ds_set_t *set)
 
         DS_SET_FOREACH(set, value) {
             if (zend_is_true(value)) {
-                _set_add(filtered, value);
+                ds_set_add(filtered, value);
             }
         }
         DS_SET_FOREACH_END();

@@ -631,22 +631,27 @@ static void ds_htable_put_distinct_bucket(ds_htable_t *table, ds_htable_bucket_t
     }
 }
 
-static ds_htable_bucket_t *ds_htable_next_bucket(ds_htable_t *table, zval *key, zval *value, const uint32_t hash)
-{
+static ds_htable_bucket_t *ds_htable_init_next_bucket(
+    ds_htable_t *table,
+    zval *key,
+    zval *value,
+    const uint32_t hash
+) {
     ds_htable_bucket_t *bucket = &table->buckets[table->next];
 
     DS_HTABLE_BUCKET_HASH(bucket) = hash;
     DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
-
     ZVAL_COPY(&bucket->key, key);
 
+    // Only attempt to copy the value if provided.
     if (value) {
         ZVAL_COPY(&bucket->value, value);
+    } else {
+        ZVAL_NULL(&bucket->value);
     }
 
     table->next++;
     table->size++;
-
     return bucket;
 }
 
@@ -664,8 +669,7 @@ bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t 
     }
 
     // Bucket couldn't be found, so create as new bucket in the buffer.
-    *bucket = ds_htable_next_bucket(table, key, NULL, hash);
-
+    *bucket = ds_htable_init_next_bucket(table, key, NULL, hash);
     return false;
 }
 
@@ -673,13 +677,17 @@ void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
 {
     ds_htable_bucket_t *bucket;
 
+    // Attempt to find the bucket or initialize it as a new bucket.
     bool found = ds_htable_lookup_or_next(table, key, &bucket);
 
+    // If found, destruct the current value so that we can replace it.
     if (found) {
         zval_ptr_dtor(&bucket->value);
     }
 
-    ZVAL_COPY(&bucket->value, value);
+    if (value) {
+        ZVAL_COPY(&bucket->value, value);
+    }
 }
 
 zval *ds_htable_values(ds_htable_t *table)
@@ -696,18 +704,34 @@ zval *ds_htable_values(ds_htable_t *table)
     return buffer;
 }
 
-static ds_htable_bucket_t *get_last_bucket(ds_htable_t *table)
+ds_htable_bucket_t *ds_htable_last(ds_htable_t *table)
 {
-    if (table->size > 0) {
-        ds_htable_bucket_t *last = table->buckets + table->next;
-        for (;;) {
-            if ( ! DS_HTABLE_BUCKET_DELETED(--last)) {
-                return last;
-            }
-        }
-    }
+    if (table->size == 0) {
+        return NULL;
 
-    return NULL;
+    } else {
+        ds_htable_bucket_t *bucket = &table->buckets[table->next - 1];
+        while (DS_HTABLE_BUCKET_DELETED(bucket)) {
+            bucket--;
+        }
+
+        return bucket;
+    }
+}
+
+ds_htable_bucket_t *ds_htable_first(ds_htable_t *table)
+{
+    if (table->size == 0) {
+        return NULL;
+
+    } else {
+        ds_htable_bucket_t *bucket = table->buckets;
+        while (DS_HTABLE_BUCKET_DELETED(bucket)) {
+            bucket++;
+        }
+
+        return bucket;
+    }
 }
 
 zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const size_t len)
@@ -719,12 +743,12 @@ zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const siz
     }
 
     if (table->size == 1) {
-        return zval_get_string(&get_last_bucket(table)->key);
+        return zval_get_string(&ds_htable_last(table)->key);
     }
 
     if (glue && len) {
         ds_htable_bucket_t *pos = table->buckets;
-        ds_htable_bucket_t *end = get_last_bucket(table);
+        ds_htable_bucket_t *end = ds_htable_last(table);
         do {
             if ( ! DS_HTABLE_BUCKET_DELETED(pos)) {
                 smart_str_appendz(&str, &pos->key);
@@ -788,13 +812,13 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
             while (DS_HTABLE_BUCKET_DELETED(bucket));
         }
 
-        //
+        // Update the left-most deleted index
         if (index < table->min_deleted) {
             table->min_deleted = index;
         }
 
-        //
-        if ((--table->size) <= table->capacity >> 2) {
+        // If the capacity drops below a quarter, truncate to half.
+        if ((--table->size) <= table->capacity / 4) {
             ds_htable_halve_capacity(table);
         }
 
@@ -829,7 +853,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (; length-- > 0; src++) {
-                ds_htable_next_bucket(
+                ds_htable_init_next_bucket(
                     slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
             }
 
@@ -841,7 +865,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
             ds_htable_bucket_t *src = &table->buckets[index];
 
             for (;;) {
-                ds_htable_next_bucket(
+                ds_htable_init_next_bucket(
                     slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
 
                 if (--length == 0) {
@@ -873,8 +897,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
                     continue;
                 }
 
-                //
-                ds_htable_next_bucket(
+                ds_htable_init_next_bucket(
                     slice, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
 
                 length--;
@@ -892,7 +915,7 @@ void ds_htable_apply(ds_htable_t *table, FCI_PARAMS)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         fci.param_count = 2;
-        fci.params      = (zval *) bucket;
+        fci.params      = (zval*) bucket;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
@@ -914,7 +937,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         fci.param_count = 2;
-        fci.params      = (zval *) bucket;
+        fci.params      = (zval*) bucket;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
@@ -923,8 +946,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
             return NULL;
         }
 
-        //
-        ds_htable_next_bucket(
+        ds_htable_init_next_bucket(
             mapped, &bucket->key, &retval, DS_HTABLE_BUCKET_HASH(bucket));
 
         zval_ptr_dtor(&retval);
@@ -936,14 +958,16 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 
 ds_htable_t *ds_htable_filter(ds_htable_t *table)
 {
-    ds_htable_bucket_t *src;
-
+    ds_htable_bucket_t *bucket;
     ds_htable_t *filtered = ds_htable_ex(table->capacity);
 
-    DS_HTABLE_FOREACH_BUCKET(table, src) {
-        if (zend_is_true(&src->value)) {
-            ds_htable_next_bucket(
-                filtered, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
+    DS_HTABLE_FOREACH_BUCKET(table, bucket) {
+        if (zend_is_true(&bucket->value)) {
+            ds_htable_init_next_bucket(
+                filtered,
+                &bucket->key,
+                &bucket->value,
+                DS_HTABLE_BUCKET_HASH(bucket));
         }
     }
     DS_HTABLE_FOREACH_END();
@@ -960,19 +984,18 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
 
     DS_HTABLE_FOREACH_BUCKET(table, src) {
         fci.param_count = 2;
-        fci.params      = (zval *) src;
+        fci.params      = (zval*) src;
         fci.retval      = &retval;
 
-        //
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
             ds_htable_free(filtered);
             zval_ptr_dtor(&retval);
             return NULL;
         }
 
-        //
+        // Add as next key => value if the return value is true
         if (zend_is_true(&retval)) {
-            ds_htable_next_bucket(
+            ds_htable_init_next_bucket(
                 filtered, &src->key, &src->value, DS_HTABLE_BUCKET_HASH(src));
         }
 
@@ -1079,42 +1102,6 @@ ds_htable_t *ds_htable_merge(ds_htable_t *table, ds_htable_t *other)
     DS_HTABLE_FOREACH_END();
 
     return merged;
-}
-
-ds_htable_bucket_t *ds_htable_last(ds_htable_t *table)
-{
-    if (table->size == 0) {
-        return NULL;
-
-    } else {
-        ds_htable_bucket_t *last = &table->buckets[table->next - 1];
-
-        if ( ! DS_HTABLE_IS_PACKED(table)) {
-            while (DS_HTABLE_BUCKET_DELETED(last)) {
-                last--;
-            }
-        }
-
-        return last;
-    }
-}
-
-ds_htable_bucket_t *ds_htable_first(ds_htable_t *table)
-{
-    if (table->size == 0) {
-        return NULL;
-
-    } else {
-        ds_htable_bucket_t *first = table->buckets;
-
-        if (table->min_deleted > 0) {
-            while (DS_HTABLE_BUCKET_DELETED(first)) {
-                first++;
-            }
-        }
-
-        return first;
-    }
 }
 
 void ds_htable_reverse(ds_htable_t *table)

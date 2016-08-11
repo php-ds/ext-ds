@@ -96,7 +96,7 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
 
     for (index = queue->size; index > 0; index = parent) {
 
-        //
+        // Move up the heap
         parent = PARENT(index);
 
         if (priority <= nodes[parent].priority) {
@@ -106,10 +106,9 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
         nodes[index] = nodes[parent];
     }
 
-    //
     node = &queue->nodes[index];
 
-    //
+    // Initialize the new node
     STAMP(*node) = ++queue->next;
     ZVAL_COPY(&node->value, value);
     node->priority = priority;
@@ -125,7 +124,7 @@ void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
     ds_priority_queue_node_t *nodes = queue->nodes;
 
     const uint32_t size = queue->size;
-    const uint32_t half = (size - 1) >> 1;
+    const uint32_t half = (size - 1) / 2;
 
     if (size == 0) {
         NOT_ALLOWED_WHEN_EMPTY();
@@ -157,8 +156,8 @@ void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
     }
     nodes[index] = bottom;
 
-    if (queue->size <= queue->capacity >> 2) {
-        reallocate_to_capacity(queue, queue->capacity >> 1);
+    if (queue->size <= queue->capacity / 4) {
+        reallocate_to_capacity(queue, queue->capacity / 2);
     }
 }
 

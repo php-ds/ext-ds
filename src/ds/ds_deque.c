@@ -690,21 +690,24 @@ void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS)
 
 ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
 {
+    zval retval;
     zval *value;
     zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
     zval *target = buffer;
 
     DS_DEQUE_FOREACH(deque, value) {
-        zval param;
-        zval retval;
-
-        ZVAL_COPY_VALUE(&param, value);
-
         fci.param_count = 1;
-        fci.params      = &param;
+        fci.params      = value;
         fci.retval      = &retval;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+
+            // Release the values copied into the buffer on failure.
+            for (; target > buffer; target--) {
+                zval_ptr_dtor(target - 1);
+            }
+
+            zval_ptr_dtor(&retval);
             efree(buffer);
             return NULL;
         }
@@ -723,35 +726,39 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
         return ds_deque();
 
     } else {
-        zval param;
         zval retval;
+        zval *value;
+        zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+        zval *target = buffer;
 
-        zval *src;
-        zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
-        zval *dst = buf;
-
-        DS_DEQUE_FOREACH(deque, src) {
-            ZVAL_COPY_VALUE(&param, src);
-
+        DS_DEQUE_FOREACH(deque, value) {
             fci.param_count = 1;
-            fci.params      = &param;
+            fci.params      = value;
             fci.retval      = &retval;
 
             // Catch potential exceptions or other errors during comparison.
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                efree(buf);
+
+                // Release the values copied into the buffer on failure.
+                for (; target > buffer; target--) {
+                    zval_ptr_dtor(target - 1);
+                }
+
+                zval_ptr_dtor(&retval);
+                efree(buffer);
                 return NULL;
             }
 
+            // Copy the value into the buffer if the callback returned true.
             if (zend_is_true(&retval)) {
-                ZVAL_COPY(dst++, src);
+                ZVAL_COPY(target++, value);
             }
 
             zval_ptr_dtor(&retval);
         }
 
         DS_DEQUE_FOREACH_END();
-        return ds_deque_from_buffer(buf, dst - buf);
+        return ds_deque_from_buffer(buffer, target - buffer);
     }
 }
 
@@ -797,6 +804,7 @@ void ds_deque_reduce(ds_deque_t *deque, zval *initial, zval *return_value, FCI_P
         fci.retval      = &carry;
 
         if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(carry)) {
+            zval_ptr_dtor(&carry);
             ZVAL_NULL(return_value);
             return;
         }
