@@ -42,7 +42,7 @@ build_script:
 test_script:
 - cmd: cd C:\projects\extension
 - cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar install --prefer-source
-- cmd: C:\projects\extension\bin\php.exe vendor\phpunit\phpunit\phpunit -c vendor\php-ds\tests\phpunit.xml
+- cmd: C:\projects\extension\bin\php.exe test.php
 artifacts:
   - path: bin
     name: master
