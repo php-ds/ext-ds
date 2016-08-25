@@ -30,3 +30,18 @@
    fun:zend_execute_scripts
    fun:php_execute_script
 }
+{
+   <insert_a_suppression_name_here>
+   fun:malloc
+   fun:zend_objects_new
+   fun:_object_and_properties_init
+   fun:ZEND_NEW_SPEC_UNUSED_HANDLER
+   fun:execute_ex
+   fun:zend_call_function
+   fun:reflection_method_invoke
+   fun:ZEND_DO_FCALL_SPEC_RETVAL_USED_HANDLER
+   fun:execute_ex
+   fun:zend_execute
+   fun:zend_execute_scripts
+   fun:php_execute_script
+}
