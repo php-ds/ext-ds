@@ -32,6 +32,7 @@
 }
 {
    <insert_a_suppression_name_here>
+   Memcheck:Leak
    fun:malloc
    fun:zend_objects_new
    fun:_object_and_properties_init
