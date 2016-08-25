@@ -10,7 +10,7 @@ addons:
       - valgrind
 
 before_install:
-  - phpenv config-rm xdebug.ini
+  - phpenv config-rm xdebug.ini || true
 
 install:
     - phpize
