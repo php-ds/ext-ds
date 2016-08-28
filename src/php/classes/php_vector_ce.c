@@ -3,13 +3,13 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_vector.h"
 #include "../iterators/php_vector_iterator.h"
 #include "../handlers/php_vector_handlers.h"
 
 #include "php_collection_ce.h"
 #include "php_sequence_ce.h"
 #include "php_vector_ce.h"
+#include "php_map_ce.h"
 
 #define METHOD(name) PHP_METHOD(Vector, name)
 
@@ -66,6 +66,12 @@ METHOD(count)
     RETURN_LONG(DS_VECTOR_SIZE(THIS_DS_VECTOR()));
 }
 
+METHOD(each)
+{
+    PARSE_CALLABLE();
+    RETURN_BOOL(ds_vector_each(THIS_DS_VECTOR(), FCI_ARGS));
+}
+
 METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
@@ -92,6 +98,12 @@ METHOD(get)
 {
     PARSE_LONG(index);
     RETURN_ZVAL_COPY(ds_vector_get(THIS_DS_VECTOR(), index));
+}
+
+METHOD(groupBy)
+{
+    PARSE_ZVAL(iteratee);
+    RETURN_DS_MAP(ds_vector_group_by(THIS_DS_VECTOR(), iteratee));
 }
 
 METHOD(insert)
@@ -138,6 +150,22 @@ METHOD(merge)
 {
     PARSE_ZVAL(values);
     RETURN_DS_VECTOR(ds_vector_merge(THIS_DS_VECTOR(), values));
+}
+
+METHOD(partition)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_CALLABLE();
+        RETURN_LONG(ds_vector_partition_callback(THIS_DS_VECTOR(), FCI_ARGS));
+    } else {
+        RETURN_LONG(ds_vector_partition(THIS_DS_VECTOR()));
+    }
+}
+
+METHOD(pluck)
+{
+    PARSE_ZVAL(key);
+    RETURN_DS_VECTOR(ds_vector_pluck(THIS_DS_VECTOR(), key));
 }
 
 METHOD(pop)

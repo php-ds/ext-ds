@@ -4,6 +4,20 @@
 #include "php.h"
 #include "../../common.h"
 #include "../arginfo.h"
+#include "../objects/php_map.h"
+
+#define THIS_DS_MAP() Z_DS_MAP_P(getThis())
+
+#define RETURN_DS_MAP(m)                    \
+do {                                        \
+    ds_map_t *_m = m;                       \
+    if (_m) {                               \
+        ZVAL_DS_MAP(return_value, _m);      \
+    } else {                                \
+        ZVAL_NULL(return_value);            \
+    }                                       \
+    return;                                 \
+} while(0)
 
 extern zend_class_entry *php_ds_map_ce;
 

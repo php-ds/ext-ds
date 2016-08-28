@@ -2,6 +2,7 @@
 #define DS_VECTOR_H
 
 #include "../common.h"
+#include "ds_map.h"
 
 typedef struct ds_vector {
     zval       *buffer;
@@ -14,9 +15,6 @@ typedef struct ds_vector {
 #define DS_VECTOR_SIZE(v)     ((v)->size)
 #define DS_VECTOR_IS_EMPTY(v) (DS_VECTOR_SIZE(v) == 0)
 
-/**
- *
- */
 #define DS_VECTOR_FOREACH(v, z) \
 do {                            \
     zval *x = v->buffer;        \
@@ -24,19 +22,13 @@ do {                            \
     for (; x < y; ++x) {        \
         z = x;
 
-/**
- *
- */
 #define DS_VECTOR_FOREACH_REVERSED(v, z) \
 do {                                     \
     zval *y = v->buffer;                 \
     zval *x = y + v->size - 1;           \
-    for (; x >= y; --x) {                \
+    for (; x != y; --x) {                \
         z = x;
 
-/**
- *
- */
 #define DS_VECTOR_FOREACH_END() \
     } \
 } while (0)
@@ -84,12 +76,18 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector);
 ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS);
 ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values);
 ds_vector_t *ds_vector_reversed(ds_vector_t *vector);
+ds_vector_t *ds_vector_pluck(ds_vector_t *vector, zval *key);
+ds_map_t    *ds_vector_group_by(ds_vector_t *vector, zval *iteratee);
 
+bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS);
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS);
 void ds_vector_reverse(ds_vector_t *vector);
 void ds_vector_rotate(ds_vector_t *vector, zend_long rotations);
 void ds_vector_join(ds_vector_t *vector, char *str, size_t len, zval *return_value);
 void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS);
+
+zend_long ds_vector_partition(ds_vector_t *vector);
+zend_long ds_vector_partition_callback(ds_vector_t *vector, FCI_PARAMS);
 
 void ds_vector_sum(ds_vector_t *vector, zval *return_value);
 

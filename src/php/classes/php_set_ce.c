@@ -3,8 +3,6 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_set.h"
-
 #include "../iterators/php_set_iterator.h"
 #include "../handlers/php_set_handlers.h"
 

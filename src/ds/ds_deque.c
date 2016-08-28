@@ -5,6 +5,7 @@
 #include "../php/classes/php_deque_ce.h"
 
 #include "ds_deque.h"
+#include "ds_map.h"
 
 #define ds_deque_increment_head(_d) (_d)->head = ((_d)->head + 1) & ((_d)->capacity - 1)
 #define ds_deque_decrement_head(_d) (_d)->head = ((_d)->head - 1) & ((_d)->capacity - 1)
@@ -513,27 +514,41 @@ bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS)
     return true;
 }
 
-void ds_deque_rotate(ds_deque_t *deque, zend_long n)
+void ds_deque_rotate(ds_deque_t *deque, zend_long r)
 {
-    if (deque->size < 2) {
+    if (deque->size < 2 || r == 0) {
         return;
     }
 
-    if (n < 0) {
-        for (n = llabs(n) % deque->size; n > 0; n--) {
+    // We can do a quick O(n) rotate if the values are contiguous in the buffer.
+    if (deque->head < deque->tail) {
+        zval *x = deque->buffer + deque->head;
+        zval *y = deque->buffer + deque->tail;
+        ds_rotate_zval_range(x, y, r);
+        return;
+    }
+
+    if (r < 0) {
+        for (r = llabs(r) % deque->size; r > 0; r--) {
 
             // Pop, unshift
             ds_deque_decrement_head(deque);
             ds_deque_decrement_tail(deque);
 
             // Tail is now at last value, head is before the first.
-            SWAP_ZVAL(deque->buffer[deque->tail], deque->buffer[deque->head]);
+            SWAP_ZVAL(
+                deque->buffer[deque->tail],
+                deque->buffer[deque->head]
+            );
         }
-    } else if (n > 0) {
-        for (n = n % deque->size; n > 0; n--) {
+    } else {
+        for (r = r % deque->size; r > 0; r--) {
 
             // Tail is one past the last value, head is at first value.
-            SWAP_ZVAL(deque->buffer[deque->tail], deque->buffer[deque->head]);
+            SWAP_ZVAL(
+                deque->buffer[deque->tail],
+                deque->buffer[deque->head]
+            );
 
             // Shift, push
             ds_deque_increment_head(deque);
@@ -831,21 +846,11 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
         zval *dst = buffer;          // Pointer to allocated destination buffer
         zval *end = buffer + length; // Position at which to stop writing.
 
-        // If the head comes before the tail, we don't need to mod because we
-        // know that no values have wrapped around the end of the buffer.
-        if (deque->head < deque->tail) {
-            src += deque->head + index;
+        zend_long head = deque->head + index;
+        zend_long mask = deque->capacity - 1;
 
-            for (; dst != end; ++src, ++dst) {
-                ZVAL_COPY(dst, src);
-            }
-        } else {
-            zend_long mask = capacity - 1;
-            zend_long head = deque->head + index;
-
-            for (; dst != end; ++head, ++dst) {
-                ZVAL_COPY(dst, &src[head & mask]);
-            }
+        for (; dst < end; dst++, head++) {
+            ZVAL_COPY(dst, &src[head & mask]);
         }
 
         return ds_deque_from_buffer_ex(buffer, length, capacity);
@@ -862,4 +867,29 @@ void ds_deque_sum(ds_deque_t *deque, zval *return_value)
         DS_ADD_TO_SUM(value, return_value);
     }
     DS_DEQUE_FOREACH_END();
+}
+
+ds_map_t *ds_deque_group_by(ds_deque_t *deque, zval *iteratee)
+{
+    return NULL;
+}
+
+bool ds_deque_each(ds_deque_t *deque, FCI_PARAMS)
+{
+    return false;
+}
+
+zend_long ds_deque_partition(ds_deque_t *deque)
+{
+    return 0;
+}
+
+zend_long ds_deque_partition_callback(ds_deque_t *deque, FCI_PARAMS)
+{
+    return 0;
+}
+
+ds_deque_t *ds_deque_pluck(ds_deque_t *vector, zval *key)
+{
+    return NULL;
 }

@@ -275,6 +275,11 @@ void ds_user_sort_zval_buffer(zval *buffer, zend_long size);
 void ds_reverse_zval_range(zval *x, zval *y);
 
 /**
+ * Rotates a zval range by a given number of rotations.
+ */
+void ds_rotate_zval_range(zval *x, zval *y, zend_long r);
+
+/**
  * Determines if a zval is set, ie. 'isset' and 'empty'.
  */
 int ds_zval_isset(zval *value, int check_empty);

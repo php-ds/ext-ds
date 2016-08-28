@@ -4,6 +4,20 @@
 #include "php.h"
 #include "../../common.h"
 #include "../arginfo.h"
+#include "../objects/php_priority_queue.h"
+
+#define THIS_DS_PRIORITY_QUEUE() Z_DS_PRIORITY_QUEUE_P(getThis())
+
+#define RETURN_DS_PRIORITY_QUEUE(queue)                 \
+do {                                                    \
+    ds_priority_queue_t *_queue = queue;                \
+    if (_queue) {                                       \
+        ZVAL_DS_PRIORITY_QUEUE(return_value, _queue);   \
+    } else {                                            \
+        ZVAL_NULL(return_value);                        \
+    }                                                   \
+    return;                                             \
+} while(0)
 
 extern zend_class_entry *php_ds_priority_queue_ce;
 

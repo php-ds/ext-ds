@@ -3,8 +3,6 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_stack.h"
-
 #include "../iterators/php_stack_iterator.h"
 #include "../handlers/php_stack_handlers.h"
 
