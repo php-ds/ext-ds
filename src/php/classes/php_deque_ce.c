@@ -3,13 +3,13 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_deque.h"
 #include "../iterators/php_deque_iterator.h"
 #include "../handlers/php_deque_handlers.h"
 
 #include "php_collection_ce.h"
 #include "php_sequence_ce.h"
 #include "php_deque_ce.h"
+#include "php_map_ce.h"
 
 #define METHOD(name) PHP_METHOD(Deque, name)
 
@@ -69,6 +69,35 @@ METHOD(merge)
     PARSE_ZVAL(values);
     RETURN_DS_DEQUE(ds_deque_merge(THIS_DS_DEQUE(), values));
 }
+
+METHOD(each)
+{
+    PARSE_CALLABLE();
+    RETURN_BOOL(ds_deque_each(THIS_DS_DEQUE(), FCI_ARGS));
+}
+
+METHOD(groupBy)
+{
+    PARSE_ZVAL(iteratee);
+    RETURN_DS_MAP(ds_deque_group_by(THIS_DS_DEQUE(), iteratee));
+}
+
+METHOD(partition)
+{
+    if (ZEND_NUM_ARGS()) {
+        PARSE_CALLABLE();
+        RETURN_LONG(ds_deque_partition_callback(THIS_DS_DEQUE(), FCI_ARGS));
+    } else {
+        RETURN_LONG(ds_deque_partition(THIS_DS_DEQUE()));
+    }
+}
+
+METHOD(pluck)
+{
+    PARSE_ZVAL(key);
+    RETURN_DS_DEQUE(ds_deque_pluck(THIS_DS_DEQUE(), key));
+}
+
 
 METHOD(reduce)
 {

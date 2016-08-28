@@ -23,6 +23,12 @@ ds_map_t *ds_map()
     return ds_map_ex(ds_htable());
 }
 
+void ds_map_free(ds_map_t *map)
+{
+    ds_htable_free(map->table);
+    efree(map);
+}
+
 ds_map_t *ds_map_clone(ds_map_t *map)
 {
     return ds_map_ex(ds_htable_clone(map->table));
@@ -108,20 +114,18 @@ zval *ds_map_get(ds_map_t *map, zval *key, zval *def)
 
 void ds_map_remove(ds_map_t *map, zval *key, zval *def, zval *return_value)
 {
-    int removed = ds_htable_remove(map->table, key, return_value);
+    if (ds_htable_remove(map->table, key, return_value) == FAILURE) {
 
-    if (removed == FAILURE) {
-        // Failed to remove value
-
-        if ( ! def) {
-            // Did not specify a default value
-            KEY_NOT_FOUND();
-            ZVAL_NULL(return_value);
-            return;
+        // Return the default value if one was given.
+        if (def) {
+            ZVAL_COPY(return_value, def);
         }
 
-        // Default value was provided
-        ZVAL_COPY(return_value, def);
+        // Otherwise throw a key not found exception.
+        else {
+            ZVAL_NULL(return_value);
+            KEY_NOT_FOUND();
+        }
     }
 }
 
@@ -285,7 +289,7 @@ static int iterator_add(zend_object_iterator *iterator, void *puser)
 {
     zval key;
     zval *value = iterator->funcs->get_current_data(iterator);
-                  iterator->funcs->get_current_key(iterator, &key);
+    iterator->funcs->get_current_key(iterator, &key);
 
     ds_map_put((ds_map_t *) puser, &key, value);
     zval_ptr_dtor(&key);
@@ -298,7 +302,7 @@ static inline void add_traversable_to_map(ds_map_t *map, zval *obj)
     spl_iterator_apply(obj, iterator_add, (void*) map);
 }
 
-static inline void add_ht_to_map(ds_map_t *map, HashTable *ht)
+static inline void add_array_to_map(ds_map_t *map, HashTable *ht)
 {
     uint32_t index;
     zend_string *key;
@@ -323,7 +327,7 @@ void ds_map_put_all(ds_map_t *map, zval *values)
     }
 
     if (ds_is_array(values)) {
-        add_ht_to_map(map, Z_ARRVAL_P(values));
+        add_array_to_map(map, Z_ARRVAL_P(values));
         return;
     }
 
@@ -345,10 +349,4 @@ void ds_map_sum(ds_map_t *map, zval *return_value)
         DS_ADD_TO_SUM(value, return_value);
     }
     DS_HTABLE_FOREACH_END();
-}
-
-void ds_map_free(ds_map_t *map)
-{
-    ds_htable_free(map->table);
-    efree(map);
 }

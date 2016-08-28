@@ -3,16 +3,14 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_vector.h"
-#include "../objects/php_map.h"
-#include "../objects/php_pair.h"
-#include "../objects/php_set.h"
-
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 
 #include "php_collection_ce.h"
 #include "php_map_ce.h"
+#include "php_vector_ce.h"
+#include "php_set_ce.h"
+#include "php_pair_ce.h"
 
 #define METHOD(name) PHP_METHOD(Map, name)
 

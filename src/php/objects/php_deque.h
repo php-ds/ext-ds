@@ -5,21 +5,7 @@
 
 #define Z_DS_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
 #define Z_DS_DEQUE_P(z) Z_DS_DEQUE(*z)
-#define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
-
 #define ZVAL_DS_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
-
-#define RETURN_DS_DEQUE(d)                  \
-do {                                        \
-    ds_deque_t *_d = d;                     \
-    if (_d) {                               \
-        ZVAL_DS_DEQUE(return_value, _d);    \
-    } else {                                \
-        ZVAL_NULL(return_value);            \
-    }                                       \
-    return;                                 \
-} while(0)
-
 
 /**
  *
