@@ -1,25 +1,9 @@
-// #include "../common.h"
-
 #include "../php/iterators/php_vector_iterator.h"
 #include "../php/handlers/php_vector_handlers.h"
 #include "../php/classes/php_vector_ce.h"
 
 #include "ds_vector.h"
-
-static inline bool index_out_of_range(zend_long index, zend_long max)
-{
-    if (index < 0 || index >= max) {
-        INDEX_OUT_OF_RANGE(index, max);
-        return true;
-    }
-    return false;
-}
-
-static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
-{
-    REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
-    vector->capacity = capacity;
-}
+#include "ds_map.h"
 
 ds_vector_t *ds_vector_ex(zend_long capacity)
 {
@@ -80,6 +64,22 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
     }
 
     return ds_vector_from_buffer_ex(buffer, size, capacity);
+}
+
+static inline bool index_out_of_range(zend_long index, zend_long max)
+{
+    if (index < 0 || index >= max) {
+        INDEX_OUT_OF_RANGE(index, max);
+        return true;
+    }
+
+    return false;
+}
+
+static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
+{
+    REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
+    vector->capacity = capacity;
 }
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
@@ -145,7 +145,7 @@ zval *ds_vector_get(ds_vector_t *vector, zend_long index)
         return NULL;
     }
 
-    return vector->buffer + index;
+    return &vector->buffer[index];
 }
 
 static inline void increase_capacity_if_full(ds_vector_t *vector)
@@ -176,6 +176,13 @@ void ds_vector_clear(ds_vector_t *vector)
             ds_vector_reallocate(vector, DS_VECTOR_MIN_CAPACITY);
         }
     }
+}
+
+void ds_vector_free(ds_vector_t *vector)
+{
+    ds_vector_clear_buffer(vector);
+    efree(vector->buffer);
+    efree(vector);
 }
 
 void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
@@ -400,28 +407,7 @@ static inline void add_array_to_vector(ds_vector_t *vector, HashTable *array)
 
 void ds_vector_rotate(ds_vector_t *vector, zend_long r)
 {
-    zval *a, *b, *c;
-
-    zend_long n = vector->size;
-
-    if (n < 2) {
-        return;
-    }
-         // Negative rotation should rotate in the opposite direction
-         if (r < 0) r = n - (llabs(r) % n);
-    else if (r > n) r = r % n;
-
-    // There's no need to rotate if the sequence won't be affected.
-    if (r == 0 || r == n) return;
-
-    a = vector->buffer; // Start of buffer
-    b = a + r;          // Pivot
-    c = a + n;          // End of buffer
-                        // [a..b....c]
-
-    ds_reverse_zval_range(a, b);
-    ds_reverse_zval_range(b, c);
-    ds_reverse_zval_range(a, c);
+    ds_rotate_zval_range(vector->buffer, vector->buffer + vector->size, r);
 }
 
 void ds_vector_push_all(ds_vector_t *vector, zval *values)
@@ -723,9 +709,143 @@ void ds_vector_sum(ds_vector_t *vector, zval *return_value)
     DS_VECTOR_FOREACH_END();
 }
 
-void ds_vector_free(ds_vector_t *vector)
+ds_map_t *ds_vector_group_by(ds_vector_t *vector, zval *iteratee)
 {
-    ds_vector_clear_buffer(vector);
+    return NULL;
+}
+
+bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS)
+{
+    zval retval;
+    zval *value;
+
+    DS_VECTOR_FOREACH(vector, value) {
+        fci.param_count = 1;
+        fci.params      = value;
+        fci.retval      = &retval;
+
+        // Catch potential exceptions or other errors during comparison.
+        // Break iteration if the return value was false.
+        if (zend_call_function(&fci, &fci_cache) == FAILURE
+                || Z_ISUNDEF(retval)
+                || Z_TYPE(retval) == IS_FALSE) {
+
+            zval_ptr_dtor(&retval);
+            return false;
+        }
+    }
+    DS_VECTOR_FOREACH_END();
+
+    zval_ptr_dtor(&retval);
+    return true;
+}
+
+zend_long ds_vector_partition(ds_vector_t *vector)
+{
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+
+    zval *head = buffer;
+    zval *tail = buffer + vector->size - 1;
+
+    DS_VECTOR_FOREACH(vector, value) {
+        if (zend_is_true(value)) {
+            ZVAL_COPY_VALUE(head++, value);
+        } else {
+            ZVAL_COPY_VALUE(tail--, value);
+        }
+    }
+    DS_VECTOR_FOREACH_END();
+
+    // We have to reverse the failed values because we added them from the back.
+    ds_reverse_zval_range(tail + 1, buffer + vector->size);
+
     efree(vector->buffer);
-    efree(vector);
+    vector->buffer = buffer;
+    return head - buffer;
+}
+
+zend_long ds_vector_partition_callback(ds_vector_t *vector, FCI_PARAMS)
+{
+    zval retval;
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+
+    zval *head = buffer;
+    zval *tail = buffer + vector->size - 1;
+
+    DS_VECTOR_FOREACH(vector, value) {
+        fci.param_count = 1;
+        fci.params      = value;
+        fci.retval      = &retval;
+
+        // Catch potential exceptions or other errors during comparison.
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            zval_ptr_dtor(&retval);
+            efree(buffer);
+            return 0;
+        }
+
+        if (zend_is_true(&retval)) {
+            ZVAL_COPY_VALUE(head++, value);
+        } else {
+            ZVAL_COPY_VALUE(tail--, value);
+        }
+
+        zval_ptr_dtor(&retval);
+    }
+    DS_VECTOR_FOREACH_END();
+
+    // We have to reverse the failed values because we added them from the back.
+    ds_reverse_zval_range(tail + 1, buffer + vector->size);
+
+    efree(vector->buffer);
+    vector->buffer = buffer;
+    return head - buffer;
+}
+
+int read_property_or_index(zval *result, zval *object, zval *offset)
+{
+    if (Z_TYPE_P(object) == IS_ARRAY) {
+        zend_fetch_dimension_by_zval(result, object, offset);
+        return SUCCESS;
+    }
+
+    if (Z_TYPE_P(object) == IS_OBJECT) {
+
+        if (Z_OBJ_HT_P(object)->read_dimension) {
+            zval rv;
+            result = Z_OBJ_HT_P(object)->read_dimension(object, offset, BP_VAR_R, &rv);
+            return SUCCESS;
+
+        } else if (Z_OBJ_HT_P(object)->read_property) {
+            zval rv;
+            result = Z_OBJ_HT_P(object)->read_property(object, offset, BP_VAR_R, NULL, &rv);
+            return SUCCESS;
+
+        }
+    }
+
+    return FAILURE;
+}
+
+ds_vector_t *ds_vector_pluck(ds_vector_t *vector, zval *key)
+{
+    zval *value;
+
+    ds_vector_t *result = ds_vector_ex(vector->capacity);
+
+    DS_VECTOR_FOREACH(vector, value) {
+        zval temp;
+
+        //
+        if (read_property_or_index(&temp, value, key) == FAILURE) {
+            return NULL;
+        }
+
+        ds_vector_push(result, &temp);
+    }
+    DS_VECTOR_FOREACH_END();
+
+    return result;
 }

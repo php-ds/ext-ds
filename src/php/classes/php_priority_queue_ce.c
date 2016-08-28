@@ -5,7 +5,6 @@
 
 #include "../iterators/php_priority_queue_iterator.h"
 #include "../handlers/php_priority_queue_handlers.h"
-#include "../objects/php_priority_queue.h"
 
 #include "php_collection_ce.h"
 #include "php_priority_queue_ce.h"

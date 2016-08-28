@@ -5,20 +5,7 @@
 
 #define Z_DS_MAP(z)   (((php_ds_map_t*)(Z_OBJ(z)))->map)
 #define Z_DS_MAP_P(z) Z_DS_MAP(*z)
-#define THIS_DS_MAP() Z_DS_MAP_P(getThis())
-
 #define ZVAL_DS_MAP(z, map) ZVAL_OBJ(z, php_ds_map_create_object_ex(map))
-
-#define RETURN_DS_MAP(m)                    \
-do {                                        \
-    ds_map_t *_m = m;                       \
-    if (_m) {                               \
-        ZVAL_DS_MAP(return_value, _m);      \
-    } else {                                \
-        ZVAL_NULL(return_value);            \
-    }                                       \
-    return;                                 \
-} while(0)
 
 typedef struct _php_ds_map_t {
     zend_object  std;

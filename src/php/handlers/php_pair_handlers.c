@@ -78,14 +78,14 @@ static int php_ds_pair_has_property(zval *object, zval *offset, int has_set_exis
     zval *value = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! value) {
-        return false;
+        return 0;
     }
 
     // 0 = check whether the property exists and is not NULL; `isset`
     // 1 = check whether the property exists and is true; semantics of `empty`
     // 2 = check whether the property exists, even if it is NULL
     if (has_set_exists == 2) {
-        return true;
+        return 1;
     }
 
     return ds_zval_isset(value, has_set_exists);

@@ -189,6 +189,33 @@ void ds_reverse_zval_range(zval *x, zval *y)
     for (; x < --y; ++x) SWAP_ZVAL(*x, *y);
 }
 
+void ds_rotate_zval_range(zval *x, zval *y, zend_long r)
+{
+    zend_long n = y - x;
+
+    if (n < 2) {
+        return;
+    }
+
+    // Negative rotation should rotate in the opposite direction
+    if (r < 0) {
+        r = n - (llabs(r) % n);
+    }
+
+    // Avoid redundant rotation
+    if (r > n) {
+        r = r % n;
+    }
+
+    // There's no need to rotate if the sequence won't be affected.
+    if (r > 0) {
+        ds_reverse_zval_range(x, x + r);
+        ds_reverse_zval_range(x + r, y);
+        ds_reverse_zval_range(x, y);
+    }
+}
+
+
 void ds_throw_exception(zend_class_entry *ce, const char *format, ...)
 {
     va_list ap;

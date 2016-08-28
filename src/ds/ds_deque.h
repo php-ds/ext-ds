@@ -2,6 +2,7 @@
 #define DS_DEQUE_H
 
 #include "../common.h"
+#include "ds_map.h"
 
 #define DS_DEQUE_MIN_CAPACITY 8 // Must be a power of 2
 
@@ -70,6 +71,8 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS);
 ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length);
 ds_deque_t *ds_deque_merge(ds_deque_t *deque, zval *values);
 ds_deque_t *ds_deque_reversed(ds_deque_t *deque);
+ds_deque_t *ds_deque_pluck(ds_deque_t *deque, zval *key);
+ds_map_t   *ds_deque_group_by(ds_deque_t *deque, zval *iteratee);
 
 void ds_deque_join(ds_deque_t *deque, char *str, size_t len, zval *return_value);
 void ds_deque_reduce(ds_deque_t *deque, zval *initial, zval *return_value, FCI_PARAMS);
@@ -80,5 +83,10 @@ void ds_deque_reverse(ds_deque_t *deque);
 void ds_deque_to_array(ds_deque_t *deque, zval *return_value);
 void ds_deque_apply(ds_deque_t *deque, FCI_PARAMS);
 void ds_deque_sum(ds_deque_t *deque, zval *return_value);
+
+bool ds_deque_each(ds_deque_t *deque, FCI_PARAMS);
+
+zend_long ds_deque_partition(ds_deque_t *deque);
+zend_long ds_deque_partition_callback(ds_deque_t *deque, FCI_PARAMS);
 
 #endif

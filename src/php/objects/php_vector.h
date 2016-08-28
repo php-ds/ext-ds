@@ -5,20 +5,8 @@
 
 #define Z_DS_VECTOR(z)   (((php_ds_vector_t*)(Z_OBJ(z)))->vector)
 #define Z_DS_VECTOR_P(z) Z_DS_VECTOR(*z)
-#define THIS_DS_VECTOR() Z_DS_VECTOR_P(getThis())
 
 #define ZVAL_DS_VECTOR(z, v) ZVAL_OBJ(z, php_ds_vector_create_object_ex(v))
-
-#define RETURN_DS_VECTOR(v)                 \
-do {                                        \
-    ds_vector_t *_v = v;                    \
-    if (_v) {                               \
-        ZVAL_DS_VECTOR(return_value, _v);   \
-    } else {                                \
-        ZVAL_NULL(return_value);            \
-    }                                       \
-    return;                                 \
-} while(0)
 
 typedef struct php_ds_vector {
     zend_object      std;
