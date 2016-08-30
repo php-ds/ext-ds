@@ -1,6 +1,7 @@
 #include "../php/iterators/php_vector_iterator.h"
 #include "../php/handlers/php_vector_handlers.h"
 #include "../php/classes/php_vector_ce.h"
+#include "../php/parameters.h"
 
 #include "ds_vector.h"
 #include "ds_map.h"
@@ -394,7 +395,7 @@ static inline void add_traversable_to_vector(ds_vector_t *vector, zval *obj)
     spl_iterator_apply(obj, iterator_add, (void*) vector);
 }
 
-static inline void add_array_to_vector(ds_vector_t *vector, HashTable *array)
+static void add_array_to_vector(ds_vector_t *vector, HashTable *array)
 {
     zval *value;
     ds_vector_ensure_capacity(vector, vector->size + array->nNumOfElements);
@@ -709,9 +710,56 @@ void ds_vector_sum(ds_vector_t *vector, zval *return_value)
     DS_VECTOR_FOREACH_END();
 }
 
-ds_map_t *ds_vector_group_by(ds_vector_t *vector, zval *iteratee)
+ds_map_t *ds_vector_group_by(ds_vector_t *vector, zval *key)
 {
-    return NULL;
+    zval *value;
+
+    // This table will associate the groups with their values.
+    ds_htable_t *groups = ds_htable();
+
+    // Attempt to parse the key as a callable.
+    SETUP_CALLABLE_VARS();
+    bool use_callable = zend_fcall_info_init(
+        key, IS_CALLABLE_CHECK_SILENT, &fci, &fci_cache, NULL, NULL) == SUCCESS;
+
+    DS_VECTOR_FOREACH(vector, value) {
+        zval group;
+        int status;
+
+        if ( ! use_callable) {
+            status = ds_read_dimension_or_property(value, key, &group);
+        } else {
+            fci.param_count = 1;
+            fci.params      = value;
+            fci.retval      = &group;
+            status          = zend_call_function(&fci, &fci_cache);
+        }
+
+        // Free and exit if either the access or callable failed.
+        if (status == FAILURE || Z_ISUNDEF(group)) {
+            zval_ptr_dtor(&group);
+            ds_htable_free(groups);
+            return NULL;
+
+        } else {
+            ds_vector_t *values;
+            ds_htable_bucket_t *bucket;
+
+            // Find or create a bucket for the determined group.
+            if (ds_htable_lookup_or_create(groups, &group, &bucket)) {
+                values = Z_DS_VECTOR(bucket->value);
+            } else {
+                values = ds_vector();
+                ZVAL_DS_VECTOR(&bucket->value, values);
+            }
+
+            // Push the value into the group.
+            ds_vector_push(values, value);
+            zval_ptr_dtor(&group);
+        }
+    }
+    DS_VECTOR_FOREACH_END();
+    return ds_map_ex(groups);
 }
 
 bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS)
@@ -743,7 +791,7 @@ bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS)
 zend_long ds_vector_partition(ds_vector_t *vector)
 {
     zval *value;
-    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->capacity);
 
     zval *head = buffer;
     zval *tail = buffer + vector->size - 1;
@@ -769,7 +817,7 @@ zend_long ds_vector_partition_callback(ds_vector_t *vector, FCI_PARAMS)
 {
     zval retval;
     zval *value;
-    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+    zval *buffer = ALLOC_ZVAL_BUFFER(vector->capacity);
 
     zval *head = buffer;
     zval *tail = buffer + vector->size - 1;
@@ -804,48 +852,21 @@ zend_long ds_vector_partition_callback(ds_vector_t *vector, FCI_PARAMS)
     return head - buffer;
 }
 
-int read_property_or_index(zval *result, zval *object, zval *offset)
-{
-    if (Z_TYPE_P(object) == IS_ARRAY) {
-        zend_fetch_dimension_by_zval(result, object, offset);
-        return SUCCESS;
-    }
-
-    if (Z_TYPE_P(object) == IS_OBJECT) {
-
-        if (Z_OBJ_HT_P(object)->read_dimension) {
-            zval rv;
-            result = Z_OBJ_HT_P(object)->read_dimension(object, offset, BP_VAR_R, &rv);
-            return SUCCESS;
-
-        } else if (Z_OBJ_HT_P(object)->read_property) {
-            zval rv;
-            result = Z_OBJ_HT_P(object)->read_property(object, offset, BP_VAR_R, NULL, &rv);
-            return SUCCESS;
-
-        }
-    }
-
-    return FAILURE;
-}
-
 ds_vector_t *ds_vector_pluck(ds_vector_t *vector, zval *key)
 {
-    zval *value;
-
+    zval value;
+    zval *container;
     ds_vector_t *result = ds_vector_ex(vector->capacity);
 
-    DS_VECTOR_FOREACH(vector, value) {
-        zval temp;
-
-        //
-        if (read_property_or_index(&temp, value, key) == FAILURE) {
+    DS_VECTOR_FOREACH(vector, container) {
+        if (ds_read_dimension_or_property(container, key, &value) == FAILURE) {
+            ds_vector_free(result);
             return NULL;
         }
 
-        ds_vector_push(result, &temp);
+        ds_vector_push(result, &value);
+        zval_ptr_dtor(&value);
     }
     DS_VECTOR_FOREACH_END();
-
     return result;
 }

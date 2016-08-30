@@ -20,9 +20,10 @@ void php_ds_register_collection()
 
     INIT_CLASS_ENTRY(ce, PHP_DS_NS(Collection), methods);
     collection_ce = zend_register_internal_interface(&ce);
-    zend_class_implements(collection_ce, 3,
+    zend_class_implements(collection_ce, 4,
         zend_ce_traversable,        // Traversable
         spl_ce_Countable,           // Countable
+        spl_ce_ArrayAccess,         // ArrayAccess
         php_json_serializable_ce    // Serializable
     );
 }

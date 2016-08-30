@@ -278,6 +278,8 @@ METHOD(xor)
     RETURN_DS_MAP(ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_map);
+
 void php_ds_register_map()
 {
     zend_class_entry ce;

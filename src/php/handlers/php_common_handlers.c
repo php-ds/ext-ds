@@ -1,7 +1,8 @@
 #include "php_common_handlers.h"
 #include "zend_smart_str.h"
+#include "../../common.h"
 
-int php_ds_default_cast_object(zval *obj, zval *return_value, int type)
+int php_ds_common_cast_object(zval *obj, zval *return_value, int type)
 {
     switch (type) {
         case IS_STRING: {
@@ -22,4 +23,26 @@ int php_ds_default_cast_object(zval *obj, zval *return_value, int type)
     }
 
     return FAILURE;
+}
+
+zval *php_ds_common_read_dimension(zval *obj, zval *offset, int type, zval *rv)
+{
+    ARRAY_ACCESS_NOT_SUPPORTED();
+    return NULL;
+}
+
+void php_ds_common_write_dimension(zval *obj, zval *offset, zval *value)
+{
+    ARRAY_ACCESS_NOT_SUPPORTED();
+}
+
+int php_ds_common_has_dimension(zval *obj, zval *offset, int check_empty)
+{
+    ARRAY_ACCESS_NOT_SUPPORTED();
+    return 0;
+}
+
+void php_ds_common_unset_dimension(zval *obj, zval *offset)
+{
+    ARRAY_ACCESS_NOT_SUPPORTED();
 }

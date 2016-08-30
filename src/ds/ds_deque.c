@@ -1,8 +1,7 @@
-#include "../common.h"
-
 #include "../php/iterators/php_deque_iterator.h"
 #include "../php/handlers/php_deque_handlers.h"
 #include "../php/classes/php_deque_ce.h"
+#include "../php/parameters.h"
 
 #include "ds_deque.h"
 #include "ds_map.h"
@@ -38,17 +37,24 @@ static zend_long ds_deque_get_capacity_for_size(zend_long n)
     return MAX(DS_DEQUE_MIN_CAPACITY, n + 1);
 }
 
-ds_deque_t *ds_deque()
+ds_deque_t *ds_deque_ex(zend_long capacity)
 {
     ds_deque_t *deque = ecalloc(1, sizeof(ds_deque_t));
 
-    deque->buffer   = ALLOC_ZVAL_BUFFER(DS_DEQUE_MIN_CAPACITY);
-    deque->capacity = DS_DEQUE_MIN_CAPACITY;
+    capacity = MAX(DS_DEQUE_MIN_CAPACITY, capacity);
+
+    deque->buffer   = ALLOC_ZVAL_BUFFER(capacity);
+    deque->capacity = capacity;
     deque->head     = 0;
     deque->tail     = 0;
     deque->size     = 0;
 
     return deque;
+}
+
+ds_deque_t *ds_deque()
+{
+    return ds_deque_ex(DS_DEQUE_MIN_CAPACITY);
 }
 
 static ds_deque_t *ds_deque_from_buffer_ex(
@@ -870,27 +876,170 @@ void ds_deque_sum(ds_deque_t *deque, zval *return_value)
     DS_DEQUE_FOREACH_END();
 }
 
-ds_map_t *ds_deque_group_by(ds_deque_t *deque, zval *iteratee)
+ds_map_t *ds_deque_group_by(ds_deque_t *deque, zval *key)
 {
-    return NULL;
+    zval *value;
+
+    // This table will associate the groups with their values.
+    ds_htable_t *groups = ds_htable();
+
+    // Attempt to parse the key as a callable.
+    SETUP_CALLABLE_VARS();
+    bool use_callable = zend_fcall_info_init(
+        key, IS_CALLABLE_CHECK_SILENT, &fci, &fci_cache, NULL, NULL) == SUCCESS;
+
+    DS_DEQUE_FOREACH(deque, value) {
+        zval group;
+        int status;
+
+        if ( ! use_callable) {
+            status = ds_read_dimension_or_property(value, key, &group);
+        } else {
+            fci.param_count = 1;
+            fci.params      = value;
+            fci.retval      = &group;
+            status          = zend_call_function(&fci, &fci_cache);
+        }
+
+        // Free and exit if either the access or callable failed.
+        if (status == FAILURE || Z_ISUNDEF(group)) {
+            zval_ptr_dtor(&group);
+            ds_htable_free(groups);
+            return NULL;
+
+        } else {
+            ds_deque_t *values;
+            ds_htable_bucket_t *bucket;
+
+            // Find or create a bucket for the determined group.
+            if (ds_htable_lookup_or_create(groups, &group, &bucket)) {
+                values = Z_DS_DEQUE(bucket->value);
+            } else {
+                values = ds_deque();
+                ZVAL_DS_DEQUE(&bucket->value, values);
+            }
+
+            // Push the value into the group.
+            ds_deque_push(values, value);
+            zval_ptr_dtor(&group);
+        }
+    }
+    DS_DEQUE_FOREACH_END();
+    return ds_map_ex(groups);
 }
 
 bool ds_deque_each(ds_deque_t *deque, FCI_PARAMS)
 {
-    return false;
+    zval retval;
+    zval *value;
+
+    DS_DEQUE_FOREACH(deque, value) {
+        fci.param_count = 1;
+        fci.params      = value;
+        fci.retval      = &retval;
+
+        // Catch potential exceptions or other errors during comparison.
+        // Break iteration if the return value was false.
+        if (zend_call_function(&fci, &fci_cache) == FAILURE
+                || Z_ISUNDEF(retval)
+                || Z_TYPE(retval) == IS_FALSE) {
+
+            zval_ptr_dtor(&retval);
+            return false;
+        }
+    }
+    DS_DEQUE_FOREACH_END();
+
+    zval_ptr_dtor(&retval);
+    return true;
 }
 
 zend_long ds_deque_partition(ds_deque_t *deque)
 {
-    return 0;
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(deque->size);
+
+    zval *head = buffer;
+    zval *tail = buffer + deque->size - 1;
+
+    DS_DEQUE_FOREACH(deque, value) {
+        if (zend_is_true(value)) {
+            ZVAL_COPY_VALUE(head++, value);
+        } else {
+            ZVAL_COPY_VALUE(tail--, value);
+        }
+    }
+    DS_DEQUE_FOREACH_END();
+
+    // We have to reverse the failed values because we added them from the back.
+    ds_reverse_zval_range(tail + 1, buffer + deque->size);
+
+    efree(deque->buffer);
+    deque->buffer = buffer;
+    deque->head   = 0;
+    deque->tail   = deque->size;
+
+    return head - buffer;
 }
 
 zend_long ds_deque_partition_callback(ds_deque_t *deque, FCI_PARAMS)
 {
-    return 0;
+    zval retval;
+    zval *value;
+    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+
+    zval *head = buffer;
+    zval *tail = buffer + deque->size - 1;
+
+    DS_DEQUE_FOREACH(deque, value) {
+        fci.param_count = 1;
+        fci.params      = value;
+        fci.retval      = &retval;
+
+        // Catch potential exceptions or other errors during comparison.
+        if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+            zval_ptr_dtor(&retval);
+            efree(buffer);
+            return 0;
+        }
+
+        if (zend_is_true(&retval)) {
+            ZVAL_COPY_VALUE(head++, value);
+        } else {
+            ZVAL_COPY_VALUE(tail--, value);
+        }
+
+        zval_ptr_dtor(&retval);
+    }
+    DS_DEQUE_FOREACH_END();
+
+    // We have to reverse the failed values because we added them from the back.
+    ds_reverse_zval_range(tail + 1, buffer + deque->size);
+
+    efree(deque->buffer);
+    deque->buffer = buffer;
+    deque->head   = 0;
+    deque->tail   = deque->size;
+
+    return head - buffer;
 }
 
-ds_deque_t *ds_deque_pluck(ds_deque_t *vector, zval *key)
+ds_deque_t *ds_deque_pluck(ds_deque_t *deque, zval *key)
 {
-    return NULL;
+    zval value;
+    zval *container;
+    ds_deque_t *result = ds_deque_ex(deque->capacity);
+
+    DS_DEQUE_FOREACH(deque, container) {
+        if (ds_read_dimension_or_property(container, key, &value) == FAILURE) {
+            zval_ptr_dtor(&value);
+            ds_deque_free(result);
+            return NULL;
+        }
+
+        ds_deque_push(result, &value);
+        zval_ptr_dtor(&value);
+    }
+    DS_DEQUE_FOREACH_END();
+    return result;
 }

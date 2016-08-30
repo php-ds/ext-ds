@@ -213,6 +213,8 @@ METHOD(jsonSerialize)
     ds_set_to_array(THIS_DS_SET(), return_value);
 }
 
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_set);
+
 void php_ds_register_set()
 {
     zend_class_entry ce;

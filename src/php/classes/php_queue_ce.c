@@ -88,6 +88,8 @@ METHOD(jsonSerialize)
     ds_queue_to_array(THIS_DS_QUEUE(), return_value);
 }
 
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_queue);
+
 void php_ds_register_queue()
 {
     zend_class_entry ce;

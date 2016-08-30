@@ -667,7 +667,7 @@ static ds_htable_bucket_t *ds_htable_init_next_bucket(
     return bucket;
 }
 
-bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **bucket)
+bool ds_htable_lookup_or_create(ds_htable_t *table, zval *key, ds_htable_bucket_t **bucket)
 {
     const uint32_t hash = get_hash(key);
 
@@ -690,7 +690,7 @@ void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
     ds_htable_bucket_t *bucket;
 
     // Attempt to find the bucket or initialize it as a new bucket.
-    bool found = ds_htable_lookup_or_next(table, key, &bucket);
+    bool found = ds_htable_lookup_or_create(table, key, &bucket);
 
     // If found, destruct the current value so that we can replace it.
     if (found) {

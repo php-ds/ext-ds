@@ -4,7 +4,7 @@
 #include "../objects/php_priority_queue.h"
 #include "../../ds/ds_priority_queue.h"
 
-zend_object_handlers php_priority_queue_handlers;
+zend_object_handlers php_ds_priority_queue_handlers;
 
 static void php_ds_priority_queue_free_object(zend_object *object)
 {
@@ -74,14 +74,19 @@ static HashTable *php_ds_priority_queue_get_gc(zval *object, zval **gc_data, int
 
 void php_ds_register_priority_queue_handlers()
 {
-    memcpy(&php_priority_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_priority_queue_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_priority_queue_handlers.offset = XtOffsetOf(php_ds_priority_queue_t, std);
+    php_ds_priority_queue_handlers.offset            = 0;
+    php_ds_priority_queue_handlers.get_gc            = php_ds_priority_queue_get_gc;
+    php_ds_priority_queue_handlers.free_obj          = php_ds_priority_queue_free_object;
+    php_ds_priority_queue_handlers.clone_obj         = php_ds_priority_queue_clone_obj;
+    php_ds_priority_queue_handlers.cast_object       = php_ds_common_cast_object;
+    php_ds_priority_queue_handlers.get_debug_info    = php_ds_priority_queue_get_debug_info;
+    php_ds_priority_queue_handlers.count_elements    = php_ds_priority_queue_count_elements;
 
-    php_priority_queue_handlers.get_gc            = php_ds_priority_queue_get_gc;
-    php_priority_queue_handlers.free_obj          = php_ds_priority_queue_free_object;
-    php_priority_queue_handlers.clone_obj         = php_ds_priority_queue_clone_obj;
-    php_priority_queue_handlers.cast_object       = php_ds_default_cast_object;
-    php_priority_queue_handlers.get_debug_info    = php_ds_priority_queue_get_debug_info;
-    php_priority_queue_handlers.count_elements    = php_ds_priority_queue_count_elements;
+    //
+    php_ds_priority_queue_handlers.read_dimension    = php_ds_common_read_dimension;
+    php_ds_priority_queue_handlers.write_dimension   = php_ds_common_write_dimension;
+    php_ds_priority_queue_handlers.has_dimension     = php_ds_common_has_dimension;
+    php_ds_priority_queue_handlers.unset_dimension   = php_ds_common_unset_dimension;
 }

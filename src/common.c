@@ -39,6 +39,58 @@ static int ds_zval_compare_func(const void *a, const void *b)
     return 0;
 }
 
+static int ds_read_dimension(zval *obj, zval *offset, zval *result)
+{
+    zend_fetch_dimension_by_zval(result, obj, offset);
+    return EG(exception) ? FAILURE : SUCCESS;
+}
+
+static zval *ds_read_property(zval *obj, zval *offset)
+{
+    zval rv;
+
+    if (instanceof_function(Z_OBJCE_P(obj), spl_ce_ArrayAccess)) {
+        return Z_OBJ_HT_P(obj)->read_dimension(obj, offset, BP_VAR_R, &rv);
+    }
+
+    return Z_OBJ_HT_P(obj)->read_property(obj, offset, BP_VAR_R, NULL, &rv);
+}
+
+static int ds_read_object_dimension_or_property(zval *obj, zval *offset, zval *result)
+{
+    zval *value = ds_read_property(obj, offset);
+
+    if (value == NULL || EG(exception)) {
+        ZVAL_NULL(result);
+        return FAILURE;
+    }
+
+    ZVAL_COPY_VALUE(result, value);
+    return SUCCESS;
+}
+
+int ds_read_dimension_or_property(zval *container, zval *offset, zval *result)
+{
+    switch (Z_TYPE_P(container)) {
+
+        case IS_REFERENCE:
+            container = Z_REFVAL_P(container);
+            return ds_read_dimension_or_property(container, offset, result);
+
+        case IS_OBJECT:
+            return ds_read_object_dimension_or_property(container, offset, result);
+
+        case IS_ARRAY:
+        case IS_STRING:
+            return ds_read_dimension(container, offset, result);
+    }
+
+    zend_error(E_NOTICE, "Trying to get property of non-object");
+    ZVAL_UNDEF(result);
+    return FAILURE;
+}
+
+
 void ds_sort_zval_buffer(zval *buffer, zend_long size)
 {
     qsort(buffer, size, sizeof(zval), ds_zval_compare_func);

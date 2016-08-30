@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_object_handlers php_map_handlers;
+extern zend_object_handlers php_ds_map_handlers;
 
 void php_ds_register_map_handlers();
 

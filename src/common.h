@@ -164,7 +164,30 @@ int name##_unserialize(                 \
     zend_unserialize_data   *data       \
 )
 
+#define PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(prefix)                           \
+METHOD(offsetExists) {                                                           \
+    PARSE_ZVAL(offset);                                                          \
+    RETURN_BOOL(prefix##_handlers.has_dimension(getThis(), offset, 0));          \
+}                                                                                \
+METHOD(offsetGet) {                                                              \
+    PARSE_ZVAL(offset);                                                          \
+    prefix##_handlers.read_dimension(getThis(), offset, BP_VAR_R, return_value); \
+}                                                                                \
+METHOD(offsetSet) {                                                              \
+    PARSE_ZVAL_ZVAL(offset, value);                                              \
+    prefix##_handlers.write_dimension(getThis(), offset, value);                 \
+}                                                                                \
+METHOD(offsetUnset) {                                                            \
+    PARSE_ZVAL(offset);                                                          \
+    prefix##_handlers.unset_dimension(getThis(), offset);                        \
+}                                                                                \
+
+
 /** EXCEPTIONS **************************************************************/
+
+#define ARRAY_ACCESS_NOT_SUPPORTED() ds_throw_exception( \
+    zend_ce_error, \
+    "Array access is not supported")
 
 #define ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
@@ -303,5 +326,10 @@ bool ds_is_traversable(zval *value);
  *
  */
 void smart_str_appendz(smart_str *buffer, zval *value);
+
+/**
+ *
+ */
+int ds_read_dimension_or_property(zval *result, zval *object, zval *offset);
 
 #endif

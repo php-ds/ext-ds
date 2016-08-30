@@ -10,7 +10,7 @@
 #include "ds_set.h"
 #include "ds_pair.h"
 
-static ds_map_t *ds_map_ex(ds_htable_t *table)
+ds_map_t *ds_map_ex(ds_htable_t *table)
 {
     ds_map_t *map = ecalloc(1, sizeof(ds_map_t));
     map->table = table;
