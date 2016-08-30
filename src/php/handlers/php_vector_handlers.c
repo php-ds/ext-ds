@@ -4,9 +4,9 @@
 #include "../objects/php_vector.h"
 #include "../../ds/ds_vector.h"
 
-zend_object_handlers php_vector_handlers;
+zend_object_handlers php_ds_vector_handlers;
 
-static zval *php_ds_vector_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
+static zval *php_ds_vector_read_dimension(zval *obj, zval *offset, int type, zval *rv)
 {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
     zval *value;
@@ -129,21 +129,22 @@ static HashTable *php_ds_vector_get_gc(zval *obj, zval **gc_data, int *gc_count)
     return NULL;
 }
 
-void php_register_vector_handlers()
+void php_ds_register_vector_handlers()
 {
-    memcpy(&php_vector_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_vector_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_vector_handlers.offset = XtOffsetOf(php_ds_vector_t, std);
+    php_ds_vector_handlers.offset = XtOffsetOf(php_ds_vector_t, std);
 
-    php_vector_handlers.dtor_obj         = zend_objects_destroy_object;
-    php_vector_handlers.free_obj         = php_ds_vector_free_object;
-    php_vector_handlers.get_gc           = php_ds_vector_get_gc;
-    php_vector_handlers.clone_obj        = php_ds_vector_clone_obj;
-    php_vector_handlers.cast_object      = php_ds_default_cast_object;
-    php_vector_handlers.get_debug_info   = php_ds_vector_get_debug_info;
-    php_vector_handlers.count_elements   = php_ds_vector_count_elements;
-    php_vector_handlers.read_dimension   = php_ds_vector_read_dimension;
-    php_vector_handlers.write_dimension  = php_ds_vector_write_dimension;
-    php_vector_handlers.has_dimension    = php_ds_vector_has_dimension;
-    php_vector_handlers.unset_dimension  = php_ds_vector_unset_dimension;
+    php_ds_vector_handlers.dtor_obj         = zend_objects_destroy_object;
+    php_ds_vector_handlers.free_obj         = php_ds_vector_free_object;
+    php_ds_vector_handlers.get_gc           = php_ds_vector_get_gc;
+    php_ds_vector_handlers.clone_obj        = php_ds_vector_clone_obj;
+    php_ds_vector_handlers.cast_object      = php_ds_common_cast_object;
+    php_ds_vector_handlers.get_debug_info   = php_ds_vector_get_debug_info;
+    php_ds_vector_handlers.count_elements   = php_ds_vector_count_elements;
+
+    php_ds_vector_handlers.read_dimension   = php_ds_vector_read_dimension;
+    php_ds_vector_handlers.write_dimension  = php_ds_vector_write_dimension;
+    php_ds_vector_handlers.has_dimension    = php_ds_vector_has_dimension;
+    php_ds_vector_handlers.unset_dimension  = php_ds_vector_unset_dimension;
 }

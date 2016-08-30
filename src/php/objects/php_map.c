@@ -8,7 +8,7 @@ zend_object *php_ds_map_create_object_ex(ds_map_t *map)
 {
     php_ds_map_t *obj = ecalloc(1, sizeof(php_ds_map_t));
     zend_object_std_init(&obj->std, php_ds_map_ce);
-    obj->std.handlers = &php_map_handlers;
+    obj->std.handlers = &php_ds_map_handlers;
     obj->map = map;
     return &obj->std;
 }

@@ -3,7 +3,7 @@
 
 #define SETUP_CALLABLE_VARS() \
 zend_fcall_info fci = empty_fcall_info; \
-zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
+zend_fcall_info_cache fci_cache = empty_fcall_info_cache
 
 #define PARSE_1(spec, a)        if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), spec, a) == FAILURE) return
 #define PARSE_2(spec, a, b)     if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), spec, a, b) == FAILURE) return

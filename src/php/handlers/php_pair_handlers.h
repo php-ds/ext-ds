@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_object_handlers php_pair_handlers;
+extern zend_object_handlers php_ds_pair_handlers;
 
 void php_ds_register_pair_handlers();
 

@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_object_handlers php_deque_handlers;
+extern zend_object_handlers php_ds_deque_handlers;
 
 void php_ds_register_deque_handlers();
 

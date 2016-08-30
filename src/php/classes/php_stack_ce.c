@@ -88,6 +88,8 @@ METHOD(jsonSerialize)
     ds_stack_to_array(THIS_DS_STACK(), return_value);
 }
 
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_stack);
+
 void php_ds_register_stack()
 {
     zend_class_entry ce;
@@ -114,5 +116,5 @@ void php_ds_register_stack()
     php_ds_stack_ce->unserialize    = php_ds_stack_unserialize;
 
     zend_class_implements(php_ds_stack_ce, 1, collection_ce);
-    php_register_ds_stack_handlers();
+    php_ds_register_ds_stack_handlers();
 }

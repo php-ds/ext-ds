@@ -285,6 +285,11 @@ METHOD(unshift)
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 
+/**
+ * Automatically forward array access methods to their corresponding handlers.
+ */
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_vector);
+
 void php_ds_register_vector()
 {
     zend_class_entry ce;
@@ -307,5 +312,5 @@ void php_ds_register_vector()
     zend_declare_class_constant_long(php_ds_vector_ce, STR_AND_LEN("MIN_CAPACITY"), DS_VECTOR_MIN_CAPACITY);
 
     zend_class_implements(php_ds_vector_ce, 1, sequence_ce);
-    php_register_vector_handlers();
+    php_ds_register_vector_handlers();
 }

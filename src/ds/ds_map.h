@@ -12,6 +12,7 @@ typedef struct _ds_map_t {
 #define DS_MAP_SIZE(m) ((m)->table->size)
 #define DS_MAP_IS_EMPTY(m) (DS_MAP_SIZE(m) == 0)
 
+ds_map_t *ds_map_ex(ds_htable_t *table);
 ds_map_t *ds_map();
 ds_map_t *ds_map_clone(ds_map_t *map);
 

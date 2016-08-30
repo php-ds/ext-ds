@@ -174,7 +174,7 @@ ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *h, zval *key);
 ds_htable_bucket_t *ds_htable_lookup_by_key(ds_htable_t *h, zval *key);
 ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t position);
 
-bool ds_htable_lookup_or_next(ds_htable_t *table, zval *key, ds_htable_bucket_t **return_value);
+bool ds_htable_lookup_or_create(ds_htable_t *table, zval *key, ds_htable_bucket_t **return_value);
 bool ds_htable_has_keys(ds_htable_t *h, VA_PARAMS);
 bool ds_htable_has_key(ds_htable_t *table, zval *key);
 bool ds_htable_has_values(ds_htable_t *h, VA_PARAMS);

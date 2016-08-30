@@ -8,7 +8,7 @@ zend_object *php_ds_queue_create_object_ex(ds_queue_t *queue)
 {
     php_ds_queue_t *obj = ecalloc(1, sizeof(php_ds_queue_t));
     zend_object_std_init(&obj->std, php_ds_queue_ce);
-    obj->std.handlers = &php_queue_handlers;
+    obj->std.handlers = &php_ds_queue_handlers;
     obj->queue = queue;
 
     return &obj->std;

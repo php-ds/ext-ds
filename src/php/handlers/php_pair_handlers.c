@@ -3,7 +3,7 @@
 #include "../../ds/ds_pair.h"
 #include "../objects/php_pair.h"
 
-zend_object_handlers php_pair_handlers;
+zend_object_handlers php_ds_pair_handlers;
 
 static zval *get_property(ds_pair_t *pair, zval *offset)
 {
@@ -153,21 +153,21 @@ static HashTable *php_ds_pair_get_gc(zval *obj, zval **gc_data, int *gc_count)
 
 void php_ds_register_pair_handlers()
 {
-    memcpy(&php_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    memcpy(&php_ds_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_pair_handlers.offset = XtOffsetOf(php_ds_pair_t, std);
+    php_ds_pair_handlers.offset = XtOffsetOf(php_ds_pair_t, std);
 
-    php_pair_handlers.dtor_obj                = zend_objects_destroy_object;
-    php_pair_handlers.get_gc                  = php_ds_pair_get_gc;
-    php_pair_handlers.free_obj                = php_ds_pair_free_object;
-    php_pair_handlers.clone_obj               = php_ds_pair_clone_object;
-    php_pair_handlers.cast_object             = php_ds_default_cast_object;
-    php_pair_handlers.get_debug_info          = php_ds_pair_get_debug_info;
-    php_pair_handlers.count_elements          = php_ds_pair_count_elements;
+    php_ds_pair_handlers.dtor_obj                = zend_objects_destroy_object;
+    php_ds_pair_handlers.get_gc                  = php_ds_pair_get_gc;
+    php_ds_pair_handlers.free_obj                = php_ds_pair_free_object;
+    php_ds_pair_handlers.clone_obj               = php_ds_pair_clone_object;
+    php_ds_pair_handlers.cast_object             = php_ds_common_cast_object;
+    php_ds_pair_handlers.get_debug_info          = php_ds_pair_get_debug_info;
+    php_ds_pair_handlers.count_elements          = php_ds_pair_count_elements;
 
-    php_pair_handlers.get_property_ptr_ptr    = php_ds_pair_get_property_ptr_ptr;
-    php_pair_handlers.read_property           = php_ds_pair_read_property;
-    php_pair_handlers.write_property          = php_ds_pair_write_property;
-    php_pair_handlers.has_property            = php_ds_pair_has_property;
-    php_pair_handlers.unset_property          = php_ds_pair_unset_property;
+    php_ds_pair_handlers.get_property_ptr_ptr    = php_ds_pair_get_property_ptr_ptr;
+    php_ds_pair_handlers.read_property           = php_ds_pair_read_property;
+    php_ds_pair_handlers.write_property          = php_ds_pair_write_property;
+    php_ds_pair_handlers.has_property            = php_ds_pair_has_property;
+    php_ds_pair_handlers.unset_property          = php_ds_pair_unset_property;
 }

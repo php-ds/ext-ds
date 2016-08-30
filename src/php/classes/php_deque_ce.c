@@ -292,6 +292,8 @@ METHOD(jsonSerialize)
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
 }
 
+PHP_DS_ARRAY_ACCESS_FORWARDING_METHODS(php_ds_deque);
+
 void php_ds_register_deque()
 {
     zend_class_entry ce;

@@ -3,7 +3,7 @@
 
 #include "php.h"
 
-extern zend_object_handlers php_queue_handlers;
+extern zend_object_handlers php_ds_queue_handlers;
 
 void php_ds_register_queue_handlers();
 
