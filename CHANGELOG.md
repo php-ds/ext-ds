@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.1.5] - 2016-09-01
+### Fixed
+- `phpinfo` header
+- `ds_htable_put_distinct` wasn't rehashing the correct bucket pointer (Fixes #53)
+- Memory leaks.
+
 ## [1.1.4] - 2016-08-09
 ### Fixed
 - `Vector` and `Deque` rotate crashing when empty (mod zero).
@@ -44,7 +50,7 @@ This project follows [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - ds_htable_put_next bucket rehash fix
-- 
+-
 ## [1.0.2] - 2016-07-31
 ### Added
 - `Map::putAll`

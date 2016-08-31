@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 [![Code Coverage](https://scrutinizer-ci.com/g/php-ds/polyfill/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/php-ds/polyfill/?branch=master)
-[![PECL](https://img.shields.io/badge/PECL-1.1.4-blue.svg)](https://pecl.php.net/package/ds)
+[![PECL](https://img.shields.io/badge/PECL-1.1.5-blue.svg)](https://pecl.php.net/package/ds)
 
 An extension providing specialized data structures as efficient alternatives to the PHP array.
 
@@ -54,7 +54,7 @@ composer memtest   # Run the tests checking for memory leaks
 
 ## Compatibility
 
-It's highly recommended that you include the [polyfill](https://github.com/php-ds/polyfill) as a dependency in your project. This allows your codebase to still function in an environment where the extension is not installed. 
+It's highly recommended that you include the [polyfill](https://github.com/php-ds/polyfill) as a dependency in your project. This allows your codebase to still function in an environment where the extension is not installed.
 
 ## Contributing
 
