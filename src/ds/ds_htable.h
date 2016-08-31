@@ -47,11 +47,16 @@
  * This means that the next bucket can come before another in the buffer,
  * because a rehash unshifts the bucket into the chain.
  */
-#define DS_HTABLE_BUCKET_REHASH(_table, _bucket, _mask, _idx)                  \
-do {                                                                           \
-    uint32_t *head = &_table->lookup[DS_HTABLE_BUCKET_HASH(_bucket) & (_mask)];\
-    DS_HTABLE_BUCKET_NEXT(_bucket) = *head;                                    \
-    *head = _idx;                                                              \
+#define DS_HTABLE_BUCKET_REHASH(table, bucket, mask, idx)   \
+do {                                                        \
+    ds_htable_bucket_t *_bucket = bucket;                   \
+    ds_htable_t        *_table  = table;                    \
+                                                            \
+    uint32_t  hash = DS_HTABLE_BUCKET_HASH(_bucket);        \
+    uint32_t *head = &_table->lookup[hash & (mask)];        \
+                                                            \
+    DS_HTABLE_BUCKET_NEXT(_bucket) = *head;                 \
+    *head = idx;                                            \
 } while (0)
 
 /**

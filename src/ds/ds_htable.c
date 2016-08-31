@@ -620,8 +620,10 @@ void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
  */
 static void ds_htable_put_distinct_bucket(ds_htable_t *table, ds_htable_bucket_t *bucket)
 {
-    DS_HTABLE_BUCKET_COPY(&table->buckets[table->next], bucket);
-    DS_HTABLE_BUCKET_REHASH(table, bucket, table->capacity - 1, table->next);
+    ds_htable_bucket_t *next = &table->buckets[table->next];
+
+    DS_HTABLE_BUCKET_COPY(next, bucket);
+    DS_HTABLE_BUCKET_REHASH(table, next, table->capacity - 1, table->next);
 
     table->next++;
     table->size++;
