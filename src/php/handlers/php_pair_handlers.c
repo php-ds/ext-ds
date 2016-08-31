@@ -55,7 +55,7 @@ static void php_ds_pair_write_property(zval *object, zval *offset, zval *value, 
     OFFSET_OUT_OF_BOUNDS();
 }
 
-static bool php_ds_pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
+static int php_ds_pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
     zval *value = get_property(Z_DS_PAIR_P(object), offset);
 
