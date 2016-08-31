@@ -534,11 +534,8 @@ static int user_compare_by_key(const void *a, const void *b)
     zval params[2];
     zval retval;
 
-    ds_htable_bucket_t *x = ((ds_htable_bucket_t*)a);
-    ds_htable_bucket_t *y = ((ds_htable_bucket_t*)b);
-
-    ZVAL_COPY_VALUE(&params[0], &x->key);
-    ZVAL_COPY_VALUE(&params[1], &y->key);
+    ZVAL_COPY_VALUE(&params[0], (zval*) a);
+    ZVAL_COPY_VALUE(&params[1], (zval*) b);
 
     DSG(user_compare_fci).param_count = 2;
     DSG(user_compare_fci).params      = params;
