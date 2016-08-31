@@ -551,10 +551,8 @@ static int user_compare_by_key(const void *a, const void *b)
 static int compare_by_key(const void *a, const void *b)
 {
     zval retval;
-    ds_htable_bucket_t *x = (ds_htable_bucket_t*) a;
-    ds_htable_bucket_t *y = (ds_htable_bucket_t*) b;
 
-    if (compare_function(&retval, &x->key, &y->key) == SUCCESS) {
+    if (compare_function(&retval, (zval*) a, (zval*) b) == SUCCESS) {
         return zval_get_long(&retval);
     }
 
