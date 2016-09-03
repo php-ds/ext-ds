@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/php-ds/extension.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
 [![Code Coverage](https://scrutinizer-ci.com/g/php-ds/polyfill/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/php-ds/polyfill/?branch=master)
-[![PECL](https://img.shields.io/badge/PECL-1.1.5-blue.svg)](https://pecl.php.net/package/ds)
+[![PECL](https://img.shields.io/badge/PECL-1.1.6-blue.svg)](https://pecl.php.net/package/ds)
 
 An extension providing specialized data structures as efficient alternatives to the PHP array.
 
