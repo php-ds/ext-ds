@@ -130,11 +130,18 @@ static inline void ds_htable_double_capacity(ds_htable_t *table)
     ds_htable_rehash(table);
 }
 
+static inline void ds_htable_auto_truncate(ds_htable_t *table)
+{
+
+}
+
 static inline void ds_htable_halve_capacity(ds_htable_t *table)
 {
-    if (table->capacity > DS_HTABLE_MIN_CAPACITY) {
+    const uint32_t capacity = table->capacity;
+
+    if (table->size <= capacity / 4 && capacity > DS_HTABLE_MIN_CAPACITY) {
         ds_htable_pack(table);
-        ds_htable_realloc(table, table->capacity >> 1);
+        ds_htable_realloc(table, capacity / 2);
         ds_htable_rehash(table);
     }
 }
@@ -829,10 +836,8 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
 
         table->size--;
 
-        // If the capacity drops below a quarter, truncate to half.
-        if (table->size <= table->capacity / 4) {
-            ds_htable_halve_capacity(table);
-        }
+        // Check whether the buffer should be truncated.
+        ds_htable_auto_truncate(table);
 
         return SUCCESS;
     }
