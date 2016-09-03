@@ -124,18 +124,7 @@ static void ds_htable_pack(ds_htable_t *table)
     }
 }
 
-static inline void ds_htable_double_capacity(ds_htable_t *table)
-{
-    ds_htable_realloc(table, table->capacity << 1);
-    ds_htable_rehash(table);
-}
-
 static inline void ds_htable_auto_truncate(ds_htable_t *table)
-{
-
-}
-
-static inline void ds_htable_halve_capacity(ds_htable_t *table)
 {
     const uint32_t capacity = table->capacity;
 
@@ -619,7 +608,8 @@ static inline void ds_htable_increase_capacity(ds_htable_t *table)
         return;
     }
 
-    ds_htable_double_capacity(table);
+    ds_htable_realloc(table, table->capacity << 1);
+    ds_htable_rehash(table);
 }
 
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
