@@ -16,11 +16,11 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2016-09-01</date>
-    <time>08:38:12</time>
+    <date>2016-09-03</date>
+    <time>22:20:14</time>
     <version>
-        <release>1.1.5</release>
-        <api>1.1.5</api>
+        <release>1.1.6</release>
+        <api>1.1.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,9 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - phpinfo header
-        - ds_htable_put_distinct wasn't rehashing the correct bucket pointer
-        - Memory leaks
+        - Fix htable truncating capacity below minimum
     </notes>
     <contents>
         <dir name="/">

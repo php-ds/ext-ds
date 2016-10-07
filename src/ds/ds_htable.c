@@ -124,17 +124,15 @@ static void ds_htable_pack(ds_htable_t *table)
     }
 }
 
-static inline void ds_htable_double_capacity(ds_htable_t *table)
+static inline void ds_htable_auto_truncate(ds_htable_t *table)
 {
-    ds_htable_realloc(table, table->capacity << 1);
-    ds_htable_rehash(table);
-}
+    const uint32_t capacity = table->capacity;
 
-static inline void ds_htable_halve_capacity(ds_htable_t *table)
-{
-    ds_htable_pack(table);
-    ds_htable_realloc(table, table->capacity >> 1);
-    ds_htable_rehash(table);
+    if (table->size <= capacity / 4 && capacity > DS_HTABLE_MIN_CAPACITY) {
+        ds_htable_pack(table);
+        ds_htable_realloc(table, capacity / 2);
+        ds_htable_rehash(table);
+    }
 }
 
 ds_htable_t *ds_htable_ex(uint32_t capacity)
@@ -337,17 +335,28 @@ static uint32_t get_hash(zval *value)
     }
 }
 
-static ds_htable_bucket_t *ds_htable_lookup_bucket_by_hash(ds_htable_t *table, zval *key, const uint32_t hash)
-{
+static ds_htable_bucket_t *ds_htable_lookup_bucket_by_hash(
+    ds_htable_t     *table,
+    zval            *key,
+    const uint32_t   hash
+) {
     ds_htable_bucket_t *bucket;
+    uint32_t index;
 
-    uint32_t index = DS_HTABLE_BUCKET_LOOKUP(table, hash);
-
-    for (; index != DS_HTABLE_INVALID_INDEX; index = DS_HTABLE_BUCKET_NEXT(bucket)) {
+    // Begin by finding the start of the collision chain by using the lookup
+    // array and the hash to determine the first bucket's buffer index.
+    // Follow the chain until the next bucket in the chain is invalid.
+    for (
+        index  = DS_HTABLE_BUCKET_LOOKUP(table, hash);
+        index != DS_HTABLE_INVALID_INDEX;
+        index  = DS_HTABLE_BUCKET_NEXT(bucket)
+    ) {
         bucket = &table->buckets[index];
 
-        if (DS_HTABLE_BUCKET_HASH(bucket) == hash && ds_htable_bucket_key_match(bucket, key)) {
-            return bucket;
+        if (DS_HTABLE_BUCKET_HASH(bucket) == hash) {
+            if (ds_htable_bucket_key_match(bucket, key)) {
+                return bucket;
+            }
         }
     }
 
@@ -599,7 +608,8 @@ static inline void ds_htable_increase_capacity(ds_htable_t *table)
         return;
     }
 
-    ds_htable_double_capacity(table);
+    ds_htable_realloc(table, table->capacity << 1);
+    ds_htable_rehash(table);
 }
 
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
@@ -809,15 +819,15 @@ int ds_htable_remove(ds_htable_t *table, zval *key, zval *return_value)
             while (DS_HTABLE_BUCKET_DELETED(bucket));
         }
 
-        // Update the left-most deleted index
+        // Update the left-most deleted index.
         if (index < table->min_deleted) {
             table->min_deleted = index;
         }
 
-        // If the capacity drops below a quarter, truncate to half.
-        if ((--table->size) <= table->capacity / 4) {
-            ds_htable_halve_capacity(table);
-        }
+        table->size--;
+
+        // Check whether the buffer should be truncated.
+        ds_htable_auto_truncate(table);
 
         return SUCCESS;
     }
