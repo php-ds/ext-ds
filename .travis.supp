@@ -50,6 +50,7 @@
    <insert_a_suppression_name_here>
    Memcheck:Leak
    fun:malloc
+   fun:__zend_malloc
    fun:zend_objects_new
    fun:_object_and_properties_init
    fun:ZEND_NEW_SPEC_UNUSED_HANDLER
