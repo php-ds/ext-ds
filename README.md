@@ -40,7 +40,7 @@ You can also enable the extension temporarily using the command line:
 php -d extension=ds.so
 ```
 
-**Note**: Windows would use php-ds.dll instead.
+**Note**: Windows would use php_ds.dll instead.
 
 ## Testing
 
