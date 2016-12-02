@@ -233,7 +233,7 @@ void ds_vector_find(ds_vector_t *vector, zval *value, zval *return_value)
         return;
     }
 
-    ZVAL_FALSE(return_value);
+    ZVAL_NULL(return_value);
 }
 
 bool ds_vector_contains(ds_vector_t *vector, zval *value)

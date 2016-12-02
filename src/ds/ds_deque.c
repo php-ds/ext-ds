@@ -498,7 +498,7 @@ void ds_deque_find(ds_deque_t *deque, zval *value, zval *return_value)
     if (index >= 0) {
         ZVAL_LONG(return_value, index);
     } else {
-        ZVAL_FALSE(return_value);
+        ZVAL_NULL(return_value);
     }
 }
 
