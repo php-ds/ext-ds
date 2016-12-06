@@ -5,7 +5,8 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/php-ds/polyfill/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/php-ds/polyfill/?branch=master)
 [![PECL](https://img.shields.io/badge/PECL-1.1.6-blue.svg)](https://pecl.php.net/package/ds)
 
-An extension providing specialized data structures as efficient alternatives to the PHP array.
+An extension providing specialized data structures as efficient alternatives to the PHP array. 
+You can read about it in more detail [in this blog post](https://medium.com/p/9dda7af674cd) which highlights the API, performance and other benefits of using the extension.
 
 ## Documentation
 
