@@ -1,7 +1,6 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   Memcheck:Leak
    fun:malloc
    fun:zend_objects_new
    fun:_object_and_properties_init
@@ -18,7 +17,6 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   Memcheck:Leak
    fun:malloc
    fun:zend_objects_new
    fun:_object_and_properties_init
@@ -35,7 +33,6 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   Memcheck:Leak
    fun:malloc
    fun:zend_objects_new
    fun:_object_and_properties_init
@@ -52,7 +49,6 @@
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak
-   Memcheck:Leak
    fun:malloc
    fun:__zend_malloc
    fun:zend_objects_new
@@ -68,7 +64,6 @@
 }
 {
    <insert_a_suppression_name_here>
-   Memcheck:Leak
    Memcheck:Leak
    fun:malloc
    fun:__zend_malloc
