@@ -1,4 +1,5 @@
 *.
+*.ac
 *.gcda
 *.gcno
 *.la
