@@ -1174,7 +1174,6 @@ int ds_htable_serialize(ds_htable_t *table, unsigned char **buffer, size_t *leng
         SERIALIZE_SET_ZSTR(ZSTR_EMPTY_ALLOC());
 
     } else {
-
         zval *key, *value;
 
         smart_str buf = {0};
@@ -1200,7 +1199,7 @@ int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_
     php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
 
     const unsigned char *pos = buffer;
-    const unsigned char *max = buffer + length;
+    const unsigned char *end = buffer + length;
 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
@@ -1209,13 +1208,13 @@ int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_
         zval *key   = var_tmp_var(&unserialize_data);
         zval *value = var_tmp_var(&unserialize_data);
 
-        if (php_var_unserialize(key, &pos, max, &unserialize_data)) {
+        if (php_var_unserialize(key, &pos, end, &unserialize_data)) {
             var_push_dtor(&unserialize_data, key);
         } else {
             goto error;
         }
 
-        if (php_var_unserialize(value, &pos, max, &unserialize_data)) {
+        if (php_var_unserialize(value, &pos, end, &unserialize_data)) {
             var_push_dtor(&unserialize_data, value);
         } else {
             goto error;
@@ -1224,7 +1223,7 @@ int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_
         ds_htable_put(table, key, value);
     }
 
-    if (*(++pos) != '\0') {
+    if (pos != end) {
         goto error;
     }
 
