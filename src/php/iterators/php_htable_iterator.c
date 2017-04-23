@@ -18,25 +18,27 @@ static ds_htable_bucket_t *find_starting_bucket(ds_htable_t *table)
     return bucket;
 }
 
-static void php_ds_htable_iterator_dtor(zend_object_iterator *i)
+static void php_ds_htable_iterator_dtor(zend_object_iterator *iterator)
 {
-    DTOR_AND_UNDEF(&i->data);
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+
+    DTOR_AND_UNDEF(internal->obj);
+    DTOR_AND_UNDEF(&internal->intern.data);
 }
 
-static int php_ds_htable_iterator_valid(zend_object_iterator *i)
+static int php_ds_htable_iterator_valid(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
-    uint32_t size             = iterator->table->size;
-    uint32_t position         = iterator->position;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+    uint32_t size                  = internal->table->size;
+    uint32_t position              = internal->position;
 
     return position < size ? SUCCESS : FAILURE;
 }
 
-static zval *php_ds_htable_iterator_get_current_value(zend_object_iterator *i)
+static zval *php_ds_htable_iterator_get_current_value(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
-
-    ds_htable_bucket_t *bucket = iterator->bucket;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+    ds_htable_bucket_t   *bucket   = internal->bucket;
 
     if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         return &bucket->value;
@@ -45,11 +47,10 @@ static zval *php_ds_htable_iterator_get_current_value(zend_object_iterator *i)
     return NULL;
 }
 
-static zval *php_ds_htable_iterator_get_current_keyval(zend_object_iterator *i)
+static zval *php_ds_htable_iterator_get_current_keyval(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
-
-    ds_htable_bucket_t *bucket = iterator->bucket;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+    ds_htable_bucket_t   *bucket   = internal->bucket;
 
     if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         return &bucket->key;
@@ -58,29 +59,27 @@ static zval *php_ds_htable_iterator_get_current_keyval(zend_object_iterator *i)
     return NULL;
 }
 
-static void php_ds_htable_iterator_get_current_key(zend_object_iterator *i, zval *key)
+static void php_ds_htable_iterator_get_current_key(zend_object_iterator *iterator, zval *key)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
-
-    ds_htable_bucket_t *bucket = iterator->bucket;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+    ds_htable_bucket_t   *bucket   = internal->bucket;
 
     if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
         ZVAL_COPY(key, &bucket->key);
     }
 }
 
-static zval *php_ds_htable_iterator_get_current_pair(zend_object_iterator *i)
+static zval *php_ds_htable_iterator_get_current_pair(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
-
-    ds_htable_bucket_t *bucket = iterator->bucket;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
+    ds_htable_bucket_t   *bucket   = internal->bucket;
 
     if ( ! DS_HTABLE_BUCKET_DELETED(bucket)) {
 
         zval *key = &bucket->key;
         zval *val = &bucket->value;
 
-        zval *arr = &iterator->intern.data;
+        zval *arr = &internal->intern.data;
 
         Z_TRY_ADDREF_P(key);
         Z_TRY_ADDREF_P(val);
@@ -96,28 +95,28 @@ static zval *php_ds_htable_iterator_get_current_pair(zend_object_iterator *i)
     return NULL;
 }
 
-static void php_ds_htable_iterator_get_current_pos(zend_object_iterator *i, zval *key)
+static void php_ds_htable_iterator_get_current_pos(zend_object_iterator *iterator, zval *key)
 {
-    ZVAL_LONG(key, ((ds_htable_iterator_t *) i)->position);
+    ZVAL_LONG(key, ((ds_htable_iterator_t *) iterator)->position);
 }
 
-static void php_ds_htable_iterator_move_forward(zend_object_iterator *i)
+static void php_ds_htable_iterator_move_forward(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
 
-    if (++iterator->position < iterator->table->size) {
+    if (++internal->position < internal->table->size) {
         do {
-            ++iterator->bucket;
-        } while (DS_HTABLE_BUCKET_DELETED(iterator->bucket));
+            ++internal->bucket;
+        } while (DS_HTABLE_BUCKET_DELETED(internal->bucket));
     }
 }
 
-static void php_ds_htable_iterator_rewind(zend_object_iterator *i)
+static void php_ds_htable_iterator_rewind(zend_object_iterator *iterator)
 {
-    ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) i;
+    ds_htable_iterator_t *internal = (ds_htable_iterator_t *) iterator;
 
-    iterator->position = 0;
-    iterator->bucket   = find_starting_bucket(iterator->table);
+    internal->position = 0;
+    internal->bucket   = find_starting_bucket(internal->table);
 }
 
 static zend_object_iterator_funcs php_ds_htable_get_value_iterator_funcs = {
@@ -157,8 +156,12 @@ static zend_object_iterator_funcs php_ds_htable_get_assoc_iterator_funcs = {
 };
 
 
-static zend_object_iterator *php_ds_htable_create_htable_iterator(ds_htable_t *table, zend_object_iterator_funcs *funcs, int by_ref)
-{
+static zend_object_iterator *php_ds_htable_create_htable_iterator(
+    zval *obj,
+    ds_htable_t *table,
+    zend_object_iterator_funcs *funcs,
+    int by_ref
+) {
     ds_htable_iterator_t *iterator;
 
     if (by_ref) {
@@ -174,6 +177,12 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(ds_htable_t *t
 
     iterator->intern.funcs  = funcs;
     iterator->table         = table;
+    iterator->obj           = obj;
+
+    // Add a reference to the object so that it doesn't get collected when
+    // the iterated object is implict,
+    // eg. foreach ($obj->getInstance() as $value){ ... }
+    Z_TRY_ADDREF_P(obj);
 
     return (zend_object_iterator *) iterator;
 }
@@ -185,7 +194,7 @@ zend_object_iterator *php_ds_htable_get_value_iterator_ex(
     ds_htable_t *table
 ){
     return php_ds_htable_create_htable_iterator(
-        table, &php_ds_htable_get_value_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_value_iterator_funcs, by_ref);
 }
 
 zend_object_iterator *php_ds_htable_get_key_iterator_ex(
@@ -195,7 +204,7 @@ zend_object_iterator *php_ds_htable_get_key_iterator_ex(
     ds_htable_t *table
 ){
     return php_ds_htable_create_htable_iterator(
-        table, &php_ds_htable_get_key_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_key_iterator_funcs, by_ref);
 }
 
 zend_object_iterator *php_ds_htable_get_pair_iterator_ex(
@@ -205,7 +214,7 @@ zend_object_iterator *php_ds_htable_get_pair_iterator_ex(
     ds_htable_t *table
 ){
     return php_ds_htable_create_htable_iterator(
-        table, &php_ds_htable_get_pair_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_pair_iterator_funcs, by_ref);
 }
 
 zend_object_iterator *php_ds_htable_get_assoc_iterator_ex(
@@ -215,5 +224,5 @@ zend_object_iterator *php_ds_htable_get_assoc_iterator_ex(
     ds_htable_t *table
 ){
     return php_ds_htable_create_htable_iterator(
-        table, &php_ds_htable_get_assoc_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_assoc_iterator_funcs, by_ref);
 }
