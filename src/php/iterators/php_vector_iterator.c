@@ -4,39 +4,38 @@
 #include "../objects/php_vector.h"
 #include "php_vector_iterator.h"
 
-static void php_ds_vector_iterator_dtor(zend_object_iterator *i)
+static void php_ds_vector_iterator_dtor(zend_object_iterator *iter)
 {
-
+    DTOR_AND_UNDEF(((php_ds_vector_iterator_t *) iter)->obj);
 }
 
-static int php_ds_vector_iterator_valid(zend_object_iterator *i)
+static int php_ds_vector_iterator_valid(zend_object_iterator *iter)
 {
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) iter;
+
     return iterator->position < iterator->vector->size ? SUCCESS : FAILURE;
 }
 
-static zval *php_ds_vector_iterator_get_current_data(zend_object_iterator *i)
+static zval *php_ds_vector_iterator_get_current_data(zend_object_iterator *iter)
 {
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
+    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) iter;
+
     return &iterator->vector->buffer[iterator->position];
 }
 
-static void php_ds_vector_iterator_get_current_key(zend_object_iterator *i, zval *key)
+static void php_ds_vector_iterator_get_current_key(zend_object_iterator *iter, zval *key)
 {
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
-    ZVAL_LONG(key, iterator->position);
+    ZVAL_LONG(key, ((php_ds_vector_iterator_t *) iter)->position);
 }
 
-static void php_ds_vector_iterator_move_forward(zend_object_iterator *i)
+static void php_ds_vector_iterator_move_forward(zend_object_iterator *iter)
 {
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
-    iterator->position++;
+    ((php_ds_vector_iterator_t *) iter)->position++;
 }
 
-static void php_ds_vector_iterator_rewind(zend_object_iterator *i)
+static void php_ds_vector_iterator_rewind(zend_object_iterator *iter)
 {
-    php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) i;
-    iterator->position = 0;
+    ((php_ds_vector_iterator_t *) iter)->position = 0;
 }
 
 static zend_object_iterator_funcs php_ds_vector_iterator_funcs = {
@@ -48,12 +47,8 @@ static zend_object_iterator_funcs php_ds_vector_iterator_funcs = {
     php_ds_vector_iterator_rewind
 };
 
-static zend_object_iterator *php_ds_vector_create_iterator(
-    ds_vector_t *vector,
-    zend_object_iterator_funcs *funcs,
-    int by_ref
-) {
-
+static zend_object_iterator *php_ds_vector_create_iterator(zval *obj, int by_ref)
+{
     php_ds_vector_iterator_t *iterator;
 
     if (by_ref) {
@@ -65,20 +60,19 @@ static zend_object_iterator *php_ds_vector_create_iterator(
 
     zend_iterator_init((zend_object_iterator*) iterator);
 
-    iterator->intern.funcs  = funcs;
+    iterator->intern.funcs  = &php_ds_vector_iterator_funcs;
     iterator->position      = 0;
-    iterator->vector        = vector;
+    iterator->vector        = Z_DS_VECTOR_P(obj);
+    iterator->obj           = obj;
+
+    // Add a reference to the object so that it doesn't get collected when
+    // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
+    Z_TRY_ADDREF_P(obj);
 
     return (zend_object_iterator *) iterator;
 }
 
-zend_object_iterator *php_ds_vector_get_iterator_ex(zend_class_entry *ce, zval *obj, int by_ref, ds_vector_t *vector)
-{
-    return php_ds_vector_create_iterator(vector, &php_ds_vector_iterator_funcs, by_ref);
-}
-
 zend_object_iterator *php_ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
-    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
-    return php_ds_vector_create_iterator(vector, &php_ds_vector_iterator_funcs, by_ref);
+    return php_ds_vector_create_iterator(obj, by_ref);
 }
