@@ -20,7 +20,7 @@ build_script:
 
     xcopy C:\projects\extension C:\projects\php-src\ext\ds /s /e /y
 
-    wget http://windows.php.net/downloads/php-sdk/deps-7.0-vc14-x86.7z
+    wget http://windows.php.net/downloads/php-sdk/deps-master-vc14-x86.7z
 
     7z x -y deps-7.0-vc14-x86.7z -oC:\projects\php-src
 
