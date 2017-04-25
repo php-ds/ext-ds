@@ -6,9 +6,8 @@
 
 typedef struct php_ds_vector_iterator {
     zend_object_iterator     intern;
+    php_ds_vector_t         *vector_obj;
     zend_long                position;
-    ds_vector_t             *vector;
-    zval                    *obj;
 } php_ds_vector_iterator_t;
 
 zend_object_iterator *php_ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);
