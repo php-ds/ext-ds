@@ -6,7 +6,8 @@
 
 typedef struct php_ds_deque_iterator {
     zend_object_iterator    intern;
-    php_ds_deque_t         *deque_obj;
+    zend_object            *object;
+    ds_deque_t             *deque;
     zend_long               position;
 } php_ds_deque_iterator_t;
 
