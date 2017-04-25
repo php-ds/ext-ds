@@ -22,7 +22,7 @@ build_script:
 
     wget http://windows.php.net/downloads/php-sdk/deps-master-vc14-x86.7z
 
-    7z x -y deps-7.0-vc14-x86.7z -oC:\projects\php-src
+    7z x -y deps-master-vc14-x86.7z -oC:\projects\php-src
 
     cd C:\projects\php-src
 
