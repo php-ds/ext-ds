@@ -4,26 +4,26 @@ install:
 - cmd: cinst wget
 - cmd: mkdir C:\projects\extension\bin
 - cmd: wget https://getcomposer.org/composer.phar -O C:\projects\extension\bin\composer.phar
+
 build_script:
 - cmd: >-
     "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\vcvars32.bat"
 
     wget http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip
-
     7z x -y php-sdk-binary-tools-20110915.zip -oC:\projects\php-sdk
 
     C:\projects\php-sdk\bin\phpsdk_setvars.bat
 
-    git clone https://github.com/php/php-src C:\projects\php-src
-
+    wget https://github.com/php/php-src/archive/master.zip
+    7z x -y master.zip -o C:\projects\php-src
+    
     mkdir C:\projects\php-src\ext\ds
 
     xcopy C:\projects\extension C:\projects\php-src\ext\ds /s /e /y
 
     wget http://windows.php.net/downloads/php-sdk/deps-master-vc14-x86.7z
-
     7z x -y deps-master-vc14-x86.7z -oC:\projects\php-src
-
+    
     cd C:\projects\php-src
 
     buildconf.bat
@@ -39,6 +39,7 @@ build_script:
     mkdir C:\projects\extension\bin\modules.d
 
     echo extension=php_ds.dll > C:\projects\extension\bin\modules.d\php.ini
+    
 test_script:
 - cmd: cd C:\projects\extension
 - cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar install --prefer-source
