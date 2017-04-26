@@ -9,16 +9,18 @@ install:
 build_script:
 - cmd: >-
     "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\vcvars32.bat"
+    
+    git clone https://github.com/php/php-src C:\projects\php-src
+    
+    cd C:\projects\php-src
+    
+    git checkout PHP-7.1
 
     wget http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip
     
     7z x -y php-sdk-binary-tools-20110915.zip -oC:\projects\php-sdk
 
     C:\projects\php-sdk\bin\phpsdk_setvars.bat
-
-    wget https://github.com/php/php-src/archive/PHP-7.1.zip
-    
-    7z x -y PHP-7.1.zip -oC:\projects\php-src
     
     mkdir C:\projects\php-src\ext\ds
 
@@ -27,10 +29,6 @@ build_script:
     wget http://windows.php.net/downloads/php-sdk/deps-master-vc14-x86.7z
     
     7z x -y deps-master-vc14-x86.7z -oC:\projects\php-src
-    
-    cd C:\projects\php-src
-    
-    dir
 
     buildconf.bat
 
