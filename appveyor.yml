@@ -18,7 +18,7 @@ build_script:
 
     wget https://github.com/php/php-src/archive/PHP-7.1.zip
     
-    7z x -y master.zip -oC:\projects\php-src
+    7z x -y PHP-7.1.zip -oC:\projects\php-src
     
     mkdir C:\projects\php-src\ext\ds
 
