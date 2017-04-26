@@ -42,9 +42,9 @@ build_script:
 
     mkdir C:\projects\extension\bin\modules.d
 
-    echo extension=php_ds.dll > C:\projects\extension\bin\modules.d\php.ini
+    echo extension=php_ds.dll >> C:\projects\extension\bin\modules.d\php.ini
     
-    echo extension=php_openssl.dll > C:\projects\extension\bin\modules.d\php.ini
+    echo extension=php_openssl.dll >> C:\projects\extension\bin\modules.d\php.ini
     
 test_script:
 - cmd: cd C:\projects\extension
