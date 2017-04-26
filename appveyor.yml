@@ -29,6 +29,8 @@ build_script:
     7z x -y deps-master-vc14-x86.7z -oC:\projects\php-src
     
     cd C:\projects\php-src
+    
+    dir
 
     buildconf.bat
 
