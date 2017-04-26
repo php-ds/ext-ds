@@ -1,4 +1,5 @@
 version: '{branch}.{build}'
+
 install:
 - cmd: choco feature enable -n=allowGlobalConfirmation
 - cmd: cinst wget
@@ -10,11 +11,13 @@ build_script:
     "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\vcvars32.bat"
 
     wget http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip
+    
     7z x -y php-sdk-binary-tools-20110915.zip -oC:\projects\php-sdk
 
     C:\projects\php-sdk\bin\phpsdk_setvars.bat
 
     wget https://github.com/php/php-src/archive/PHP-7.1.zip
+    
     7z x -y master.zip -o C:\projects\php-src
     
     mkdir C:\projects\php-src\ext\ds
@@ -22,6 +25,7 @@ build_script:
     xcopy C:\projects\extension C:\projects\php-src\ext\ds /s /e /y
 
     wget http://windows.php.net/downloads/php-sdk/deps-master-vc14-x86.7z
+    
     7z x -y deps-master-vc14-x86.7z -oC:\projects\php-src
     
     cd C:\projects\php-src
