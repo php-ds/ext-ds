@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2017-02-11</date>
-    <time>01:32:18</time>
+    <date>2017-03-24</date>
+    <time>10:07:11</time>
     <version>
-        <release>1.1.7</release>
+        <release>1.1.8</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,8 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Preliminary support for PHP 7.2
+        - PriorityQueue automatic truncate bug #78
+        - Bugs related to unserialization. #77
     </notes>
     <contents>
         <dir name="/">

@@ -59,18 +59,22 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
     php_unserialize_data_t unserialize_data = (php_unserialize_data_t) data;
 
     const unsigned char *pos = buffer;
-    const unsigned char *max = buffer + length;
+    const unsigned char *end = buffer + length;
 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
     while (*pos != '}') {
         zval *value = var_tmp_var(&unserialize_data);
 
-        if ( ! php_var_unserialize(value, &pos, max, &unserialize_data)) {
+        if ( ! php_var_unserialize(value, &pos, end, &unserialize_data)) {
             goto error;
         }
 
         ds_vector_push(vector, value);
+    }
+
+    if (pos != end) {
+        goto error;
     }
 
     ZVAL_DS_VECTOR(obj, vector);
