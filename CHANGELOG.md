@@ -2,9 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.1.9] - 2017-04-26
+### Fixed
+- Iterating over an implicit iterator (not variable). #82
+
 ## [1.1.8] - 2017-03-24
 ### Fixed
-- PriorityQueue automatic truncate bug #78
+- PriorityQueue automatic truncate bug. #78
 - Bugs related to unserialization. #77
 
 ## [1.1.7] - 2017-02-11

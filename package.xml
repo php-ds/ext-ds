@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2017-03-24</date>
-    <time>10:07:11</time>
+    <date>2017-04-26</date>
+    <time>09:01:12</time>
     <version>
-        <release>1.1.8</release>
+        <release>1.1.9</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,8 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - PriorityQueue automatic truncate bug #78
-        - Bugs related to unserialization. #77
+        - Iterating over an implicit iterator (not variable). #82
     </notes>
     <contents>
         <dir name="/">
