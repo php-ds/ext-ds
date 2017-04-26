@@ -44,9 +44,10 @@ build_script:
 
     echo extension=php_ds.dll > C:\projects\extension\bin\modules.d\php.ini
     
+    echo extension=php_openssl.dll > C:\projects\extension\bin\modules.d\php.ini
+    
 test_script:
 - cmd: cd C:\projects\extension
-- cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar config -g -- disable-tls true
 - cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar install --prefer-source
 - cmd: C:\projects\extension\bin\php.exe test.php
 
