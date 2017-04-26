@@ -4,8 +4,11 @@
 #include "../objects/php_deque.h"
 #include "php_deque_iterator.h"
 
-static void php_ds_deque_iterator_dtor(zend_object_iterator *intern)
+static void php_ds_deque_iterator_dtor(zend_object_iterator *iter)
 {
+    php_ds_deque_iterator_t *iterator = (php_ds_deque_iterator_t *) iter;
+
+    OBJ_RELEASE(iterator->object);
 }
 
 static int php_ds_deque_iterator_valid(zend_object_iterator *iter)
@@ -48,7 +51,7 @@ static zend_object_iterator_funcs iterator_funcs = {
     php_ds_deque_iterator_rewind
 };
 
-static zend_object_iterator *create_iterator(ds_deque_t *deque, int by_ref)
+static zend_object_iterator *php_ds_deque_create_iterator(zval *obj, int by_ref)
 {
     php_ds_deque_iterator_t *iterator;
 
@@ -61,18 +64,18 @@ static zend_object_iterator *create_iterator(ds_deque_t *deque, int by_ref)
     zend_iterator_init((zend_object_iterator*) iterator);
 
     iterator->intern.funcs = &iterator_funcs;
-    iterator->deque        = deque;
+    iterator->deque        = Z_DS_DEQUE_P(obj);
+    iterator->object       = Z_OBJ_P(obj);
     iterator->position     = 0;
+
+    // Add a reference to the object so that it doesn't get collected when
+    // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
+    ++GC_REFCOUNT(iterator->object);
 
     return (zend_object_iterator *) iterator;
 }
 
-zend_object_iterator *php_ds_deque_get_iterator_ex(zend_class_entry *ce, zval *object, int by_ref, ds_deque_t *deque)
+zend_object_iterator *php_ds_deque_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
-    return create_iterator(deque, by_ref);
-}
-
-zend_object_iterator *php_ds_deque_get_iterator(zend_class_entry *ce, zval *object, int by_ref)
-{
-    return create_iterator(Z_DS_DEQUE_P(object), by_ref);
+    return php_ds_deque_create_iterator(obj, by_ref);
 }

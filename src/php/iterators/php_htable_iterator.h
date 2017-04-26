@@ -10,6 +10,7 @@ typedef struct ds_htable_iterator {
     uint32_t                 position;
     ds_htable_bucket_t      *bucket;
     ds_htable_t             *table;
+    zend_object             *obj;
 
 } ds_htable_iterator_t;
 
