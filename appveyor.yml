@@ -14,7 +14,7 @@ build_script:
 
     C:\projects\php-sdk\bin\phpsdk_setvars.bat
 
-    wget https://github.com/php/php-src/archive/master.zip
+    wget https://github.com/php/php-src/archive/PHP-7.1.zip
     7z x -y master.zip -o C:\projects\php-src
     
     mkdir C:\projects\php-src\ext\ds
@@ -28,7 +28,25 @@ build_script:
 
     buildconf.bat
 
-    configure.bat --disable-all --enable-phar --enable-json --enable-hash --enable-ctype --enable-filter --enable-tokenizer --enable-zip --with-iconv --with-openssl --with-dom --with-libxml --enable-cli --enable-zts --enable-ds=shared --with-config-file-scan-dir=C:\projects\extension\bin\modules.d --with-prefix=C:\projects\extension\bin --with-php-build=deps
+    configure.bat ^
+        --disable-all ^
+        --enable-phar ^
+        --enable-json ^
+        --enable-hash ^
+        --enable-ctype ^
+        --enable-filter ^
+        --enable-tokenizer ^
+        --enable-zip ^
+        --with-iconv ^
+        --with-openssl ^
+        --with-dom ^
+        --with-libxml ^
+        --enable-cli ^
+        --enable-zts ^
+        --enable-ds=shared ^
+        --with-config-file-scan-dir=C:\projects\extension\bin\modules.d ^
+        --with-prefix=C:\projects\extension\bin ^
+        --with-php-build=deps
 
     nmake
 
@@ -44,6 +62,7 @@ test_script:
 - cmd: cd C:\projects\extension
 - cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar install --prefer-source
 - cmd: C:\projects\extension\bin\php.exe test.php
+
 artifacts:
   - path: bin
     name: master
