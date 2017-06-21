@@ -14,7 +14,11 @@ static zval *php_ds_map_read_dimension(zval *obj, zval *offset, int type, zval *
         return NULL;
 
     } else {
-        zval *value = ds_map_get(map, offset, NULL);
+        zval *value;
+
+        ZVAL_DEREF(offset);
+
+        value = ds_map_get(map, offset, NULL);
 
         if (value && type != BP_VAR_R) {
             ZVAL_MAKE_REF(value);
@@ -33,6 +37,8 @@ static void php_ds_map_write_dimension(zval *obj, zval *offset, zval *value)
         return;
     }
 
+    ZVAL_DEREF(offset);
+
     ds_htable_put(map->table, offset, value);
 }
 
@@ -40,12 +46,17 @@ static int php_ds_map_has_dimension(zval *obj, zval *offset, int check_empty)
 {
     ds_map_t *map = Z_DS_MAP_P(obj);
 
+    ZVAL_DEREF(offset);
+
     return ds_htable_isset(map->table, offset, check_empty);
 }
 
 static void php_ds_map_unset_dimension(zval *obj, zval *offset)
 {
     ds_map_t *map = Z_DS_MAP_P(obj);
+
+    ZVAL_DEREF(offset);
+
     ds_htable_remove(map->table, offset, NULL);
 }
 
