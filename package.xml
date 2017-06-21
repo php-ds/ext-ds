@@ -19,7 +19,7 @@
     <date>2017-04-26</date>
     <time>09:01:12</time>
     <version>
-        <release>1.1.9</release>
+        <release>1.1.10</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Iterating over an implicit iterator (not variable). #82
+        - Fix using a key as reference not working correctly with array access. #86
     </notes>
     <contents>
         <dir name="/">

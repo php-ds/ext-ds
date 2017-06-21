@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.1.10] - 2017-06-22
+### Fixed
+- Using a key as reference not working correctly with array access. #86
+
 ## [1.1.9] - 2017-04-26
 ### Fixed
 - Iterating over an implicit iterator (not variable). #82
