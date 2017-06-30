@@ -8,20 +8,35 @@ zend_object_handlers php_vector_handlers;
 
 static zval *php_ds_vector_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
+    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
+    zval *value;
+
+    // Dereference the offset if it's a reference.
+    ZVAL_DEREF(offset);
+
+    // `??`
+    if (type == BP_VAR_IS) {
+        if (Z_TYPE_P(offset) != IS_LONG || ! ds_vector_isset(vector, Z_LVAL_P(offset), 0)) {
+            return &EG(uninitialized_zval);
+        }
+    }
+
+    // Enforce strict integer index.
     if (Z_TYPE_P(offset) != IS_LONG) {
         INTEGER_INDEX_REQUIRED(offset);
         return NULL;
-
-    } else {
-        zval *value = ds_vector_get(Z_DS_VECTOR_P(obj), Z_LVAL_P(offset));
-
-        // Create a reference to handle nested array access
-        if (value && type != BP_VAR_R) {
-            ZVAL_MAKE_REF(value);
-        }
-
-        return value;
     }
+
+    // Access the value at the given index.
+    value = ds_vector_get(vector, Z_LVAL_P(offset));
+
+    // If we're accessing by reference we have to create a reference.
+    // This is for access like $deque[$a][$b] = $c
+    if (value && type != BP_VAR_R) {
+        ZVAL_MAKE_REF(value);
+    }
+
+    return value;
 }
 
 static void php_ds_vector_write_dimension(zval *obj, zval *offset, zval *value)
@@ -32,16 +47,21 @@ static void php_ds_vector_write_dimension(zval *obj, zval *offset, zval *value)
     if (offset == NULL) {
         ds_vector_push(vector, value);
 
-    } else if (Z_TYPE_P(offset) != IS_LONG) {
-        INTEGER_INDEX_REQUIRED(offset);
-
     } else {
-        ds_vector_set(vector, Z_LVAL_P(offset), value);
+        ZVAL_DEREF(offset);
+
+        if (Z_TYPE_P(offset) != IS_LONG) {
+            INTEGER_INDEX_REQUIRED(offset);
+        } else {
+            ds_vector_set(vector, Z_LVAL_P(offset), value);
+        }
     }
 }
 
 static int php_ds_vector_has_dimension(zval *obj, zval *offset, int check_empty)
 {
+    ZVAL_DEREF(offset);
+
     if (Z_TYPE_P(offset) != IS_LONG) {
         return 0;
     }
@@ -54,6 +74,8 @@ static void php_ds_vector_unset_dimension(zval *obj, zval *offset)
     zend_long index;
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
 
+    ZVAL_DEREF(offset);
+
     if (Z_TYPE_P(offset) == IS_LONG) {
         index = Z_LVAL_P(offset);
 
@@ -63,7 +85,7 @@ static void php_ds_vector_unset_dimension(zval *obj, zval *offset)
         }
     }
 
-    if (ds_vector_index_exists(vector, index)) { // to avoid OOB
+    if (ds_vector_index_exists(vector, index)) { // to avoid OutOfBounds
         ds_vector_remove(vector, index, NULL);
     }
 }

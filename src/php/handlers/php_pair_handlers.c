@@ -7,7 +7,13 @@ zend_object_handlers php_pair_handlers;
 
 static zval *get_property(ds_pair_t *pair, zval *offset)
 {
-    if (offset && Z_TYPE_P(offset) == IS_STRING) {
+    if (!offset) {
+        return NULL;
+    }
+
+    ZVAL_DEREF(offset);
+
+    if (Z_TYPE_P(offset) == IS_STRING) {
         if (ZVAL_EQUALS_STRING(offset, "key")) {
             return &pair->key;
         }
@@ -32,6 +38,10 @@ static zval *php_ds_pair_get_property_ptr_ptr(zval *object, zval *offset, int ty
 
 static zval *php_ds_pair_read_property(zval *object, zval *offset, int type, void **cache_slot, zval *rv)
 {
+    if (offset) {
+        ZVAL_DEREF(offset);
+    }
+
     zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! property) {
@@ -44,6 +54,10 @@ static zval *php_ds_pair_read_property(zval *object, zval *offset, int type, voi
 
 static void php_ds_pair_write_property(zval *object, zval *offset, zval *value, void **cache_slot)
 {
+    if (offset) {
+        ZVAL_DEREF(offset);
+    }
+
     zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if (property) {
@@ -57,15 +71,19 @@ static void php_ds_pair_write_property(zval *object, zval *offset, zval *value, 
 
 static int php_ds_pair_has_property(zval *object, zval *offset, int has_set_exists, void **cache_slot)
 {
+    if (offset) {
+        ZVAL_DEREF(offset);
+    }
+
     zval *value = get_property(Z_DS_PAIR_P(object), offset);
 
     if ( ! value) {
         return false;
     }
 
-    // 0 – check whether the property exists and is not NULL; isset
-    // 1 – check whether the property exists and is true; semantics of empty
-    // 2 – check whether the property exists, even if it is NULL;
+    // 0 = check whether the property exists and is not NULL; `isset`
+    // 1 = check whether the property exists and is true; semantics of `empty`
+    // 2 = check whether the property exists, even if it is NULL
     if (has_set_exists == 2) {
         return true;
     }
@@ -75,6 +93,10 @@ static int php_ds_pair_has_property(zval *object, zval *offset, int has_set_exis
 
 static void php_ds_pair_unset_property(zval *object, zval *offset, void **cache_slot)
 {
+    if (offset) {
+        ZVAL_DEREF(offset);
+    }
+
     zval *property = get_property(Z_DS_PAIR_P(object), offset);
 
     if (property) {
