@@ -78,7 +78,8 @@ static void ds_htable_rehash(ds_htable_t *table)
                 bucket++;
             } while (++index < table->next);
 
-        } else { // There are deleted buckets
+        } else {
+            // There are deleted buckets
             do {
                 if (DS_HTABLE_BUCKET_DELETED(bucket)) {
                     uint32_t j = index;
@@ -135,7 +136,7 @@ static inline void ds_htable_auto_truncate(ds_htable_t *table)
     }
 }
 
-ds_htable_t *ds_htable_ex(uint32_t capacity)
+static ds_htable_t *ds_htable_with_capacity(uint32_t capacity)
 {
     ds_htable_t *table = ecalloc(1, sizeof(ds_htable_t));
 
@@ -152,7 +153,7 @@ ds_htable_t *ds_htable_ex(uint32_t capacity)
 
 ds_htable_t *ds_htable()
 {
-    return ds_htable_ex(DS_HTABLE_MIN_CAPACITY);
+    return ds_htable_with_capacity(DS_HTABLE_MIN_CAPACITY);
 }
 
 static void ds_htable_copy(ds_htable_t *_src, ds_htable_t *_dst)
@@ -847,7 +848,7 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
         return ds_htable();
 
     } else {
-        ds_htable_t *slice = ds_htable_ex(length);
+        ds_htable_t *slice = ds_htable_with_capacity(length);
 
         /**
          * If the table doesn't have any deleted buckets or if the first deleted
@@ -940,7 +941,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
     ds_htable_bucket_t *bucket;
     zval retval;
 
-    ds_htable_t *mapped = ds_htable_ex(table->capacity);
+    ds_htable_t *mapped = ds_htable_with_capacity(table->capacity);
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         fci.param_count = 2;
@@ -966,7 +967,7 @@ ds_htable_t *ds_htable_map(ds_htable_t *table, FCI_PARAMS)
 ds_htable_t *ds_htable_filter(ds_htable_t *table)
 {
     ds_htable_bucket_t *bucket;
-    ds_htable_t *filtered = ds_htable_ex(table->capacity);
+    ds_htable_t *filtered = ds_htable_with_capacity(table->capacity);
 
     DS_HTABLE_FOREACH_BUCKET(table, bucket) {
         if (zend_is_true(&bucket->value)) {
@@ -987,7 +988,7 @@ ds_htable_t *ds_htable_filter_callback(ds_htable_t *table, FCI_PARAMS)
     ds_htable_bucket_t *src;
     zval retval;
 
-    ds_htable_t *filtered = ds_htable_ex(table->capacity);
+    ds_htable_t *filtered = ds_htable_with_capacity(table->capacity);
 
     DS_HTABLE_FOREACH_BUCKET(table, src) {
         fci.param_count = 2;
@@ -1129,7 +1130,7 @@ void ds_htable_reverse(ds_htable_t *table)
 
 ds_htable_t *ds_htable_reversed(ds_htable_t *table)
 {
-    ds_htable_t *reversed = ds_htable_ex(table->capacity);
+    ds_htable_t *reversed = ds_htable_with_capacity(table->capacity);
 
     ds_htable_bucket_t *src = NULL;
     ds_htable_bucket_t *dst = reversed->buckets;
