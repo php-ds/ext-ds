@@ -8,19 +8,35 @@ zend_object_handlers php_deque_handlers;
 
 static zval *php_ds_deque_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
 {
+    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
+    zval *value;
+
+    // Dereference the offset if it's a reference.
+    ZVAL_DEREF(offset);
+
+    // `??`
+    if (type == BP_VAR_IS) {
+        if (Z_TYPE_P(offset) != IS_LONG || ! ds_deque_isset(deque, Z_LVAL_P(offset), 0)) {
+            return &EG(uninitialized_zval);
+        }
+    }
+
+    // Enforce strict integer index.
     if (Z_TYPE_P(offset) != IS_LONG) {
         INTEGER_INDEX_REQUIRED(offset);
         return NULL;
-
-    } else {
-        zval *value = ds_deque_get(Z_DS_DEQUE_P(obj), Z_LVAL_P(offset));
-
-        // Create a reference to handle nested array access
-        if (value && type != BP_VAR_R) {
-            ZVAL_MAKE_REF(value);
-        }
-        return value;
     }
+
+    // Access the value at the given index.
+    value = ds_deque_get(deque, Z_LVAL_P(offset));
+
+    // If we're accessing by reference we have to create a reference.
+    // This is for access like $deque[$a][$b] = $c
+    if (value && type != BP_VAR_R) {
+        ZVAL_MAKE_REF(value);
+    }
+
+    return value;
 }
 
 static void php_ds_deque_write_dimension(zval *obj, zval *offset, zval *value)
@@ -30,11 +46,14 @@ static void php_ds_deque_write_dimension(zval *obj, zval *offset, zval *value)
     if (offset == NULL) { /* $v[] = ... */
         ds_deque_push(deque, value);
 
-    } else if (Z_TYPE_P(offset) != IS_LONG) {
-        INTEGER_INDEX_REQUIRED(offset);
-
     } else {
-        ds_deque_set(deque, Z_LVAL_P(offset), value);
+        ZVAL_DEREF(offset);
+
+        if (Z_TYPE_P(offset) != IS_LONG) {
+            INTEGER_INDEX_REQUIRED(offset);
+        } else {
+            ds_deque_set(deque, Z_LVAL_P(offset), value);
+        }
     }
 }
 
@@ -44,11 +63,15 @@ static int php_ds_deque_has_dimension(zval *obj, zval *offset, int check_empty)
         return 0;
     }
 
+    ZVAL_DEREF(offset);
+
     return ds_deque_isset(Z_DS_DEQUE_P(obj), Z_LVAL_P(offset), check_empty);
 }
 
 static void php_ds_deque_unset_dimension(zval *obj, zval *offset)
 {
+    ZVAL_DEREF(offset);
+
     if (Z_TYPE_P(offset) != IS_LONG) {
         return;
 

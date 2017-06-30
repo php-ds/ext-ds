@@ -5,21 +5,31 @@
 
 zend_object_handlers php_map_handlers;
 
-static zval *php_ds_map_read_dimension(zval *obj, zval *offset, int type, zval *return_value)
+static zval *php_ds_map_read_dimension(zval *obj, zval *offset, int type, zval *rv)
 {
-    ds_map_t *map = Z_DS_MAP_P(obj);
-
     if (offset == NULL) {
         ARRAY_ACCESS_PUSH_NOT_SUPPORTED();
         return NULL;
 
     } else {
+        ds_map_t *map = Z_DS_MAP_P(obj);
         zval *value;
 
+        // Dereference the offset if it's a reference.
         ZVAL_DEREF(offset);
 
+        // `??`
+        if (type == BP_VAR_IS) {
+            if ( ! ds_htable_isset(map->table, offset, 0)) {
+                return &EG(uninitialized_zval);;
+            }
+        }
+
+        // Get the value from the map.
         value = ds_map_get(map, offset, NULL);
 
+        // If we're accessing by reference we have to create a reference.
+        // This is for access like $map[$a][$b] = $c
         if (value && type != BP_VAR_R) {
             ZVAL_MAKE_REF(value);
         }
