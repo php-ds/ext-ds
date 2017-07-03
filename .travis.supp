@@ -837,3 +837,19 @@
    fun:php_cli_startup
    fun:main
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:malloc
+   fun:zend_register_functions
+   fun:do_register_internal_class
+   fun:zend_register_internal_class_ex
+   fun:date_register_classes
+   fun:zm_startup_date
+   fun:zend_startup_module_ex
+   fun:zend_startup_module_zval
+   fun:zend_hash_apply
+   fun:zend_startup_modules
+   fun:php_module_startup
+   fun:php_cli_startup
+}
