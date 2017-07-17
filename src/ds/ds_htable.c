@@ -189,29 +189,28 @@ ds_htable_t *ds_htable_clone(ds_htable_t *src)
 }
 
 static inline bool implements_hashable(zval *key) {
-    return instanceof_function(Z_OBJCE_P(key), hashable_ce);
+    return Z_TYPE_P(key) == IS_OBJECT && instanceof_function(Z_OBJCE_P(key), hashable_ce);
 }
 
-static inline bool user_hashable_equals(zval *a, zval *b)
-{
+ static inline bool user_hashable_equals(zval *a, zval *b)
+ {
     if (Z_OBJCE_P(a) != Z_OBJCE_P(b)) {
         return false;
 
     } else {
-
         zval equals;
         zend_call_method_with_1_params(a, Z_OBJCE_P(a), NULL, "equals", &equals, b);
         return Z_TYPE(equals) == IS_TRUE;
-    }
-}
+     }
+ }
 
-static inline bool key_is_identical(zval *a, zval *b)
+static inline bool key_is_identical(zval *key, zval *other)
 {
-    if (Z_TYPE_P(a) == IS_OBJECT && implements_hashable(a)) {
-        return Z_TYPE_P(b) == IS_OBJECT && user_hashable_equals(a, b);
+    if (Z_TYPE_P(key) == IS_OBJECT && implements_hashable(key)) {
+        return Z_TYPE_P(other) == IS_OBJECT && user_hashable_equals(key, other);
     }
 
-    return zend_is_identical(a, b);
+    return zend_is_identical(key, other);
 }
 
 static inline bool ds_htable_bucket_key_match(ds_htable_bucket_t *bucket, zval *key)
@@ -229,14 +228,14 @@ static inline uint32_t get_string_zval_hash(zval *value)
     return get_string_hash(Z_STR_P(value));
 }
 
-static uint32_t get_array_hash(zval *arr)
+static uint32_t get_array_hash(zval *array)
 {
-    uint32_t                 hash;
+    uint32_t                   hash;
     php_serialize_data_t       var_hash;
     smart_str                  buffer = {0};
 
     PHP_VAR_SERIALIZE_INIT(var_hash);
-    php_var_serialize(&buffer, arr, &var_hash);
+    php_var_serialize(&buffer, array, &var_hash);
     PHP_VAR_SERIALIZE_DESTROY(var_hash);
 
     smart_str_0(&buffer);
@@ -253,9 +252,10 @@ static uint32_t get_array_hash(zval *arr)
 
 static inline uint32_t get_spl_object_hash(zval *obj)
 {
-    zend_string *s = php_spl_object_hash(obj);
-    uint32_t hash = get_string_hash(s);
-    zend_string_free(s);
+    zend_string *str = php_spl_object_hash(obj);
+    uint32_t hash = get_string_hash(str);
+    zend_string_free(str);
+
     return hash;
 }
 
@@ -267,12 +267,10 @@ static inline uint32_t get_resource_hash(zval *resource)
 static uint32_t get_object_hash(zval *obj)
 {
     if (implements_hashable(obj)) {
-
         zval hash;
         zend_call_method_with_0_params(obj, Z_OBJCE_P(obj), NULL, "hash", &hash);
 
         switch (Z_TYPE(hash)) {
-
             case IS_LONG:
                 return Z_LVAL(hash);
 
@@ -302,7 +300,6 @@ static uint32_t get_object_hash(zval *obj)
 static uint32_t get_hash(zval *value)
 {
     switch (Z_TYPE_P(value)) {
-
         case IS_LONG:
             return Z_LVAL_P(value);
 
@@ -374,35 +371,38 @@ ds_htable_bucket_t *ds_htable_lookup_by_position(ds_htable_t *table, uint32_t po
     if (table->size == 0 || position >= table->size) {
         return NULL;
 
+    // A packed table or contiguous section allows us to do a direct lookup.
     } else if (DS_HTABLE_IS_PACKED(table) || position < table->min_deleted) {
         return &table->buckets[position];
 
     } else {
-        ds_htable_bucket_t *bucket;
         uint32_t index;
 
-        // Determine from which end to traverse the buffer
-        if (position > table->size / 2) {
+        ds_htable_bucket_t *bucket;
+        ds_htable_bucket_t *stop;
 
-            // Start at the back
-            index = table->size - 1;
-            DS_HTABLE_FOREACH_BUCKET_REVERSED(table, bucket) {
-                if (index-- == position) {
-                    return bucket;
-                }
-            }
-            DS_HTABLE_FOREACH_END();
-
+        // Skip ahead if to the first deleted bucket if we know we can.
+        if (table->min_deleted <= position) {
+            index = table->min_deleted;
         } else {
-
-            // Start at the front
             index = 0;
-            DS_HTABLE_FOREACH_BUCKET(table, bucket) {
-                if (index++ == position) {
-                    return bucket;
-                }
+        }
+
+        bucket = &table->buckets[index];
+        stop   = &table->buckets[table->next];
+
+        // Scan through the buckets skipping deleted ones until we've counted
+        // enough valid buckets to have reached the one at the given position.
+        for (; bucket < stop; ++bucket) {
+            if (DS_HTABLE_BUCKET_DELETED(bucket)) {
+                continue;
             }
-            DS_HTABLE_FOREACH_END();
+
+            if (position == index) {
+                return bucket;
+            }
+
+            index++;
         }
     }
 
@@ -426,12 +426,14 @@ ds_htable_bucket_t *ds_htable_lookup_by_value(ds_htable_t *table, zval *value)
 bool ds_htable_isset(ds_htable_t *table, zval *key, bool check_empty)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_key(table, key);
+
     return bucket && ds_zval_isset(&bucket->value, check_empty);
 }
 
 zval *ds_htable_get(ds_htable_t *table, zval *key)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_key(table, key);
+
     return bucket ? &bucket->value : NULL;
 }
 

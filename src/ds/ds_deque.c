@@ -11,7 +11,7 @@
 #define ds_deque_increment_tail(_d) (_d)->tail = ((_d)->tail + 1) & ((_d)->capacity - 1)
 #define ds_deque_decrement_tail(_d) (_d)->tail = ((_d)->tail - 1) & ((_d)->capacity - 1)
 
-static inline void _memmove(
+static inline void ds_deque_memmove(
     ds_deque_t *deque,
     zend_long   dst,
     zend_long   src,
@@ -85,7 +85,7 @@ ds_deque_t *ds_deque_clone(ds_deque_t *deque)
 }
 
 
-static inline bool ds_deque_valid_index(ds_deque_t *deque, zend_long index)
+static inline bool ds_deque_valid_position(ds_deque_t *deque, zend_long index)
 {
     if (index < 0 || index >= deque->size) {
         INDEX_OUT_OF_RANGE(index, deque->size);
@@ -103,7 +103,7 @@ void ds_deque_reset_head(ds_deque_t *deque)
     }
 
     if (deque->head < deque->tail) {
-        _memmove(deque, 0, deque->head, deque->size);
+        ds_deque_memmove(deque, 0, deque->head, deque->size);
 
     } else {
         zend_long h = deque->head;
@@ -113,8 +113,8 @@ void ds_deque_reset_head(ds_deque_t *deque)
         // Check if there's enough room to push the left partition forward and
         // the wrapped values (right partition) to the front.
         if (r < (h - t)) {
-            _memmove(deque, r, 0, t);
-            _memmove(deque, 0, h, r);
+            ds_deque_memmove(deque, r, 0, t);
+            ds_deque_memmove(deque, 0, h, r);
 
         } else {
             // We don't have enough temporary space to work with, so create
@@ -223,7 +223,7 @@ static inline zval *ds_deque_lookup(ds_deque_t *deque, zend_long index)
 
 zval *ds_deque_get(ds_deque_t *deque, zend_long index)
 {
-    if ( ! ds_deque_valid_index(deque, index)) {
+    if ( ! ds_deque_valid_position(deque, index)) {
         return NULL;
     }
 
@@ -232,7 +232,7 @@ zval *ds_deque_get(ds_deque_t *deque, zend_long index)
 
 void ds_deque_set(ds_deque_t *deque, zend_long index, zval *value)
 {
-    if (ds_deque_valid_index(deque, index)) {
+    if (ds_deque_valid_position(deque, index)) {
         zval *ptr = ds_deque_lookup(deque, index);
         zval_ptr_dtor(ptr);
         ZVAL_COPY(ptr, value);
@@ -319,7 +319,7 @@ void ds_deque_pop_throw(ds_deque_t *deque, zval *return_value)
 
 void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
 {
-    if ( ! ds_deque_valid_index(deque, index)) {
+    if ( ! ds_deque_valid_position(deque, index)) {
         return;
     }
 
@@ -338,12 +338,12 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
     // Translate the positional index to a buffer index.
     index = ds_deque_lookup_index(deque, index);
 
-    // Copy the value into the return value, then destruct.
+    // Copy the value into the return value, then clear it.
     SET_AS_RETURN_AND_UNDEF(&deque->buffer[index]);
 
     if (index < deque->tail) {
         // Shift all values between the index and the tail.
-        _memmove(deque, index, index + 1, deque->tail - index);
+        ds_deque_memmove(deque, index, index + 1, deque->tail - index);
         deque->tail--;
 
     } else {
@@ -351,7 +351,7 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
         // is valid, so it must be after the head which has wrapped around.
 
         // Unshift all values between the head and the index.
-        _memmove(deque, deque->head + 1, deque->head, index - deque->head);
+        ds_deque_memmove(deque, deque->head + 1, deque->head, index - deque->head);
         deque->head++;
     }
 
@@ -391,10 +391,27 @@ void ds_deque_push_va(ds_deque_t *deque, VA_PARAMS)
     }
 }
 
-static void _ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
+void ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
 {
     zval *dst;
     zend_long index;
+
+    // Basic push if inserting at the back.
+    if (position == deque->size) {
+        ds_deque_push_va(deque, VA_ARGS);
+        return;
+    }
+
+    // Basic unshift if inserting at the front.
+    if (position == 0) {
+        ds_deque_unshift_va(deque, VA_ARGS);
+        return;
+    }
+
+    // Check that the insert position is not out of range.
+    if ( ! ds_deque_valid_position(deque, position)) {
+        return;
+    }
 
     // No op if no values.
     if (argc <= 0) {
@@ -417,7 +434,7 @@ static void _ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS
 
             // There isn't enough free space to the right of the tail,
             // so move the entire sequence all the way to the left.
-            _memmove(deque, 0, deque->head, deque->size);
+            ds_deque_memmove(deque, 0, deque->head, deque->size);
 
             index -= deque->head;
             deque->head = 0;
@@ -426,14 +443,14 @@ static void _ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS
 
         // Move the subsequence after the insertion point to the right
         // to make room for the new values.
-        _memmove(deque, (index + argc), index, (deque->tail - index));
+        ds_deque_memmove(deque, (index + argc), index, (deque->tail - index));
         deque->tail += argc;
         dst = &deque->buffer[index];
 
     } else {
         // We're inserting between a wrapped around head and the end of the
         // buffer, and it's guaranteed that there's enough free space.
-        _memmove(deque, (deque->head - argc), deque->head, (index - deque->head));
+        ds_deque_memmove(deque, (deque->head - argc), deque->head, (index - deque->head));
         deque->head -= argc;
         dst = &deque->buffer[index - argc];
     }
@@ -443,25 +460,6 @@ static void _ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS
     // Copy the new values into place.
     while (argc--) {
         ZVAL_COPY(dst++, argv++);
-    }
-}
-
-void ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
-{
-    // Basic push if inserting at the back.
-    if (position == deque->size) {
-        ds_deque_push_va(deque, VA_ARGS);
-        return;
-    }
-
-    // Basic unshift if inserting at the front.
-    if (position == 0) {
-        ds_deque_unshift_va(deque, VA_ARGS);
-        return;
-    }
-
-    if (ds_deque_valid_index(deque, position)) {
-        _ds_deque_insert_va(deque, position, VA_ARGS);
     }
 }
 

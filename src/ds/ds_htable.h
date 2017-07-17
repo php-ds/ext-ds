@@ -11,7 +11,9 @@
 #define DS_HTABLE_INVALID_INDEX ((uint32_t) -1)
 
 /**
- * Determines the calculated hash of a bucket, before mod.
+ * Determines the calculated hash of a bucket, before mod. We're using the key's
+ * zval uint32_t "next" to store this value so that we don't need another member
+ * in the bucket struct.
  */
 #define DS_HTABLE_BUCKET_HASH(_bucket) (Z_NEXT((_bucket)->key))
 
@@ -151,9 +153,9 @@ typedef struct _ds_htable_t {
     ds_htable_bucket_t  *buckets;       // Buffer for the buckets
     uint32_t            *lookup;        // Separated hash lookup table
     uint32_t             next;          // Next open index in the bucket buffer
-    uint32_t             size;          // Number of active pairs in the table
-    uint32_t             capacity;      // Number of buckets in the table
-    uint32_t             min_deleted;   // Lowest deleted bucket buffer index
+    uint32_t             size;          // Number of active buckets in the table
+    uint32_t             capacity;      // Length of the bucket buffer
+    uint32_t             min_deleted;   // First deleted bucket buffer index
 } ds_htable_t;
 
 ds_htable_t *ds_htable();
@@ -185,9 +187,11 @@ zval *ds_htable_get(ds_htable_t *h, zval *key);
 ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long length);
 
 void ds_htable_clear(ds_htable_t *h);
-ds_htable_t *ds_htable_clone(ds_htable_t *source);
 bool ds_htable_isset(ds_htable_t *h, zval *key, bool check_empty);
+ds_htable_t *ds_htable_clone(ds_htable_t *source);
+
 zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const size_t len);
+
 void ds_htable_reverse(ds_htable_t *table);
 ds_htable_t *ds_htable_reversed(ds_htable_t *table);
 
