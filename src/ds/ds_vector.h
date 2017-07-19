@@ -9,13 +9,13 @@ typedef struct ds_vector {
     zend_long   size;      // Number of values in the buffer
 } ds_vector_t;
 
-#define DS_VECTOR_MIN_CAPACITY 10 // Does not have to be a power of 2
+#define DS_VECTOR_MIN_CAPACITY  8  // Does not have to be a power of 2
 
 #define DS_VECTOR_SIZE(v)     ((v)->size)
 #define DS_VECTOR_IS_EMPTY(v) (DS_VECTOR_SIZE(v) == 0)
 
 /**
- *
+ * Foreach value
  */
 #define DS_VECTOR_FOREACH(v, z) \
 do {                            \
@@ -25,7 +25,7 @@ do {                            \
         z = x;
 
 /**
- *
+ * Foreach value from back to front
  */
 #define DS_VECTOR_FOREACH_REVERSED(v, z) \
 do {                                     \
@@ -35,7 +35,7 @@ do {                                     \
         z = x;
 
 /**
- *
+ * Call this after DS_VECTOR_FOREACH*
  */
 #define DS_VECTOR_FOREACH_END() \
     } \
