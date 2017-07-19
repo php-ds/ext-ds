@@ -20,7 +20,10 @@ static inline void ds_deque_memmove(
     memmove(&deque->buffer[dst], &deque->buffer[src], length * sizeof(zval));
 }
 
-static zend_long ds_deque_required_capacity(zend_long n)
+/**
+ * Translates a given number to an acceptable deque capacity >= n.
+ */
+static zend_long ds_deque_get_capacity_for_size(zend_long n)
 {
     // We have to allocate an extra element for the tail, so a requested power
     // of two would need to round to the next.
@@ -65,7 +68,7 @@ static ds_deque_t *ds_deque_from_buffer_ex(
 
 ds_deque_t *ds_deque_from_buffer(zval *buffer, zend_long size)
 {
-    zend_long capacity = ds_deque_required_capacity(size);
+    zend_long capacity = ds_deque_get_capacity_for_size(size);
     return ds_deque_from_buffer_ex(buffer, size, capacity);
 }
 
@@ -147,26 +150,24 @@ static inline void ds_deque_double_capacity(ds_deque_t *deque)
     ds_deque_reallocate(deque, deque->capacity * 2);
 }
 
-static inline void ds_deque_ensure_capacity(ds_deque_t *deque, zend_long size)
+static inline void ds_deque_allocate_capacity_for_size(ds_deque_t *deque, zend_long size)
 {
     if (size >= deque->capacity) {
-        ds_deque_reallocate(deque, ds_deque_required_capacity(size));
+        ds_deque_reallocate(deque, ds_deque_get_capacity_for_size(size));
     }
 }
 
 void ds_deque_allocate(ds_deque_t *deque, zend_long capacity)
 {
     // -1 because an extra slot will be allocated for the tail.
-    ds_deque_ensure_capacity(deque, capacity - 1);
+    ds_deque_allocate_capacity_for_size(deque, capacity - 1);
 }
 
 static inline void ds_deque_auto_truncate(ds_deque_t *deque)
 {
-    // Automatically truncate if the size of the deque is less than a quarter.
-    if (deque->size < deque->capacity / 4) {
-
-        // Truncate to half the capacity, but only if greater than the minimum.
-        if ((deque->capacity / 2) > DS_DEQUE_MIN_CAPACITY) {
+    // Automatically truncate if the size of the deque drops to a quarter.
+    if (deque->size <= deque->capacity / 4) {
+        if (deque->capacity / 2 >= DS_DEQUE_MIN_CAPACITY) {
             ds_deque_reallocate(deque, deque->capacity / 2);
         }
     }
@@ -361,7 +362,7 @@ void ds_deque_remove(ds_deque_t *deque, zend_long index, zval *return_value)
 
 void ds_deque_unshift_va(ds_deque_t *deque, VA_PARAMS)
 {
-    ds_deque_ensure_capacity(deque, deque->size + argc);
+    ds_deque_allocate_capacity_for_size(deque, deque->size + argc);
     deque->size += argc;
 
     while (argc--) {
@@ -375,14 +376,16 @@ void ds_deque_push(ds_deque_t *deque, zval *value)
     ZVAL_COPY(&deque->buffer[deque->tail], value);
     ds_deque_increment_tail(deque);
 
-    if ((++deque->size) == deque->capacity) {
+    deque->size++;
+
+    if (deque->size == deque->capacity) {
         ds_deque_double_capacity(deque);
     }
 }
 
 void ds_deque_push_va(ds_deque_t *deque, VA_PARAMS)
 {
-    ds_deque_ensure_capacity(deque, deque->size + argc);
+    ds_deque_allocate_capacity_for_size(deque, deque->size + argc);
 
     while (argc--) {
         ZVAL_COPY(&deque->buffer[deque->tail], argv++);
@@ -419,7 +422,7 @@ void ds_deque_insert_va(ds_deque_t *deque, zend_long position, VA_PARAMS)
     }
 
     // Make sure that we have enough room for the new values.
-    ds_deque_ensure_capacity(deque, deque->size + argc);
+    ds_deque_allocate_capacity_for_size(deque, deque->size + argc);
 
     // Translate the positional index to a buffer index.
     index = ds_deque_lookup_index(deque, position);
@@ -821,7 +824,7 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
         return ds_deque();
 
     } else {
-        zend_long capacity = ds_deque_required_capacity(length);
+        zend_long capacity = ds_deque_get_capacity_for_size(length);
 
         zval *buffer = ALLOC_ZVAL_BUFFER(capacity);
 
