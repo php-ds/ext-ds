@@ -3,7 +3,7 @@
 
 #include "../common.h"
 
-#define DS_HTABLE_MIN_CAPACITY  16  // Must be a power of 2
+#define DS_HTABLE_MIN_CAPACITY  8  // Must be a power of 2
 
 /**
  * Marker to indicate an invalid index in the buffer.
