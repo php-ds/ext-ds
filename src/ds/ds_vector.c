@@ -102,12 +102,12 @@ static inline void ds_vector_ensure_capacity(ds_vector_t *vector, zend_long capa
     }
 }
 
-static inline void ds_vector_check_compact(ds_vector_t *vector)
+static inline void ds_vector_auto_truncate(ds_vector_t *vector)
 {
     const zend_long c = vector->capacity;
     const zend_long n = vector->size;
 
-    if (n < c / 4 && c / 2 > DS_VECTOR_MIN_CAPACITY) {
+    if (n <= c / 4 && c / 2 >= DS_VECTOR_MIN_CAPACITY) {
         ds_vector_reallocate(vector, c / 2);
     }
 }
@@ -135,7 +135,7 @@ void ds_vector_remove(ds_vector_t *vector, zend_long index, zval *return_value)
         memmove(pos, pos + 1, sizeof(zval) * (vector->size - index));
         vector->size--;
 
-        ds_vector_check_compact(vector);
+        ds_vector_auto_truncate(vector);
     }
 }
 
@@ -458,7 +458,7 @@ ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values)
 void ds_vector_pop(ds_vector_t *vector, zval *return_value)
 {
     SET_AS_RETURN_AND_UNDEF(&vector->buffer[--vector->size]);
-    ds_vector_check_compact(vector);
+    ds_vector_auto_truncate(vector);
 }
 
 void ds_vector_pop_throw(ds_vector_t *vector, zval *return_value)
@@ -479,7 +479,7 @@ void ds_vector_shift(ds_vector_t *vector, zval *return_value)
 
     vector->size--;
     memmove(first, first + 1, vector->size * sizeof(zval));
-    ds_vector_check_compact(vector);
+    ds_vector_auto_truncate(vector);
 }
 
 void ds_vector_shift_throw(ds_vector_t *vector, zval *return_value)
