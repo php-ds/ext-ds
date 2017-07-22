@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2017-04-26</date>
+    <date>2017-07-22</date>
     <time>09:01:12</time>
     <version>
-        <release>1.1.10</release>
+        <release>1.2.0</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,9 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Fix using a key as reference not working correctly with array access. #86
+        - Vector's minimum and default capacity down from 10 to 8.
+        - Map and Set's minimum and default capacity down from 16 to 8.
+        - Hash function of arrays is now the length of the array, so O(1).
     </notes>
     <contents>
         <dir name="/">

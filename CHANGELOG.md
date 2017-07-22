@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - 2017-07-22
+### Changed
+- Vector's minimum and default capacity down from 10 to 8.
+- Map and Set's minimum and default capacity down from 16 to 8.
+- Hash function of arrays is now the length of the array, so O(1).
+
 ## [1.1.10] - 2017-06-22
 ### Fixed
 - Using a key as reference not working correctly with array access. #86
