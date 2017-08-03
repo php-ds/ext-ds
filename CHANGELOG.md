@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.1] - 2017-08-03
+### Changed
+- Minor capacity adjustments.
+
 ## [1.2.0] - 2017-07-22
 ### Changed
 - Vector's minimum and default capacity down from 10 to 8.
