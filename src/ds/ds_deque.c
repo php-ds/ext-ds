@@ -1,6 +1,6 @@
-#include "../php/iterators/php_deque_iterator.h"
-#include "../php/handlers/php_deque_handlers.h"
-#include "../php/classes/php_deque_ce.h"
+#include "../php/iterators/php_ds_deque_iterator.h"
+#include "../php/handlers/php_ds_deque_handlers.h"
+#include "../php/classes/php_ds_deque_ce.h"
 #include "../php/parameters.h"
 
 #include "ds_deque.h"

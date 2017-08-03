@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="ds"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/rtheunissen/git/ds/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/rtheunissen/git/ds/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/rtheunissen/git/ds/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ds">
+				<Option output="/Users/rtheunissen/git/ds/cmake-build-debug/ds" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rtheunissen/git/ds/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 ds"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ds/fast">
+				<Option output="/Users/rtheunissen/git/ds/cmake-build-debug/ds" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rtheunissen/git/ds/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 ds/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/rtheunissen/git/ds/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/rtheunissen/git/ds/config.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/php_ds.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/php_ds.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/common.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/common.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_deque.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_deque.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_htable.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_htable.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_map.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_map.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_pair.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_pair.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_pq.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_pq.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_queue.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_queue.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_set.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_set.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_stack.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_stack.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_vector.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/ds/ds_vector.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/arginfo.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_collection_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_collection_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_hashable_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_hashable_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_map_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_map_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_pq_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_pq_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_queue_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_queue_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_sequence_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_sequence_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_set_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_set_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_stack_ce.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/classes/php_ds_stack_ce.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_common_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_common_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_map_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_map_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_pq_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_pq_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_queue_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_queue_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_sequence_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_sequence_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_set_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_set_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_stack_handlers.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/handlers/php_stack_handlers.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_htable_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_htable_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_map_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_map_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_pq_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_pq_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_queue_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_queue_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_sequence_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_sequence_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_set_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_set_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_stack_iterator.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/iterators/php_stack_iterator.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_map.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_map.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_pq.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_pq.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_queue.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_queue.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_sequence.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_sequence.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_set.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_set.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_stack.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_stack.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_vector.c">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/objects/php_vector.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/src/php/parameters.h">
+			<Option target="ds"/>
+		</Unit>
+		<Unit filename="/Users/rtheunissen/git/ds/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
