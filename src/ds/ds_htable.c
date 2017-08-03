@@ -129,7 +129,7 @@ static inline void ds_htable_auto_truncate(ds_htable_t *table)
 {
     const uint32_t capacity = table->capacity;
 
-    if (table->size < (capacity / 4) && (capacity / 2) >= DS_HTABLE_MIN_CAPACITY) {
+    if (table->size <= (capacity / 4) && (capacity / 2) >= DS_HTABLE_MIN_CAPACITY) {
         ds_htable_pack(table);
         ds_htable_realloc(table, capacity / 2);
         ds_htable_rehash(table);
