@@ -784,7 +784,7 @@
    fun:malloc
    fun:zend_register_functions
    fun:do_register_internal_class
-   fun:php_ds_register_deque
+   fun:php_ds_register_sequence
    fun:zm_startup_ds
    fun:zend_startup_module_ex
    fun:zend_startup_module_zval

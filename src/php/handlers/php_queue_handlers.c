@@ -1,5 +1,5 @@
 #include "php_common_handlers.h"
-#include "php_deque_handlers.h"
+#include "php_ds_deque_handlers.h"
 
 #include "../objects/php_queue.h"
 #include "../../ds/ds_queue.h"

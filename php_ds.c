@@ -11,13 +11,10 @@
 #include "src/php/classes/php_hashable_ce.h"
 #include "src/php/classes/php_collection_ce.h"
 #include "src/php/classes/php_sequence_ce.h"
-#include "src/php/classes/php_vector_ce.h"
-#include "src/php/classes/php_deque_ce.h"
 #include "src/php/classes/php_set_ce.h"
 #include "src/php/classes/php_map_ce.h"
 #include "src/php/classes/php_stack_ce.h"
-#include "src/php/classes/php_pair_ce.h"
-#include "src/php/classes/php_priority_queue_ce.h"
+#include "src/php/classes/php_pq_ce.h"
 #include "src/php/classes/php_queue_ce.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(ds);
@@ -33,17 +30,14 @@ PHP_MINIT_FUNCTION(ds)
     // Interfaces
     php_ds_register_hashable();
     php_ds_register_collection();
-    php_ds_register_sequence();
 
     // Classes
-    php_ds_register_vector();
-    php_ds_register_deque();
+    php_ds_register_sequence();
     php_ds_register_stack();
     php_ds_register_queue();
     php_ds_register_map();
     php_ds_register_set();
-    php_ds_register_priority_queue();
-    php_ds_register_pair();
+    php_ds_register_pq();
 
     return SUCCESS;
 }
