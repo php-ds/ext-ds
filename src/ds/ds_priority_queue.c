@@ -53,7 +53,7 @@ static inline void reallocate_to_capacity(ds_priority_queue_t *queue, uint32_t c
 
 static inline void increase_capacity(ds_priority_queue_t *queue)
 {
-    reallocate_to_capacity(queue, queue->capacity << 1);
+    reallocate_to_capacity(queue, queue->capacity * 2);
 }
 
 void ds_priority_queue_allocate(ds_priority_queue_t *queue, uint32_t capacity)
@@ -118,7 +118,7 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
 
 static inline void ds_priority_queue_compact(ds_priority_queue_t *queue)
 {
-    if (queue->size < (queue->capacity / 4) && (queue->capacity / 2) > DS_PRIORITY_QUEUE_MIN_CAPACITY) {
+    if (queue->size <= (queue->capacity / 4) && (queue->capacity / 2) >= DS_PRIORITY_QUEUE_MIN_CAPACITY) {
         reallocate_to_capacity(queue, queue->capacity / 2);
     }
 }
