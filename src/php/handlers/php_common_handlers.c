@@ -15,6 +15,10 @@ int php_ds_default_cast_object(zval *obj, zval *return_value, int type)
             ZVAL_STR(return_value, buffer.s);
             return SUCCESS;
         }
+        case _IS_BOOL: {
+            ZVAL_TRUE(return_value);
+            return SUCCESS;
+        }
     }
 
     return FAILURE;
