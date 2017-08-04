@@ -1,10 +1,10 @@
-#ifndef DS_COLLECTION_CE_H
-#define DS_COLLECTION_CE_H
+#ifndef PHP_DS_COLLECTION_CE_H
+#define PHP_DS_COLLECTION_CE_H
 
-#include "../../common.h"
-#include "../arginfo.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
 
-extern zend_class_entry *collection_ce;
+extern zend_class_entry *php_ds_collection_ce;
 
 #define PHP_DS_COLLECTION_ME(cls, name) \
     PHP_ME(cls, name, arginfo_Collection_##name, ZEND_ACC_PUBLIC)

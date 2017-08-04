@@ -1,10 +1,13 @@
 #ifndef DS_DEQUE_H
 #define DS_DEQUE_H
 
-#include "../common.h"
+#include "../ds_common.h"
 #include "ds_map.h"
 
 #define DS_DEQUE_MIN_CAPACITY 8 // Must be a power of 2
+
+#define Z_DS_DEQUE(z)        ((((php_ds_sequence_t*)(Z_OBJ(z))))->deque)
+#define Z_DS_DEQUE_P(z)      Z_DS_DEQUE(*z)
 
 #define DS_DEQUE_SIZE(d)     ((d)->size)
 #define DS_DEQUE_IS_EMPTY(d) ((d)->size == 0)

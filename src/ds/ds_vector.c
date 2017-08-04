@@ -1,8 +1,3 @@
-#include "../php/iterators/php_vector_iterator.h"
-#include "../php/handlers/php_vector_handlers.h"
-#include "../php/classes/php_vector_ce.h"
-#include "../php/parameters.h"
-
 #include "ds_vector.h"
 #include "ds_map.h"
 
@@ -708,58 +703,6 @@ void ds_vector_sum(ds_vector_t *vector, zval *return_value)
         DS_ADD_TO_SUM(value, return_value);
     }
     DS_VECTOR_FOREACH_END();
-}
-
-ds_map_t *ds_vector_group_by(ds_vector_t *vector, zval *key)
-{
-    zval *value;
-
-    // This table will associate the groups with their values.
-    ds_htable_t *groups = ds_htable();
-
-    // Attempt to parse the key as a callable.
-    SETUP_CALLABLE_VARS();
-    bool use_callable = zend_fcall_info_init(
-        key, IS_CALLABLE_CHECK_SILENT, &fci, &fci_cache, NULL, NULL) == SUCCESS;
-
-    DS_VECTOR_FOREACH(vector, value) {
-        zval group;
-        int status;
-
-        if ( ! use_callable) {
-            status = ds_read_dimension_or_property(value, key, &group);
-        } else {
-            fci.param_count = 1;
-            fci.params      = value;
-            fci.retval      = &group;
-            status          = zend_call_function(&fci, &fci_cache);
-        }
-
-        // Free and exit if either the access or callable failed.
-        if (status == FAILURE || Z_ISUNDEF(group)) {
-            zval_ptr_dtor(&group);
-            ds_htable_free(groups);
-            return NULL;
-
-        } else {
-            ds_vector_t *values;
-            ds_htable_bucket_t *bucket;
-
-            // Find or create a bucket for the determined group.
-            if (ds_htable_lookup_or_create(groups, &group, &bucket)) {
-                values = Z_DS_VECTOR(bucket->value);
-            } else {
-                values = ds_vector();
-                ZVAL_DS_VECTOR(&bucket->value, values);
-            }
-
-            // Push the value into the group.
-            ds_vector_push(values, value);
-            zval_ptr_dtor(&group);
-        }
-    }
-    DS_VECTOR_FOREACH_END();
-    return ds_map_ex(groups);
 }
 
 bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS)

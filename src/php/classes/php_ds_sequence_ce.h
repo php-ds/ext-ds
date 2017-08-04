@@ -1,8 +1,10 @@
-#ifndef DS_DEQUE_CE_H
-#define DS_DEQUE_CE_H
+#ifndef PHP_DS_DEQUE_CE_H
+#define PHP_DS_DEQUE_CE_H
 
 #include "php.h"
-#include "../objects/php_sequence.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
+#include "../objects/php_ds_sequence.h"
 
 #define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
 
@@ -18,7 +20,6 @@ do {                                        \
 } while(0)
 
 extern zend_class_entry *php_ds_sequence_ce;
-
 
 ARGINFO_OPTIONAL_ZVAL(                  Sequence___construct, values);
 ARGINFO_LONG(                           Sequence_allocate, capacity);

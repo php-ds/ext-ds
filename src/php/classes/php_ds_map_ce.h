@@ -1,10 +1,10 @@
-#ifndef DS_MAP_CE_H
-#define DS_MAP_CE_H
+#ifndef PHP_DS_MAP_CE_H
+#define PHP_DS_MAP_CE_H
 
 #include "php.h"
-#include "../../common.h"
-#include "../arginfo.h"
-#include "../objects/php_map.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
+#include "../objects/php_ds_map.h"
 
 #define THIS_DS_MAP() Z_DS_MAP_P(getThis())
 

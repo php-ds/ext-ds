@@ -1,14 +1,14 @@
-#include "../common.h"
+#include "../ds_common.h"
 
-#include "../php/handlers/php_map_handlers.h"
-#include "../php/classes/php_map_ce.h"
-#include "../php/classes/php_set_ce.h"
+// #include "../php/handlers/php_ds_map_handlers.h"
+// #include "../php/classes/php_ds_map_ce.h"
+// #include "../php/classes/php_ds_set_ce.h"
 
 #include "ds_htable.h"
 #include "ds_vector.h"
 #include "ds_map.h"
 #include "ds_set.h"
-#include "ds_pair.h"
+// #include "ds_pair.h"
 
 ds_map_t *ds_map_ex(ds_htable_t *table)
 {
@@ -249,41 +249,41 @@ ds_map_t *ds_map_union(ds_map_t *map, ds_map_t *other)
     return ds_map_ex(ds_htable_merge(map->table, other->table));
 }
 
-ds_pair_t *ds_map_first(ds_map_t *map)
-{
-    ds_htable_bucket_t *bucket = ds_htable_first(map->table);
+// ds_pair_t *ds_map_first(ds_map_t *map)
+// {
+//     ds_htable_bucket_t *bucket = ds_htable_first(map->table);
 
-    if ( ! bucket) {
-        NOT_ALLOWED_WHEN_EMPTY();
-        return NULL;
-    }
+//     if ( ! bucket) {
+//         NOT_ALLOWED_WHEN_EMPTY();
+//         return NULL;
+//     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
-}
+//     return ds_pair_ex(&bucket->key, &bucket->value);
+// }
 
-ds_pair_t *ds_map_last(ds_map_t *map)
-{
-    ds_htable_bucket_t *bucket = ds_htable_last(map->table);
+// ds_pair_t *ds_map_last(ds_map_t *map)
+// {
+//     ds_htable_bucket_t *bucket = ds_htable_last(map->table);
 
-    if ( ! bucket) {
-        NOT_ALLOWED_WHEN_EMPTY();
-        return NULL;
-    }
+//     if ( ! bucket) {
+//         NOT_ALLOWED_WHEN_EMPTY();
+//         return NULL;
+//     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
-}
+//     return ds_pair_ex(&bucket->key, &bucket->value);
+// }
 
-ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
-{
-    ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(map->table, position);
+// ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
+// {
+//     ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(map->table, position);
 
-    if ( ! bucket) {
-        INDEX_OUT_OF_RANGE(position, map->table->size);
-        return NULL;
-    }
+//     if ( ! bucket) {
+//         INDEX_OUT_OF_RANGE(position, map->table->size);
+//         return NULL;
+//     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
-}
+//     return ds_pair_ex(&bucket->key, &bucket->value);
+// }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)
 {

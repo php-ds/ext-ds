@@ -1,160 +1,162 @@
-#include "../../common.h"
+#include "../../ds_common.h"
 
-#include "../parameters.h"
-#include "../arginfo.h"
+#include "../php_ds_parameters.h"
+#include "../php_ds_arginfo.h"
 
-#include "../iterators/php_sequence_iterator.h"
-#include "../handlers/php_sequence_handlers.h"
+#include "../iterators/php_ds_sequence_iterator.h"
+#include "../handlers/php_ds_sequence_handlers.h"
 
-#include "php_collection_ce.h"
-#include "php_sequence_ce.h"
-#include "php_map_ce.h"
+#include "php_ds_collection_ce.h"
+#include "php_ds_sequence_ce.h"
+#include "php_ds_map_ce.h"
 
 zend_class_entry *php_ds_sequence_ce;
 
-PHP_METHOD(Sequence, __construct)
+#define METHOD(name) PHP_METHOD(Sequence, name)
+
+METHOD(__construct)
 {
-    PARSE_OPTIONAL_ZVAL(values);
+    PHP_DS_PARAM_PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
         ds_deque_push_all(THIS_DS_DEQUE(), values);
     }
 }
 
-PHP_METHOD(Sequence, join)
+METHOD(join)
 {
     if (ZEND_NUM_ARGS()) {
-        PARSE_STRING();
+        PHP_DS_PARAM_PARSE_STRING();
         ds_deque_join(THIS_DS_DEQUE(), str, len, return_value);
     } else {
         ds_deque_join(THIS_DS_DEQUE(), NULL, 0, return_value);
     }
 }
 
-PHP_METHOD(Sequence, allocate)
+METHOD(allocate)
 {
-    PARSE_LONG(capacity);
+    PHP_DS_PARAM_PARSE_LONG(capacity);
     ds_deque_allocate(THIS_DS_DEQUE(), capacity);
 }
 
-PHP_METHOD(Sequence, apply)
+METHOD(apply)
 {
-    PARSE_CALLABLE();
+    PHP_DS_PARAM_PARSE_CALLABLE();
     ds_deque_apply(THIS_DS_DEQUE(), FCI_ARGS);
 }
 
-PHP_METHOD(Sequence, capacity)
+METHOD(capacity)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_LONG((THIS_DS_DEQUE())->capacity);
 }
 
-PHP_METHOD(Sequence, pushAll)
+METHOD(pushAll)
 {
-    PARSE_ZVAL(values);
+    PHP_DS_PARAM_PARSE_ZVAL(values);
     ds_deque_push_all(THIS_DS_DEQUE(), values);
 }
 
-PHP_METHOD(Sequence, map)
+METHOD(map)
 {
-    PARSE_CALLABLE();
-    RETURN_DS_DEQUE(ds_deque_map(THIS_DS_DEQUE(), FCI_ARGS));
+    PHP_DS_PARAM_PARSE_CALLABLE();
+    RETURN_DS_SEQUENCE(ds_deque_map(THIS_DS_DEQUE(), FCI_ARGS));
 }
 
-PHP_METHOD(Sequence, merge)
+METHOD(merge)
 {
-    PARSE_ZVAL(values);
-    RETURN_DS_DEQUE(ds_deque_merge(THIS_DS_DEQUE(), values));
+    PHP_DS_PARAM_PARSE_ZVAL(values);
+    RETURN_DS_SEQUENCE(ds_deque_merge(THIS_DS_DEQUE(), values));
 }
 
-PHP_METHOD(Sequence, each)
+METHOD(each)
 {
-    PARSE_CALLABLE();
+    PHP_DS_PARAM_PARSE_CALLABLE();
     RETURN_BOOL(ds_deque_each(THIS_DS_DEQUE(), FCI_ARGS));
 }
 
-PHP_METHOD(Sequence, groupBy)
+METHOD(groupBy)
 {
-    PARSE_ZVAL(iteratee);
+    PHP_DS_PARAM_PARSE_ZVAL(iteratee);
     RETURN_DS_MAP(ds_deque_group_by(THIS_DS_DEQUE(), iteratee));
 }
 
-PHP_METHOD(Sequence, partition)
+METHOD(partition)
 {
     if (ZEND_NUM_ARGS()) {
-        PARSE_CALLABLE();
+        PHP_DS_PARAM_PARSE_CALLABLE();
         RETURN_LONG(ds_deque_partition_callback(THIS_DS_DEQUE(), FCI_ARGS));
     } else {
         RETURN_LONG(ds_deque_partition(THIS_DS_DEQUE()));
     }
 }
 
-PHP_METHOD(Sequence, pluck)
+METHOD(pluck)
 {
-    PARSE_ZVAL(key);
-    RETURN_DS_DEQUE(ds_deque_pluck(THIS_DS_DEQUE(), key));
+    PHP_DS_PARAM_PARSE_ZVAL(key);
+    RETURN_DS_SEQUENCE(ds_deque_pluck(THIS_DS_DEQUE(), key));
 }
 
 
-PHP_METHOD(Sequence, reduce)
+METHOD(reduce)
 {
-    PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);
+    PHP_DS_PARAM_PARSE_CALLABLE_AND_OPTIONAL_ZVAL(initial);
     ds_deque_reduce(THIS_DS_DEQUE(), initial, return_value, FCI_ARGS);
 }
 
-PHP_METHOD(Sequence, filter)
+METHOD(filter)
 {
     if (ZEND_NUM_ARGS()) {
-        PARSE_CALLABLE();
-        RETURN_DS_DEQUE(ds_deque_filter_callback(THIS_DS_DEQUE(), FCI_ARGS));
+        PHP_DS_PARAM_PARSE_CALLABLE();
+        RETURN_DS_SEQUENCE(ds_deque_filter_callback(THIS_DS_DEQUE(), FCI_ARGS));
     } else {
-        PARSE_NONE;
-        RETURN_DS_DEQUE(ds_deque_filter(THIS_DS_DEQUE()));
+        PHP_DS_PARAM_PARSE_NONE;
+        RETURN_DS_SEQUENCE(ds_deque_filter(THIS_DS_DEQUE()));
     }
 }
 
-PHP_METHOD(Sequence, slice)
+METHOD(slice)
 {
     ds_deque_t *deque = THIS_DS_DEQUE();
 
     if (ZEND_NUM_ARGS() > 1) {
-        PARSE_LONG_AND_LONG(index, length);
-        RETURN_DS_DEQUE(ds_deque_slice(deque, index, length));
+        PHP_DS_PARAM_PARSE_LONG_AND_LONG(index, length);
+        RETURN_DS_SEQUENCE(ds_deque_slice(deque, index, length));
     } else {
-        PARSE_LONG(index);
-        RETURN_DS_DEQUE(ds_deque_slice(deque, index, deque->size));
+        PHP_DS_PARAM_PARSE_LONG(index);
+        RETURN_DS_SEQUENCE(ds_deque_slice(deque, index, deque->size));
     }
 }
 
-PHP_METHOD(Sequence, sort)
+METHOD(sort)
 {
     ds_deque_t *sorted = THIS_DS_DEQUE();
 
     if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+        PHP_DS_PARAM_PARSE_COMPARE_CALLABLE();
         ds_deque_sort_callback(sorted);
     } else {
         ds_deque_sort(sorted);
     }
 }
 
-PHP_METHOD(Sequence, sorted)
+METHOD(sorted)
 {
     ds_deque_t *sorted = ds_deque_clone(THIS_DS_DEQUE());
 
     if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+        PHP_DS_PARAM_PARSE_COMPARE_CALLABLE();
         ds_deque_sort_callback(sorted);
     } else {
         ds_deque_sort(sorted);
     }
 
-    RETURN_DS_DEQUE(sorted);
+    RETURN_DS_SEQUENCE(sorted);
 }
 
-PHP_METHOD(Sequence, push)
+METHOD(push)
 {
-    PARSE_VARIADIC_ZVAL();
+    PHP_DS_PARAM_PARSE_VARIADIC_ZVAL();
     if (argc == 1) {
         ds_deque_push(THIS_DS_DEQUE(), argv);
     } else {
@@ -162,130 +164,130 @@ PHP_METHOD(Sequence, push)
     }
 }
 
-PHP_METHOD(Sequence, unshift)
+METHOD(unshift)
 {
-    PARSE_VARIADIC_ZVAL();
+    PHP_DS_PARAM_PARSE_VARIADIC_ZVAL();
     ds_deque_unshift_va(THIS_DS_DEQUE(), argc, argv);
 }
 
-PHP_METHOD(Sequence, pop)
+METHOD(pop)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_pop_throw(THIS_DS_DEQUE(), return_value);
 }
 
-PHP_METHOD(Sequence, shift)
+METHOD(shift)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_shift_throw(THIS_DS_DEQUE(), return_value);
 }
 
-PHP_METHOD(Sequence, first)
+METHOD(first)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_ZVAL_COPY(ds_deque_get_first_throw(THIS_DS_DEQUE()));
 }
 
-PHP_METHOD(Sequence, last)
+METHOD(last)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_ZVAL_COPY(ds_deque_get_last_throw(THIS_DS_DEQUE()));
 }
 
-PHP_METHOD(Sequence, count)
+METHOD(count)
 {
     ds_deque_t *deque = THIS_DS_DEQUE();
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_LONG(deque->size);
 }
 
-PHP_METHOD(Sequence, clear)
+METHOD(clear)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_clear(THIS_DS_DEQUE());
 }
 
-PHP_METHOD(Sequence, contains)
+METHOD(contains)
 {
-    PARSE_VARIADIC_ZVAL();
+    PHP_DS_PARAM_PARSE_VARIADIC_ZVAL();
     RETURN_BOOL(ds_deque_contains_va(THIS_DS_DEQUE(), argc, argv));
 }
 
-PHP_METHOD(Sequence, sum)
+METHOD(sum)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_sum(THIS_DS_DEQUE(), return_value);
 }
 
-PHP_METHOD(Sequence, toArray)
+METHOD(toArray)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
 }
 
-PHP_METHOD(Sequence, get)
+METHOD(get)
 {
-    PARSE_LONG(index);
+    PHP_DS_PARAM_PARSE_LONG(index);
     RETURN_ZVAL_COPY(ds_deque_get(THIS_DS_DEQUE(), index));
 }
 
-PHP_METHOD(Sequence, set)
+METHOD(set)
 {
-    PARSE_LONG_AND_ZVAL(index, value);
+    PHP_DS_PARAM_PARSE_LONG_AND_ZVAL(index, value);
     ds_deque_set(THIS_DS_DEQUE(), index, value);
 }
 
-PHP_METHOD(Sequence, find)
+METHOD(find)
 {
-    PARSE_ZVAL(value);
+    PHP_DS_PARAM_PARSE_ZVAL(value);
     ds_deque_find(THIS_DS_DEQUE(), value, return_value);
 }
 
-PHP_METHOD(Sequence, remove)
+METHOD(remove)
 {
-    PARSE_LONG(index);
+    PHP_DS_PARAM_PARSE_LONG(index);
     ds_deque_remove(THIS_DS_DEQUE(), index, return_value);
 }
 
-PHP_METHOD(Sequence, insert)
+METHOD(insert)
 {
-    PARSE_LONG_AND_VARIADIC_ZVAL(index);
+    PHP_DS_PARAM_PARSE_LONG_AND_VARIADIC_ZVAL(index);
     ds_deque_insert_va(THIS_DS_DEQUE(), index, argc, argv);
 }
 
-PHP_METHOD(Sequence, reverse)
+METHOD(reverse)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_reverse(THIS_DS_DEQUE());
 }
 
-PHP_METHOD(Sequence, reversed)
+METHOD(reversed)
 {
-    PARSE_NONE;
-    RETURN_DS_DEQUE(ds_deque_reversed(THIS_DS_DEQUE()));
+    PHP_DS_PARAM_PARSE_NONE;
+    RETURN_DS_SEQUENCE(ds_deque_reversed(THIS_DS_DEQUE()));
 }
 
-PHP_METHOD(Sequence, rotate)
+METHOD(rotate)
 {
-    PARSE_LONG(rotations);
+    PHP_DS_PARAM_PARSE_LONG(rotations);
     ds_deque_rotate(THIS_DS_DEQUE(), rotations);
 }
 
-PHP_METHOD(Sequence, isEmpty)
+METHOD(isEmpty)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_BOOL(DS_DEQUE_IS_EMPTY(THIS_DS_DEQUE()));
 }
 
-PHP_METHOD(Sequence, copy)
+METHOD(copy)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     RETURN_OBJ(php_ds_sequence_create_clone(THIS_DS_DEQUE()));
 }
 
-PHP_METHOD(Sequence, jsonSerialize)
+METHOD(jsonSerialize)
 {
-    PARSE_NONE;
+    PHP_DS_PARAM_PARSE_NONE;
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
 }
 
@@ -335,7 +337,7 @@ void php_ds_register_sequence()
 
     INIT_CLASS_ENTRY(ce, PHP_DS_NS(Sequence), methods);
 
-    php_ds_sequence_ce = zend_register_internal_class(&ce);
+    php_ds_sequence_ce                 = zend_register_internal_class(&ce);
     php_ds_sequence_ce->ce_flags      |= ZEND_ACC_FINAL;
     php_ds_sequence_ce->create_object  = php_ds_sequence_create_object;
     php_ds_sequence_ce->get_iterator   = php_ds_sequence_get_iterator;

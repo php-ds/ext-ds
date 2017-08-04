@@ -1,7 +1,7 @@
 #ifndef DS_STACK_H
 #define DS_STACK_H
 
-#include "../common.h"
+#include "../ds_common.h"
 #include "ds_vector.h"
 
 #define DS_STACK_SIZE(s)     ((s)->vector->size)

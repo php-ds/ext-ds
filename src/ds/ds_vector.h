@@ -1,7 +1,7 @@
 #ifndef DS_VECTOR_H
 #define DS_VECTOR_H
 
-#include "../common.h"
+#include "../ds_common.h"
 #include "ds_map.h"
 
 typedef struct ds_vector {
@@ -84,7 +84,6 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS);
 ds_vector_t *ds_vector_merge(ds_vector_t *vector, zval *values);
 ds_vector_t *ds_vector_reversed(ds_vector_t *vector);
 ds_vector_t *ds_vector_pluck(ds_vector_t *vector, zval *key);
-ds_map_t    *ds_vector_group_by(ds_vector_t *vector, zval *iteratee);
 
 bool ds_vector_each(ds_vector_t *vector, FCI_PARAMS);
 void ds_vector_reduce(ds_vector_t *vector, zval *initial, zval *return_value, FCI_PARAMS);

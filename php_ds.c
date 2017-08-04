@@ -8,14 +8,16 @@
 #include "ext/standard/php_var.h"
 #include "php_ds.h"
 
-#include "src/php/classes/php_hashable_ce.h"
-#include "src/php/classes/php_collection_ce.h"
-#include "src/php/classes/php_sequence_ce.h"
-#include "src/php/classes/php_set_ce.h"
-#include "src/php/classes/php_map_ce.h"
-#include "src/php/classes/php_stack_ce.h"
-#include "src/php/classes/php_pq_ce.h"
-#include "src/php/classes/php_queue_ce.h"
+#include "src/php/classes/php_ds_hashable_ce.h"
+#include "src/php/classes/php_ds_collection_ce.h"
+#include "src/php/classes/php_ds_sequence_ce.h"
+#include "src/php/classes/php_ds_set_ce.h"
+#include "src/php/classes/php_ds_map_ce.h"
+#include "src/php/classes/php_ds_stack_ce.h"
+#include "src/php/classes/php_ds_priority_queue_ce.h"
+#include "src/php/classes/php_ds_queue_ce.h"
+// #include "src/php/classes/php_ds_tuple_ce.h"
+// #include "src/php/classes/php_ds_counter_ce.h"
 
 ZEND_DECLARE_MODULE_GLOBALS(ds);
 
@@ -37,7 +39,9 @@ PHP_MINIT_FUNCTION(ds)
     php_ds_register_queue();
     php_ds_register_map();
     php_ds_register_set();
-    php_ds_register_pq();
+    php_ds_register_priority_queue();
+    // php_ds_register_counter();
+    // php_ds_register_tuple();
 
     return SUCCESS;
 }

@@ -1,7 +1,7 @@
 #ifndef DS_SET_H
 #define DS_SET_H
 
-#include "../common.h"
+#include "../ds_common.h"
 #include "ds_htable.h"
 
 #define DS_SET_SIZE(s)     ((s)->table->size)

@@ -12,8 +12,8 @@ set(SOURCE_FILES
         src/ds/ds_map.h
         src/ds/ds_pair.c
         src/ds/ds_pair.h
-        src/ds/ds_pq.c
-        src/ds/ds_pq.h
+        src/ds/ds_priority_queue.c
+        src/ds/ds_priority_queue.h
         src/ds/ds_queue.c
         src/ds/ds_queue.h
         src/ds/ds_set.c
@@ -28,8 +28,8 @@ set(SOURCE_FILES
         src/php/classes/php_ds_hashable_ce.h
         src/php/classes/php_ds_map_ce.c
         src/php/classes/php_ds_map_ce.h
-        src/php/classes/php_ds_pq_ce.c
-        src/php/classes/php_ds_pq_ce.h
+        src/php/classes/php_ds_priority_queue_ce.c
+        src/php/classes/php_ds_priority_queue_ce.h
         src/php/classes/php_ds_queue_ce.c
         src/php/classes/php_ds_queue_ce.h
         src/php/classes/php_ds_sequence_ce.c
@@ -38,52 +38,52 @@ set(SOURCE_FILES
         src/php/classes/php_ds_set_ce.h
         src/php/classes/php_ds_stack_ce.c
         src/php/classes/php_ds_stack_ce.h
-        src/php/handlers/php_common_handlers.c
-        src/php/handlers/php_common_handlers.h
-        src/php/handlers/php_map_handlers.c
-        src/php/handlers/php_map_handlers.h
-        src/php/handlers/php_pq_handlers.c
-        src/php/handlers/php_pq_handlers.h
-        src/php/handlers/php_queue_handlers.c
-        src/php/handlers/php_queue_handlers.h
-        src/php/handlers/php_sequence_handlers.c
-        src/php/handlers/php_sequence_handlers.h
-        src/php/handlers/php_set_handlers.c
-        src/php/handlers/php_set_handlers.h
-        src/php/handlers/php_stack_handlers.c
-        src/php/handlers/php_stack_handlers.h
-        src/php/iterators/php_htable_iterator.c
-        src/php/iterators/php_htable_iterator.h
-        src/php/iterators/php_map_iterator.c
-        src/php/iterators/php_map_iterator.h
-        src/php/iterators/php_pq_iterator.c
-        src/php/iterators/php_pq_iterator.h
-        src/php/iterators/php_queue_iterator.c
-        src/php/iterators/php_queue_iterator.h
-        src/php/iterators/php_sequence_iterator.c
-        src/php/iterators/php_sequence_iterator.h
-        src/php/iterators/php_set_iterator.c
-        src/php/iterators/php_set_iterator.h
-        src/php/iterators/php_stack_iterator.c
-        src/php/iterators/php_stack_iterator.h
-        src/php/objects/php_map.c
-        src/php/objects/php_map.h
-        src/php/objects/php_pq.c
-        src/php/objects/php_pq.h
-        src/php/objects/php_queue.c
-        src/php/objects/php_queue.h
-        src/php/objects/php_sequence.c
-        src/php/objects/php_sequence.h
-        src/php/objects/php_set.c
-        src/php/objects/php_set.h
-        src/php/objects/php_stack.c
-        src/php/objects/php_stack.h
+        src/php/handlers/php_ds_common_handlers.c
+        src/php/handlers/php_ds_common_handlers.h
+        src/php/handlers/php_ds_map_handlers.c
+        src/php/handlers/php_ds_map_handlers.h
+        src/php/handlers/php_ds_priority_queue_handlers.c
+        src/php/handlers/php_ds_priority_queue_handlers.h
+        src/php/handlers/php_ds_queue_handlers.c
+        src/php/handlers/php_ds_queue_handlers.h
+        src/php/handlers/php_ds_sequence_handlers.c
+        src/php/handlers/php_ds_sequence_handlers.h
+        src/php/handlers/php_ds_set_handlers.c
+        src/php/handlers/php_ds_set_handlers.h
+        src/php/handlers/php_ds_stack_handlers.c
+        src/php/handlers/php_ds_stack_handlers.h
+        src/php/iterators/php_ds_htable_iterator.c
+        src/php/iterators/php_ds_htable_iterator.h
+        src/php/iterators/php_ds_map_iterator.c
+        src/php/iterators/php_ds_map_iterator.h
+        src/php/iterators/php_ds_priority_queue_iterator.c
+        src/php/iterators/php_ds_priority_queue_iterator.h
+        src/php/iterators/php_ds_queue_iterator.c
+        src/php/iterators/php_ds_queue_iterator.h
+        src/php/iterators/php_ds_sequence_iterator.c
+        src/php/iterators/php_ds_sequence_iterator.h
+        src/php/iterators/php_ds_set_iterator.c
+        src/php/iterators/php_ds_set_iterator.h
+        src/php/iterators/php_ds_stack_iterator.c
+        src/php/iterators/php_ds_stack_iterator.h
+        src/php/objects/php_ds_map.c
+        src/php/objects/php_ds_map.h
+        src/php/objects/php_ds_priority_queue.c
+        src/php/objects/php_ds_priority_queue.h
+        src/php/objects/php_ds_queue.c
+        src/php/objects/php_ds_queue.h
+        src/php/objects/php_ds_sequence.c
+        src/php/objects/php_ds_sequence.h
+        src/php/objects/php_ds_set.c
+        src/php/objects/php_ds_set.h
+        src/php/objects/php_ds_stack.c
+        src/php/objects/php_ds_stack.h
         src/php/objects/php_vector.c
         src/php/objects/php_vector.h
-        src/php/arginfo.h
-        src/php/parameters.h
+        src/php/php_ds_arginfo.h
+        src/php/php_ds_parameters.h
         src/common.c
-        src/common.h
+        src/ds_common.h
         config.h
         php_ds.c
         php_ds.h)
