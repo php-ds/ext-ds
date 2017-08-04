@@ -2,65 +2,64 @@ PHP_ARG_ENABLE(ds, whether to enable ds support,
 [  --enable-ds           Enable ds support])
 
 if test "$PHP_DS" != "no"; then
-  PHP_NEW_EXTENSION(ds,                       \
-                                              \
-  src/common.c                                \
-                                              \
+  PHP_NEW_EXTENSION(ds,                           \
+                                                  \
+  src/ds_common.c                                    \
+                                                  \
 dnl Internal
-  src/ds/ds_vector.c                   \
-  src/ds/ds_deque.c                    \
-  src/ds/ds_htable.c                   \
-  src/ds/ds_set.c                      \
-  src/ds/ds_map.c                      \
-  src/ds/ds_stack.c                    \
-  src/ds/ds_pair.c                     \
-  src/ds/ds_priority_queue.c           \
-  src/ds/ds_queue.c                    \
-                                                  \
-  src/php/objects/php_vector.c                    \
-  src/php/objects/php_deque.c                     \
-  src/php/objects/php_map.c                       \
-  src/php/objects/php_pair.c                      \
-  src/php/objects/php_priority_queue.c            \
-  src/php/objects/php_queue.c                     \
-  src/php/objects/php_set.c                       \
-  src/php/objects/php_stack.c                     \
-                                                  \
+  src/ds/ds_deque.c                               \
+  src/ds/ds_htable.c                              \
+  src/ds/ds_map.c                                 \
+  src/ds/ds_priority_queue.c                                  \
+  src/ds/ds_queue.c                               \
+  src/ds/ds_set.c                                 \
+  src/ds/ds_stack.c                               \
+  src/ds/ds_tuple.c                               \
+  src/ds/ds_vector.c                              \
+                                                      \
+  src/php/objects/php_ds_map.c                       \
+  src/php/objects/php_ds_priority_queue.c                        \
+  src/php/objects/php_ds_queue.c                     \
+  src/php/objects/php_ds_sequence.c                  \
+  src/php/objects/php_ds_set.c                       \
+  src/php/objects/php_ds_stack.c                     \
+  src/php/objects/php_ds_tuple.c                     \
+  src/php/objects/php_ds_counter.c                     \
+                                                     \
 dnl Iterators
-  src/php/iterators/php_vector_iterator.c         \
-  src/php/iterators/php_deque_iterator.c          \
-  src/php/iterators/php_set_iterator.c            \
-  src/php/iterators/php_map_iterator.c            \
-  src/php/iterators/php_stack_iterator.c          \
-  src/php/iterators/php_htable_iterator.c         \
-  src/php/iterators/php_priority_queue_iterator.c \
-  src/php/iterators/php_queue_iterator.c          \
+  src/php/iterators/php_ds_htable_iterator.c         \
+  src/php/iterators/php_ds_map_iterator.c            \
+  src/php/iterators/php_ds_priority_queue_iterator.c             \
+  src/php/iterators/php_ds_queue_iterator.c          \
+  src/php/iterators/php_ds_sequence_iterator.c       \
+  src/php/iterators/php_ds_set_iterator.c            \
+  src/php/iterators/php_ds_stack_iterator.c          \
+  src/php/iterators/php_ds_tuple_iterator.c          \
+  src/php/iterators/php_ds_counter_iterator.c          \
                                                   \
 dnl Handlers
-  src/php/handlers/php_common_handlers.c          \
-  src/php/handlers/php_vector_handlers.c          \
-  src/php/handlers/php_deque_handlers.c           \
-  src/php/handlers/php_set_handlers.c             \
-  src/php/handlers/php_map_handlers.c             \
-  src/php/handlers/php_stack_handlers.c           \
-  src/php/handlers/php_pair_handlers.c            \
-  src/php/handlers/php_priority_queue_handlers.c  \
-  src/php/handlers/php_queue_handlers.c           \
+  src/php/handlers/php_ds_common_handlers.c          \
+  src/php/handlers/php_ds_map_handlers.c             \
+  src/php/handlers/php_ds_priority_queue_handlers.c              \
+  src/php/handlers/php_ds_queue_handlers.c           \
+  src/php/handlers/php_ds_sequence_handlers.c        \
+  src/php/handlers/php_ds_set_handlers.c             \
+  src/php/handlers/php_ds_stack_handlers.c           \
+  src/php/handlers/php_ds_counter_handlers.c          \
                                                   \
 dnl Interfaces
-  src/php/classes/php_hashable_ce.c               \
-  src/php/classes/php_collection_ce.c             \
-  src/php/classes/php_sequence_ce.c               \
+  src/php/classes/php_ds_hashable_ce.c               \
+  src/php/classes/php_ds_collection_ce.c             \
                                                   \
 dnl Classes
-  src/php/classes/php_vector_ce.c                 \
-  src/php/classes/php_deque_ce.c                  \
-  src/php/classes/php_set_ce.c                    \
-  src/php/classes/php_map_ce.c                    \
-  src/php/classes/php_stack_ce.c                  \
-  src/php/classes/php_pair_ce.c                   \
-  src/php/classes/php_priority_queue_ce.c         \
-  src/php/classes/php_queue_ce.c                  \
+  src/php/classes/php_ds_map_ce.c                 \
+  src/php/classes/php_ds_priority_queue_ce.c                  \
+  src/php/classes/php_ds_queue_ce.c               \
+  src/php/classes/php_ds_sequence_ce.c            \
+  src/php/classes/php_ds_set_ce.c                 \
+  src/php/classes/php_ds_stack_ce.c               \
+  src/php/classes/php_ds_tuple_ce.c               \
+  src/php/classes/php_ds_counter_ce.c               \
                                                   \
   php_ds.c                                        \
                                                   \

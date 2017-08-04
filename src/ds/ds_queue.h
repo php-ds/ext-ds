@@ -1,7 +1,7 @@
 #ifndef DS_QUEUE_H
 #define DS_QUEUE_H
 
-#include "../common.h"
+#include "../ds_common.h"
 #include "ds_deque.h"
 
 #define QUEUE_SIZE(q)     ((q)->deque->size)

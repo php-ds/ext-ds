@@ -1,11 +1,11 @@
-#include "../common.h"
+#include "../ds_common.h"
 
-#include "ds_pair.h"
+// #include "ds_pair.h"
 #include "ds_htable.h"
 #include "ds_set.h"
 #include "ds_vector.h"
 
-#include "../php/classes/php_hashable_ce.h"
+#include "../php/classes/php_ds_hashable_ce.h"
 
 static uint32_t next_power_of_2(uint32_t size)
 {

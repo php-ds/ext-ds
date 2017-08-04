@@ -1,7 +1,7 @@
-#include "../../common.h"
-#include "../arginfo.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
 
-#include "php_hashable_ce.h"
+#include "php_ds_hashable_ce.h"
 
 zend_class_entry *hashable_ce;
 

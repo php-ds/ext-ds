@@ -2,9 +2,9 @@
 #define PHP_DS_STACK_CE_H
 
 #include "php.h"
-#include "../../common.h"
-#include "../arginfo.h"
-#include "../objects/php_stack.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
+#include "../objects/php_ds_stack.h"
 
 #define THIS_DS_STACK() Z_DS_STACK_P(getThis())
 

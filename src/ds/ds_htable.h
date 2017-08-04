@@ -1,7 +1,7 @@
 #ifndef DS_HTABLE_H
 #define DS_HTABLE_H
 
-#include "../common.h"
+#include "../ds_common.h"
 
 #define DS_HTABLE_MIN_CAPACITY  8  // Must be a power of 2
 

@@ -1,7 +1,7 @@
-#include "../../common.h"
-#include "php_collection_ce.h"
+#include "../../ds_common.h"
+#include "php_ds_collection_ce.h"
 
-zend_class_entry *collection_ce;
+zend_class_entry *php_ds_collection_ce;
 
 #define COLLECTION_ABSTRACT_ME(name) \
     PHP_ABSTRACT_ME(Collection, name, arginfo_Collection_##name)
@@ -20,7 +20,8 @@ void php_ds_register_collection()
 
     INIT_CLASS_ENTRY(ce, PHP_DS_NS(Collection), methods);
     php_ds_collection_ce = zend_register_internal_interface(&ce);
-    zend_class_implements(collection_ce, 4,
+
+    zend_class_implements(php_ds_collection_ce, 4,
         zend_ce_traversable,        // Traversable
         spl_ce_Countable,           // Countable
         spl_ce_ArrayAccess,         // ArrayAccess

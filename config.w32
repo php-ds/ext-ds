@@ -30,7 +30,6 @@ if (PHP_DS != "no") {
         "ds_set.c",
         "ds_map.c",
         "ds_stack.c",
-        "ds_pair.c",
         "ds_priority_queue.c",
         "ds_queue.c",
     ]);
@@ -39,52 +38,52 @@ if (PHP_DS != "no") {
     [
         "php_deque.c",
         "php_vector.c",
-        "php_map.c",
+        "php_ds_map.c",
         "php_pair.c",
         "php_priority_queue.c",
-        "php_set.c",
-        "php_stack.c",
-        "php_queue.c",
+        "php_ds_set.c",
+        "php_ds_stack.c",
+        "php_ds_queue.c",
     ]);
 
     ds_src("/php/iterators",
     [
         "php_vector_iterator.c",
         "php_deque_iterator.c",
-        "php_set_iterator.c",
-        "php_map_iterator.c",
-        "php_stack_iterator.c",
-        "php_htable_iterator.c",
+        "php_ds_set_iterator.c",
+        "php_ds_map_iterator.c",
+        "php_ds_stack_iterator.c",
+        "php_ds_htable_iterator.c",
         "php_priority_queue_iterator.c",
-        "php_queue_iterator.c",
+        "php_ds_queue_iterator.c",
     ]);
 
     ds_src("/php/handlers",
     [
-        "php_common_handlers.c",
+        "php_ds_common_handlers.c",
         "php_vector_handlers.c",
         "php_deque_handlers.c",
-        "php_set_handlers.c",
-        "php_map_handlers.c",
-        "php_stack_handlers.c",
+        "php_ds_set_handlers.c",
+        "php_ds_map_handlers.c",
+        "php_ds_stack_handlers.c",
         "php_pair_handlers.c",
         "php_priority_queue_handlers.c",
-        "php_queue_handlers.c",
+        "php_ds_queue_handlers.c",
     ]);
 
     ds_src("/php/classes",
     [
-        "php_hashable_ce.c",
-        "php_collection_ce.c",
-        "php_sequence_ce.c",
+        "php_ds_hashable_ce.c",
+        "php_ds_collection_ce.c",
+        "php_ds_sequence_ce.c",
         "php_vector_ce.c",
         "php_deque_ce.c",
-        "php_set_ce.c",
-        "php_map_ce.c",
-        "php_stack_ce.c",
+        "php_ds_set_ce.c",
+        "php_ds_map_ce.c",
+        "php_ds_stack_ce.c",
         "php_pair_ce.c",
         "php_priority_queue_ce.c",
-        "php_queue_ce.c",
+        "php_ds_queue_ce.c",
     ]);
 
     ADD_EXTENSION_DEP('ds', 'spl');

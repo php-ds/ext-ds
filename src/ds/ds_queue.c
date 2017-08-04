@@ -1,8 +1,8 @@
-#include "../common.h"
+#include "../ds_common.h"
 
-#include "../php/iterators/php_queue_iterator.h"
-#include "../php/handlers/php_queue_handlers.h"
-#include "../php/classes/php_queue_ce.h"
+#include "../php/iterators/php_ds_queue_iterator.h"
+#include "../php/handlers/php_ds_queue_handlers.h"
+#include "../php/classes/php_ds_queue_ce.h"
 
 #include "ds_deque.h"
 #include "ds_queue.h"

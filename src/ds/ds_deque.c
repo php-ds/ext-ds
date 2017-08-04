@@ -1,10 +1,6 @@
-#include "../php/iterators/php_ds_deque_iterator.h"
-#include "../php/handlers/php_ds_deque_handlers.h"
-#include "../php/classes/php_ds_deque_ce.h"
-#include "../php/parameters.h"
-
 #include "ds_deque.h"
 #include "ds_map.h"
+#include "../php/objects/php_ds_sequence.h"
 
 #define ds_deque_increment_head(_d) (_d)->head = ((_d)->head + 1) & ((_d)->capacity - 1)
 #define ds_deque_decrement_head(_d) (_d)->head = ((_d)->head - 1) & ((_d)->capacity - 1)
@@ -884,7 +880,9 @@ ds_map_t *ds_deque_group_by(ds_deque_t *deque, zval *key)
     ds_htable_t *groups = ds_htable();
 
     // Attempt to parse the key as a callable.
-    SETUP_CALLABLE_VARS();
+    zend_fcall_info       fci       = empty_fcall_info;
+    zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
+
     bool use_callable = zend_fcall_info_init(
         key, IS_CALLABLE_CHECK_SILENT, &fci, &fci_cache, NULL, NULL) == SUCCESS;
 
@@ -916,7 +914,7 @@ ds_map_t *ds_deque_group_by(ds_deque_t *deque, zval *key)
                 values = Z_DS_DEQUE(bucket->value);
             } else {
                 values = ds_deque();
-                ZVAL_DS_DEQUE(&bucket->value, values);
+                ZVAL_DS_SEQUENCE(&bucket->value, values);
             }
 
             // Push the value into the group.

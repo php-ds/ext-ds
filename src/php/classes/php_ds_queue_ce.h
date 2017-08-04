@@ -1,10 +1,10 @@
-#ifndef DS_QUEUE_CE_H
-#define DS_QUEUE_CE_H
+#ifndef PHP_DS_QUEUE_CE_H
+#define PHP_DS_QUEUE_CE_H
 
 #include "php.h"
-#include "../../common.h"
-#include "../arginfo.h"
-#include "../objects/php_queue.h"
+#include "../../ds_common.h"
+#include "../php_ds_arginfo.h"
+#include "../objects/php_ds_queue.h"
 
 #define THIS_DS_QUEUE() Z_DS_QUEUE_P(getThis())
 

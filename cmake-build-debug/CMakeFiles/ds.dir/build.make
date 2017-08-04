@@ -153,28 +153,28 @@ CMakeFiles/ds.dir/src/ds/ds_pair.c.o.provides: CMakeFiles/ds.dir/src/ds/ds_pair.
 CMakeFiles/ds.dir/src/ds/ds_pair.c.o.provides.build: CMakeFiles/ds.dir/src/ds/ds_pair.c.o
 
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/ds/ds_pq.c.o: ../src/ds/ds_pq.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/ds.dir/src/ds/ds_pq.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/ds/ds_pq.c.o   -c /Users/rtheunissen/git/ds/src/ds/ds_pq.c
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o: ../src/ds/ds_priority_queue.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o   -c /Users/rtheunissen/git/ds/src/ds/ds_priority_queue.c
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/ds/ds_pq.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/ds/ds_pq.c > CMakeFiles/ds.dir/src/ds/ds_pq.c.i
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/ds/ds_priority_queue.c > CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.i
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/ds/ds_pq.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/ds/ds_pq.c -o CMakeFiles/ds.dir/src/ds/ds_pq.c.s
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/ds/ds_priority_queue.c -o CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.s
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.o.requires:
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/ds/ds_pq.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.requires
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.o.provides: CMakeFiles/ds.dir/src/ds/ds_pq.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/ds/ds_pq.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/ds/ds_pq.c.o.provides
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.provides: CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.provides
 
-CMakeFiles/ds.dir/src/ds/ds_pq.c.o.provides.build: CMakeFiles/ds.dir/src/ds/ds_pq.c.o
+CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.provides.build: CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o
 
 
 CMakeFiles/ds.dir/src/ds/ds_queue.c.o: CMakeFiles/ds.dir/flags.make
@@ -345,28 +345,28 @@ CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o.provides: CMakeFiles/ds.dir/
 CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o.provides.build: CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o
 
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o: ../src/php/classes/php_ds_pq_ce.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o   -c /Users/rtheunissen/git/ds/src/php/classes/php_ds_pq_ce.c
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o: ../src/php/classes/php_ds_priority_queue_ce.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o   -c /Users/rtheunissen/git/ds/src/php/classes/php_ds_priority_queue_ce.c
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/classes/php_ds_pq_ce.c > CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.i
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/classes/php_ds_priority_queue_ce.c > CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.i
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/classes/php_ds_pq_ce.c -o CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.s
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/classes/php_ds_priority_queue_ce.c -o CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.s
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.requires:
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.requires
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.provides: CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.provides
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.provides: CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.provides
 
-CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.provides.build: CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o
+CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.provides.build: CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o
 
 
 CMakeFiles/ds.dir/src/php/classes/php_ds_queue_ce.c.o: CMakeFiles/ds.dir/flags.make
@@ -465,484 +465,484 @@ CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o.provides: CMakeFiles/ds.di
 CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o.provides.build: CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o: ../src/php/handlers/php_common_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_common_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o: ../src/php/handlers/php_ds_common_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_common_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_common_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_common_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_common_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_common_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o: ../src/php/handlers/php_map_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_map_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o: ../src/php/handlers/php_ds_map_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_map_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_map_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_map_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_map_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_map_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o: ../src/php/handlers/php_pq_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_pq_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o: ../src/php/handlers/php_ds_priority_queue_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_priority_queue_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_pq_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_priority_queue_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_pq_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_priority_queue_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o: ../src/php/handlers/php_queue_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_queue_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o: ../src/php/handlers/php_ds_queue_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_queue_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_queue_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_queue_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_queue_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_queue_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o: ../src/php/handlers/php_sequence_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_sequence_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o: ../src/php/handlers/php_ds_sequence_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_sequence_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_sequence_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_sequence_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_sequence_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_sequence_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o: ../src/php/handlers/php_set_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_set_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o: ../src/php/handlers/php_ds_set_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_set_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_set_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_set_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_set_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_set_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o: ../src/php/handlers/php_stack_handlers.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_stack_handlers.c
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o: ../src/php/handlers/php_ds_stack_handlers.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building C object CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o   -c /Users/rtheunissen/git/ds/src/php/handlers/php_ds_stack_handlers.c
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_stack_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.i
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/handlers/php_ds_stack_handlers.c > CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.i
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_stack_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.s
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/handlers/php_ds_stack_handlers.c -o CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.s
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.requires:
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.requires
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.provides
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.provides: CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.provides
 
-CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o
+CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.provides.build: CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o: ../src/php/iterators/php_htable_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_htable_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o: ../src/php/iterators/php_ds_htable_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_htable_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_htable_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_htable_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_htable_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_htable_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o: ../src/php/iterators/php_map_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_map_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o: ../src/php/iterators/php_ds_map_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_map_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_map_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_map_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_map_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_map_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o: ../src/php/iterators/php_pq_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_pq_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o: ../src/php/iterators/php_ds_priority_queue_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_priority_queue_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_pq_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_priority_queue_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_pq_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_priority_queue_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o: ../src/php/iterators/php_queue_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_queue_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o: ../src/php/iterators/php_ds_queue_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_queue_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_queue_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_queue_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_queue_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_queue_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o: ../src/php/iterators/php_sequence_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_sequence_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o: ../src/php/iterators/php_ds_sequence_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_sequence_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_sequence_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_sequence_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_sequence_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_sequence_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o: ../src/php/iterators/php_set_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_set_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o: ../src/php/iterators/php_ds_set_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_set_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_set_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_set_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_set_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_set_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o: ../src/php/iterators/php_stack_iterator.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_stack_iterator.c
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o: ../src/php/iterators/php_ds_stack_iterator.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building C object CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o   -c /Users/rtheunissen/git/ds/src/php/iterators/php_ds_stack_iterator.c
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_stack_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.i
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/iterators/php_ds_stack_iterator.c > CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.i
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_stack_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.s
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/iterators/php_ds_stack_iterator.c -o CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.s
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.requires:
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.requires
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.provides
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.provides: CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.provides
 
-CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o
+CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.provides.build: CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_map.c.o: ../src/php/objects/php_map.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building C object CMakeFiles/ds.dir/src/php/objects/php_map.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_map.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_map.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o: ../src/php/objects/php_ds_map.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_map.c
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_map.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_map.c > CMakeFiles/ds.dir/src/php/objects/php_map.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_map.c > CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_map.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_map.c -o CMakeFiles/ds.dir/src/php/objects/php_map.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_map.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_map.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_map.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_map.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_map.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_map.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_map.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.o: ../src/php/objects/php_pq.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building C object CMakeFiles/ds.dir/src/php/objects/php_pq.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_pq.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_pq.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o: ../src/php/objects/php_ds_priority_queue.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_priority_queue.c
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_pq.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_pq.c > CMakeFiles/ds.dir/src/php/objects/php_pq.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_priority_queue.c > CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_pq.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_pq.c -o CMakeFiles/ds.dir/src/php/objects/php_pq.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_priority_queue.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_pq.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.o: ../src/php/objects/php_queue.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building C object CMakeFiles/ds.dir/src/php/objects/php_queue.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_queue.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_queue.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o: ../src/php/objects/php_ds_queue.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_queue.c
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_queue.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_queue.c > CMakeFiles/ds.dir/src/php/objects/php_queue.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_queue.c > CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_queue.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_queue.c -o CMakeFiles/ds.dir/src/php/objects/php_queue.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_queue.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_queue.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o: ../src/php/objects/php_sequence.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building C object CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_sequence.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o: ../src/php/objects/php_ds_sequence.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_sequence.c
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_sequence.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_sequence.c > CMakeFiles/ds.dir/src/php/objects/php_sequence.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_sequence.c > CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_sequence.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_sequence.c -o CMakeFiles/ds.dir/src/php/objects/php_sequence.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_sequence.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_set.c.o: ../src/php/objects/php_set.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building C object CMakeFiles/ds.dir/src/php/objects/php_set.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_set.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_set.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o: ../src/php/objects/php_ds_set.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_set.c
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_set.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_set.c > CMakeFiles/ds.dir/src/php/objects/php_set.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_set.c > CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_set.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_set.c -o CMakeFiles/ds.dir/src/php/objects/php_set.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_set.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_set.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_set.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_set.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_set.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_set.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_set.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o
 
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.o: CMakeFiles/ds.dir/flags.make
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.o: ../src/php/objects/php_stack.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building C object CMakeFiles/ds.dir/src/php/objects/php_stack.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_stack.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_stack.c
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o: CMakeFiles/ds.dir/flags.make
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o: ../src/php/objects/php_ds_stack.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/rtheunissen/git/ds/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building C object CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o   -c /Users/rtheunissen/git/ds/src/php/objects/php_ds_stack.c
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_stack.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_stack.c > CMakeFiles/ds.dir/src/php/objects/php_stack.c.i
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/rtheunissen/git/ds/src/php/objects/php_ds_stack.c > CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.i
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_stack.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_stack.c -o CMakeFiles/ds.dir/src/php/objects/php_stack.c.s
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/rtheunissen/git/ds/src/php/objects/php_ds_stack.c -o CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.s
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.requires:
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.requires:
 
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.requires
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.requires
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.requires
-	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.provides.build
-.PHONY : CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.provides
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.provides: CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.requires
+	$(MAKE) -f CMakeFiles/ds.dir/build.make CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.provides.build
+.PHONY : CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.provides
 
-CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_stack.c.o
+CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.provides.build: CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o
 
 
 CMakeFiles/ds.dir/src/php/objects/php_vector.c.o: CMakeFiles/ds.dir/flags.make
@@ -1023,7 +1023,7 @@ ds_OBJECTS = \
 "CMakeFiles/ds.dir/src/ds/ds_htable.c.o" \
 "CMakeFiles/ds.dir/src/ds/ds_map.c.o" \
 "CMakeFiles/ds.dir/src/ds/ds_pair.c.o" \
-"CMakeFiles/ds.dir/src/ds/ds_pq.c.o" \
+"CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o" \
 "CMakeFiles/ds.dir/src/ds/ds_queue.c.o" \
 "CMakeFiles/ds.dir/src/ds/ds_set.c.o" \
 "CMakeFiles/ds.dir/src/ds/ds_stack.c.o" \
@@ -1031,31 +1031,31 @@ ds_OBJECTS = \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_collection_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_hashable_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o" \
-"CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o" \
+"CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_queue_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_sequence_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_set_ce.c.o" \
 "CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_map.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_pq.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_queue.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_set.c.o" \
-"CMakeFiles/ds.dir/src/php/objects/php_stack.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o" \
+"CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o" \
 "CMakeFiles/ds.dir/src/php/objects/php_vector.c.o" \
 "CMakeFiles/ds.dir/src/common.c.o" \
 "CMakeFiles/ds.dir/php_ds.c.o"
@@ -1067,7 +1067,7 @@ ds: CMakeFiles/ds.dir/src/ds/ds_deque.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_htable.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_map.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_pair.c.o
-ds: CMakeFiles/ds.dir/src/ds/ds_pq.c.o
+ds: CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_queue.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_set.c.o
 ds: CMakeFiles/ds.dir/src/ds/ds_stack.c.o
@@ -1075,31 +1075,31 @@ ds: CMakeFiles/ds.dir/src/ds/ds_vector.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_collection_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_hashable_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o
-ds: CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o
+ds: CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_queue_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_sequence_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_set_ce.c.o
 ds: CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_map.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_pq.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_queue.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_set.c.o
-ds: CMakeFiles/ds.dir/src/php/objects/php_stack.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o
+ds: CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o
 ds: CMakeFiles/ds.dir/src/php/objects/php_vector.c.o
 ds: CMakeFiles/ds.dir/src/common.c.o
 ds: CMakeFiles/ds.dir/php_ds.c.o
@@ -1117,7 +1117,7 @@ CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_deque.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_htable.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_map.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_pair.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_pq.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_priority_queue.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_queue.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_set.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_stack.c.o.requires
@@ -1125,31 +1125,31 @@ CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/ds/ds_vector.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_collection_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_hashable_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_map_ce.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_pq_ce.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_priority_queue_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_queue_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_sequence_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_set_ce.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/classes/php_ds_stack_ce.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_common_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_map_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_pq_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_queue_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_sequence_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_set_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_stack_handlers.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_htable_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_map_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_pq_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_queue_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_sequence_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_set_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_stack_iterator.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_map.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_pq.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_queue.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_sequence.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_set.c.o.requires
-CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_stack.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_common_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_map_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_priority_queue_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_queue_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_sequence_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_set_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/handlers/php_ds_stack_handlers.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_htable_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_map_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_priority_queue_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_queue_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_sequence_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_set_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/iterators/php_ds_stack_iterator.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_map.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_priority_queue.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_queue.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_sequence.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_set.c.o.requires
+CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_ds_stack.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/php/objects/php_vector.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/src/common.c.o.requires
 CMakeFiles/ds.dir/requires: CMakeFiles/ds.dir/php_ds.c.o.requires
