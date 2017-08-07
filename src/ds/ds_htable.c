@@ -495,6 +495,8 @@ void ds_htable_clear(ds_htable_t *table)
         ds_htable_realloc(table, DS_HTABLE_MIN_CAPACITY);
     }
 
+    ds_htable_reset_lookup(table);
+
     table->min_deleted = table->capacity;
 }
 
