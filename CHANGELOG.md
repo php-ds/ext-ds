@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.2] - 2017-08-08
+### Fixed
+- Segfault in ds_htable_lookup_bucket_by_hash. @gnoddep #86
+
 ## [1.2.1] - 2017-08-03
 ### Changed
 - Minor capacity adjustments.
