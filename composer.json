@@ -9,7 +9,7 @@
         }
     ],
     "require-dev": {
-        "php-ds/tests": "^1.1"
+        "php-ds/tests": "2.0.x-dev"
     },
     "scripts": {
         "test"   : "php test.php",
