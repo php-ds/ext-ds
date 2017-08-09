@@ -52,12 +52,12 @@ PHP_DS_PARAM_PARSE_2("zl", &z, &l)
 
 #define PHP_DS_PARAM_PARSE_VARIADIC_ZVAL() \
 zval *argv = NULL; \
-zend_long argc = 0; \
+int argc = 0; \
 PHP_DS_PARAM_PARSE_2("*", &argv, &argc)
 
 #define PHP_DS_PARAM_PARSE_LONG_AND_VARIADIC_ZVAL(_l) \
 zval *argv = NULL; \
-zend_long argc = 0; \
+int argc = 0; \
 zend_long _l = 0; \
 PHP_DS_PARAM_PARSE_3("l*", &_l, &argv, &argc)
 
