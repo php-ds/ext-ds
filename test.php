@@ -9,7 +9,7 @@ if ( ! extension_loaded('ds')) {
 }
 
 // 'false' so that PHPUnit doesn't use "exit"
-PHPUnit_TextUI_Command::main(false);
+\PHPUnit\TextUI\Command::main(false);
 
 // Attempt to collect anything left over from the tests.
 gc_collect_cycles();
