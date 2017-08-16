@@ -19,7 +19,7 @@
     <date>2017-08-08</date>
     <time>09:02:11</time>
     <version>
-        <release>1.2.2</release>
+        <release>1.2.3</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Segfault in ds_htable_lookup_bucket_by_hash. @gnoddep #86
+        - Fixed memory allocation bug on ppc64. @remicollet #88
     </notes>
     <contents>
         <dir name="/">

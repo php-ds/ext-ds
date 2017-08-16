@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.3] - 2017-08-16
+### Fixed
+- Memory allocation bug on ppc64. @remicollet #88
+
 ## [1.2.2] - 2017-08-08
 ### Fixed
 - Segfault in ds_htable_lookup_bucket_by_hash. @gnoddep #86
