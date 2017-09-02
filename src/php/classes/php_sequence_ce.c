@@ -12,7 +12,6 @@ void php_ds_register_sequence()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
-        SEQUENCE_ABSTRACT_ME(__construct)
         SEQUENCE_ABSTRACT_ME(allocate)
         SEQUENCE_ABSTRACT_ME(capacity)
         SEQUENCE_ABSTRACT_ME(contains)
