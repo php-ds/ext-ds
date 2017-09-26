@@ -9,7 +9,6 @@ extern zend_class_entry *sequence_ce;
     PHP_ME(cls, name, arginfo_Sequence_##name, ZEND_ACC_PUBLIC)
 
 #define PHP_DS_SEQUENCE_ME_LIST(cls) \
-PHP_DS_SEQUENCE_ME(cls, __construct) \
 PHP_DS_SEQUENCE_ME(cls, allocate) \
 PHP_DS_SEQUENCE_ME(cls, apply) \
 PHP_DS_SEQUENCE_ME(cls, capacity) \
@@ -38,7 +37,6 @@ PHP_DS_SEQUENCE_ME(cls, sorted) \
 PHP_DS_SEQUENCE_ME(cls, sum) \
 PHP_DS_SEQUENCE_ME(cls, unshift)
 
-ARGINFO_OPTIONAL_ZVAL(                  Sequence___construct, values);
 ARGINFO_LONG(                           Sequence_allocate, capacity);
 ARGINFO_CALLABLE(                       Sequence_apply, callback);
 ARGINFO_NONE_RETURN_LONG(               Sequence_capacity);

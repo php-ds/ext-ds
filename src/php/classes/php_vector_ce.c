@@ -262,6 +262,8 @@ void php_ds_register_vector()
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
+        PHP_DS_ME(Vector, __construct)
+
         PHP_DS_SEQUENCE_ME_LIST(Vector)
         PHP_DS_COLLECTION_ME_LIST(Vector)
         PHP_FE_END
