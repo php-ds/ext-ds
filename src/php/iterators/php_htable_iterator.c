@@ -181,7 +181,11 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(
 
     // Add a reference to the object so that it doesn't get collected when
     // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
+#if PHP_VERSION_ID >= 70300
+    GC_ADDREF(iterator->obj);
+#else
     ++GC_REFCOUNT(iterator->obj);
+#endif
 
     return (zend_object_iterator *) iterator;
 }

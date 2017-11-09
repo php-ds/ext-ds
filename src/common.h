@@ -23,7 +23,8 @@
 /**
  * Default namespace.
  */
-#define PHP_DS_NS(cls) "Ds\\" #cls
+#define PHP_DS_NS_NAME "Ds\\"
+#define PHP_DS_NS(cls) PHP_DS_NS_NAME #cls
 
 /**
  *
