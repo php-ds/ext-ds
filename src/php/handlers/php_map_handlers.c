@@ -94,17 +94,17 @@ static zend_object *php_ds_map_clone_obj(zval *obj)
     return php_ds_map_create_clone(Z_DS_MAP_P(obj));
 }
 
-static HashTable *php_ds_map_get_gc(zval *obj, zval **gc_data, int *gc_count)
+static HashTable *php_ds_map_get_gc(zval *obj, zval **gc_data, int *gc_size)
 {
     ds_map_t *map = Z_DS_MAP_P(obj);
 
     if (DS_MAP_IS_EMPTY(map)) {
         *gc_data  = NULL;
-        *gc_count = 0;
+        *gc_size = 0;
 
     } else {
-        *gc_data  = (zval*) map->table->buckets;
-        *gc_count = (int)   map->table->next * 2;
+        *gc_data = (zval*) map->table->buckets;
+        *gc_size = (int)   map->table->next * 2;
     }
 
     return NULL;

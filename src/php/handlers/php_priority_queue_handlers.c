@@ -48,6 +48,7 @@ static void ds_priority_queue_copy_gc(
     zval *target = obj->gc_data;
 
     DS_PRIORITY_QUEUE_FOREACH_VALUE(obj->queue, value) {
+        php_debug_zval_dump(value, 1);
         ZVAL_COPY_VALUE(target++, value);
     }
     DS_PRIORITY_QUEUE_FOREACH_END();
@@ -60,14 +61,21 @@ static HashTable *php_ds_priority_queue_get_gc(zval *object, zval **gc_data, int
 {
     php_ds_priority_queue_t *obj = (php_ds_priority_queue_t *) Z_OBJ_P(object);
 
-    // We have to reallocate the gc buffer if the size has changed.
-    if (obj->gc_size != obj->queue->size) {
-        obj->gc_size  = obj->queue->size;
-        REALLOC_ZVAL_BUFFER(obj->gc_data, obj->gc_size);
-    }
+    if (DS_PRIORITY_QUEUE_IS_EMPTY(obj->queue)) {
+        *gc_data = NULL;
+        *gc_size = 0;
 
-    // Copy every value from the queue in the gc buffer.
-    ds_priority_queue_copy_gc(obj, gc_data, gc_size);
+    } else {
+
+        // We have to reallocate the gc buffer if the size has changed.
+        if (obj->gc_size != obj->queue->size) {
+            obj->gc_size  = obj->queue->size;
+            REALLOC_ZVAL_BUFFER(obj->gc_data, obj->gc_size);
+        }
+
+         // Copy every value from the queue into the gc buffer.
+        ds_priority_queue_copy_gc(obj, gc_data, gc_size);
+    }
 
     return NULL;
 }
