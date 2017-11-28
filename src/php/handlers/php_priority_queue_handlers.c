@@ -48,7 +48,6 @@ static void ds_priority_queue_copy_gc(
     zval *target = obj->gc_data;
 
     DS_PRIORITY_QUEUE_FOREACH_VALUE(obj->queue, value) {
-        php_debug_zval_dump(value, 1);
         ZVAL_COPY_VALUE(target++, value);
     }
     DS_PRIORITY_QUEUE_FOREACH_END();
