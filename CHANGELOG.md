@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.4] - 2017-11-29
+### Fixed
+- Empty `PriorityQueue` causing segfault on `gc_collect_cycles`. #106
+
 ## [1.2.3] - 2017-08-16
 ### Fixed
 - Memory allocation bug on ppc64. @remicollet #88
