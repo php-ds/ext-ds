@@ -98,10 +98,6 @@ int php_ds_priority_queue_unserialize(zval *object, zend_class_entry *ce, const 
         ds_priority_queue_push(queue, value, Z_LVAL_P(priority));
     }
 
-    if (pos != end) {
-        goto error;
-    }
-
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
 

@@ -73,10 +73,6 @@ int php_ds_deque_unserialize(zval *object, zend_class_entry *ce, const unsigned 
         ds_deque_push(deque, value);
     }
 
-    if (pos != end) {
-        goto error;
-    }
-
     ZVAL_DS_DEQUE(object, deque);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;

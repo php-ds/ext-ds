@@ -73,10 +73,6 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
         ds_vector_push(vector, value);
     }
 
-    if (pos != end) {
-        goto error;
-    }
-
     ZVAL_DS_VECTOR(obj, vector);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;

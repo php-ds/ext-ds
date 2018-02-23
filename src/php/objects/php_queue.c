@@ -74,10 +74,6 @@ int php_ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned 
         ds_queue_push_one(queue, value);
     }
 
-    if (pos != end) {
-        goto error;
-    }
-
     ZVAL_DS_QUEUE(object, queue);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     return SUCCESS;
