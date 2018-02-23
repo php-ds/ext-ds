@@ -78,7 +78,7 @@ int php_ds_priority_queue_unserialize(zval *object, zend_class_entry *ce, const 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
     ZVAL_DS_PRIORITY_QUEUE(object, queue);
 
-    while (*pos != '}') {
+    while (pos != end) {
         zval *value, *priority;
 
         value = var_tmp_var(&unserialize_data);

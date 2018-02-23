@@ -64,7 +64,7 @@ int php_ds_set_unserialize(zval *object, zend_class_entry *ce, const unsigned ch
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
     ZVAL_DS_SET(object, set);
 
-    while (*pos != '}') {
+    while (pos != end) {
         zval *value = var_tmp_var(&unserialize_data);
 
         if ( ! php_var_unserialize(value, &pos, end, &unserialize_data)) {
@@ -72,10 +72,6 @@ int php_ds_set_unserialize(zval *object, zend_class_entry *ce, const unsigned ch
         }
 
         ds_set_add(set, value);
-    }
-
-    if (pos != end) {
-        goto error;
     }
 
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
