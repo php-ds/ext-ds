@@ -64,7 +64,7 @@ int php_ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned 
 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
-    while (*pos != '}') {
+    while (pos != end) {
         zval *value = var_tmp_var(&unserialize_data);
 
         if ( ! php_var_unserialize(value, &pos, end, &unserialize_data)) {
@@ -72,10 +72,6 @@ int php_ds_queue_unserialize(zval *object, zend_class_entry *ce, const unsigned 
         }
 
         ds_queue_push_one(queue, value);
-    }
-
-    if (pos != end) {
-        goto error;
     }
 
     ZVAL_DS_QUEUE(object, queue);

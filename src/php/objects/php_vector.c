@@ -63,7 +63,7 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
-    while (*pos != '}') {
+    while (pos != end) {
         zval *value = var_tmp_var(&unserialize_data);
 
         if ( ! php_var_unserialize(value, &pos, end, &unserialize_data)) {
@@ -71,10 +71,6 @@ int php_ds_vector_unserialize(zval *obj, zend_class_entry *ce, const unsigned ch
         }
 
         ds_vector_push(vector, value);
-    }
-
-    if (pos != end) {
-        goto error;
     }
 
     ZVAL_DS_VECTOR(obj, vector);
