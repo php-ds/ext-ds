@@ -8,7 +8,7 @@ You can read about it in more detail [in this blog post](https://medium.com/p/9d
 
 ## Documentation
 
-Documentation is available on [php.net](http://docs.php.net/manual/en/book.ds.php). You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for compatibility and IDE integration. The polyfill will not be loaded if the extension is enabled
+Documentation is available on [php.net](http://docs.php.net/manual/en/book.ds.php). You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration.
 
 ## Installation
 
@@ -53,7 +53,7 @@ composer memtest   # Run the tests checking for memory leaks
 
 ## Compatibility
 
-It's highly recommended that you include the [polyfill](https://github.com/php-ds/polyfill) as a dependency in your project. This allows your codebase to still function in an environment where the extension is not installed.
+You may include the [polyfill](https://github.com/php-ds/polyfill) as a dependency in your project. This allows your codebase to still function in an environment where the extension is not installed.
 
 ## Contributing
 
