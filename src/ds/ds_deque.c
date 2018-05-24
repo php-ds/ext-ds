@@ -41,7 +41,7 @@ ds_deque_t *ds_deque()
 {
     ds_deque_t *deque = ecalloc(1, sizeof(ds_deque_t));
 
-    deque->buffer   = ALLOC_ZVAL_BUFFER(DS_DEQUE_MIN_CAPACITY);
+    deque->buffer   = ds_allocate_zval_buffer(DS_DEQUE_MIN_CAPACITY);
     deque->capacity = DS_DEQUE_MIN_CAPACITY;
     deque->head     = 0;
     deque->tail     = 0;
@@ -75,7 +75,7 @@ ds_deque_t *ds_deque_from_buffer(zval *buffer, zend_long size)
 ds_deque_t *ds_deque_clone(ds_deque_t *deque)
 {
     zval *source;
-    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *buffer = ds_allocate_zval_buffer(deque->capacity);
     zval *target = buffer;
 
     DS_DEQUE_FOREACH(deque, source) {
@@ -122,7 +122,7 @@ void ds_deque_reset_head(ds_deque_t *deque)
         } else {
             // We don't have enough temporary space to work with, so create
             // a new buffer, copy to it, then replace the current buffer.
-            zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+            zval *buffer = ds_allocate_zval_buffer(deque->capacity);
 
             memcpy(&buffer[0], &deque->buffer[h], r * sizeof(zval));
             memcpy(&buffer[r], &deque->buffer[0], t * sizeof(zval));
@@ -138,8 +138,8 @@ void ds_deque_reset_head(ds_deque_t *deque)
 static void ds_deque_reallocate(ds_deque_t *deque, zend_long capacity)
 {
     ds_deque_reset_head(deque);
-    REALLOC_ZVAL_BUFFER(deque->buffer, capacity);
 
+    deque->buffer   = ds_reallocate_zval_buffer(deque->buffer, capacity, deque->size);
     deque->capacity = capacity;
     deque->head     = 0;
     deque->tail     = deque->size;
@@ -175,27 +175,18 @@ static inline void ds_deque_auto_truncate(ds_deque_t *deque)
 
 static void ds_deque_clear_buffer(ds_deque_t *deque)
 {
-    zval *value;
+    ds_deque_reset_head(deque);
+    ds_deque_reallocate(deque, DS_DEQUE_MIN_CAPACITY);
 
-    DS_DEQUE_FOREACH(deque, value) {
-        DTOR_AND_UNDEF(value);
-    }
-    DS_DEQUE_FOREACH_END();
-
-    deque->head = 0;
-    deque->tail = 0;
-    deque->size = 0;
+    deque->head   = 0;
+    deque->tail   = 0;
+    deque->size   = 0;
 }
 
 void ds_deque_clear(ds_deque_t *deque)
 {
     if (deque->size > 0) {
         ds_deque_clear_buffer(deque);
-
-        if (deque->capacity > DS_DEQUE_MIN_CAPACITY) {
-            REALLOC_ZVAL_BUFFER(deque->buffer, DS_DEQUE_MIN_CAPACITY);
-            deque->capacity = DS_DEQUE_MIN_CAPACITY;
-        }
     }
 }
 
@@ -267,7 +258,7 @@ void ds_deque_reverse(ds_deque_t *deque)
 ds_deque_t *ds_deque_reversed(ds_deque_t *deque)
 {
     zval *src;
-    zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *buf = ds_allocate_zval_buffer(deque->capacity);
     zval *dst = &buf[deque->size - 1];
 
     DS_DEQUE_FOREACH(deque, src) {
@@ -693,7 +684,7 @@ ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS)
 {
     zval retval;
     zval *value;
-    zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+    zval *buffer = ds_allocate_zval_buffer(deque->capacity);
     zval *target = buffer;
 
     DS_DEQUE_FOREACH(deque, value) {
@@ -729,7 +720,7 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
     } else {
         zval retval;
         zval *value;
-        zval *buffer = ALLOC_ZVAL_BUFFER(deque->capacity);
+        zval *buffer = ds_allocate_zval_buffer(deque->capacity);
         zval *target = buffer;
 
         DS_DEQUE_FOREACH(deque, value) {
@@ -769,7 +760,7 @@ ds_deque_t *ds_deque_filter(ds_deque_t *deque)
         return ds_deque();
 
     } else {
-        zval *buf = ALLOC_ZVAL_BUFFER(deque->capacity);
+        zval *buf = ds_allocate_zval_buffer(deque->capacity);
         zval *dst = buf;
         zval *src = NULL;
 
@@ -826,7 +817,7 @@ ds_deque_t *ds_deque_slice(ds_deque_t *deque, zend_long index, zend_long length)
     } else {
         zend_long capacity = ds_deque_get_capacity_for_size(length);
 
-        zval *buffer = ALLOC_ZVAL_BUFFER(capacity);
+        zval *buffer = ds_allocate_zval_buffer(capacity);
 
         zval *src = deque->buffer;   // Read from the source deque's buffer
         zval *dst = buffer;          // Pointer to allocated destination buffer

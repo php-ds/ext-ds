@@ -103,19 +103,6 @@ do {                                \
 } while (0)
 
 /**
- * Allocates a zval buffer of a specified length.
- */
-#define ALLOC_ZVAL_BUFFER(n) ecalloc(n, sizeof(zval))
-
-/**
- * Reallocates a zval buffer to a specified length.
- */
-#define REALLOC_ZVAL_BUFFER(ptr, n)          \
-do {                                         \
-    ptr = erealloc(ptr, (n) * sizeof(zval)); \
-} while (0)
-
-/**
  * Copies 'len' values from 'src' into 'dst'.
  */
 #define COPY_ZVAL_BUFFER(dst, src, len) \
@@ -259,6 +246,20 @@ void ds_normalize_slice_args(
     zend_long *length,
     zend_long size
 );
+
+/**
+ * Allocates a zval buffer of a specified length.
+ */
+zval *ds_allocate_zval_buffer(zend_long length);
+
+/**
+ * Reallocates a zval buffer to a specified length.
+ *
+ * @param  buffer
+ * @param  length The resulting length of the buffer.
+ * @param  used   Number of slots currently in use in the given buffer.
+ */
+zval *ds_reallocate_zval_buffer(zval *buffer, zend_long length, zend_long used);
 
 /**
  * Sorts a zval buffer in place using the default internal compare_func.

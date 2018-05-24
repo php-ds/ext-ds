@@ -46,7 +46,7 @@ HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map)
 
 zval *ds_map_pairs(ds_map_t *map)
 {
-    zval *buffer = ALLOC_ZVAL_BUFFER(DS_MAP_SIZE(map));
+    zval *buffer = ds_allocate_zval_buffer(DS_MAP_SIZE(map));
     zval *target = buffer;
 
     zval *key;

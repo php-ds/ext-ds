@@ -17,7 +17,7 @@ static inline bool index_out_of_range(zend_long index, zend_long max)
 
 static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
 {
-    REALLOC_ZVAL_BUFFER(vector->buffer, capacity);
+    vector->buffer   = ds_reallocate_zval_buffer(vector->buffer, capacity, vector->size);
     vector->capacity = capacity;
 }
 
@@ -28,7 +28,7 @@ ds_vector_t *ds_vector_ex(zend_long capacity)
     // Make sure that capacity is valid.
     capacity = MAX(capacity, DS_VECTOR_MIN_CAPACITY);
 
-    vector->buffer   = ALLOC_ZVAL_BUFFER(capacity);
+    vector->buffer   = ds_allocate_zval_buffer(capacity);
     vector->capacity = capacity;
     vector->size     = 0;
 
@@ -61,7 +61,7 @@ ds_vector_t *ds_vector_clone(ds_vector_t *vector)
     } else {
         ds_vector_t *clone = ecalloc(1, sizeof(ds_vector_t));
 
-        clone->buffer   = ALLOC_ZVAL_BUFFER(vector->capacity);
+        clone->buffer   = ds_allocate_zval_buffer(vector->capacity);
         clone->capacity = vector->capacity;
         clone->size     = vector->size;
 
@@ -76,7 +76,7 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
 
     if (size < DS_VECTOR_MIN_CAPACITY) {
         capacity = DS_VECTOR_MIN_CAPACITY;
-        REALLOC_ZVAL_BUFFER(buffer, capacity);
+        buffer   = ds_reallocate_zval_buffer(buffer, capacity, size);
     }
 
     return ds_vector_from_buffer_ex(buffer, size, capacity);
@@ -530,7 +530,7 @@ void ds_vector_reverse(ds_vector_t *vector)
 ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
 {
     zval *value;
-    zval *buffer = ALLOC_ZVAL_BUFFER(vector->capacity);
+    zval *buffer = ds_allocate_zval_buffer(vector->capacity);
     zval *target = &buffer[vector->size - 1];
 
     DS_VECTOR_FOREACH(vector, value) {
@@ -565,7 +565,7 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
     zval retval;
     zval *value;
-    zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+    zval *buffer = ds_allocate_zval_buffer(vector->size);
     zval *target = buffer;
 
     DS_VECTOR_FOREACH(vector, value) {
@@ -600,7 +600,7 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
 
     } else {
         zval *value;
-        zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *buffer = ds_allocate_zval_buffer(vector->size);
         zval *target = buffer;
 
         DS_VECTOR_FOREACH(vector, value) {
@@ -622,7 +622,7 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
     } else {
         zval retval;
         zval *value;
-        zval *buffer = ALLOC_ZVAL_BUFFER(vector->size);
+        zval *buffer = ds_allocate_zval_buffer(vector->size);
         zval *target = buffer;
 
         DS_VECTOR_FOREACH(vector, value) {
@@ -697,7 +697,7 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
 
     } else {
         zval *src, *dst, *end;
-        zval *buffer = ALLOC_ZVAL_BUFFER(length);
+        zval *buffer = ds_allocate_zval_buffer(length);
 
         src = vector->buffer + index;
         end = src + length;

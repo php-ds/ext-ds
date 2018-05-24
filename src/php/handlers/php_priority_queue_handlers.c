@@ -69,10 +69,10 @@ static HashTable *php_ds_priority_queue_get_gc(zval *object, zval **gc_data, int
         // We have to reallocate the gc buffer if the size has changed.
         if (obj->gc_size != obj->queue->size) {
             obj->gc_size  = obj->queue->size;
-            REALLOC_ZVAL_BUFFER(obj->gc_data, obj->gc_size);
+            obj->gc_data  = erealloc(obj->gc_data, obj->gc_size * sizeof(zval));
         }
 
-         // Copy every value from the queue into the gc buffer.
+        // Copy every value from the queue into the gc buffer.
         ds_priority_queue_copy_gc(obj, gc_data, gc_size);
     }
 

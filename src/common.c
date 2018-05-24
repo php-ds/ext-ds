@@ -1,5 +1,44 @@
 #include "common.h"
 
+zval *ds_allocate_zval_buffer(zend_long length)
+{
+    return ecalloc(length, sizeof(zval));
+}
+
+static zval *_ds_truncate_zval_buffer(zval *buffer, zend_long length, zend_long used)
+{
+    zend_long i;
+
+    for (i = length; i < used; i++) {
+        zval_ptr_dtor(&buffer[i]);
+    }
+
+    return erealloc(buffer, length * sizeof(zval));
+}
+
+static zval *_ds_extend_zval_buffer(zval *buffer, zend_long length, zend_long used)
+{
+    zval *extended = erealloc(buffer, length * sizeof(zval));
+    memset(extended + used, 0, (length - used) * sizeof(zval));
+
+    return extended;
+}
+
+zval *ds_reallocate_zval_buffer(zval *buffer, zend_long length, zend_long used)
+{
+    // Destruct zvals if we're truncating the buffer.
+    if (length < used) {
+        return _ds_truncate_zval_buffer(buffer, length, used);
+    }
+
+    // Extend the buffer and clear the newly allocated memory.
+    if (length > used) {
+        return _ds_extend_zval_buffer(buffer, length, used);
+    }
+
+    return buffer;
+}
+
 static int ds_zval_user_compare_func(const void *a, const void *b)
 {
     zval params[2];

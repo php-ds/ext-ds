@@ -704,7 +704,7 @@ void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
 
 zval *ds_htable_values(ds_htable_t *table)
 {
-    zval *buffer = ALLOC_ZVAL_BUFFER(table->size);
+    zval *buffer = ds_allocate_zval_buffer(table->size);
     zval *target = buffer;
     zval *value;
 
