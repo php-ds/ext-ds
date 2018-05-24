@@ -50,9 +50,10 @@ static HashTable *php_ds_queue_get_debug_info(zval *obj, int *is_temp)
 static HashTable *php_ds_queue_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
+    ds_deque_t *deque = queue->deque;
 
-    *gc_data  = queue->deque->buffer;
-    *gc_count = queue->deque->capacity;
+    *gc_data  = deque->buffer;
+    *gc_count = deque->head == 0 ? deque->size : deque->capacity;
 
     return NULL;
 }

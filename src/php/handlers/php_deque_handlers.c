@@ -121,7 +121,7 @@ static HashTable *php_ds_deque_get_gc(zval *obj, zval **gc_data, int *gc_count)
     ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     *gc_data  = deque->buffer;
-    *gc_count = deque->capacity;
+    *gc_count = deque->head == 0 ? deque->size : deque->capacity;
 
     return NULL;
 }

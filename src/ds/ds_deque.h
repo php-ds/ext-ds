@@ -5,8 +5,8 @@
 
 #define DS_DEQUE_MIN_CAPACITY 8 // Must be a power of 2
 
-#define DS_DEQUE_SIZE(d)     ((d)->size)
-#define DS_DEQUE_IS_EMPTY(d) ((d)->size == 0)
+#define DS_DEQUE_SIZE(d)      ((d)->size)
+#define DS_DEQUE_IS_EMPTY(d)  ((d)->size == 0)
 
 #define DS_DEQUE_FOREACH(_d, _v)                            \
 do {                                                        \
