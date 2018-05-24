@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2018-03-13</date>
-    <time>00:03:14</time>
+    <date>2018-05-24</date>
+    <time>00:22:59</time>
     <version>
-        <release>1.2.5</release>
+        <release>1.2.6</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Fixed empty `PriorityQueue` causing segfault on `gc_collect_cycles`. #106
+        - Fixed not clearing memory after buffer reallocation. #114
     </notes>
     <contents>
         <dir name="/">
