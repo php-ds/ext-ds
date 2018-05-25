@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.6] - 2018-05-24
+### Fixed
+- Fixed not clearing memory after buffer reallocation. #114
+
 ## [1.2.5] - 2018-03-13
 ### Fixed
 - Buffer outflow during deserialization of objects. #111
