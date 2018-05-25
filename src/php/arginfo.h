@@ -108,12 +108,12 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_CALLABLE_RETURN_DS(name, c, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, c, IS_CALLABLE, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_OPTIONAL_ZVAL_RETURN_DS(name, z, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 0) \
     ZEND_ARG_TYPE_INFO(0, z, 0, 1) \
     ZEND_END_ARG_INFO()
 
@@ -123,23 +123,23 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_ZVAL_RETURN_DS(name, z, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, z, 0, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(name, c, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 0) \
     ZEND_ARG_TYPE_INFO(0, c, IS_CALLABLE, 1) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(name, i1, i2, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, i1, IS_LONG, 0) \
     ZEND_ARG_TYPE_INFO(0, i2, IS_LONG, 1) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_LONG_RETURN_DS(name, i, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, i, IS_LONG, 0) \
     ZEND_END_ARG_INFO()
 
@@ -152,7 +152,7 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_DS(name, class_name) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, class_name, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, class_name, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_OBJ(name, class_name) \
@@ -173,7 +173,7 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_DS_RETURN_DS(name, obj, cls, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_OBJ_INFO(0, obj, Ds\\cls, 0) \
     ZEND_END_ARG_INFO()
 
