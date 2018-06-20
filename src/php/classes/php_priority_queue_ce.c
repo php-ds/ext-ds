@@ -39,7 +39,7 @@ METHOD(copy)
 
 METHOD(push)
 {
-    PARSE_ZVAL_LONG(value, priority);
+    PARSE_ZVAL_ZVAL(value, priority);
     ds_priority_queue_push(THIS_DS_PRIORITY_QUEUE(), value, priority);
 }
 

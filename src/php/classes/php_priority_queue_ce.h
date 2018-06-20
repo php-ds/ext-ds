@@ -11,7 +11,7 @@ ARGINFO_NONE(                   PriorityQueue___construct);
 ARGINFO_LONG(                   PriorityQueue_allocate, capacity);
 ARGINFO_NONE_RETURN_LONG(       PriorityQueue_capacity);
 ARGINFO_NONE_RETURN_DS(         PriorityQueue_copy, PriorityQueue);
-ARGINFO_ZVAL_LONG(              PriorityQueue_push, value, priority);
+ARGINFO_ZVAL_ZVAL(              PriorityQueue_push, value, priority);
 ARGINFO_NONE(                   PriorityQueue_pop);
 ARGINFO_NONE(                   PriorityQueue_peek);
 

@@ -44,7 +44,7 @@ zend_long l = 0; \
 zval *z = NULL; \
 PARSE_2("lz", &l, &z)
 
-#define PARSE_ZVAL_LONG(z, l) \
+#define PARSE_ZVAL_AND_LONG(z, l) \
 zval *z = NULL; \
 zend_long l = 0; \
 PARSE_2("zl", &z, &l)

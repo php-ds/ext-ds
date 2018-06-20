@@ -6,12 +6,12 @@
 
 #include "ds_priority_queue.h"
 
-#define LEFT(x)  (((x) << 1) + 1)
-#define RIGHT(x) (((x) << 1) + 2)
-#define PARENT(x) ((x - 1) >> 1)
+#define LEFT(x)   (((x) * 2) + 1)
+#define RIGHT(x)  (((x) * 2) + 2)
+#define PARENT(x) (((x) - 1) / 2)
 
 // Insertion stamp, for equal priority comparison fallback.
-#define STAMP(n) (Z_NEXT((n).value))
+#define STAMP(n) (Z_NEXT((n)->value))
 
 static uint32_t capacity_for_size(uint32_t size)
 {
@@ -29,10 +29,26 @@ static uint32_t capacity_for_size(uint32_t size)
 }
 
 // Priority comparison, with insertion stamp fallback.
-static inline int compare(ds_priority_queue_node_t a, ds_priority_queue_node_t b)
-{
-    return ((a.priority == b.priority) ? (STAMP(a) < STAMP(b) ? 1 : -1) :
-            (a.priority >  b.priority) ? 1 : -1);
+static inline int ds_priority_queue_node_compare(
+    ds_priority_queue_node_t *a,
+    ds_priority_queue_node_t *b
+) {
+    zval retval;
+
+    if (compare_function(&retval, &a->priority, &b->priority) == SUCCESS) {
+        int result = (int) zval_get_long(&retval);
+
+        // If the priorities are equal, use the insertion stamp as a tie-break.
+        if (result == 0) {
+            return (STAMP(a) < STAMP(b) ? 1 : -1);
+        }
+
+        return result;
+
+    } else {
+        // Not sure what to do when the compare function fails.
+        return 0;
+    }
 }
 
 static inline ds_priority_queue_node_t *reallocate_nodes(ds_priority_queue_node_t *nodes, uint32_t capacity)
@@ -80,8 +96,10 @@ uint32_t ds_priority_queue_capacity(ds_priority_queue_t *queue)
     return queue->capacity;
 }
 
-void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long priority)
+void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zval *priority)
 {
+    zval comparison;
+
     uint32_t parent;
     uint32_t index;
 
@@ -99,8 +117,15 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
         // Move up the heap
         parent = PARENT(index);
 
-        if (priority <= nodes[parent].priority) {
-            break;
+        // If the parent node's priority is less than or equal to the inserted,
+        // the heap is valid and we can break.
+        if (compare_function(&comparison, priority, &nodes[parent].priority) == SUCCESS) {
+            if (((int) zval_get_long(&comparison)) < 1) {
+                break;
+            }
+        } else {
+            // Not sure what to do if the compare function fails.
+            return;
         }
 
         nodes[index] = nodes[parent];
@@ -109,9 +134,10 @@ void ds_priority_queue_push(ds_priority_queue_t *queue, zval *value, zend_long p
     node = &queue->nodes[index];
 
     // Initialize the new node
-    STAMP(*node) = ++queue->next;
+    STAMP(node) = ++queue->next;
+
     ZVAL_COPY(&node->value, value);
-    node->priority = priority;
+    ZVAL_COPY(&node->priority, priority);
 
     queue->size++;
 }
@@ -125,7 +151,8 @@ static inline void ds_priority_queue_compact(ds_priority_queue_t *queue)
 
 void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
 {
-    uint32_t index, swap;
+    uint32_t index;
+    uint32_t swap;
 
     ds_priority_queue_node_t bottom;
     ds_priority_queue_node_t *nodes = queue->nodes;
@@ -133,34 +160,44 @@ void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
     const uint32_t size = queue->size;
     const uint32_t half = (size - 1) / 2;
 
+    // Guard against pop when the queue is empty.
     if (size == 0) {
         NOT_ALLOWED_WHEN_EMPTY();
         ZVAL_NULL(return_value);
         return;
     }
 
+    // Return the root if a return value was requested.
     if (return_value) {
         ZVAL_COPY(return_value, &(nodes[0].value));
     }
 
+    // Grab the last node in the queue, which should have the lowest priority.
     bottom = nodes[size - 1];
+
+    // Destruct the root, because we're removing it from the queue.
     DTOR_AND_UNDEF(&(nodes[0].value));
+    DTOR_AND_UNDEF(&(nodes[0].priority));
 
     queue->size--;
 
+    // Sift down? @todo make sense of this shit.
     for (index = 0; index < half; index = swap) {
         swap = LEFT(index);
 
-        if (swap < queue->size && compare(nodes[swap], nodes[swap + 1]) < 0) {
+        // If the right leaf is smaller than the left, swap right instead.
+        if (swap < queue->size && ds_priority_queue_node_compare(&nodes[swap], &nodes[swap + 1]) < 0) {
             swap++;
         }
 
-        if (compare(nodes[swap], bottom) < 0) {
+        // Heap constraints are preserved when the
+        if (ds_priority_queue_node_compare(&nodes[swap], &bottom) < 0) {
             break;
         }
 
         nodes[index] = nodes[swap];
     }
+
     nodes[index] = bottom;
 
     // Reduce the size of the buffer if the size has dropped below a threshold.
@@ -176,8 +213,8 @@ static ds_priority_queue_node_t *copy_nodes(ds_priority_queue_t *queue)
     ds_priority_queue_node_t *dst = copies;
 
     for (; src < end; ++src, ++dst) {
-        ZVAL_COPY(&dst->value, &src->value); // Also copies stamp
-        dst->priority = src->priority;
+        ZVAL_COPY(&dst->value, &src->value); // This also copies insertion stamp.
+        ZVAL_COPY(&dst->priority, &src->priority);
     }
 
     return copies;
@@ -207,7 +244,10 @@ zval *ds_priority_queue_peek(ds_priority_queue_t *queue)
 
 static int priority_sort(const void *a, const void *b)
 {
-    return compare(*((ds_priority_queue_node_t *) b), *((ds_priority_queue_node_t *) a));
+    return ds_priority_queue_node_compare(
+        (ds_priority_queue_node_t *) b,
+        (ds_priority_queue_node_t *) a
+    );
 }
 
 ds_priority_queue_node_t* ds_priority_queue_create_sorted_buffer(ds_priority_queue_t *queue)
@@ -246,13 +286,15 @@ void ds_priority_queue_to_array(ds_priority_queue_t *queue, zval *array)
 void ds_priority_queue_clear(ds_priority_queue_t *queue)
 {
     ds_priority_queue_node_t *pos = queue->nodes;
-    ds_priority_queue_node_t *end = pos + queue->size;
+    ds_priority_queue_node_t *end = queue->nodes + queue->size;
 
     for (; pos < end; ++pos) {
         DTOR_AND_UNDEF(&pos->value);
+        DTOR_AND_UNDEF(&pos->priority);
     }
 
     queue->size = 0;
+
     reallocate_to_capacity(queue, DS_PRIORITY_QUEUE_MIN_CAPACITY);
 }
 

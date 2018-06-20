@@ -47,12 +47,8 @@ int php_ds_priority_queue_serialize(zval *object, unsigned char **buffer, size_t
         smart_str buf = {0};
 
         for (; pos < end; ++pos) {
-
-            zval priority;
-            ZVAL_LONG(&priority, pos->priority);
-
             php_var_serialize(&buf, &pos->value, &serialize_data);
-            php_var_serialize(&buf, &priority, &serialize_data);
+            php_var_serialize(&buf, &pos->priority, &serialize_data);
         }
 
         smart_str_0(&buf);
@@ -87,15 +83,12 @@ int php_ds_priority_queue_unserialize(zval *object, zend_class_entry *ce, const 
         }
 
         priority = var_tmp_var(&unserialize_data);
+
         if ( ! php_var_unserialize(priority, &pos, end, &unserialize_data)) {
             goto error;
         }
 
-        if (Z_TYPE_P(priority) != IS_LONG) {
-            goto error;
-        }
-
-        ds_priority_queue_push(queue, value, Z_LVAL_P(priority));
+        ds_priority_queue_push(queue, value, priority);
     }
 
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
