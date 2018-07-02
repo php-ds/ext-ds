@@ -49,7 +49,7 @@ static HashTable *php_ds_priority_queue_get_gc(zval *object, zval **gc_data, int
         *gc_size = 0;
 
     } else {
-        *gc_data = obj->queue->nodes;
+        *gc_data = (zval*) obj->queue->nodes;
         *gc_size = obj->queue->size * 2;
     }
 
