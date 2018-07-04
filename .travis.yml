@@ -10,6 +10,11 @@ matrix:
   fast_finish: true
   allow_failures:
     - php: nightly
+
+env:
+  matrix:
+    - ENABLE_OPCACHE=1
+    - ENABLE_OPCACHE=0
     
 before_install:
   - phpenv config-rm xdebug.ini || true
@@ -23,6 +28,8 @@ install:
 
 before_script:
   - echo "extension=ds.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - if [ $ENABLE_OPCACHE == 1 ]; then echo "opcache.enable_cli=1"      >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+  - if [ $ENABLE_OPCACHE == 1 ]; then echo "zend_extension=opcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
 
 script:
   - composer test
