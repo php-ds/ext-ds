@@ -27,9 +27,9 @@ install:
     - composer install --no-interaction
 
 before_script:
-  - echo "extension=ds.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - if [ $ENABLE_OPCACHE == 1 ]; then echo "opcache.enable_cli=1"      >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
-  - if [ $ENABLE_OPCACHE == 1 ]; then echo "zend_extension=opcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+  - echo "extension=ds.so"                    >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "zend_extension=opcache.so"          >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
   - composer test
