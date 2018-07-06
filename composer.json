@@ -8,8 +8,9 @@
             "email": "rudolf.theunissen@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "require-dev": {
-        "php-ds/tests": "^1.2"
+        "php-ds/tests": "dev-master"
     },
     "scripts": {
         "test"   : "php test.php",
