@@ -8,8 +8,8 @@
 #define DS_SET_CAPACITY(s) ((s)->table->capacity)
 #define DS_SET_IS_EMPTY(s)    (DS_SET_SIZE(s) == 0)
 
-#define DS_SET_FOREACH(set, value)  DS_HTABLE_FOREACH_KEY(set->table, value)
-#define DS_SET_FOREACH_END()        DS_HTABLE_FOREACH_END()
+#define DS_SET_FOREACH(set, value) DS_HTABLE_FOREACH_KEY(set->table, value)
+#define DS_SET_FOREACH_END()       DS_HTABLE_FOREACH_END()
 
 typedef struct _ds_set_t {
     ds_htable_t *table;
@@ -47,6 +47,7 @@ ds_set_t *ds_set_sorted(ds_set_t *set);
 void ds_set_join (ds_set_t *set, const char *glue, const size_t len, zval *return_value);
 void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value);
 
+ds_set_t *ds_set_map(ds_set_t *set, FCI_PARAMS);
 ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS);
 ds_set_t *ds_set_filter(ds_set_t *set);
 

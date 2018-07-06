@@ -295,58 +295,98 @@ void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
     ZVAL_COPY(return_value, &carry);
 }
 
-ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
+ds_set_t * ds_set_map(ds_set_t *set, FCI_PARAMS)
 {
     if (DS_SET_IS_EMPTY(set)) {
         return ds_set();
 
     } else {
         zval *value;
-        zval param;
+        zval params[2];
         zval retval;
+    
+        ds_set_t *mapped = ds_set();
 
-        ds_set_t *filtered = ds_set();
-
+        zend_long index = 0;
         DS_SET_FOREACH(set, value) {
-            ZVAL_COPY_VALUE(&param, value);
+            ZVAL_COPY_VALUE(&params[0], value);
+            ZVAL_LONG(&params[1], index);
 
-            fci.param_count = 1;
-            fci.params      = &param;
+            fci.param_count = 2;
+            fci.params      = params;
             fci.retval      = &retval;
 
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                ds_set_free(filtered);
+                ds_set_free(mapped);
                 return NULL;
             }
 
-            if (zend_is_true(&retval)) {
-                ds_set_add(filtered, value);
-            }
-
+            ds_set_add(mapped, &retval);
             zval_ptr_dtor(&retval);
+            index++;
         }
         DS_SET_FOREACH_END();
 
-        return filtered;
+        return mapped;
+    }
+}
+
+ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
+{
+    ds_set_t *result = ds_set();
+
+    if (DS_SET_IS_EMPTY(set)) {
+        return result;
+
+    } else {
+        zval *value;
+        zval params[2];
+        zval retval;
+
+        zend_long index = 0;
+        DS_SET_FOREACH(set, value) {
+            ZVAL_COPY_VALUE(&params[0], value);
+            ZVAL_LONG(&params[1], index);
+
+            fci.param_count = 2;
+            fci.params      = params;
+            fci.retval      = &retval;
+
+            if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
+                ds_set_free(result);
+                return NULL;
+            }
+
+            if (EXPECTED_BOOL_IS_TRUE(&retval)) {
+                ds_set_add(result, value);
+            }
+
+            zval_ptr_dtor(&retval);
+            index++;
+        }
+        DS_SET_FOREACH_END();
+
+        return result;
     }
 }
 
 ds_set_t *ds_set_filter(ds_set_t *set)
 {
+    ds_set_t *result = ds_set();
+
     if (DS_SET_IS_EMPTY(set)) {
-        return ds_set();
+        return result;
 
     } else {
         zval *value;
-        ds_set_t *filtered = ds_set();
-
         DS_SET_FOREACH(set, value) {
             if (zend_is_true(value)) {
-                ds_set_add(filtered, value);
+                ds_set_add(result, value);
             }
         }
         DS_SET_FOREACH_END();
-        return filtered;
+        
+        return result;
     }
 }
 
@@ -376,7 +416,6 @@ void ds_set_to_array(ds_set_t *set, zval *arr)
 void ds_set_sum(ds_set_t *set, zval *return_value)
 {
     zval *value;
-
     ZVAL_LONG(return_value, 0);
 
     DS_SET_FOREACH(set, value) {
