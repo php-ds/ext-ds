@@ -187,9 +187,6 @@ void ds_vector_set(ds_vector_t *vector, zend_long index, zval *value)
     }
 }
 
-/**
- *
- */
 void ds_vector_to_array(ds_vector_t *vector, zval *return_value)
 {
     zend_long size = vector->size;
@@ -644,7 +641,7 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
             }
 
             // Copy the value into the buffer if the callback returned true.
-            if (zend_is_true(&retval)) {
+            if (EXPECTED_BOOL_IS_TRUE(&retval)) {
                 ZVAL_COPY(target++, value);
             }
 
