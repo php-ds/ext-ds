@@ -181,7 +181,6 @@ void ds_priority_queue_pop(ds_priority_queue_t *queue, zval *return_value)
 
     queue->size--;
 
-    // Sift down? @todo make sense of this shit.
     for (index = 0; index < half; index = swap) {
         swap = LEFT(index);
 
