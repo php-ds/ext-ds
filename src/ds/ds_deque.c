@@ -378,10 +378,13 @@ void ds_deque_push_va(ds_deque_t *deque, VA_PARAMS)
 {
     ds_deque_allocate_capacity_for_size(deque, deque->size + argc);
 
-    while (argc--) {
-        ZVAL_COPY(&deque->buffer[deque->tail], argv++);
+    while (argc) {
+        ZVAL_COPY(&deque->buffer[deque->tail], argv);
         ds_deque_increment_tail(deque);
         deque->size++;
+
+        argc--;
+        argv++;
     }
 }
 
