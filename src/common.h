@@ -27,9 +27,14 @@
 #define PHP_DS_NS(cls) PHP_DS_NS_NAME #cls
 
 /**
- *
+ * This is useful for functions that require the string and its length.
  */
 #define STR_AND_LEN(str) str, sizeof(str) - 1
+
+/**
+ * Slightly faster check when the given zval is probably a boolean.
+ */
+#define EXPECTED_BOOL_IS_TRUE(z) (Z_TYPE_P(z) != IS_FALSE && zend_is_true(z))
 
 /**
  * Combined class, name, and arginfo method entry.
@@ -67,7 +72,7 @@ do {                                        \
 } while (0)
 
 /**
- *
+ * Swaps two zval's.
  */
 #define SWAP_ZVAL(a, b) \
 do {                    \
@@ -77,20 +82,19 @@ do {                    \
 } while (0)
 
 /**
- *
+ * Adds the given zval "val" to "sum".
  */
-#define DS_ADD_TO_SUM(value, sum)                                       \
+#define DS_ADD_TO_SUM(val, sum)                                         \
 do {                                                                    \
-    zval number;                                                        \
-                                                                        \
-    if (Z_TYPE_P(value) == IS_ARRAY || Z_TYPE_P(value) == IS_OBJECT) {  \
-        continue;                                                       \
+    if (Z_TYPE_P(val) == IS_LONG || Z_TYPE_P(val) == IS_DOUBLE) {       \
+        fast_add_function(sum, sum, val);                               \
+    } else {                                                            \
+        zval _num;                                                      \
+        ZVAL_COPY_VALUE(&_num, val);                                    \
+        convert_scalar_to_number(&_num);                                \
+        fast_add_function(sum, sum, &_num);                             \
     }                                                                   \
-                                                                        \
-    ZVAL_COPY(&number, value);                                          \
-    convert_scalar_to_number(&number);                                  \
-    fast_add_function(sum, sum, &number);                               \
-} while (0)                                                             \
+} while (0)  
 
 /**
  * Used to replace a buffer with a new one.
@@ -105,14 +109,14 @@ do {                                \
 /**
  * Copies 'len' values from 'src' into 'dst'.
  */
-#define COPY_ZVAL_BUFFER(dst, src, len) \
-do { \
-    zval *_src = src; \
-    zval *_dst = dst; \
-    zval *_end = src + len; \
-    for (; _src != _end; ++_src, ++_dst) { \
-        ZVAL_COPY(_dst, _src); \
-    } \
+#define COPY_ZVAL_BUFFER(dst, src, len)     \
+do {                                        \
+    zval *_src = src;                       \
+    zval *_dst = dst;                       \
+    zval *_end = src + len;                 \
+    for (; _src != _end; ++_src, ++_dst) {  \
+        ZVAL_COPY(_dst, _src);              \
+    }                                       \
 } while (0)
 
 /**
@@ -133,9 +137,9 @@ do {                                 \
     return;                          \
 } while (0)
 
-#define SERIALIZE_SET_ZSTR(s) \
-*buffer = (unsigned char *) estrndup(ZSTR_VAL((s)), ZSTR_LEN((s))); \
-*length = ZSTR_LEN((s));
+#define SERIALIZE_SET_ZSTR(s)                                           \
+    *buffer = (unsigned char *) estrndup(ZSTR_VAL((s)), ZSTR_LEN((s))); \
+    *length = ZSTR_LEN((s));
 
 #define PHP_DS_SERIALIZE_FUNCIONS(name) \
 int name##_serialize(                   \
