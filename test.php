@@ -9,12 +9,14 @@ if ( ! extension_loaded('ds')) {
 }
 
 // Check that opcache is enabled correctly.
-if (getenv('ENABLE_OPCACHE') && !opcache_get_status(false)['opcache_enabled']) {
-    echo "opcache is not enabled\n";
-    exit(1);
+if (getenv('ENABLE_OPCACHE')) {
+    if (!function_exists('opcache_get_status') || ! opcache_get_status(false)['opcache_enabled']) {
+        echo "opcache is not enabled\n";
+        exit(1);
+    }
 }
 
-// 'false' so that PHPUnit doesn't use "exit"
+// So that PHPUnit doesn't use "exit"
 \PHPUnit\TextUI\Command::main(false);
 
 // Attempt to collect anything left over from the tests.
