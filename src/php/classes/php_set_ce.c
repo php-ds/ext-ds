@@ -100,6 +100,12 @@ METHOD(last)
     RETURN_ZVAL_COPY(ds_set_get_last(THIS_DS_SET()));
 }
 
+METHOD(map)
+{
+    PARSE_CALLABLE();
+    RETURN_DS_SET(ds_set_map(THIS_DS_SET(), FCI_ARGS));
+}
+
 METHOD(merge)
 {
     PARSE_ZVAL(values);
@@ -232,6 +238,7 @@ void php_ds_register_set()
         PHP_DS_ME(Set, intersect)
         PHP_DS_ME(Set, join)
         PHP_DS_ME(Set, last)
+        PHP_DS_ME(Set, map)
         PHP_DS_ME(Set, merge)
         PHP_DS_ME(Set, reduce)
         PHP_DS_ME(Set, remove)
