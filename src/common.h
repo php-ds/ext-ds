@@ -90,7 +90,7 @@ do {                                                                    \
         fast_add_function(sum, sum, val);                               \
     } else {                                                            \
         zval _num;                                                      \
-        ZVAL_COPY_VALUE(&_num, val);                                    \
+        ZVAL_COPY(&_num, val);                                          \
         convert_scalar_to_number(&_num);                                \
         fast_add_function(sum, sum, &_num);                             \
     }                                                                   \
@@ -263,7 +263,7 @@ zval *ds_allocate_zval_buffer(zend_long length);
  * @param  length The resulting length of the buffer.
  * @param  used   Number of slots currently in use in the given buffer.
  */
-zval *ds_reallocate_zval_buffer(zval *buffer, zend_long length, zend_long used);
+zval *ds_reallocate_zval_buffer(zval *buffer, zend_long length, zend_long current, zend_long used);
 
 /**
  * Sorts a zval buffer in place using the default internal compare_func.

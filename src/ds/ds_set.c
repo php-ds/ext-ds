@@ -297,37 +297,32 @@ void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
 
 ds_set_t * ds_set_map(ds_set_t *set, FCI_PARAMS)
 {
+    ds_set_t *result = ds_set();
+
     if (DS_SET_IS_EMPTY(set)) {
-        return ds_set();
+        return result;
 
     } else {
         zval *value;
-        zval params[2];
-        zval retval;
-    
-        ds_set_t *mapped = ds_set();
 
-        zend_long index = 0;
         DS_SET_FOREACH(set, value) {
-            ZVAL_COPY_VALUE(&params[0], value);
-            ZVAL_LONG(&params[1], index);
+            zval retval;
 
-            fci.param_count = 2;
-            fci.params      = params;
+            fci.param_count = 1;
+            fci.params      = value;
             fci.retval      = &retval;
 
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
-                ds_set_free(mapped);
+                ds_set_free(result);
                 return NULL;
             }
 
-            ds_set_add(mapped, &retval);
+            ds_set_add(result, &retval);
             zval_ptr_dtor(&retval);
-            index++;
         }
         DS_SET_FOREACH_END();
 
-        return mapped;
+        return result;
     }
 }
 
@@ -340,16 +335,12 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
 
     } else {
         zval *value;
-        zval params[2];
-        zval retval;
-
-        zend_long index = 0;
+        
         DS_SET_FOREACH(set, value) {
-            ZVAL_COPY_VALUE(&params[0], value);
-            ZVAL_LONG(&params[1], index);
+            zval retval;
 
-            fci.param_count = 2;
-            fci.params      = params;
+            fci.param_count = 1;
+            fci.params      = value;
             fci.retval      = &retval;
 
             if (zend_call_function(&fci, &fci_cache) == FAILURE || Z_ISUNDEF(retval)) {
@@ -362,7 +353,6 @@ ds_set_t *ds_set_filter_callback(ds_set_t *set, FCI_PARAMS)
             }
 
             zval_ptr_dtor(&retval);
-            index++;
         }
         DS_SET_FOREACH_END();
 

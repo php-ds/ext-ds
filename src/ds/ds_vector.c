@@ -17,7 +17,7 @@ static inline bool index_out_of_range(zend_long index, zend_long max)
 
 static inline void ds_vector_reallocate(ds_vector_t *vector, zend_long capacity)
 {
-    vector->buffer   = ds_reallocate_zval_buffer(vector->buffer, capacity, vector->size);
+    vector->buffer   = ds_reallocate_zval_buffer(vector->buffer, capacity, vector->capacity, vector->size);
     vector->capacity = capacity;
 }
 
@@ -40,19 +40,6 @@ ds_vector_t *ds_vector()
     return ds_vector_ex(DS_VECTOR_MIN_CAPACITY);
 }
 
-static ds_vector_t *ds_vector_from_buffer_ex(
-    zval *buffer,
-    zend_long size,
-    zend_long capacity
-) {
-    ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
-    vector->buffer      = buffer;
-    vector->capacity    = capacity;
-    vector->size        = size;
-
-    return vector;
-}
-
 ds_vector_t *ds_vector_clone(ds_vector_t *vector)
 {
     if (DS_VECTOR_IS_EMPTY(vector)) {
@@ -70,16 +57,21 @@ ds_vector_t *ds_vector_clone(ds_vector_t *vector)
     }
 }
 
-ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size)
+ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long capacity, zend_long size)
 {
-    zend_long capacity = size;
+    ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
 
-    if (size < DS_VECTOR_MIN_CAPACITY) {
+    // Make sure that the buffer is at least the minimum length.
+    if (capacity < DS_VECTOR_MIN_CAPACITY) {
+        buffer   = ds_reallocate_zval_buffer(buffer, DS_VECTOR_MIN_CAPACITY, capacity, size);
         capacity = DS_VECTOR_MIN_CAPACITY;
-        buffer   = ds_reallocate_zval_buffer(buffer, capacity, size);
     }
 
-    return ds_vector_from_buffer_ex(buffer, size, capacity);
+    vector->buffer      = buffer;
+    vector->capacity    = capacity;
+    vector->size        = size;
+
+    return vector;
 }
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
@@ -535,7 +527,7 @@ ds_vector_t *ds_vector_reversed(ds_vector_t *vector)
     }
     DS_VECTOR_FOREACH_END();
 
-    return ds_vector_from_buffer_ex(buffer, vector->size, vector->capacity);
+    return ds_vector_from_buffer(buffer, vector->capacity, vector->size);
 }
 
 void ds_vector_apply(ds_vector_t *vector, FCI_PARAMS)
@@ -587,7 +579,7 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
     }
     DS_VECTOR_FOREACH_END();
 
-    return ds_vector_from_buffer_ex(buffer, vector->size, vector->capacity);
+    return ds_vector_from_buffer(buffer, vector->capacity, vector->size);
 }
 
 ds_vector_t *ds_vector_filter(ds_vector_t *vector)
@@ -607,7 +599,7 @@ ds_vector_t *ds_vector_filter(ds_vector_t *vector)
         }
         DS_VECTOR_FOREACH_END();
 
-        return ds_vector_from_buffer_ex(buffer, target - buffer, vector->size);
+        return ds_vector_from_buffer(buffer, vector->size, (target - buffer));
     }
 }
 
@@ -649,7 +641,7 @@ ds_vector_t *ds_vector_filter_callback(ds_vector_t *vector, FCI_PARAMS)
         }
         DS_VECTOR_FOREACH_END();
 
-        return ds_vector_from_buffer_ex(buffer, (target - buffer), vector->size);
+        return ds_vector_from_buffer(buffer, vector->size, (target - buffer));
     }
 }
 
@@ -693,18 +685,18 @@ ds_vector_t *ds_vector_slice(ds_vector_t *vector, zend_long index, zend_long len
         return ds_vector();
 
     } else {
-        zval *src, *dst, *end;
-        zval *buffer = ds_allocate_zval_buffer(length);
+        zend_long capacity = MAX(length, DS_VECTOR_MIN_CAPACITY);
 
-        src = vector->buffer + index;
-        end = src + length;
-        dst = buffer;
+        zval *buf = ds_allocate_zval_buffer(capacity);
+        zval *src = vector->buffer + index;
+        zval *end = vector->buffer + index + length;
+        zval *dst = buf;
 
-        for (; src < end; ++src, ++dst) {
-            ZVAL_COPY(dst, src);
+        while (src < end) {
+            ZVAL_COPY(dst++, src++);
         }
 
-        return ds_vector_from_buffer(buffer, length);
+        return ds_vector_from_buffer(buf, capacity, length);
     }
 }
 

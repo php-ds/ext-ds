@@ -162,7 +162,7 @@ METHOD(pairs)
     ds_map_t *map = THIS_DS_MAP();
     PARSE_NONE;
     RETURN_DS_VECTOR(
-        ds_vector_from_buffer(ds_map_pairs(map), DS_MAP_SIZE(map)));
+        ds_vector_from_buffer(ds_map_pairs(map), DS_MAP_SIZE(map), DS_MAP_SIZE(map)));
 }
 
 METHOD(toArray)
@@ -271,7 +271,7 @@ METHOD(values)
     ds_map_t *map = THIS_DS_MAP();
     PARSE_NONE;
     RETURN_DS_VECTOR(
-        ds_vector_from_buffer(ds_map_values(map), DS_MAP_SIZE(map)));
+        ds_vector_from_buffer(ds_map_values(map), DS_MAP_SIZE(map), DS_MAP_SIZE(map)));
 }
 
 METHOD(xor)

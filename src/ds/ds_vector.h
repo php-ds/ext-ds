@@ -44,7 +44,7 @@ do {                                     \
 ds_vector_t *ds_vector_clone(ds_vector_t *src);
 ds_vector_t *ds_vector();
 ds_vector_t *ds_vector_ex(zend_long capacity);
-ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long size);
+ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long capacity, zend_long size);
 
 void ds_vector_allocate(ds_vector_t *vector, zend_long capacity);
 

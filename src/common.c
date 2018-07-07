@@ -5,35 +5,30 @@ zval *ds_allocate_zval_buffer(zend_long length)
     return ecalloc(length, sizeof(zval));
 }
 
-static zval *_ds_truncate_zval_buffer(zval *buffer, zend_long length, zend_long used)
-{
-    zend_long i;
-
-    for (i = length; i < used; i++) {
-        zval_ptr_dtor(&buffer[i]);
+zval *ds_reallocate_zval_buffer(
+    zval *buffer, 
+    zend_long length, 
+    zend_long current, 
+    zend_long used
+) {
+    if (length == current) {
+        return buffer;
     }
 
-    return erealloc(buffer, length * sizeof(zval));
-}
-
-static zval *_ds_extend_zval_buffer(zval *buffer, zend_long length, zend_long used)
-{
-    zval *extended = erealloc(buffer, length * sizeof(zval));
-    memset(extended + used, 0, (length - used) * sizeof(zval));
-
-    return extended;
-}
-
-zval *ds_reallocate_zval_buffer(zval *buffer, zend_long length, zend_long used)
-{
     // Destruct zvals if we're truncating the buffer.
     if (length < used) {
-        return _ds_truncate_zval_buffer(buffer, length, used);
+        zend_long i;
+
+        for (i = length; i < used; i++) {
+            DTOR_AND_UNDEF(&buffer[i]);
+        }
     }
 
-    // Extend the buffer and clear the newly allocated memory.
-    if (length > used) {
-        return _ds_extend_zval_buffer(buffer, length, used);
+    buffer = erealloc(buffer, length * sizeof(zval));
+
+    // Clear out any new memory that was allocated.
+    if (length > current) {
+        memset(buffer + current, 0, (length - current) * sizeof(zval));
     }
 
     return buffer;

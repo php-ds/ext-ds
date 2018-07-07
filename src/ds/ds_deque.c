@@ -139,10 +139,10 @@ static void ds_deque_reallocate(ds_deque_t *deque, zend_long capacity)
 {
     ds_deque_reset_head(deque);
 
-    deque->buffer   = ds_reallocate_zval_buffer(deque->buffer, capacity, deque->size);
+    deque->buffer   = ds_reallocate_zval_buffer(deque->buffer, capacity, deque->capacity, deque->size);
     deque->capacity = capacity;
     deque->head     = 0;
-    deque->tail     = deque->size;
+    deque->tail     = deque->size; // Could have been zero before if buffer was full.
 }
 
 static inline void ds_deque_double_capacity(ds_deque_t *deque)
@@ -152,20 +152,22 @@ static inline void ds_deque_double_capacity(ds_deque_t *deque)
 
 static inline void ds_deque_allocate_capacity_for_size(ds_deque_t *deque, zend_long size)
 {
-    if (size >= deque->capacity) {
-        ds_deque_reallocate(deque, ds_deque_get_capacity_for_size(size));
+    zend_long capacity = ds_deque_get_capacity_for_size(size);
+
+    if (capacity > deque->capacity) {
+        ds_deque_reallocate(deque, capacity);
     }
 }
 
 void ds_deque_allocate(ds_deque_t *deque, zend_long capacity)
 {
-    // -1 because an extra slot will be allocated for the tail.
+    // -1 because an extra slot should be allocated for the tail.
     ds_deque_allocate_capacity_for_size(deque, capacity - 1);
 }
 
 static inline void ds_deque_auto_truncate(ds_deque_t *deque)
 {
-    // Automatically truncate if the size of the deque drops to a quarter.
+    // Automatically truncate if the size of the deque drops to a quarter of the capacity.
     if (deque->size <= deque->capacity / 4) {
         if (deque->capacity / 2 >= DS_DEQUE_MIN_CAPACITY) {
             ds_deque_reallocate(deque, deque->capacity / 2);
@@ -173,26 +175,31 @@ static inline void ds_deque_auto_truncate(ds_deque_t *deque)
     }
 }
 
-static void ds_deque_clear_buffer(ds_deque_t *deque)
-{
-    ds_deque_reset_head(deque);
-    ds_deque_reallocate(deque, DS_DEQUE_MIN_CAPACITY);
-
-    deque->head   = 0;
-    deque->tail   = 0;
-    deque->size   = 0;
-}
-
 void ds_deque_clear(ds_deque_t *deque)
 {
-    if (deque->size > 0) {
-        ds_deque_clear_buffer(deque);
+    zval *val;
+
+    DS_DEQUE_FOREACH(deque, val) {
+        zval_ptr_dtor(val);
     }
+    DS_DEQUE_FOREACH_END();
+
+    deque->buffer   = ds_reallocate_zval_buffer(deque->buffer, DS_DEQUE_MIN_CAPACITY, deque->capacity, 0);
+    deque->head     = 0;
+    deque->tail     = 0;
+    deque->size     = 0;
+    deque->capacity = DS_DEQUE_MIN_CAPACITY;
 }
 
 void ds_deque_free(ds_deque_t *deque)
 {
-    ds_deque_clear(deque);
+    zval *val;
+
+    DS_DEQUE_FOREACH(deque, val) {
+        zval_ptr_dtor(val);
+    }
+    DS_DEQUE_FOREACH_END();
+
     efree(deque->buffer);
     efree(deque);
 }
@@ -365,6 +372,7 @@ void ds_deque_unshift_va(ds_deque_t *deque, VA_PARAMS)
 void ds_deque_push(ds_deque_t *deque, zval *value)
 {
     ZVAL_COPY(&deque->buffer[deque->tail], value);
+
     ds_deque_increment_tail(deque);
 
     deque->size++;
@@ -745,7 +753,7 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
             }
 
             // Copy the value into the buffer if the callback returned true.
-            if (zend_is_true(&retval)) {
+            if (EXPECTED_BOOL_IS_TRUE(&retval)) {
                 ZVAL_COPY(target++, value);
             }
 
