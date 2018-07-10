@@ -1,9 +1,6 @@
-// #include "../common.h"
-
 #include "../php/iterators/php_vector_iterator.h"
 #include "../php/handlers/php_vector_handlers.h"
 #include "../php/classes/php_vector_ce.h"
-
 #include "ds_vector.h"
 
 static inline bool index_out_of_range(zend_long index, zend_long max)

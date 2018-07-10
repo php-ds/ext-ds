@@ -310,4 +310,9 @@ bool ds_is_traversable(zval *value);
  */
 void smart_str_appendz(smart_str *buffer, zval *value);
 
+/**
+ *
+ */
+bool ds_special_is_equal(zval *op1, zval *op2);
+
 #endif
