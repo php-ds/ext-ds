@@ -6,9 +6,9 @@ zval *ds_allocate_zval_buffer(zend_long length)
 }
 
 zval *ds_reallocate_zval_buffer(
-    zval *buffer, 
-    zend_long length, 
-    zend_long current, 
+    zval *buffer,
+    zend_long length,
+    zend_long current,
     zend_long used
 ) {
     if (length == current) {
@@ -104,10 +104,10 @@ void ds_normalize_slice_args(
     zend_long idx = *offset;
     zend_long len = *length;
 
-    // If the offset is beyond is the end or the length is zero, zero both.
+    // If the offset is beyond the end or the length is zero, it's an empty slice.
     if (size == 0 || idx >= size) {
-        idx = 0;
-        len = 0;
+        *offset = 0;
+        *length = 0;
 
     } else {
 
@@ -125,10 +125,10 @@ void ds_normalize_slice_args(
         if ((idx + len) > size) {
             len = MAX(0, size - idx);
         }
-    }
 
-    *offset = idx;
-    *length = len;
+        *offset = idx;
+        *length = len;
+    }
 }
 
 void smart_str_appendz(smart_str *buffer, zval *value)

@@ -8,16 +8,18 @@
 #define DS_DEQUE_SIZE(d)      ((d)->size)
 #define DS_DEQUE_IS_EMPTY(d)  ((d)->size == 0)
 
-#define DS_DEQUE_FOREACH(_d, _v)                            \
+#define DS_DEQUE_FOREACH(d, v)                              \
 do {                                                        \
-    ds_deque_t  *_deque   = _d;                             \
-    zval        *_buffer  = _deque->buffer;                 \
-    zend_long    _tail    = _deque->tail;                   \
-    zend_long    _mask    = _deque->capacity - 1;           \
-    zend_long    _head    = _deque->head;                   \
+    const ds_deque_t *_deque = d;                           \
                                                             \
-    for (; _head != _tail; _head = (_head + 1) & _mask) {   \
-        _v = _buffer + _head;
+    const zval *buffer       = _deque->buffer;              \
+    const zend_long _mask    = _deque->capacity - 1;        \
+    const zend_long _size    = _deque->size;                \
+    const zend_long _head    = _deque->head;                \
+                                                            \
+    zend_long _i;                                           \
+    for (_i = 0; _i < _size; _i++) {                        \
+        v = &buffer[(_head + _i) & _mask];
 
 #define DS_DEQUE_FOREACH_END() \
     } \
@@ -34,7 +36,6 @@ typedef struct _ds_deque_t {
 ds_deque_t *ds_deque();
 ds_deque_t *ds_deque_ex(zend_long capacity);
 ds_deque_t *ds_deque_clone(ds_deque_t *src);
-ds_deque_t *ds_deque_from_buffer(zval *buffer, zend_long size);
 
 void ds_deque_clear(ds_deque_t *deque);
 void ds_deque_free(ds_deque_t *deque);

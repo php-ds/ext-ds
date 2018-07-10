@@ -83,13 +83,13 @@ void ds_vector_allocate(ds_vector_t *vector, zend_long capacity)
 
 static inline void ds_vector_increase_capacity(ds_vector_t *vector)
 {
-    ds_vector_reallocate(vector, vector->capacity + (vector->capacity / 2));
+    ds_vector_reallocate(vector, vector->capacity + (vector->capacity >> 1));
 }
 
 static inline void ds_vector_ensure_capacity(ds_vector_t *vector, zend_long capacity)
 {
     if (capacity > vector->capacity) {
-        zend_long boundary = vector->capacity + (vector->capacity / 2);
+        zend_long boundary = vector->capacity + (vector->capacity >> 1);
         ds_vector_reallocate(vector, MAX(capacity, boundary));
     }
 }
