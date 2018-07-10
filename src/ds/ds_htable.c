@@ -7,21 +7,6 @@
 
 #include "../php/classes/php_hashable_ce.h"
 
-static uint32_t next_power_of_2(uint32_t size)
-{
-    uint32_t c = MAX(size, DS_HTABLE_MIN_CAPACITY);
-
-    c--;
-    c |= c >> 1;
-    c |= c >> 2;
-    c |= c >> 4;
-    c |= c >> 8;
-    c |= c >> 16;
-    c++;
-
-    return c;
-}
-
 static inline ds_htable_bucket_t *ds_htable_allocate_buckets(uint32_t capacity)
 {
     return ecalloc(capacity, sizeof(ds_htable_bucket_t));
@@ -617,10 +602,17 @@ static inline void ds_htable_increase_capacity(ds_htable_t *table)
     ds_htable_rehash(table);
 }
 
+static inline zend_long ds_htable_get_capacity_for_size(zend_long size)
+{
+    return ds_next_power_of_2(size, DS_HTABLE_MIN_CAPACITY);
+}
+
 void ds_htable_ensure_capacity(ds_htable_t *table, uint32_t capacity)
 {
+    capacity = ds_htable_get_capacity_for_size(capacity);
+
     if (capacity > table->capacity) {
-        ds_htable_realloc(table, next_power_of_2(capacity));
+        ds_htable_realloc(table, capacity);
         ds_htable_rehash(table);
     }
 }

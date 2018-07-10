@@ -94,7 +94,7 @@ do {                                                                    \
         convert_scalar_to_number(&_num);                                \
         fast_add_function(sum, sum, &_num);                             \
     }                                                                   \
-} while (0)  
+} while (0)
 
 /**
  * Used to replace a buffer with a new one.
@@ -228,6 +228,11 @@ int name##_unserialize(                 \
 void ds_throw_exception(zend_class_entry *ce, const char *format, ...);
 
 /*****************************************************************************/
+
+/**
+ * Returns the next power of 2 greater than or equal to n.
+ */
+uint32_t ds_next_power_of_2(uint32_t n, uint32_t min);
 
 /**
  * Similar to 'implode', joins a zval buffer using an optional 'glue'.

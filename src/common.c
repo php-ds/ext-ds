@@ -5,6 +5,21 @@ zval *ds_allocate_zval_buffer(zend_long length)
     return ecalloc(length, sizeof(zval));
 }
 
+uint32_t ds_next_power_of_2(uint32_t n, uint32_t min)
+{
+    if (n < min) return min;
+
+    n--;
+    n |= n >>  1;
+    n |= n >>  2;
+    n |= n >>  4;
+    n |= n >>  8;
+    n |= n >> 16;
+    n++;
+
+    return n;
+}
+
 zval *ds_reallocate_zval_buffer(
     zval *buffer,
     zend_long length,

@@ -13,19 +13,9 @@
 // Insertion stamp, for equal priority comparison fallback.
 #define STAMP(n) (Z_NEXT((n)->value))
 
-static uint32_t capacity_for_size(uint32_t size)
+static inline uint32_t ds_priority_queue_get_capacity_for_size(uint32_t size)
 {
-    uint32_t c = MAX(size, DS_PRIORITY_QUEUE_MIN_CAPACITY);
-
-    c--;
-    c |= c >> 1;
-    c |= c >> 2;
-    c |= c >> 4;
-    c |= c >> 8;
-    c |= c >> 16;
-    c++;
-
-    return c;
+    return ds_next_power_of_2(size, DS_PRIORITY_QUEUE_MIN_CAPACITY);
 }
 
 // Priority comparison, with insertion stamp fallback.
@@ -74,8 +64,10 @@ static inline void increase_capacity(ds_priority_queue_t *queue)
 
 void ds_priority_queue_allocate(ds_priority_queue_t *queue, uint32_t capacity)
 {
+    capacity = ds_priority_queue_get_capacity_for_size(capacity);
+
     if (capacity > queue->capacity) {
-        reallocate_to_capacity(queue, capacity_for_size(capacity));
+        reallocate_to_capacity(queue, capacity);
     }
 }
 

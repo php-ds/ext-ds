@@ -11,15 +11,13 @@
 #define DS_DEQUE_FOREACH(d, v)                              \
 do {                                                        \
     const ds_deque_t *_deque = d;                           \
-                                                            \
-    const zval *buffer       = _deque->buffer;              \
     const zend_long _mask    = _deque->capacity - 1;        \
     const zend_long _size    = _deque->size;                \
     const zend_long _head    = _deque->head;                \
                                                             \
     zend_long _i;                                           \
     for (_i = 0; _i < _size; _i++) {                        \
-        v = &buffer[(_head + _i) & _mask];
+        v = &_deque->buffer[(_head + _i) & _mask];
 
 #define DS_DEQUE_FOREACH_END() \
     } \

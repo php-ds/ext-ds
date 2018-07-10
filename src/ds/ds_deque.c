@@ -35,24 +35,9 @@ static inline void ds_deque_memmove(
     memmove(&deque->buffer[dst], &deque->buffer[src], length * sizeof(zval));
 }
 
-/**
- * Translates a given number to an acceptable deque capacity >= size.
- */
-static zend_long ds_deque_get_capacity_for_size(zend_long size)
+static inline zend_long ds_deque_get_capacity_for_size(zend_long size)
 {
-    if (size < DS_DEQUE_MIN_CAPACITY) {
-        return DS_DEQUE_MIN_CAPACITY;
-    }
-
-    size--;
-    size |= size >>  1;
-    size |= size >>  2;
-    size |= size >>  4;
-    size |= size >>  8;
-    size |= size >> 16;
-    size++;
-
-    return size;
+    return (zend_long) ds_next_power_of_2((uint32_t) size, DS_DEQUE_MIN_CAPACITY);
 }
 
 ds_deque_t *ds_deque()
