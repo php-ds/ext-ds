@@ -250,23 +250,3 @@ void ds_throw_exception(zend_class_entry *ce, const char *format, ...)
     zend_throw_exception(ce, str->val, 0);
     zend_string_free(str);
 }
-
-bool ds_special_is_equal(zval *op1, zval *op2)
-{
-    if (!op1 || !op2) {
-        return FALSE;
-    }
-
-    // Objects should be compared using '=='
-    if (Z_TYPE_P(op1) == IS_OBJECT || Z_TYPE_P(op2) == IS_OBJECT) {
-        zval result;
-        if (is_equal_function(op1, op2) == FAILURE) {
-            return FALSE;
-        }
-
-        return Z_TYPE(result) == IS_TRUE;
-    }
-
-    // All other types should be compared by identity.
-    return zend_is_identical(op1, op2);
-}
