@@ -748,7 +748,7 @@ ds_deque_t *ds_deque_filter_callback(ds_deque_t *deque, FCI_PARAMS)
 
                 // Release the values copied into the buffer on failure.
                 dst--;
-                while (dst > buf) {
+                while (dst >= buf) {
                     zval_ptr_dtor(dst--);
                 }
 
