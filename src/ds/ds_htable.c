@@ -237,11 +237,7 @@ static uint32_t get_array_hash(zval *array)
 
 static inline uint32_t get_spl_object_hash(zval *obj)
 {
-    zend_string *str = php_spl_object_hash(obj);
-    uint32_t hash = get_string_hash(str);
-    zend_string_free(str);
-
-    return hash;
+    return Z_OBJ_HANDLE_P(obj);
 }
 
 static inline uint32_t get_resource_hash(zval *resource)
