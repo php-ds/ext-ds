@@ -257,6 +257,10 @@ static inline uint32_t get_double_hash(zval *value)
     } hack;
 
     hack.d = Z_DVAL_P(value);
+    if (hack.d == -0.0) {
+        hack.d = 0.0;
+    }
+
     return (uint32_t)(hack.ull ^ (hack.ull >> 32));
 }
 
