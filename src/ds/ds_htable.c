@@ -249,6 +249,17 @@ static inline uint32_t get_resource_hash(zval *resource)
     return Z_RES_HANDLE_P(resource);
 }
 
+static inline uint32_t get_double_hash(zval *value)
+{
+    union ulld {
+        unsigned long long ull;
+        double d;
+    } hack;
+
+    hack.d = Z_DVAL_P(value);
+    return (uint32_t)(hack.ull ^ (hack.ull >> 32));
+}
+
 static uint32_t get_object_hash(zval *obj)
 {
     if (implements_hashable(obj)) {
@@ -260,7 +271,7 @@ static uint32_t get_object_hash(zval *obj)
                 return Z_LVAL(hash);
 
             case IS_DOUBLE:
-                return zval_get_long(&hash);
+                return get_double_hash(&hash);
 
             case IS_STRING:
                 return get_string_zval_hash(&hash);
@@ -289,7 +300,7 @@ static uint32_t get_hash(zval *value)
             return Z_LVAL_P(value);
 
         case IS_DOUBLE:
-            return zval_get_long(value);
+            return get_double_hash(value);
 
         case IS_STRING:
             return get_string_zval_hash(value);
