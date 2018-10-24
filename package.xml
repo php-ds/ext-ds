@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+    <name>decimal</name>
+    <channel>pecl.php.net</channel>
+    <summary>Arbitrary-precision decimal</summary>
+    <description>Adds support for correctly-rounded arbitrary precision decimal floating point arithmetic in PHP 7</description>
+    <lead>
+        <name>Rudi Theunissen</name>
+        <user>rtheunissen</user>
+        <email>rtheunissen@php.net</email>
+        <active>yes</active>
+    </lead>
+    <date>2018-05-24</date>
+    <time>00:22:59</time>
+    <version>
+        <release>1.0.0</release>
+        <api>1.0.0</api>
+    </version>
+    <stability>
+        <release>beta</release>
+        <api>beta</api>
+    </stability>
+    <license uri="https://opensource.org/licenses/MIT">MIT License</license>
+    <notes>
+        Initial release, request for comments.
+    </notes>
+    <contents>
+        <dir name="/">
+            <file role="doc" name="LICENSE"/>
+
+            <file role="src" name="config.m4"/>
+            <file role="src" name="config.w32"/>
+
+            <file role="src" name="php_decimal.c"/>
+            <file role="src" name="php_decimal.h"/>
+        </dir>
+    </contents>
+    <dependencies>
+        <required>
+            <php>
+                <min>7.0.0</min>
+            </php>
+            <pearinstaller>
+                <min>1.4.0b1</min>
+            </pearinstaller>
+        </required>
+    </dependencies>
+    <providesextension>decimal</providesextension>
+    <extsrcrelease />
+</package>

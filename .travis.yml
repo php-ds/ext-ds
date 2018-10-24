@@ -1,0 +1,34 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+env:
+  matrix:
+    - ENABLE_OPCACHE=1
+    - ENABLE_OPCACHE=0
+
+before_install:
+  - phpenv config-rm xdebug.ini || true
+
+install:
+    - phpize
+    - ./configure
+    - make
+    - make install
+
+before_script:
+  - echo "extension=decimal.so"               >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "zend_extension=opcache.so"          >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+script:
+  - php run-tests.php -P -q --show-diff

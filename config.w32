@@ -1,0 +1,18 @@
+
+var DECIMAL_EXT_NAME="decimal";
+var DECIMAL_EXT_API="php_decimal.c";
+var DECIMAL_EXT_FLAGS="/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1";
+var DECIMAL_EXT_DEP="libmpdec-2.4.2.lib";
+
+/* --------------------------------------------------------------------- */
+
+ARG_ENABLE("decimal", "for decimal support", "yes");
+
+if (PHP_DECIMAL == "yes") {
+    if(CHECK_HEADER_ADD_INCLUDE("mpdecimal.h", "CFLAGS_DECIMAL", PHP_DECIMAL + ";" + configure_module_dirname) &&
+        CHECK_LIB(DECIMAL_EXT_DEP, DECIMAL_EXT_NAME, PHP_DECIMAL)) {
+        EXTENSION(DECIMAL_EXT_NAME, DECIMAL_EXT_API, PHP_DECIMAL_SHARED, DECIMAL_EXT_FLAGS);
+    } else {
+        WARNING("decimal not enabled; libraries and headers not found");
+    }
+}
