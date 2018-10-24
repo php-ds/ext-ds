@@ -2166,29 +2166,6 @@ PHP_DECIMAL_METHOD(equals)
 }
 
 /**
- * Decimal::equalsExactly
- */
-PHP_DECIMAL_ARGINFO_RETURN_TYPE(equalsExactly, _IS_BOOL, 1)
-PHP_DECIMAL_ARGINFO_DECIMAL(other)
-PHP_DECIMAL_ARGINFO_END()
-PHP_DECIMAL_METHOD(equalsExactly)
-{
-    zval *value = NULL;
-
-    ZEND_PARSE_PARAMETERS_START(1, 1)
-        Z_PARAM_ZVAL(value)
-    ZEND_PARSE_PARAMETERS_END();
-    {
-        php_decimal_t *op1 = THIS_DECIMAL();
-        php_decimal_t *op2 = Z_DECIMAL_P(value);
-
-        RETURN_BOOL(
-            php_decimal_compare(op1, op2) == 0 &&
-            php_decimal_get_precision(op1) == php_decimal_get_precision(op2));
-    }
-}
-
-/**
  * Decimal::compareTo
  */
 PHP_DECIMAL_ARGINFO_RETURN_TYPE(compareTo, IS_LONG, 1)
@@ -2301,7 +2278,6 @@ static zend_function_entry decimal_methods[] = {
     PHP_DECIMAL_ME(toFloat)
 
     PHP_DECIMAL_ME(equals)
-    PHP_DECIMAL_ME(equalsExactly)
     PHP_DECIMAL_ME(compareTo)
 
     /* Static methods */
