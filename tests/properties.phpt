@@ -11,16 +11,27 @@ use Decimal\Decimal;
 $decimal = new Decimal();
 
 $decimal->test = 5;
-
-var_dump($decimal);
+unset($decimal->test);
+isset($decimal->test);
 var_dump($decimal->test);
 
-?>
---EXPECT--
-object(Decimal\Decimal)#1 (2) {
-  ["value"]=>
-  string(1) "0"
-  ["precision"]=>
-  int(28)
+try {
+    $decimal[0] = 5;
+} catch (Error $e) {
+    printf("%s\n", $e->getMessage());
 }
-int(5)
+
+echo "Done";
+
+?>
+--EXPECTF--
+Notice: Object properties are not supported in %s on line 6
+
+Notice: Object properties are not supported in %s on line 7
+
+Notice: Object properties are not supported in %s on line 8
+
+Notice: Object properties are not supported in %s on line 9
+NULL
+Cannot use object of type Decimal\Decimal as array
+Done

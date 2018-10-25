@@ -163,6 +163,14 @@ static void php_decimal_unserialize_error()
 }
 
 /**
+ * Called when an attempt is made to read or write object properties.
+ */
+static void php_decimal_object_properties_not_supported()
+{
+    zend_error(E_NOTICE, "Object properties are not supported");
+}
+
+/**
  * Called when a trap is triggered in mpdecimal when calling signalling
  * functions (non-quiet). These methods usually don't have the "q" prefix in
  * their names and don't require a status argument. The non-signalling functions
@@ -616,7 +624,7 @@ static zend_always_inline void php_decimal_set_zero(php_decimal_t *obj)
 /**
  * Attempts to parse a non-object value as a decimal, using a given precision.
  */
-static php_success_t php_decimal_parse_scalar_with_prec(mpd_t *res, zval *value, php_decimal_prec_t prec, zend_bool quiet)
+static zend_always_inline php_success_t php_decimal_parse_scalar_ex(mpd_t *res, zval *value, php_decimal_prec_t prec, zend_bool quiet)
 {
     switch (Z_TYPE_P(value)) {
         case IS_STRING:
@@ -644,19 +652,19 @@ static php_success_t php_decimal_parse_scalar_with_prec(mpd_t *res, zval *value,
 }
 
 /**
- * Attempts to parse a scalar value with maximum precision.
+ * Attempts to parse a zval with a non-decimal value.
  */
-static zend_always_inline php_success_t php_decimal_parse_scalar(mpd_t *mpd, zval *value)
+static zend_always_inline php_success_t php_decimal_parse_scalar(mpd_t *mpd, zval *value, php_decimal_prec_t prec)
 {
-    return php_decimal_parse_scalar_with_prec(mpd, value, PHP_DECIMAL_MAX_PREC, false);
+    return php_decimal_parse_scalar_ex(mpd, value, prec, false);
 }
 
 /**
- * Attempts to parse a scalar value with maximum precision, ignoring exceptions.
+ * Attempts to parse a zval with a non-decimal value, ignoring exceptions.
  */
-static zend_always_inline php_success_t php_decimal_parse_scalar_quiet(mpd_t *mpd, zval *value)
+static zend_always_inline php_success_t php_decimal_parse_scalar_quiet(mpd_t *mpd, zval *value, php_decimal_prec_t prec)
 {
-    return php_decimal_parse_scalar_with_prec(mpd, value, PHP_DECIMAL_MAX_PREC, true);
+    return php_decimal_parse_scalar_ex(mpd, value, prec, true);
 }
 
 /**
@@ -670,8 +678,7 @@ static zend_always_inline php_success_t php_decimal_parse_into(php_decimal_t *ob
 {
     /* Check if is non-decimal, attempt to parse as scalar */
     if (!Z_IS_DECIMAL_P(value)) {
-        return php_decimal_parse_scalar_with_prec(
-            PHP_DECIMAL_MPD(obj), value, php_decimal_get_precision(obj), false);
+        return php_decimal_parse_scalar(PHP_DECIMAL_MPD(obj), value, php_decimal_get_precision(obj));
 
     /* Decimal object, set max precision, copy internal value. */
     } else {
@@ -1107,22 +1114,22 @@ static zend_long php_decimal_sum_array(php_decimal_t *res, HashTable *arr)
         if (Z_IS_DECIMAL_P(value)) {
             op1  = PHP_DECIMAL_MPD(res);
             op2  = Z_DECIMAL_MPD_P(value);
-            prec = php_decimal_get_precision(Z_DECIMAL_P(value));
+            prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(value)), php_decimal_get_precision(res));
 
         } else {
             PHP_DECIMAL_TEMP_MPD(tmp);
             op1  = PHP_DECIMAL_MPD(res);
             op2  = &tmp;
-            prec = PHP_DECIMAL_DEFAULT_PRECISION;
+            prec = php_decimal_get_precision(res);
 
             /* Attempt to parse the value, otherwise bail out. */
-            if (php_decimal_parse_scalar(&tmp, value) == FAILURE) {
+            if (php_decimal_parse_scalar(&tmp, value, prec) == FAILURE) {
                 return -1;
             }
         }
 
         /* Set precision, do add. */
-        php_decimal_set_precision(res, MAX(php_decimal_get_precision(res), prec));
+        php_decimal_set_precision(res, prec);
         php_decimal_add(res, op1, op2);
     }
     ZEND_HASH_FOREACH_END();
@@ -1170,22 +1177,22 @@ static zend_long php_decimal_sum_traversable(php_decimal_t *res, zval *values)
         if (Z_IS_DECIMAL_P(value)) {
             op1  = PHP_DECIMAL_MPD(res);
             op2  = Z_DECIMAL_MPD_P(value);
-            prec = php_decimal_get_precision(Z_DECIMAL_P(value));
+            prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(value)), php_decimal_get_precision(res));
 
         } else {
             PHP_DECIMAL_TEMP_MPD(tmp);
             op1 = PHP_DECIMAL_MPD(res);
             op2  = &tmp;
-            prec = PHP_DECIMAL_DEFAULT_PRECISION;
+            prec = php_decimal_get_precision(res);
 
             /* Attempt to parse the value, otherwise bail out. */
-            if (php_decimal_parse_scalar(&tmp, value) == FAILURE) {
+            if (php_decimal_parse_scalar(&tmp, value, prec) == FAILURE) {
                 goto done;
             }
         }
 
         /* Set precision, do add. */
-        php_decimal_set_precision(res, MAX(php_decimal_get_precision(res), prec));
+        php_decimal_set_precision(res, prec);
         php_decimal_add(res, op1, op2);
 
         /* Update count, move iterator forward. */
@@ -1231,6 +1238,9 @@ static zend_long php_decimal_sum(php_decimal_t *res, zval *values)
 static php_success_t php_decimal_avg(php_decimal_t *res, zval *values)
 {
     zend_long count = php_decimal_sum(res, values);
+
+    // printf("count=%d, sum is\n", count);
+    // mpd_print(PHP_DECIMAL_MPD(res))
 
     if (count == 0) {
         php_decimal_set_zero(res);
@@ -1297,9 +1307,9 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
             PHP_DECIMAL_TEMP_MPD(tmp);
             mpd1 = Z_DECIMAL_MPD_P(op1);
             mpd2 = &tmp;
-            prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(op1)), PHP_DECIMAL_DEFAULT_PRECISION);
+            prec = php_decimal_get_precision(Z_DECIMAL_P(op1));
 
-            if (php_decimal_parse_scalar(mpd2, op2) == FAILURE) {
+            if (php_decimal_parse_scalar(mpd2, op2, prec) == FAILURE) {
                 php_decimal_set_nan(res);
                 return SUCCESS; /* We don't want the engine to cast. */
             }
@@ -1309,9 +1319,9 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
         PHP_DECIMAL_TEMP_MPD(tmp);
         mpd1 = &tmp;
         mpd2 = Z_DECIMAL_MPD_P(op2);
-        prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(op2)), PHP_DECIMAL_DEFAULT_PRECISION);
+        prec = php_decimal_get_precision(Z_DECIMAL_P(op2));
 
-        if (php_decimal_parse_scalar(mpd1, op1) == FAILURE) {
+        if (php_decimal_parse_scalar(mpd1, op1, prec) == FAILURE) {
             php_decimal_set_nan(res);
             return SUCCESS; /* We don't want the engine to cast. */
         }
@@ -1511,7 +1521,7 @@ static inline int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
             /* Attempt to parse the value, then compare. */
             default: {
                 PHP_DECIMAL_TEMP_MPD(tmp);
-                if (php_decimal_parse_scalar_quiet(&tmp, op2) == SUCCESS) {
+                if (php_decimal_parse_scalar_quiet(&tmp, op2, PHP_DECIMAL_MAX_PREC) == SUCCESS) {
                     return php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
                 }
 
@@ -1643,6 +1653,41 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
     ZVAL_DECIMAL(result, res);
     return SUCCESS;
 }
+
+/**
+ * Object property read - not supported.
+ */
+static zval *php_decimal_read_property(zval *object, zval *member, int type, void **cache_slot, zval *rv)
+{
+    php_decimal_object_properties_not_supported();
+    return &EG(uninitialized_zval);
+}
+
+/**
+ * Object property write - not supported.
+ */
+static void php_decimal_write_property(zval *object, zval *member, zval *value, void **cache_slot)
+{
+    php_decimal_object_properties_not_supported();
+}
+
+/**
+ * Object property isset/empty - not supported.
+ */
+static int php_decimal_has_property(zval *object, zval *member, int has_set_exists, void **cache_slot)
+{
+    php_decimal_object_properties_not_supported();
+    return 0;
+}
+
+/**
+ * Object property unset - not supported.
+ */
+static void php_decimal_unset_property(zval *object, zval *member, void **cache_slot)
+{
+    php_decimal_object_properties_not_supported();
+}
+
 
 /******************************************************************************/
 /*                            PARAMETER PARSING                               */
@@ -2318,6 +2363,10 @@ static void php_decimal_register_class_handlers()
     php_decimal_handlers.compare          = php_decimal_compare_zval_to_zval;
     php_decimal_handlers.do_operation     = php_decimal_do_operation;
     php_decimal_handlers.get_debug_info   = php_decimal_get_debug_info;
+    php_decimal_handlers.read_property    = php_decimal_read_property;
+    php_decimal_handlers.write_property   = php_decimal_write_property;
+    php_decimal_handlers.has_property     = php_decimal_has_property;
+    php_decimal_handlers.unset_property   = php_decimal_unset_property;
 }
 
 /**

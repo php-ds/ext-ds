@@ -31,7 +31,7 @@ object(Decimal\Decimal)#2 (2) {
   ["value"]=>
   string(4) "2E+8"
   ["precision"]=>
-  int(28)
+  int(12)
 }
 object(Decimal\Decimal)#1 (2) {
   ["value"]=>

@@ -46,13 +46,16 @@ $tests = [
         new Decimal("15"), 10, "150", 28
     ],
     [
-        new Decimal("15", 2), 10, "150", 28
+        new Decimal("15", 2), 10, "1.5E+2", 2
     ],
     [
         new Decimal("15", 50), 10, "150", 50
     ],
     [
-        new Decimal("0.619207", 6), 10000000, "6192070.000000", 28
+        new Decimal("0.619207", 6), 10000000, "6.19207E+6", 6
+    ],
+    [
+        new Decimal("0.619207"), 10000000, "6192070.000000", 28
     ],
     [
         $a = new Decimal("7", 50), $a, "49", 50
@@ -118,3 +121,9 @@ Warning: Loss of data on string conversion in %s on line 20
 Warning: Loss of data on string conversion in %s on line 24
 
 Warning: Loss of data on string conversion in %s on line 25
+
+Warning: Loss of data on integer conversion in %s on line 77
+
+Warning: Loss of data on integer conversion in %s on line 79
+
+Warning: Loss of data on integer conversion in %s on line 80

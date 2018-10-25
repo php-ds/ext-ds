@@ -56,7 +56,7 @@ $tests = [
         new Decimal("5"), 10, "15", 28
     ],
     [
-        new Decimal("5", 2), 10, "15", 28
+        new Decimal("5", 2), 10, "15", 2
     ],
     [
         new Decimal("5", 50), 10, "15", 50
