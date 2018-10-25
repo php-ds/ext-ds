@@ -1484,7 +1484,16 @@ static inline int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
  */
 static inline int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
 {
-    return php_decimal_compare_mpd(PHP_DECIMAL_MPD(op1), PHP_DECIMAL_MPD(op2));
+    int result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(op1), PHP_DECIMAL_MPD(op2));
+
+    if (result == 0) {
+        php_decimal_prec_t prec1 = php_decimal_get_precision(op1);
+        php_decimal_prec_t prec2 = php_decimal_get_precision(op2);
+
+        return prec1 == prec2 ? 0 : (prec1 < prec2 ? -1 : 1);
+    }
+
+    return result;
 }
 
 /**

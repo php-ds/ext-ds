@@ -105,9 +105,9 @@ $tests = [
     [decimal("0.2"),     decimal("0.1"),       1],
     [decimal("0.01"),    decimal("0.1"),      -1],
 
-    [decimal("0.1", 2),  decimal("0.1", 1),    0],
+    [decimal("0.1", 2),  decimal("0.1", 1),    1],
     [decimal("0.1", 2),  decimal("0.1", 2),    0],
-    [decimal("0.1", 2),  decimal("0.1", 3),    0],
+    [decimal("0.1", 2),  decimal("0.1", 3),   -1],
 
     [decimal( "INF"),    decimal( "NAN"),      INF <=>  NAN],
     [decimal( "INF"),    decimal( "INF"),      INF <=>  INF],

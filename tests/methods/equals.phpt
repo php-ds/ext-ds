@@ -67,13 +67,13 @@ $tests = [
     [decimal("0.2"),        decimal("0.1"),     false],
     [decimal("0.01"),       decimal("0.1"),     false],
 
-    /* Equal value, precision not considered. */
-    [decimal(0, 10),        decimal(0),         true],
-    [decimal(0, 10),        decimal(0, 9),      true],
+    /* Equal value, precision considered. */
+    [decimal(0, 10),        decimal(0),         false],
+    [decimal(0, 10),        decimal(0, 9),      false],
     [decimal(0, 10),        decimal(0, 10),     true],
 
-    [decimal('1', 10),      decimal('1'),       true],
-    [decimal('1', 10),      decimal('1', 9),    true],
+    [decimal('1', 10),      decimal('1'),       false],
+    [decimal('1', 10),      decimal('1', 9),    false],
     [decimal('1', 10),      decimal('1', 10),   true],
 
     [decimal(NAN, 10),      decimal(NAN),       false],
