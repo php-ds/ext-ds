@@ -7,10 +7,6 @@ php:
   - 7.3
   - nightly
 
-matrix:
-  allow_failures:
-    - php: nightly
-
 env:
   matrix:
     - ENABLE_OPCACHE=1
@@ -18,7 +14,7 @@ env:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libmpdec-dev valgrind
+  - sudo apt-get install -y libmpdec-dev
   - phpenv config-rm xdebug.ini || true
   - sudo ionice -c3 updatedb
 
@@ -34,4 +30,3 @@ before_script:
 
 script:
   - REPORT_EXIT_STATUS=1 php run-tests.php -P -q
-  - REPORT_EXIT_STATUS=1 php run-tests.php -P -q -m
