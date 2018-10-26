@@ -2,7 +2,7 @@
 <package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
     <name>decimal</name>
     <channel>pecl.php.net</channel>
-    <summary>Arbitrary-precision decimal</summary>
+    <summary>Arbitrary-precision floating-point decimal</summary>
     <description>Adds support for correctly-rounded arbitrary precision decimal floating point arithmetic in PHP 7</description>
     <lead>
         <name>Rudi Theunissen</name>
@@ -17,8 +17,8 @@
         <api>1.0.0</api>
     </version>
     <stability>
-        <release>beta</release>
-        <api>beta</api>
+        <release>stable</release>
+        <api>stable</api>
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
