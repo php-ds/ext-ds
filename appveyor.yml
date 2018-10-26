@@ -43,19 +43,21 @@ build_script:
 
     7z x -y mpdecimal-2.4.2.zip -oC:\projects\mpdecimal
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild32.bat C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-x86.bat
+    cd C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild64.bat C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-x64.bat
+    copy vcbuild32.bat vcbuild-x86.bat
 
-    copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" "C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcvarsall.bat"
+    copy vcbuild64.bat vcbuild-x64.bat
 
-    C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-%ARCH%.bat
+    copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" vcvarsall.bat
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%ARCH%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+    vcbuild-%ARCH%.bat
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%ARCH%\libmpdec-2.4.2.dll.lib C:\projects\php-src\deps\lib\libmpdec-2.4.2.lib
+    copy dist%ARCH%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%ARCH%\libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec-2.4.2.dll
+    copy dist%ARCH%\libmpdec-2.4.2.dll.lib C:\projects\php-src\deps\lib\libmpdec-2.4.2.lib
+
+    copy dist%ARCH%\libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec-2.4.2.dll
 
     cd C:\projects\php-src
 
