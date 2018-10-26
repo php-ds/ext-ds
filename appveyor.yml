@@ -41,9 +41,10 @@ build_script:
 
     wget http://www.bytereef.org/software/mpdecimal/releases/mpdecimal-2.4.2.zip -q
 
-    7z x -y mpdecimal-2.4.2.zip -o C:\projects\mpdecimal
+    7z x -y mpdecimal-2.4.2.zip -oC:\projects\mpdecimal
 
     cd C:\projects\mpdecimal
+    dir
 
     C:\projects\mpdecimal\vcbuild\vcbuild%ARCH%.bat
 
