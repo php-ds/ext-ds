@@ -6,6 +6,10 @@ php:
   - 7.2
   - nightly
 
+matrix:
+  allow_failures:
+    - php: nightly
+
 env:
   matrix:
     - ENABLE_OPCACHE=1
@@ -28,4 +32,5 @@ before_script:
   - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
+  - REPORT_EXIT_STATUS=1 php run-tests.php -P -q
   - REPORT_EXIT_STATUS=1 php run-tests.php -P -q -m
