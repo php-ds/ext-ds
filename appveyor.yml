@@ -47,6 +47,8 @@ build_script:
 
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild64.bat C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-x64.bat
 
+    copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" "C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcvarsall.bat"
+
     C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-%ARCH%.bat
 
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%ARCH%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
