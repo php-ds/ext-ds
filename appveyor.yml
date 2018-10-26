@@ -49,19 +49,21 @@ build_script:
 
     copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" vcvarsall.bat
 
-    vcbuild%INT_SIZE%.bat
-
-    cd dist%INT_SIZE%
-
-    dir
+    C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild%INT_SIZE%.bat
 
     mkdir C:\projects\php-decimal\bin
 
-    copy mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\libmpdec\vccompat.h C:\projects\php-src\deps\include\vccompat.h
 
-    copy libmpdec-2.4.2.lib C:\projects\php-src\deps\lib\libmpdec.lib
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\libmpdec\vcstdint.h C:\projects\php-src\deps\include\vcstdint.h
 
-    copy libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec.dll
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\libmpdec\vcdiv64.asm C:\projects\php-src\deps\include\vcdiv64.asm
+
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\libmpdec-2.4.2.lib C:\projects\php-src\deps\lib\libmpdec.lib
+
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec.dll
 
     cd C:\projects\php-src
 

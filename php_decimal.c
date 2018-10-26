@@ -48,7 +48,7 @@ static void php_decimal_print_mpd(mpd_t *mpd)
 {
     char *str;
     mpd_to_sci_size(&str, mpd, 1);
-    php_printf(str);
+    php_printf("%s", str);
     mpd_free(str);
 }
 
@@ -104,7 +104,7 @@ static void php_decimal_expected_iterable(zval *arg)
 static void php_decimal_precision_out_of_range(php_decimal_prec_t prec)
 {
     zend_throw_exception_ex(spl_ce_OutOfRangeException, 0,
-        "Decimal precision out of range: %ld <= P <= %ld, %ld given",
+        "Decimal precision out of range: %d <= P <= %lld, %ld given",
         PHP_DECIMAL_MIN_PREC,
         PHP_DECIMAL_MAX_PREC,
         prec
