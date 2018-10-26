@@ -378,7 +378,7 @@ static zend_object *php_decimal_create_object(zend_class_entry *ce)
 /**
  * Creates a copy of the given decimal object.
  */
-static inline php_decimal_t *php_decimal_create_copy(php_decimal_t *src)
+static php_decimal_t *php_decimal_create_copy(php_decimal_t *src)
 {
     php_decimal_t *dst = php_decimal_with_prec(php_decimal_get_precision(src));
 
@@ -398,7 +398,7 @@ static zend_object *php_decimal_clone_obj(zval *obj)
 /**
  * Frees all internal memory used by a given decimal, but not object itself.
  */
-static inline void php_decimal_release(php_decimal_t *obj)
+static void php_decimal_release(php_decimal_t *obj)
 {
     /* The mpd_t is embedded so will be freed along with the object. */
     if (PHP_DECIMAL_IS_INITIALIZED(obj)) {
@@ -412,7 +412,7 @@ static inline void php_decimal_release(php_decimal_t *obj)
  * Frees a decimal object. This should only be used for objects that were
  * allocated directly and never used to create a PHP object.
  */
-static inline void php_decimal_free(php_decimal_t *obj)
+static void php_decimal_free(php_decimal_t *obj)
 {
     php_decimal_release(obj);
     efree(obj);
@@ -899,7 +899,7 @@ static zend_always_inline zend_string *php_decimal_format(php_decimal_t *obj, ze
  * We are not concerned with invalid operations such as -INF + INF because PHP
  * quietly uses NAN. The intention is to be as consistent with PHP as possible.
  */
-static inline void php_decimal_add(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_add(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -935,7 +935,7 @@ static inline void php_decimal_add(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * We are not concerned with invalid operations such as -INF - INF because PHP
  * quietly uses NAN. The intention is to be as consistent with PHP as possible.
  */
-static inline void php_decimal_sub(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_sub(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -950,7 +950,7 @@ static inline void php_decimal_sub(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * We are not concerned with invalid operations such as INF * NAN because PHP
  * quietly uses NAN. The intention is to be as consistent with PHP as possible.
  */
-static inline void php_decimal_mul(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_mul(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -965,7 +965,7 @@ static inline void php_decimal_mul(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * Division by zero will throw an exception, but undefined division such as
  * INF / NAN will quietly return NAN.
  */
-static inline void php_decimal_div(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_div(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -987,7 +987,7 @@ static inline void php_decimal_div(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * In order to stay consistent with div, invalid operations should quietly
  * return NAN, even though PHP throws for all invalid modulo operations.
  */
-static inline void php_decimal_rem(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_rem(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -1009,7 +1009,7 @@ static inline void php_decimal_rem(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * In order to stay consistent with div, invalid operations should quietly
  * return NAN, even though PHP throws for all invalid modulo operations.
  */
-static inline void php_decimal_mod(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
+static void php_decimal_mod(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     /* Truncate op1 if not an integer, use res as temp */
     if (!mpd_isinteger(op2) && !mpd_isspecial(op2)) {
@@ -1031,7 +1031,7 @@ static inline void php_decimal_mod(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  * Sets rem to the result of raising base to the power of exp. Anything to the
  * power of zero should equal 1.
  */
-static inline void php_decimal_pow(php_decimal_t *res, mpd_t *base, mpd_t *exp)
+static void php_decimal_pow(php_decimal_t *res, mpd_t *base, mpd_t *exp)
 {
     uint32_t status = 0;
 
@@ -1048,7 +1048,7 @@ static inline void php_decimal_pow(php_decimal_t *res, mpd_t *base, mpd_t *exp)
 /**
  * Sets res to the natural log of op1.
  */
-static inline void php_decimal_ln(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_ln(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
 
@@ -1060,7 +1060,7 @@ static inline void php_decimal_ln(php_decimal_t *res, mpd_t *op1)
 /**
  * Sets res to e to the power of exp.
  */
-static inline void php_decimal_exp(php_decimal_t *res, mpd_t *exp)
+static void php_decimal_exp(php_decimal_t *res, mpd_t *exp)
 {
     uint32_t status = 0;
 
@@ -1072,7 +1072,7 @@ static inline void php_decimal_exp(php_decimal_t *res, mpd_t *exp)
 /**
  * Sets res to the base-10 log of op1.
  */
-static inline void php_decimal_log10(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_log10(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
 
@@ -1085,7 +1085,7 @@ static inline void php_decimal_log10(php_decimal_t *res, mpd_t *op1)
  * Sets res to the square root of op1. Negative values should quietly return
  * NAN, and special numbers should be copied as is.
  */
-static inline void php_decimal_sqrt(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_sqrt(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
 
@@ -1107,7 +1107,7 @@ static inline void php_decimal_sqrt(php_decimal_t *res, mpd_t *op1)
 /**
  * Sets res to the floor of op1, ie. rounded down towards negative infinity.
  */
-static inline void php_decimal_floor(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_floor(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
     mpd_qfloor(PHP_DECIMAL_MPD(res), op1, php_decimal_context(), &status);
@@ -1116,7 +1116,7 @@ static inline void php_decimal_floor(php_decimal_t *res, mpd_t *op1)
 /**
  * Sets res to the ceiling of op1, ie. rounded up towards positive infinity.
  */
-static inline void php_decimal_ceil(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_ceil(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
     mpd_qceil(PHP_DECIMAL_MPD(res), op1, php_decimal_context(), &status);
@@ -1127,7 +1127,7 @@ static inline void php_decimal_ceil(php_decimal_t *res, mpd_t *op1)
  * decimal point. The result is guaranteed to be an integer, unless op1 is a
  * special number in which case it should be copied as is.
  */
-static inline void php_decimal_truncate(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_truncate(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
     mpd_qtrunc(PHP_DECIMAL_MPD(res), op1, php_decimal_context(), &status);
@@ -1136,7 +1136,7 @@ static inline void php_decimal_truncate(php_decimal_t *res, mpd_t *op1)
 /**
  * Sets res to the value of op1 after shifting its decimal point.
  */
-static inline void php_decimal_shift(php_decimal_t *res, mpd_t *op1, zend_long places)
+static void php_decimal_shift(php_decimal_t *res, mpd_t *op1, zend_long places)
 {
     uint32_t status = 0;
 
@@ -1151,7 +1151,7 @@ static inline void php_decimal_shift(php_decimal_t *res, mpd_t *op1, zend_long p
 /**
  * Sets res to the absolute value of op1.
  */
-static inline void php_decimal_abs(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_abs(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
     mpd_qabs(PHP_DECIMAL_MPD(res), op1, php_decimal_context(), &status);
@@ -1160,7 +1160,7 @@ static inline void php_decimal_abs(php_decimal_t *res, mpd_t *op1)
 /**
  * Sets res to the value of op1 with its sign inverted.
  */
-static inline void php_decimal_negate(php_decimal_t *res, mpd_t *op1)
+static void php_decimal_negate(php_decimal_t *res, mpd_t *op1)
 {
     uint32_t status = 0;
     mpd_qcopy_negate(PHP_DECIMAL_MPD(res), op1, &status);
@@ -1358,7 +1358,7 @@ static php_success_t php_decimal_avg(php_decimal_t *res, zval *values)
  *
  * Returns NULL if a function is not mapped.
  */
-static inline php_decimal_binary_op_t php_decimal_get_operation_for_opcode(zend_uchar opcode)
+static php_decimal_binary_op_t php_decimal_get_operation_for_opcode(zend_uchar opcode)
 {
     switch (opcode) {
         case ZEND_ADD: return php_decimal_add;
@@ -1561,7 +1561,7 @@ static zend_always_inline int php_decimal_normalize_compare_result(int result, i
  * flag that indicates an undefined result. Returning 1 here is no good because
  * operations like "greater than" would be true for NAN.
  */
-static inline int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
+static int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -1577,7 +1577,7 @@ static inline int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
 /**
  * Compares two decimals using value-only comparison, precision is ignored.
  */
-static inline int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
+static int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
 {
     int result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(op1), PHP_DECIMAL_MPD(op2));
 
@@ -1594,7 +1594,7 @@ static inline int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
 /**
  * Compares a decimal to a non-decimal zval.
  */
-static inline int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
+static int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
 {
     while (1) {
         switch (Z_TYPE_P(op2)) {
@@ -1640,7 +1640,7 @@ static inline int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
 /**
  * Compares a decimal to a zval that could also be a decimal.
  */
-static inline int php_decimal_compare_to_zval(php_decimal_t *op1, zval *op2)
+static int php_decimal_compare_to_zval(php_decimal_t *op1, zval *op2)
 {
     if (Z_IS_DECIMAL_P(op2)) {
         return php_decimal_compare(op1, Z_DECIMAL_P(op2));
