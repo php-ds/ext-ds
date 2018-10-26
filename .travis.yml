@@ -30,7 +30,6 @@ install:
 
 before_script:
   - echo "extension=decimal.so"               >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - echo "zend_extension=opcache.so"          >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
