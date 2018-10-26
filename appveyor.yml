@@ -12,9 +12,11 @@ environment:
 
   matrix:
     - ARCH: x86
+      INT_SIZE: 32
       PHP_VER: 7.2
       VC_VER: vc15
     - ARCH: x64
+      INT_SIZE: 64
       PHP_VER: 7.2
       VC_VER: vc15
 install:
@@ -45,17 +47,11 @@ build_script:
 
     cd C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild
 
-    copy vcbuild32.bat vcbuild-x86.bat
-
-    copy vcbuild64.bat vcbuild-x64.bat
-
     copy "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" vcvarsall.bat
 
-    vcbuild-%ARCH%.bat
+    vcbuild%INT_SIZE%.bat
 
-    cd dist%ARCH%
-
-    dir
+    cd dist%INT_SIZE%
 
     copy mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
