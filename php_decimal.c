@@ -255,12 +255,15 @@ static void php_decimal_mpd_traphandler(mpd_context_t *ctx)
 /**
  * The global, shared mpd context.
  */
-#define php_decimal_context() (&DECIMAL_G(ctx))
+static zend_always_inline mpd_context_t *php_decimal_context()
+{
+    return &DECIMAL_G(ctx);
+}
 
 /**
  * Sets the significand precision of a given decimal object.
  */
-static void php_decimal_set_precision(php_decimal_t *obj, php_decimal_prec_t prec)
+static zend_always_inline void php_decimal_set_precision(php_decimal_t *obj, php_decimal_prec_t prec)
 {
     obj->prec = prec;
 }
@@ -268,7 +271,7 @@ static void php_decimal_set_precision(php_decimal_t *obj, php_decimal_prec_t pre
 /**
  * Returns the significand precision of a given decimal object.
  */
-static php_decimal_prec_t php_decimal_get_precision(php_decimal_t *obj)
+static zend_always_inline php_decimal_prec_t php_decimal_get_precision(php_decimal_t *obj)
 {
     return obj->prec;
 }
@@ -276,7 +279,7 @@ static php_decimal_prec_t php_decimal_get_precision(php_decimal_t *obj)
 /**
  * Returns true if the given precision is valid, false otherwise.
  */
-static zend_bool php_decimal_precision_is_valid(php_decimal_prec_t prec)
+static zend_always_inline zend_bool php_decimal_precision_is_valid(php_decimal_prec_t prec)
 {
     return prec >= PHP_DECIMAL_MIN_PREC && prec <= PHP_DECIMAL_MAX_PREC;
 }
@@ -362,7 +365,7 @@ static php_decimal_t *php_decimal_with_prec(php_decimal_prec_t prec)
 /**
  * Creates a new decimal object, initialized to the default precision.
  */
-static php_decimal_t *php_decimal()
+static zend_always_inline php_decimal_t *php_decimal()
 {
     return php_decimal_with_prec(PHP_DECIMAL_DEFAULT_PRECISION);
 }
@@ -426,28 +429,10 @@ static void php_decimal_free_object(zend_object *obj)
     php_decimal_release((php_decimal_t*) obj);
 }
 
+
 /******************************************************************************/
 /*                                 ROUNDING                                   */
 /******************************************************************************/
-
-/**
- * Returns the parity of the integer value of a given mpd, or 1 if undefined.
- * 0 for even, 1 for odd.
- */
-static int php_decimal_truncated_parity(mpd_t *mpd)
-{
-    if (!mpd_isinteger(mpd)) {
-        if (mpd_isspecial(mpd)) {
-            return 1;
-        }
-
-        PHP_DECIMAL_TEMP_MPD(tmp);
-        mpd_trunc(&tmp, mpd, php_decimal_context());
-        mpd = &tmp;
-    }
-
-    return mpd_isodd(mpd);
-}
 
 /**
  * This library supports both its own rounding constants and the PHP rounding
@@ -488,7 +473,7 @@ static php_decimal_rounding_t php_decimal_convert_to_mpd_rounding_mode(mpd_t *mp
         case PHP_DECIMAL_ROUND_HALF_ODD: {
 
             /* INF and NAN won't be rounded. */
-            if (mpd_isspecial(mpd)) {
+            if (UNEXPECTED(mpd_isspecial(mpd))) {
                 return MPD_ROUND_TRUNC;
 
             /**
@@ -498,15 +483,19 @@ static php_decimal_rounding_t php_decimal_convert_to_mpd_rounding_mode(mpd_t *mp
              * For example, 0.12345, rounded to 4 decimal places is on the 4.
              */
             } else {
+                uint32_t status = 0;
+
                 PHP_DECIMAL_TEMP_MPD(tmp);
-                mpd_shiftl(&tmp, mpd, scale, php_decimal_context());
+                mpd_qshiftl(&tmp, mpd, scale, &status);
+                mpd_qtrunc(&tmp, &tmp, php_decimal_context(), &status);
 
                 /* An odd digit should round down towards itself. */
-                if (php_decimal_truncated_parity(&tmp)) {
-                    return MPD_ROUND_HALF_DOWN;
-                } else {
-                    return MPD_ROUND_HALF_UP;
-                }
+                mode = mpd_isodd(&tmp)
+                    ? MPD_ROUND_HALF_DOWN
+                    : MPD_ROUND_HALF_UP;
+
+                mpd_del(&tmp);
+                return mode;
             }
         }
 
@@ -784,24 +773,27 @@ static double php_decimal_to_double(php_decimal_t *obj)
  */
 static zend_long php_decimal_to_long(php_decimal_t *obj)
 {
+    const mpd_t *mpd = PHP_DECIMAL_MPD(obj);
+
     uint32_t  status = 0;
     zend_long result = 0;
 
-    mpd_t *mpd = PHP_DECIMAL_MPD(obj);
-
     /* This matches PHP's behaviour. */
     if (UNEXPECTED(mpd_isspecial(mpd))) {
-        return result;
+        return 0;
     }
+
+    if (mpd_isinteger(mpd)) {
+        result = mpd_qget_ssize(mpd, &status);
 
     /* Truncate to an integer value first, otherwise mpd_get_ssize fails. */
-    if (!mpd_isinteger(mpd)) {
+    } else {
         PHP_DECIMAL_TEMP_MPD(tmp);
-        mpd_trunc(&tmp, mpd, php_decimal_context());
-        mpd = &tmp;
-    }
+        mpd_qtrunc(&tmp, mpd, php_decimal_context(), &status);
 
-    result = mpd_qget_ssize(mpd, &status);
+        result = mpd_qget_ssize(&tmp, &status);
+        mpd_del(&tmp);
+    }
 
     /* Check for overflow. */
     if (status & MPD_Invalid_operation) {
@@ -874,6 +866,7 @@ static zend_string *php_decimal_format_mpd(mpd_t *mpd, zend_long places, zend_bo
 
     smart_str_free(&fmt);
     mpd_free(str);
+    mpd_del(&tmp);
 
     return res;
 }
@@ -901,30 +894,9 @@ static void php_decimal_add(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
-    // php_printf("=== BEFORE ADD\n");
-    // php_printf("op1: ");
-    // php_decimal_print_mpd(op1);
-    // php_printf("\n");
-    // php_printf("op2: ");
-    // php_decimal_print_mpd(op2);
-    // php_printf("\n");
-    // php_printf("res: ");
-    // php_decimal_print(res);
-
     PHP_DECIMAL_WITH_PRECISION(php_decimal_get_precision(res), {
         mpd_qadd(PHP_DECIMAL_MPD(res), op1, op2, php_decimal_context(), &status);
     });
-
-    // php_printf("=== AFTER ADD\n");
-    // php_printf("op1: ");
-    // php_decimal_print_mpd(op1);
-    // php_printf("\n");
-    // php_printf("op2: ");
-    // php_decimal_print_mpd(op2);
-    // php_printf("\n");
-    // php_printf("res: ");
-    // php_decimal_print(res);
-    // php_printf("status = %d\n", status);
 }
 
 /**
@@ -1009,20 +981,25 @@ static void php_decimal_rem(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
  */
 static void php_decimal_mod(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
+    PHP_DECIMAL_TEMP_MPD(tmp1);
+    PHP_DECIMAL_TEMP_MPD(tmp2);
+
     /* Truncate op1 if not an integer, use res as temp */
-    if (!mpd_isinteger(op2) && !mpd_isspecial(op2)) {
-        mpd_trunc(PHP_DECIMAL_MPD(res), op2, php_decimal_context());
-        op2 = PHP_DECIMAL_MPD(res);
+    if (!mpd_isinteger(op1) && !mpd_isspecial(op1)) {
+        mpd_trunc(&tmp1, op1, php_decimal_context());
+        op1 = &tmp1;
     }
 
     /* Truncate op2 if not an integer. */
-    if (!mpd_isinteger(op1) && !mpd_isspecial(op1)) {
-        PHP_DECIMAL_TEMP_MPD(tmp);
-        mpd_trunc(&tmp, op1, php_decimal_context());
-        op1 = &tmp;
+    if (!mpd_isinteger(op2) && !mpd_isspecial(op2)) {
+        mpd_trunc(&tmp2, op2, php_decimal_context());
+        op2 = &tmp2;
     }
 
     php_decimal_rem(res, op1, op2);
+
+    mpd_del(&tmp1);
+    mpd_del(&tmp2);
 }
 
 /**
@@ -1144,6 +1121,8 @@ static void php_decimal_shift(php_decimal_t *res, mpd_t *op1, zend_long places)
     PHP_DECIMAL_WITH_PRECISION(php_decimal_get_precision(res), {
         mpd_qscaleb(PHP_DECIMAL_MPD(res), op1, &exp, php_decimal_context(), &status);
     });
+
+    mpd_del(&exp);
 }
 
 /**
@@ -1173,62 +1152,35 @@ static zend_long php_decimal_sum_array(php_decimal_t *res, HashTable *arr)
     zval *value;
     php_decimal_set_zero(res);
 
-    // php_printf("start of sum array, res should be zero\n");
-    // php_decimal_print(res);
-
     ZEND_HASH_FOREACH_VAL(arr, value) {
         mpd_t *op1;
         mpd_t *op2;
         php_decimal_prec_t prec;
-
-        // php_printf("array value: ");
-        // php_debug_zval_dump(value, 1);
+        PHP_DECIMAL_TEMP_MPD(tmp);
 
         if (Z_IS_DECIMAL_P(value)) {
-            // php_printf("value is a decimal\n");
             op1  = PHP_DECIMAL_MPD(res);
             op2  = Z_DECIMAL_MPD_P(value);
             prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(value)), php_decimal_get_precision(res));
 
-            // php_printf("op1 = ");
-            // php_decimal_print_mpd(op1);
-            // php_printf("op2 = ");
-            // php_decimal_print_mpd(op2);
-
         } else {
-            // php_printf("value is NOT a decimal\n");
-            PHP_DECIMAL_TEMP_MPD(tmp);
             op1  = PHP_DECIMAL_MPD(res);
             op2  = &tmp;
             prec = php_decimal_get_precision(res);
 
             /* Attempt to parse the value, otherwise bail out. */
             if (php_decimal_parse_scalar(&tmp, value, prec) == FAILURE) {
+                mpd_del(&tmp);
                 return -1;
             }
-
-            // php_printf("op1 = ");
-            // php_decimal_print_mpd(op1);
-            // php_printf("\n");
-            // php_printf("op2 = ");
-            // php_decimal_print_mpd(op2);
-            // php_printf("\n");
         }
-
-        // php_printf("before add\n");
-        // php_decimal_print(res);
 
         /* Set precision, do add. */
         php_decimal_set_precision(res, prec);
         php_decimal_add(res, op1, op2);
-
-        // php_printf("after add\n");
-        // php_decimal_print(res);
+        mpd_del(&tmp);
     }
     ZEND_HASH_FOREACH_END();
-
-    // php_printf("after sum\n");
-    // php_decimal_print(res);
 
     return zend_hash_num_elements(arr);
 }
@@ -1262,6 +1214,7 @@ static zend_long php_decimal_sum_traversable(php_decimal_t *res, zval *values)
         mpd_t *op1;
         mpd_t *op2;
         php_decimal_prec_t prec;
+        PHP_DECIMAL_TEMP_MPD(tmp);
 
         /* Attempt to access the current value of the iterator. */
         zval *value = iterator->funcs->get_current_data(iterator);
@@ -1276,13 +1229,13 @@ static zend_long php_decimal_sum_traversable(php_decimal_t *res, zval *values)
             prec = MAX(php_decimal_get_precision(Z_DECIMAL_P(value)), php_decimal_get_precision(res));
 
         } else {
-            PHP_DECIMAL_TEMP_MPD(tmp);
             op1 = PHP_DECIMAL_MPD(res);
             op2  = &tmp;
             prec = php_decimal_get_precision(res);
 
             /* Attempt to parse the value, otherwise bail out. */
             if (php_decimal_parse_scalar(&tmp, value, prec) == FAILURE) {
+                mpd_del(&tmp);
                 goto done;
             }
         }
@@ -1290,6 +1243,7 @@ static zend_long php_decimal_sum_traversable(php_decimal_t *res, zval *values)
         /* Set precision, do add. */
         php_decimal_set_precision(res, prec);
         php_decimal_add(res, op1, op2);
+        mpd_del(&tmp);
 
         /* Update count, move iterator forward. */
         count++;
@@ -1344,6 +1298,7 @@ static php_success_t php_decimal_avg(php_decimal_t *res, zval *values)
         PHP_DECIMAL_TEMP_MPD(tmp);
         php_decimal_mpd_set_long(&tmp, count, PHP_DECIMAL_MAX_PREC);
         php_decimal_div(res, PHP_DECIMAL_MPD(res), &tmp);
+        mpd_del(&tmp);
         return SUCCESS;
     }
 
@@ -1381,6 +1336,7 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
     mpd_t *mpd2;
 
     php_decimal_prec_t prec;
+    PHP_DECIMAL_TEMP_MPD(tmp);
 
     /* Could not find a mapping, op is undefined, bail out. */
     if (op == NULL) {
@@ -1397,32 +1353,33 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
 
         } else {
             /* Only op1 is decimal, so attempt to parse op2. */
-            PHP_DECIMAL_TEMP_MPD(tmp);
             mpd1 = Z_DECIMAL_MPD_P(op1);
             mpd2 = &tmp;
             prec = php_decimal_get_precision(Z_DECIMAL_P(op1));
 
             if (php_decimal_parse_scalar(mpd2, op2, prec) == FAILURE) {
                 php_decimal_set_nan(res);
-                return SUCCESS; /* We don't want the engine to cast. */
+                goto done;
             }
         }
     } else {
         /* op1 is NOT a decimal, so op2 must be. */
-        PHP_DECIMAL_TEMP_MPD(tmp);
         mpd1 = &tmp;
         mpd2 = Z_DECIMAL_MPD_P(op2);
         prec = php_decimal_get_precision(Z_DECIMAL_P(op2));
 
         if (php_decimal_parse_scalar(mpd1, op1, prec) == FAILURE) {
             php_decimal_set_nan(res);
-            return SUCCESS; /* We don't want the engine to cast. */
+            goto done;
         }
     }
 
     /* Parsed successfully, so we can set the parsed precision and do the op. */
     php_decimal_set_precision(res, prec);
     op(res, mpd1, mpd2);
+
+done:
+    mpd_del(&tmp);
     return SUCCESS;
 }
 
@@ -1559,7 +1516,7 @@ static int php_decimal_normalize_compare_result(int result, int invert)
  * flag that indicates an undefined result. Returning 1 here is no good because
  * operations like "greater than" would be true for NAN.
  */
-static  int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
+static int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
@@ -1575,7 +1532,7 @@ static  int php_decimal_compare_mpd(mpd_t *op1, mpd_t *op2)
 /**
  * Compares two decimals using value-only comparison, precision is ignored.
  */
-static  int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
+static int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
 {
     int result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(op1), PHP_DECIMAL_MPD(op2));
 
@@ -1590,9 +1547,29 @@ static  int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
 }
 
 /**
+ * Compares a decimal object to a double.
+ */
+static int php_decimal_compare_to_double(php_decimal_t *obj, double dval)
+{
+    if (UNEXPECTED(zend_isnan(dval))) {
+        return PHP_DECIMAL_COMPARE_NAN;
+
+    } else {
+        int result;
+        PHP_DECIMAL_TEMP_MPD(tmp);
+
+        php_decimal_mpd_set_double(&tmp, dval);
+        result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
+
+        mpd_del(&tmp);
+        return result;
+    }
+}
+
+/**
  * Compares a decimal to a non-decimal zval.
  */
-static  int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
+static int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
 {
     while (1) {
         switch (Z_TYPE_P(op2)) {
@@ -1603,33 +1580,27 @@ static  int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
             case IS_TRUE:
                 return 0;
 
-            case IS_DOUBLE: {
-                if (zend_isnan(Z_DVAL_P(op2))) {
-                    return PHP_DECIMAL_COMPARE_NAN;
-                }
-
-                /* Allow comparing to float. */
-                PHP_DECIMAL_TEMP_MPD(tmp);
-
-                php_decimal_mpd_set_double(&tmp, Z_DVAL_P(op2));
-                return php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
-            }
+            /* Allow comparing to float. */
+            case IS_DOUBLE:
+                return php_decimal_compare_to_double(obj, Z_DVAL_P(op2));
 
             /* TODO not sure if this is necessary... */
-            case IS_REFERENCE: {
+            case IS_REFERENCE:
                 op2 = Z_REFVAL_P(op2);
                 continue;
-            }
 
             /* Attempt to parse the value, then compare. */
+            /* Return unknown on failure to avoid false "greater than" indicator. */
             default: {
+                int result = PHP_DECIMAL_COMPARE_UNKNOWN;
                 PHP_DECIMAL_TEMP_MPD(tmp);
-                if (php_decimal_parse_scalar_quiet(&tmp, op2, PHP_DECIMAL_MAX_PREC) == SUCCESS) {
-                    return php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
+
+                if (EXPECTED(php_decimal_parse_scalar_quiet(&tmp, op2, PHP_DECIMAL_MAX_PREC) == SUCCESS)) {
+                    result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
                 }
 
-                /* Can't return 1 because the value is not necessarily greater. */
-                return PHP_DECIMAL_COMPARE_UNKNOWN;
+                mpd_del(&tmp);
+                return result;
             }
         }
     }
@@ -1638,7 +1609,7 @@ static  int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
 /**
  * Compares a decimal to a zval that could also be a decimal.
  */
-static  int php_decimal_compare_to_zval(php_decimal_t *op1, zval *op2)
+static int php_decimal_compare_to_zval(php_decimal_t *op1, zval *op2)
 {
     if (Z_IS_DECIMAL_P(op2)) {
         return php_decimal_compare(op1, Z_DECIMAL_P(op2));
@@ -2110,7 +2081,16 @@ PHP_DECIMAL_ARGINFO_END()
 PHP_DECIMAL_METHOD(parity)
 {
     PHP_DECIMAL_PARAMS_PARSE_NONE();
-    RETURN_LONG(php_decimal_truncated_parity(THIS_MPD()));
+
+    if (UNEXPECTED(mpd_isspecial(THIS_MPD()))) {
+        RETURN_LONG(1);
+
+    } else {
+        PHP_DECIMAL_TEMP_MPD(tmp);
+        mpd_trunc(&tmp, THIS_MPD(), php_decimal_context());
+        RETVAL_LONG(mpd_isodd(&tmp));
+        mpd_del(&tmp);
+    }
 }
 
 /**
