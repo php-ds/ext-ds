@@ -613,19 +613,14 @@ static php_success_t php_decimal_mpd_set_special_double(mpd_t *res, double dval)
  */
 static void php_decimal_mpd_set_double(mpd_t *res, double dval)
 {
-    if (zend_isinf(dval)) {
-        mpd_set_infinity(res);
-        mpd_set_sign(res, signbit(dval));
+    zend_string *str;
 
-    } else if (zend_isnan(dval)) {
-        mpd_set_qnan(res);
+    zval tmp;
+    ZVAL_DOUBLE(&tmp, dval);
 
-    } else {
-        zend_string *str = zend_strpprintf(0, "%.*G", (int) EG(precision), dval);
-
-        php_decimal_mpd_set_string(res, str, PHP_DECIMAL_MAX_PREC, false);
-        zend_string_release(str);
-    }
+    str = zval_get_string(&tmp);
+    php_decimal_mpd_set_string(res, str, PHP_DECIMAL_MAX_PREC, false);
+    zend_string_free(str);
 }
 
 /**
@@ -1549,6 +1544,7 @@ static inline int php_decimal_compare_to_scalar(php_decimal_t *obj, zval *op2)
 
                 /* Allow comparing to float. */
                 PHP_DECIMAL_TEMP_MPD(tmp);
+
                 php_decimal_mpd_set_double(&tmp, Z_DVAL_P(op2));
                 return php_decimal_compare_mpd(PHP_DECIMAL_MPD(obj), &tmp);
             }

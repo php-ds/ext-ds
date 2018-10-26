@@ -11,13 +11,11 @@ matrix:
     - php: nightly
 
 env:
+  global:
+    - REPORT_EXIT_STATUS=1
   matrix:
     - ENABLE_OPCACHE=1
     - ENABLE_OPCACHE=0
-
-env:
-    global:
-      - REPORT_EXIT_STATUS=1
 
 before_install:
   - sudo apt-get update
