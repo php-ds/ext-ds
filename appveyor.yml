@@ -11,17 +11,17 @@ environment:
   PHP_SDK_BINARY_TOOLS_VER: php-sdk-2.1.1
 
   matrix:
-    - ARCH: 86
+    - ARCH: x86
       PHP_VER: 7.2
       VC_VER: vc15
-    - ARCH: 64
+    - ARCH: x64
       PHP_VER: 7.2
       VC_VER: vc15
 install:
 - cmd: cinst wget
 build_script:
 - cmd: >-
-    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x%ARCH%
+    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
 
     wget https://github.com/OSTC/php-sdk-binary-tools/archive/%PHP_SDK_BINARY_TOOLS_VER%.zip --no-check-certificate -q -O php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip
 
@@ -37,13 +37,17 @@ build_script:
 
     xcopy C:\projects\php-decimal C:\projects\php-src\ext\decimal /s /e /y /q
 
-    phpsdk_deps -u -t %VC_VER% -b %PHP_VER% -a x%ARCH% -f -d C:\projects\php-src\deps
+    phpsdk_deps -u -t %VC_VER% -b %PHP_VER% -a %ARCH% -f -d C:\projects\php-src\deps
 
     wget http://www.bytereef.org/software/mpdecimal/releases/mpdecimal-2.4.2.zip -q
 
     7z x -y mpdecimal-2.4.2.zip -oC:\projects\mpdecimal
 
-    C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild%ARCH%.bat
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild32.bat C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-x86.bat
+
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild64.bat C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-x64.bat
+
+    C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\vcbuild-%ARCH%.bat
 
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%ARCH%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
