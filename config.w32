@@ -9,7 +9,7 @@ var DECIMAL_EXT_DEP_LIB     ="libmpdec.lib";
 
 /* --------------------------------------------------------------------- */
 
-ARG_ENABLE("decimal", "for decimal support", "yes");
+ARG_WITH("decimal", "for decimal support", "yes");
 
 if (PHP_DECIMAL == "yes") {
     if (CHECK_LIB(DECIMAL_EXT_DEP_LIB, DECIMAL_EXT_NAME, PHP_DECIMAL) && CHECK_HEADER_ADD_INCLUDE(DECIMAL_EXT_DEP_HEADER, "CFLAGS_DECIMAL")) {

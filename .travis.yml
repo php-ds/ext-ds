@@ -13,7 +13,7 @@ env:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libmpdec-dev
+  - sudo apt-get install -y libmpdec-dev valgrind
   - phpenv config-rm xdebug.ini || true
   - sudo ionice -c3 updatedb
 
@@ -28,4 +28,4 @@ before_script:
   - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
-  - REPORT_EXIT_STATUS=1 php run-tests.php -P -q --show-diff
+  - REPORT_EXIT_STATUS=1 php run-tests.php -P -q -m
