@@ -1329,7 +1329,7 @@ static  php_decimal_binary_op_t php_decimal_get_operation_for_opcode(zend_uchar 
  *
  * We don't know which of the operands is a decimal, if not both.
  */
-static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_decimal_t *res, zval *op1, zval *op2)
+static void php_decimal_do_binary_op(php_decimal_binary_op_t op, php_decimal_t *res, zval *op1, zval *op2)
 {
     mpd_t *mpd1;
     mpd_t *mpd2;
@@ -1350,9 +1350,11 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
             mpd2 = &tmp;
             prec = php_decimal_get_precision(Z_DECIMAL_P(op1));
 
+            /* Failing to parse will throw an exception, so set NAN defer.*/
             if (php_decimal_parse_scalar(mpd2, op2, prec) == FAILURE) {
                 php_decimal_set_nan(res);
-                goto done;
+                mpd_del(&tmp);
+                return;
             }
         }
     } else {
@@ -1361,19 +1363,18 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
         mpd2 = Z_DECIMAL_MPD_P(op2);
         prec = php_decimal_get_precision(Z_DECIMAL_P(op2));
 
+        /* Failing to parse will throw an exception, so set NAN defer.*/
         if (php_decimal_parse_scalar(mpd1, op1, prec) == FAILURE) {
             php_decimal_set_nan(res);
-            goto done;
+            mpd_del(&tmp);
+            return;
         }
     }
 
     /* Parsed successfully, so we can set the parsed precision and do the op. */
     php_decimal_set_precision(res, prec);
     op(res, mpd1, mpd2);
-
-done:
     mpd_del(&tmp);
-    return SUCCESS;
 }
 
 
@@ -1696,6 +1697,7 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
     zval op1_copy;
     php_decimal_binary_op_t op = php_decimal_get_operation_for_opcode(opcode);
 
+    /* Unsupported op type. */
     if (UNEXPECTED(op == NULL)) {
         return FAILURE;
     }
@@ -1708,7 +1710,13 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
 
     /* Attempt operation. */
     ZVAL_DECIMAL(result, php_decimal());
-    if (UNEXPECTED(php_decimal_do_binary_op(op, Z_DECIMAL_P(result), op1, op2) == FAILURE || EG(exception))) {
+    php_decimal_do_binary_op(op, Z_DECIMAL_P(result), op1, op2);
+
+    /**
+     * Something went wrong so unset the result, but we don't want the engine to
+     * carry on trying to cast the decimal, so we return success.
+     */
+    if (UNEXPECTED(EG(exception))) {
         zval_ptr_dtor(result);
         ZVAL_UNDEF(result);
         return SUCCESS;
