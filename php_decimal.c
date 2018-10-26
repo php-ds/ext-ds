@@ -171,6 +171,38 @@ static void php_decimal_object_properties_not_supported()
 }
 
 /**
+ * Called when a decimal is too large to be converted to double.
+ */
+static void php_decimal_floating_point_overflow()
+{
+    zend_throw_exception(spl_ce_OverflowException, "Floating point overflow", 0);
+}
+
+/**
+ * Called when a decimal is too small to be converted to double, eg. 1E-1000
+ */
+static void php_decimal_floating_point_underflow()
+{
+    zend_throw_exception(spl_ce_UnderflowException, "Floating point underflow", 0);
+}
+
+/**
+ * Called when a decimal is too large to be converted to int, eg. 1E+1000
+ */
+static void php_decimal_integer_overflow()
+{
+    zend_throw_exception(spl_ce_OverflowException, "Integer overflow", 0);
+}
+
+/**
+ * Called when __construct is called directly on a decimal object.
+ */
+static void php_decimal_constructor_already_called()
+{
+    zend_throw_exception(spl_ce_BadMethodCallException, "Decimal objects are immutable", 0);
+}
+
+/**
  * Called when a trap is triggered in mpdecimal when calling signalling
  * functions (non-quiet). These methods usually don't have the "q" prefix in
  * their names and don't require a status argument. The non-signalling functions
@@ -704,8 +736,8 @@ static double php_decimal_to_double(php_decimal_t *obj)
         return 0;
 
     } else if (mpd_isspecial(mpd)) {
-        return mpd_isqnan(mpd)     ? ZEND_NAN
-             : mpd_ispositive(mpd) ? ZEND_INFINITY : -ZEND_INFINITY;
+        return mpd_isqnan(mpd)     ? php_get_nan()
+             : mpd_ispositive(mpd) ? php_get_inf() : -php_get_inf();
 
     } else {
         char *str;
@@ -718,10 +750,10 @@ static double php_decimal_to_double(php_decimal_t *obj)
 
         /* Check if limits were reached. */
         if (zend_isinf(dval)) {
-            zend_throw_exception(spl_ce_OverflowException, "Floating point overflow", 0);
+            php_decimal_floating_point_overflow();
 
         } else if (dval == 0 && !mpd_iszero(mpd)) {
-            zend_throw_exception(spl_ce_UnderflowException, "Floating point underflow", 0);
+            php_decimal_floating_point_underflow();
         }
 
         mpd_free(str);
@@ -759,7 +791,7 @@ static zend_long php_decimal_to_long(php_decimal_t *obj)
 
     /* Check for overflow. */
     if (status & MPD_Invalid_operation) {
-        zend_throw_exception(spl_ce_OverflowException, "Integer overflow", 0);
+        php_decimal_integer_overflow();
         return 0;
     }
 
@@ -1757,7 +1789,7 @@ PHP_DECIMAL_METHOD(__construct)
 
     /* Check if already constructed, because decimals are immutable */
     if (PHP_DECIMAL_IS_INITIALIZED(THIS_DECIMAL())) {
-        zend_throw_exception(spl_ce_BadMethodCallException, "Decimal objects are immutable", 0);
+        php_decimal_constructor_already_called();
         return;
     }
 
