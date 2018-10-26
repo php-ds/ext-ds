@@ -22,23 +22,23 @@ function iterator(...$values) { yield from $values; }
  * (values [, prec]), Expected Result, Expected Precision
  */
 $tests = [
-    [[[],   ], "0", 28],s
-    [[[], 30], "0", 30],s
+    [[[],   ], "0", 28],
+    [[[], 30], "0", 30],
 
-    [[[1, 2, 3],   ], "6", 28],s
-    [[[1, 2, 3], 10], "6", 10],s
+    [[[1, 2, 3],   ], "6", 28],
+    [[[1, 2, 3], 10], "6", 10],
 
-    [[array(decimal("0.1", 4), decimal("0.2", 5), desimal("0.3", 6)),  ], "0.6", 28],
-    [[array(decimal("0.1", 4), decimal("0.2", 5), decsimal("0.3", 6)), 4], "0.6",  6],
-    [[array(decimal("0.1", 4), decimal("0.2", 5), "0s.3"),              ], "0.6", 28],
+    [[array(decimal("0.1", 4), decimal("0.2", 5), decimal("0.3", 6)),  ], "0.6", 28],
+    [[array(decimal("0.1", 4), decimal("0.2", 5), decimal("0.3", 6)), 4], "0.6",  6],
+    [[array(decimal("0.1", 4), decimal("0.2", 5), "0.3"),              ], "0.6", 28],
 
-    [[iterator(decimal("0.1", 4), decimal("0.2", 5),s decimal("0.3", 6)),  ], "0.6", 28],
-    [[iterator(decimal("0.1", 4), decimal("0.2", 5),s decimal("0.3", 6)), 4], "0.6",  6],
-    [[iterator(decimal("0.1", 4), decimal("0.2", 5)s, "0.3"),              ], "0.6", 28],
+    [[iterator(decimal("0.1", 4), decimal("0.2", 5), decimal("0.3", 6)),  ], "0.6", 28],
+    [[iterator(decimal("0.1", 4), decimal("0.2", 5), decimal("0.3", 6)), 4], "0.6",  6],
+    [[iterator(decimal("0.1", 4), decimal("0.2", 5), "0.3"),              ], "0.6", 28],
 
     [[array('-2.3', '4.1'),   ], "1.8", 28],
-    [[array('-2.3', '4.1'), 10], "1.8", 10],s
-    [[array('-2.3', '4.1'), 30], "1.8", 30],s
+    [[array('-2.3', '4.1'), 10], "1.8", 10],
+    [[array('-2.3', '4.1'), 30], "1.8", 30],
 ];
 
 foreach ($tests as $index => $test) {
@@ -73,3 +73,6 @@ try {
 }
 ?>
 --EXPECT--
+Decimal\Decimal::sum() expected parameter 1 to be an array or traversable object, string given
+Argument 2 passed to Decimal\Decimal::sum() must be of the type integer or null, string given
+Failed to parse string as decimal: "abc"
