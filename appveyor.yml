@@ -44,20 +44,25 @@ build_script:
     7z x -y mpdecimal-2.4.2.zip -oC:\projects\mpdecimal
 
     cd C:\projects\mpdecimal
+
     dir
 
     C:\projects\mpdecimal\vcbuild\vcbuild%ARCH%.bat
 
     cd C:\projects\mpdecimal\vcbuild
+
     dir
 
     cd C:\projects\mpdecimal
+
     dir
 
     cd C:\projects\mpdecimal\dist%ARCH%
+
     dir
 
     copy C:\projects\mpdecimal\dist%ARCH%\include\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+
     copy C:\projects\mpdecimal\dist%ARCH%\lib\mpdecimal.lib C:\projects\php-src\deps\lib\mpdecimal.lib
 
 test_script:
