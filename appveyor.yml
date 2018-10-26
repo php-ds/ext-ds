@@ -1,4 +1,5 @@
 version: '{branch}.{build}'
+
 branches:
   only:
   - master
@@ -19,8 +20,10 @@ environment:
       INT_SIZE: 64
       PHP_VER: 7.2
       VC_VER: vc15
+
 install:
 - cmd: cinst wget
+
 build_script:
 - cmd: >-
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
@@ -75,24 +78,26 @@ build_script:
 
     nmake install
 
+    cd C:\projects\php-decimal\bin
+
     echo [PHP] > php.ini
 
     echo extension_dir = "ext" >> php.ini
 
     echo extension=php_decimal.dll >> php.ini
 
-    cd C:\projects\php-decimal\bin
-
     set TEST_PHP_EXECUTABLE=%cd%\php.exe
 
-    php.exe -v
+    php -v
 
-    php.exe -m
+    php -m
+
 test_script:
 - cmd: >-
     set REPORT_EXIT_STATUS=1
 
     php.exe /projects/php-src/run-tests.php /projects/php-src/ext/decimal -q --show-diff
+
 artifacts:
   - path: bin
     name: master
