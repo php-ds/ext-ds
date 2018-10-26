@@ -59,7 +59,7 @@ static void php_decimal_print(php_decimal_t *obj)
 {
     char *str;
     mpd_to_sci_size(&str, PHP_DECIMAL_MPD(obj), 1);
-    php_printf("---\nrepr: %s\nprec: %d\n---\n", str, obj->prec);
+    php_printf("{\n  repr: %s\n  prec: %d\n}\n", str, obj->prec);
     mpd_free(str);
 }
 
@@ -903,9 +903,30 @@ static inline void php_decimal_add(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 {
     uint32_t status = 0;
 
+    php_printf("=== BEFORE ADD\n");
+    php_printf("op1: ");
+    php_decimal_print_mpd(op1);
+    php_printf("\n");
+    php_printf("op2: ");
+    php_decimal_print_mpd(op2);
+    php_printf("\n");
+    php_printf("res: ");
+    php_decimal_print(res);
+
     PHP_DECIMAL_WITH_PRECISION(php_decimal_get_precision(res), {
         mpd_qadd(PHP_DECIMAL_MPD(res), op1, op2, php_decimal_context(), &status);
     });
+
+    php_printf("=== AFTER ADD\n");
+    php_printf("op1: ");
+    php_decimal_print_mpd(op1);
+    php_printf("\n");
+    php_printf("op2: ");
+    php_decimal_print_mpd(op2);
+    php_printf("\n");
+    php_printf("res: ");
+    php_decimal_print(res);
+    php_printf("status = %d\n", status);
 }
 
 /**
