@@ -59,7 +59,7 @@ static void php_decimal_print(php_decimal_t *obj)
 {
     char *str;
     mpd_to_sci_size(&str, PHP_DECIMAL_MPD(obj), 1);
-    php_printf("{\n  repr: %s\n  prec: %d\n}\n", str, obj->prec);
+    php_printf("{\n  repr: %s\n  prec: %ld\n}\n", str, obj->prec);
     mpd_free(str);
 }
 
@@ -104,7 +104,7 @@ static void php_decimal_expected_iterable(zval *arg)
 static void php_decimal_precision_out_of_range(php_decimal_prec_t prec)
 {
     zend_throw_exception_ex(spl_ce_OutOfRangeException, 0,
-        "Decimal precision out of range: %d <= P <= %ld, %ld given",
+        "Decimal precision out of range: %ld <= P <= %ld, %ld given",
         PHP_DECIMAL_MIN_PREC,
         PHP_DECIMAL_MAX_PREC,
         prec
@@ -116,7 +116,7 @@ static void php_decimal_precision_out_of_range(php_decimal_prec_t prec)
  */
 static void php_decimal_memory_error()
 {
-    zend_error(E_ERROR, "Failed to allocate memory for decimal", 0);
+    zend_error(E_ERROR, "Failed to allocate memory for decimal");
 }
 
 /**
@@ -124,7 +124,7 @@ static void php_decimal_memory_error()
  */
 static void php_decimal_unknown_error()
 {
-    zend_error(E_ERROR, "Failed to allocate memory for decimal", 0);
+    zend_error(E_ERROR, "Failed to allocate memory for decimal");
 }
 
 /**
@@ -1715,7 +1715,7 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
     res = php_decimal();
 
     /* Attempt the binary operation. */
-    if (php_decimal_do_binary_op(op, res, op1, op2) == FAILURE) {
+    if (php_decimal_do_binary_op(op, res, op1, op2) == FAILURE || EG(exception)) {
         php_decimal_free(res);
         return FAILURE;
     }
@@ -1785,8 +1785,10 @@ static void php_decimal_unset_property(zval *object, zval *member, void **cache_
     ZEND_PARSE_PARAMETERS_START(1, 1) \
         Z_PARAM_ZVAL(op2) \
     ZEND_PARSE_PARAMETERS_END(); \
-    \
-    php_decimal_do_binary_op(op, res, getThis(), op2); \
+    if (php_decimal_do_binary_op(op, res, getThis(), op2) == FAILURE || EG(exception)) { \
+        php_decimal_free(res); \
+        return; \
+    } \
     RETURN_DECIMAL(res); \
 } while (0)
 

@@ -74,5 +74,5 @@ try {
 ?>
 --EXPECTF--
 Decimal\Decimal::sum() expected parameter 1 to be an array or traversable object, string given
-Argument 2 passed to Decimal\Decimal::sum() must be of the type integer%s, string given
+Argument 2 passed to Decimal\Decimal::sum() must be of the type int%s string given
 Failed to parse string as decimal: "abc"

@@ -1,346 +1,554 @@
 --TEST--
-Decimal object refecltion
+Decimal object reflection
 --SKIPIF--
 <?php
 if (!extension_loaded("decimal")) echo "skip";
 ?>
 --FILE--
 <?php
-ReflectionClass::export(Decimal\Decimal::class);
-?>
---EXPECTF--
-Class [ <internal:decimal> final class Decimal\Decimal implements JsonSerializable ] {
 
-  - Constants [13] {
-    Constant [ public integer ROUND_UP ] { 101 }
-    Constant [ public integer ROUND_DOWN ] { 102 }
-    Constant [ public integer ROUND_CEILING ] { 103 }
-    Constant [ public integer ROUND_FLOOR ] { 104 }
-    Constant [ public integer ROUND_HALF_UP ] { 105 }
-    Constant [ public integer ROUND_HALF_DOWN ] { 106 }
-    Constant [ public integer ROUND_HALF_EVEN ] { 107 }
-    Constant [ public integer ROUND_HALF_ODD ] { 108 }
-    Constant [ public integer ROUND_TRUNCATE ] { 109 }
-    Constant [ public integer DEFAULT_PRECISION ] { 28 }
-    Constant [ public integer DEFAULT_ROUNDING ] { 107 }
-    Constant [ public integer MIN_PRECISION ] { 1 }
-    Constant [ public integer MAX_PRECISION ] { %d }
-  }
+/**
+ * Decimal class.
+ */
+$class = new ReflectionClass(Decimal\Decimal::class);
 
-  - Static properties [0] {
-  }
+/**
+ * Constants
+ */
+var_dump($class->getConstants());
 
-  - Static methods [2] {
-    Method [ <internal:decimal> static public method sum ] {
+/**
+ * Properties
+ */
+var_dump($class->getProperties());
 
-      - Parameters [2] {
-        Parameter #0 [ <required> $values ]
-        Parameter #1 [ <optional> integer or NULL $precision ]
-      }
-      - Return [ Decimal\Decimal ]
+/**
+ * Method summary.
+ */
+function print_method_summary(ReflectionClass $class, string $method)
+{
+    $method = $class->getMethod($method);
+
+    printf("%s\n", $method->getName());
+    printf("Number of parameters: %d\n", $method->getNumberOfParameters());
+    printf("Number of required parameters: %d\n", $method->getNumberOfRequiredParameters());
+    printf("Return type: %s\n", $method->hasReturnType() ? $method->getReturnType() : "void");
+    printf("Allows return null? %s\n", $method->hasReturnType() ? ($method->getReturnType()->allowsNull() ? "yes" : "no") : "no");
+    printf("Returns reference? %s\n", $method->returnsReference() ? "yes" : "no");
+    printf("Parameters:\n");
+    foreach ($method->getParameters() as $parameter) {
+        printf("Name: %s\n", $parameter->getName());
+        printf("Type: %s\n", ((string) $parameter->getType()) ?: "mixed");
+        printf("Reference? %s\n", $parameter->isPassedByReference() ? "yes" : "no");
+        printf("Allows null? %s\n", $parameter->allowsNull() ? "yes" : "no");
+        printf("Optional? %s\n", $parameter->isOptional() ? "yes" : "no");
     }
-
-    Method [ <internal:decimal> static public method avg ] {
-
-      - Parameters [2] {
-        Parameter #0 [ <required> $values ]
-        Parameter #1 [ <optional> integer or NULL $precision ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-  }
-
-  - Properties [0] {
-  }
-
-  - Methods [39] {
-    Method [ <internal:decimal, ctor> public method __construct ] {
-
-      - Parameters [2] {
-        Parameter #0 [ <optional> $value ]
-        Parameter #1 [ <optional> integer $precision ]
-      }
-    }
-
-    Method [ <internal:decimal> public method copy ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method add ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method sub ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method mul ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method div ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method rem ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method mod ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method pow ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $value ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method ln ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method exp ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method log10 ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method sqrt ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method floor ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method ceil ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method truncate ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method round ] {
-
-      - Parameters [2] {
-        Parameter #0 [ <optional> integer or NULL $places ]
-        Parameter #1 [ <optional> integer or NULL $rounding ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method shift ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> integer $places ]
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method precision ] {
-
-      - Parameters [0] {
-      }
-      - Return [ integer ]
-    }
-
-    Method [ <internal:decimal> public method signum ] {
-
-      - Parameters [0] {
-      }
-      - Return [ integer ]
-    }
-
-    Method [ <internal:decimal> public method parity ] {
-
-      - Parameters [0] {
-      }
-      - Return [ integer ]
-    }
-
-    Method [ <internal:decimal> public method abs ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method negate ] {
-
-      - Parameters [0] {
-      }
-      - Return [ Decimal\Decimal ]
-    }
-
-    Method [ <internal:decimal> public method isEven ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isOdd ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isPositive ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isNegative ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isNaN ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isInf ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isInteger ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method isZero ] {
-
-      - Parameters [0] {
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method toFixed ] {
-
-      - Parameters [3] {
-        Parameter #0 [ <optional> integer or NULL $places ]
-        Parameter #1 [ <optional> boolean or NULL $commas ]
-        Parameter #2 [ <optional> integer or NULL $rounding ]
-      }
-      - Return [ string ]
-    }
-
-    Method [ <internal:decimal> public method toString ] {
-
-      - Parameters [0] {
-      }
-      - Return [ string ]
-    }
-
-    Method [ <internal:decimal> public method toInt ] {
-
-      - Parameters [0] {
-      }
-      - Return [ integer ]
-    }
-
-    Method [ <internal:decimal> public method toFloat ] {
-
-      - Parameters [0] {
-      }
-      - Return [ float ]
-    }
-
-    Method [ <internal:decimal> public method equals ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $other ]
-      }
-      - Return [ boolean ]
-    }
-
-    Method [ <internal:decimal> public method compareTo ] {
-
-      - Parameters [1] {
-        Parameter #0 [ <required> $other ]
-      }
-      - Return [ integer ]
-    }
-
-    Method [ <internal:decimal> public method __toString ] {
-
-      - Parameters [0] {
-      }
-      - Return [ string ]
-    }
-
-    Method [ <internal:decimal, prototype JsonSerializable> public method jsonSerialize ] {
-
-      - Parameters [0] {
-      }
-      - Return [ string ]
-    }
-  }
+    printf("\n");
 }
+
+print_method_summary($class, "__construct");
+print_method_summary($class, "copy");
+print_method_summary($class, "add");
+print_method_summary($class, "sub");
+print_method_summary($class, "mul");
+print_method_summary($class, "div");
+print_method_summary($class, "rem");
+print_method_summary($class, "mod");
+print_method_summary($class, "pow");
+print_method_summary($class, "ln");
+print_method_summary($class, "exp");
+print_method_summary($class, "log10");
+print_method_summary($class, "sqrt");
+print_method_summary($class, "floor");
+print_method_summary($class, "ceil");
+print_method_summary($class, "truncate");
+print_method_summary($class, "round");
+print_method_summary($class, "shift");
+print_method_summary($class, "precision");
+print_method_summary($class, "signum");
+print_method_summary($class, "parity");
+print_method_summary($class, "abs");
+print_method_summary($class, "negate");
+print_method_summary($class, "isEven");
+print_method_summary($class, "isOdd");
+print_method_summary($class, "isPositive");
+print_method_summary($class, "isNegative");
+print_method_summary($class, "isNaN");
+print_method_summary($class, "isInf");
+print_method_summary($class, "isInteger");
+print_method_summary($class, "isZero");
+print_method_summary($class, "toFixed");
+print_method_summary($class, "toString");
+print_method_summary($class, "toInt");
+print_method_summary($class, "toFloat");
+print_method_summary($class, "equals");
+print_method_summary($class, "compareTo");
+print_method_summary($class, "sum");
+print_method_summary($class, "avg");
+print_method_summary($class, "__toString");
+print_method_summary($class, "jsonSerialize");
+
+?>
+--EXPECT--
+array(13) {
+  ["ROUND_UP"]=>
+  int(101)
+  ["ROUND_DOWN"]=>
+  int(102)
+  ["ROUND_CEILING"]=>
+  int(103)
+  ["ROUND_FLOOR"]=>
+  int(104)
+  ["ROUND_HALF_UP"]=>
+  int(105)
+  ["ROUND_HALF_DOWN"]=>
+  int(106)
+  ["ROUND_HALF_EVEN"]=>
+  int(107)
+  ["ROUND_HALF_ODD"]=>
+  int(108)
+  ["ROUND_TRUNCATE"]=>
+  int(109)
+  ["DEFAULT_PRECISION"]=>
+  int(28)
+  ["DEFAULT_ROUNDING"]=>
+  int(107)
+  ["MIN_PRECISION"]=>
+  int(1)
+  ["MAX_PRECISION"]=>
+  int(999999999999999999)
+}
+array(0) {
+}
+__construct
+Number of parameters: 2
+Number of required parameters: 0
+Return type: void
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? yes
+Name: precision
+Type: int
+Reference? no
+Allows null? no
+Optional? yes
+
+copy
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+add
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+sub
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+mul
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+div
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+rem
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+mod
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+pow
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: value
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+ln
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+exp
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+log10
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+sqrt
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+floor
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+ceil
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+truncate
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+round
+Number of parameters: 2
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: places
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+Name: rounding
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+
+shift
+Number of parameters: 1
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: places
+Type: int
+Reference? no
+Allows null? no
+Optional? no
+
+precision
+Number of parameters: 0
+Number of required parameters: 0
+Return type: int
+Allows return null? no
+Returns reference? no
+Parameters:
+
+signum
+Number of parameters: 0
+Number of required parameters: 0
+Return type: int
+Allows return null? no
+Returns reference? no
+Parameters:
+
+parity
+Number of parameters: 0
+Number of required parameters: 0
+Return type: int
+Allows return null? no
+Returns reference? no
+Parameters:
+
+abs
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+negate
+Number of parameters: 0
+Number of required parameters: 0
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isEven
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isOdd
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isPositive
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isNegative
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isNaN
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isInf
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isInteger
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+isZero
+Number of parameters: 0
+Number of required parameters: 0
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+
+toFixed
+Number of parameters: 3
+Number of required parameters: 0
+Return type: string
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: places
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+Name: commas
+Type: bool
+Reference? no
+Allows null? yes
+Optional? yes
+Name: rounding
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+
+toString
+Number of parameters: 0
+Number of required parameters: 0
+Return type: string
+Allows return null? no
+Returns reference? no
+Parameters:
+
+toInt
+Number of parameters: 0
+Number of required parameters: 0
+Return type: int
+Allows return null? no
+Returns reference? no
+Parameters:
+
+toFloat
+Number of parameters: 0
+Number of required parameters: 0
+Return type: float
+Allows return null? no
+Returns reference? no
+Parameters:
+
+equals
+Number of parameters: 1
+Number of required parameters: 1
+Return type: bool
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: other
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+compareTo
+Number of parameters: 1
+Number of required parameters: 1
+Return type: int
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: other
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+
+sum
+Number of parameters: 2
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: values
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+Name: precision
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+
+avg
+Number of parameters: 2
+Number of required parameters: 1
+Return type: Decimal\Decimal
+Allows return null? no
+Returns reference? no
+Parameters:
+Name: values
+Type: mixed
+Reference? no
+Allows null? no
+Optional? no
+Name: precision
+Type: int
+Reference? no
+Allows null? yes
+Optional? yes
+
+__toString
+Number of parameters: 0
+Number of required parameters: 0
+Return type: string
+Allows return null? no
+Returns reference? no
+Parameters:
+
+jsonSerialize
+Number of parameters: 0
+Number of required parameters: 0
+Return type: string
+Allows return null? no
+Returns reference? no
+Parameters:
