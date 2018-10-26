@@ -20,6 +20,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y libmpdec-dev
   - phpenv config-rm xdebug.ini || true
+  - sudo ionice -c3 updatedb
 
 install:
     - phpize
