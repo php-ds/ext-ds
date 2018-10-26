@@ -53,11 +53,15 @@ build_script:
 
     vcbuild-%ARCH%.bat
 
-    copy dist%ARCH%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+    cd dist%ARCH%
 
-    copy dist%ARCH%\libmpdec-2.4.2.dll.lib C:\projects\php-src\deps\lib\libmpdec-2.4.2.lib
+    dir
 
-    copy dist%ARCH%\libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec-2.4.2.dll
+    copy mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
+
+    copy libmpdec-2.4.2.dll.lib C:\projects\php-src\deps\lib\libmpdec-2.4.2.lib
+
+    copy libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec-2.4.2.dll
 
     cd C:\projects\php-src
 
