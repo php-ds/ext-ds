@@ -7,7 +7,6 @@ php:
   - nightly
 
 matrix:
-  fast_finish: true
   allow_failures:
     - php: nightly
 
@@ -15,6 +14,10 @@ env:
   matrix:
     - ENABLE_OPCACHE=1
     - ENABLE_OPCACHE=0
+
+env:
+    global:
+      - REPORT_EXIT_STATUS=1
 
 before_install:
   - sudo apt-get update
@@ -33,4 +36,4 @@ before_script:
   - echo "opcache.enable_cli=$ENABLE_OPCACHE" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
-  - php run-tests.php -P -q --show-diff
+  - php run-tests.php -P -g "FAIL,XFAIL,BORK,WARN,LEAK,SKIP" --offline --show-diff
