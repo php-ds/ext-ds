@@ -1,5 +1,5 @@
 --TEST--
-Decimal assign op
+Decimal operators
 --SKIPIF--
 <?php
 if (!extension_loaded("decimal")) echo 'skip';
@@ -25,6 +25,8 @@ $x = new Decimal("1E+8", 12);
 var_dump(times2($x));
 var_dump($x);
 
+var_dump($x & 1); /* Unsupported op */
+
 ?>
 --EXPECT--
 object(Decimal\Decimal)#2 (2) {
@@ -39,3 +41,4 @@ object(Decimal\Decimal)#1 (2) {
   ["precision"]=>
   int(12)
 }
+int(0)

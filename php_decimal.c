@@ -408,12 +408,11 @@ static void php_decimal_release(php_decimal_t *obj)
         mpd_free(PHP_DECIMAL_MPD(obj)->data);
     }
 
-    zend_object_std_dtor(&obj->std);
+    zend_object_std_dtor((zend_object *) obj);
 }
 
 /**
- * Frees a decimal object. This should only be used for objects that were
- * allocated directly and never used to create a PHP object.
+ * Frees all internal memory used by a given decimal.
  */
 static void php_decimal_free(php_decimal_t *obj)
 {
@@ -1468,7 +1467,7 @@ static php_success_t php_decimal_unserialize(zval *obj, zend_class_entry *ce, co
     return SUCCESS;
 
 error:
-    php_decimal_free(res);
+    php_decimal_release(res);
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
     php_decimal_unserialize_error();
     return FAILURE;
@@ -1694,24 +1693,24 @@ static php_success_t php_decimal_cast_object(zval *obj, zval *result, int type)
  */
 static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
 {
-    php_decimal_binary_op_t op = php_decimal_get_operation_for_opcode(opcode);;
-    php_decimal_t         *res = php_decimal();
+    zval op1_copy;
+    php_decimal_binary_op_t op = php_decimal_get_operation_for_opcode(opcode);
 
     if (UNEXPECTED(op == NULL)) {
-        php_decimal_free(res);
         return FAILURE;
     }
 
     /* This allows for assign syntax, ie. $op1 /= $op2 */
-    zval op1_copy;
     if (op1 == result) {
         ZVAL_COPY_VALUE(&op1_copy, op1);
         op1 = &op1_copy;
     }
 
-    /* Attempt the binary operation. */
-    if (php_decimal_do_binary_op(op, res, op1, op2) == FAILURE || EG(exception)) {
-        php_decimal_free(res);
+    /* Attempt operation. */
+    ZVAL_DECIMAL(result, php_decimal());
+    if (UNEXPECTED(php_decimal_do_binary_op(op, Z_DECIMAL_P(result), op1, op2) == FAILURE || EG(exception))) {
+        zval_ptr_dtor(result);
+        ZVAL_UNDEF(result);
         return SUCCESS;
     }
 
@@ -1719,7 +1718,6 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
         zval_dtor(op1);
     }
 
-    ZVAL_DECIMAL(result, res);
     return SUCCESS;
 }
 
@@ -1733,7 +1731,7 @@ static zval *php_decimal_read_property(zval *object, zval *member, int type, voi
 }
 
 /**
- * Object property write - not supported.
+ *   Object property write - not supported.
  */
 static void php_decimal_write_property(zval *object, zval *member, zval *value, void **cache_slot)
 {
@@ -1780,10 +1778,7 @@ static void php_decimal_unset_property(zval *object, zval *member, void **cache_
     ZEND_PARSE_PARAMETERS_START(1, 1) \
         Z_PARAM_ZVAL(op2) \
     ZEND_PARSE_PARAMETERS_END(); \
-    if (php_decimal_do_binary_op(op, res, getThis(), op2) == FAILURE || EG(exception)) { \
-        php_decimal_free(res); \
-        return; \
-    } \
+    php_decimal_do_binary_op(op, res, getThis(), op2); \
     RETURN_DECIMAL(res); \
 } while (0)
 
