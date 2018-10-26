@@ -5,6 +5,8 @@ branches:
 
 image: Visual Studio 2017
 
+clone_folder: c:\projects\php-decimal
+
 environment:
   PHP_SDK_BINARY_TOOLS_VER: php-sdk-2.1.1
 
