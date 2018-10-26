@@ -1698,7 +1698,8 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
     php_decimal_t         *res = php_decimal();
 
     if (UNEXPECTED(op == NULL)) {
-        goto failure;
+        php_decimal_free(res);
+        return FAILURE;
     }
 
     /* This allows for assign syntax, ie. $op1 /= $op2 */
@@ -1710,7 +1711,8 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
 
     /* Attempt the binary operation. */
     if (php_decimal_do_binary_op(op, res, op1, op2) == FAILURE || EG(exception)) {
-        goto failure;
+        php_decimal_free(res);
+        return SUCCESS;
     }
 
     if (op1 == &op1_copy) {
@@ -1719,10 +1721,6 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
 
     ZVAL_DECIMAL(result, res);
     return SUCCESS;
-
-failure:
-    php_decimal_free(res);
-    return FAILURE;
 }
 
 /**

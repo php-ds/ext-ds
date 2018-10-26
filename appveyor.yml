@@ -53,9 +53,13 @@ build_script:
 
     cd dist%INT_SIZE%
 
+    dir
+
     copy mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
     copy libmpdec-2.4.2.dll.lib C:\projects\php-src\deps\lib\libmpdec-2.4.2.lib
+
+    mkdir C:\projects\php-decimal\bin
 
     copy libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec-2.4.2.dll
 
