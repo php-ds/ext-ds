@@ -44,8 +44,8 @@ foreach ($tests as $test) {
 
     try {
         $result = decimal($number)->toFloat();
-    } catch (TypeError | OverflowException | UnderflowException $e) {
-        printf("%s\n", $e->getMessage());
+    } catch (Throwable $e) {
+        printf("%s: %s\n", get_class($e), $e->getMessage());
         continue;
     }
 
@@ -67,5 +67,5 @@ var_dump(decimal("NAN")->toFloat());
 
 ?>
 --EXPECT--
-Floating point underflow
+UnderflowException: Floating point underflow
 float(NAN)

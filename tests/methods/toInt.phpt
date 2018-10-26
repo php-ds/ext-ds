@@ -52,8 +52,8 @@ foreach ($tests as $test) {
 
     try {
         $result = decimal($number)->toInt();
-    } catch (TypeError | OverflowException $e) {
-        printf("%s\n", $e->getMessage());
+    } catch (Throwable $e) {
+        printf("%s: %s\n", get_class($e), $e->getMessage());
         continue;
     }
 
@@ -72,6 +72,6 @@ if ((string) $number !== "2.5") {
 
 ?>
 --EXPECT--
-Integer overflow
-Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, or decimal, float given
-Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, or decimal, float given
+OverflowException: Integer overflow
+TypeError: Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, or decimal, float given
+TypeError: Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, or decimal, float given
