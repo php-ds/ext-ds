@@ -81,6 +81,8 @@ build_script:
 
     echo extension=php_decimal.dll >> php.ini
 
+    cd C:\projects\php-decimal\bin
+
     set TEST_PHP_EXECUTABLE=%cd%\php.exe
 
     php.exe -v
