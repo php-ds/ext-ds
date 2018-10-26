@@ -1338,12 +1338,6 @@ static php_success_t php_decimal_do_binary_op(php_decimal_binary_op_t op, php_de
     php_decimal_prec_t prec;
     PHP_DECIMAL_TEMP_MPD(tmp);
 
-    /* Could not find a mapping, op is undefined, bail out. */
-    if (op == NULL) {
-        php_decimal_set_nan(res);
-        return FAILURE;
-    }
-
     if (Z_IS_DECIMAL_P(op1)) {
         if (Z_IS_DECIMAL_P(op2)) {
             /* Both operands are decimal */
@@ -1700,8 +1694,12 @@ static php_success_t php_decimal_cast_object(zval *obj, zval *result, int type)
  */
 static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, zval *op1, zval *op2)
 {
-    php_decimal_binary_op_t op;
-    php_decimal_t *res;
+    php_decimal_binary_op_t op = php_decimal_get_operation_for_opcode(opcode);;
+    php_decimal_t         *res = php_decimal();
+
+    if (UNEXPECTED(op == NULL)) {
+        goto failure;
+    }
 
     /* This allows for assign syntax, ie. $op1 /= $op2 */
     zval op1_copy;
@@ -1710,14 +1708,9 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
         op1 = &op1_copy;
     }
 
-    /* Attempt to find a binary op function for the opcode. Assume it exists. */
-    op  = php_decimal_get_operation_for_opcode(opcode);
-    res = php_decimal();
-
     /* Attempt the binary operation. */
     if (php_decimal_do_binary_op(op, res, op1, op2) == FAILURE || EG(exception)) {
-        php_decimal_free(res);
-        return FAILURE;
+        goto failure;
     }
 
     if (op1 == &op1_copy) {
@@ -1726,6 +1719,10 @@ static php_success_t php_decimal_do_operation(zend_uchar opcode, zval *result, z
 
     ZVAL_DECIMAL(result, res);
     return SUCCESS;
+
+failure:
+    php_decimal_free(res);
+    return FAILURE;
 }
 
 /**
