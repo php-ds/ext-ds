@@ -53,7 +53,11 @@ build_script:
 
     mkdir C:\projects\php-decimal\bin
 
+    copy nul C:\projects\php-src\deps\include\vcstdint.h > nul
+
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\libmpdec\vccompat.h C:\projects\php-src\deps\include\vccompat.h
+
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\libmpdec\vcdiv64.asm C:\projects\php-src\deps\include\vcdiv64.asm
 
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
