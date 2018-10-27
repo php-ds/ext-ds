@@ -1,5 +1,7 @@
-PHP Decimal
-===
+# PHP Decimal
+
+[![Build Status](https://travis-ci.org/php-decimal/extension.svg?branch=master)](https://travis-ci.org/php-decimal/extension)
+[![Build status](https://ci.appveyor.com/api/projects/status/lg5nw5tqgpmv1c33?svg=true)](https://ci.appveyor.com/project/rtheunissen/php-decimal)
 
 Adds support for correctly-rounded arbitrary precision decimal floating point arithmetic in PHP 7.
 
