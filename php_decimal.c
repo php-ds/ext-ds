@@ -534,20 +534,12 @@ static void php_decimal_round_mpd(mpd_t *res, mpd_t *mpd, zend_long scale, php_d
 /******************************************************************************/
 
 /**
- * Sets the value of an mpd to infinity.
- */
-static void php_decimal_mpd_set_inf(mpd_t *mpd, uint8_t sign)
-{
-    mpd_set_infinity(mpd);
-    mpd_set_sign(mpd, sign);
-}
-
-/**
  * Sets the value of a decimal object to infinity.
  */
-static void php_decimal_set_inf(php_decimal_t *obj, uint8_t sign)
+static void php_decimal_set_inf(php_decimal_t *obj, zend_bool positive)
 {
-    php_decimal_mpd_set_inf(PHP_DECIMAL_MPD(obj), sign);
+    mpd_set_infinity(PHP_DECIMAL_MPD(obj));
+    mpd_set_sign(PHP_DECIMAL_MPD(obj), positive ? MPD_POS : MPD_NEG);
 }
 
 /**
@@ -602,7 +594,7 @@ static php_success_t php_decimal_mpd_set_special_double(mpd_t *res, double dval)
 {
     if (zend_isinf(dval)) {
         mpd_set_infinity(res);
-        mpd_set_sign(res, dval > 0 ? 1 : -1);
+        mpd_set_sign(res, dval > 0 ? MPD_POS : MPD_NEG);
         return SUCCESS;
     }
 
@@ -744,7 +736,9 @@ static double php_decimal_to_double(php_decimal_t *obj)
         }
 
         /* Infinity */
-        return php_get_inf() * mpd_ispositive(mpd) ? 1 : -1;
+        return mpd_ispositive(mpd)
+            ? +php_get_inf()
+            : -php_get_inf();
 
     } else {
         /* Convert the decimal to a string first. */
@@ -943,7 +937,7 @@ static void php_decimal_div(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 
     if (mpd_iszero(op2)) {
         php_decimal_division_by_zero_error();
-        php_decimal_set_inf(res, mpd_arith_sign(op1));
+        php_decimal_set_inf(res, mpd_ispositive(op1));
         return;
     }
 
@@ -965,7 +959,7 @@ static void php_decimal_rem(php_decimal_t *res, mpd_t *op1, mpd_t *op2)
 
     if (mpd_iszero(op2)) {
         php_decimal_division_by_zero_error();
-        php_decimal_set_inf(res, mpd_arith_sign(op1));
+        php_decimal_set_inf(res, mpd_ispositive(op1));
         return;
     }
 

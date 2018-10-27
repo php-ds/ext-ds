@@ -89,7 +89,7 @@ print_method_summary($class, "__toString");
 print_method_summary($class, "jsonSerialize");
 
 ?>
---EXPECT--
+--EXPECTF--
 array(13) {
   ["ROUND_UP"]=>
   int(101)
@@ -116,7 +116,7 @@ array(13) {
   ["MIN_PRECISION"]=>
   int(1)
   ["MAX_PRECISION"]=>
-  int(999999999999999999)
+  int(%d)
 }
 array(0) {
 }

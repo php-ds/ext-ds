@@ -104,8 +104,8 @@
 /**
  * Precision constants.
  */
-#define PHP_DECIMAL_MIN_PREC 1
-#define PHP_DECIMAL_MAX_PREC MIN(ZEND_LONG_MAX, MPD_MAX_PREC)
+#define PHP_DECIMAL_MIN_PREC ((zend_long) 1)
+#define PHP_DECIMAL_MAX_PREC ((zend_long) MIN(ZEND_LONG_MAX, MPD_MAX_PREC))
 
 /**
  * Used to perform a task using a temporary precision. There is no need to reset
