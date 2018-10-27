@@ -137,7 +137,7 @@ C Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, o
 D Decimal\Decimal::__construct() expected parameter 1 to be a string, integer, or decimal, null given
 E Argument 2 passed to Decimal\Decimal::__construct() must be of the type int%s string given
 F Argument 2 passed to Decimal\Decimal::__construct() must be of the type int%s null given
-G Decimal precision out of range: 1 <= P <= %d, 0 given
-H Decimal precision out of range: 1 <= P <= %d, -1 given
-I Decimal precision out of range: 1 <= P <= %d, %d given
+G Decimal precision out of range
+H Decimal precision out of range
+I Decimal precision out of range
 J Decimal objects are immutable

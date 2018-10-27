@@ -103,12 +103,7 @@ static void php_decimal_expected_iterable(zval *arg)
  */
 static void php_decimal_precision_out_of_range(zend_long prec)
 {
-    zend_throw_exception_ex(spl_ce_OutOfRangeException, 0,
-        "Decimal precision out of range: %ld <= P <= %ld, %ld given",
-        PHP_DECIMAL_MIN_PREC,
-        PHP_DECIMAL_MAX_PREC,
-        prec
-    );
+    zend_throw_exception(spl_ce_OutOfRangeException, "Decimal precision out of range", 0);
 }
 
 /**
