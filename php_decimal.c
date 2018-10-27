@@ -101,10 +101,10 @@ static void php_decimal_expected_iterable(zval *arg)
 /**
  * Throws an exception when an invalid precision was given, eg. -1
  */
-static void php_decimal_precision_out_of_range(php_decimal_prec_t prec)
+static void php_decimal_precision_out_of_range(zend_long prec)
 {
     zend_throw_exception_ex(spl_ce_OutOfRangeException, 0,
-        "Decimal precision out of range: %d <= P <= %lld, %ld given",
+        "Decimal precision out of range: %ld <= P <= %ld, %ld given",
         PHP_DECIMAL_MIN_PREC,
         PHP_DECIMAL_MAX_PREC,
         prec
@@ -263,7 +263,7 @@ static zend_always_inline mpd_context_t *php_decimal_context()
 /**
  * Sets the significand precision of a given decimal object.
  */
-static zend_always_inline void php_decimal_set_precision(php_decimal_t *obj, php_decimal_prec_t prec)
+static zend_always_inline void php_decimal_set_precision(php_decimal_t *obj, zend_long prec)
 {
     obj->prec = prec;
 }
@@ -271,7 +271,7 @@ static zend_always_inline void php_decimal_set_precision(php_decimal_t *obj, php
 /**
  * Returns the significand precision of a given decimal object.
  */
-static zend_always_inline php_decimal_prec_t php_decimal_get_precision(php_decimal_t *obj)
+static zend_always_inline zend_long php_decimal_get_precision(php_decimal_t *obj)
 {
     return obj->prec;
 }
@@ -279,7 +279,7 @@ static zend_always_inline php_decimal_prec_t php_decimal_get_precision(php_decim
 /**
  * Returns true if the given precision is valid, false otherwise.
  */
-static zend_always_inline zend_bool php_decimal_precision_is_valid(php_decimal_prec_t prec)
+static zend_always_inline zend_bool php_decimal_precision_is_valid(zend_long prec)
 {
     return prec >= PHP_DECIMAL_MIN_PREC && prec <= PHP_DECIMAL_MAX_PREC;
 }
@@ -288,7 +288,7 @@ static zend_always_inline zend_bool php_decimal_precision_is_valid(php_decimal_p
  * Checks that a given precision is valid, and returns immediately if it is not.
  */
 #define PHP_DECIMAL_VALID_PRECISION_OR_RETURN(prec) do { \
-    php_decimal_prec_t p = prec; \
+    zend_long p = prec; \
     if (php_decimal_precision_is_valid(p) == false) { \
         php_decimal_precision_out_of_range(p); \
         return; \
@@ -338,7 +338,6 @@ static php_decimal_t *php_decimal_alloc()
 {
     php_decimal_t *obj = ecalloc(1, sizeof(php_decimal_t));
 
-    /* TODO not sure if we need to check for this here, does ecalloc exit? */
     if (obj) {
         obj->std.handlers = &php_decimal_handlers;
         zend_object_std_init((zend_object *) obj, php_decimal_ce);
@@ -352,7 +351,7 @@ static php_decimal_t *php_decimal_alloc()
 /**
  * Creates a new decimal object, initialized to a given precision.
  */
-static php_decimal_t *php_decimal_with_prec(php_decimal_prec_t prec)
+static php_decimal_t *php_decimal_with_prec(zend_long prec)
 {
     php_decimal_t *obj = php_decimal_alloc();
 
@@ -457,9 +456,9 @@ static php_decimal_rounding_t php_decimal_convert_to_mpd_rounding_mode(mpd_t *mp
         case PHP_DECIMAL_ROUND_TRUNCATE:    return MPD_ROUND_TRUNC;
 
         /* PHP constants */
-        case PHP_ROUND_HALF_UP:   return MPD_ROUND_HALF_UP;
-        case PHP_ROUND_HALF_DOWN: return MPD_ROUND_HALF_DOWN;
-        case PHP_ROUND_HALF_EVEN: return MPD_ROUND_HALF_EVEN;
+        case PHP_ROUND_HALF_UP:             return MPD_ROUND_HALF_UP;
+        case PHP_ROUND_HALF_DOWN:           return MPD_ROUND_HALF_DOWN;
+        case PHP_ROUND_HALF_EVEN:           return MPD_ROUND_HALF_EVEN;
 
         /**
          * Special case for half-odd.
@@ -570,7 +569,7 @@ static void php_decimal_set_nan(php_decimal_t *obj)
 /**
  * Parses a string to a given precision. Trailing zeroes are not preserved.
  */
-static php_success_t php_decimal_mpd_set_string(mpd_t *mpd, zend_string *str, php_decimal_prec_t prec, zend_bool quiet)
+static php_success_t php_decimal_mpd_set_string(mpd_t *mpd, zend_string *str, zend_long prec, zend_bool quiet)
 {
     uint32_t status = 0;
 
@@ -603,7 +602,7 @@ static php_success_t php_decimal_mpd_set_special_double(mpd_t *res, double dval)
 {
     if (zend_isinf(dval)) {
         mpd_set_infinity(res);
-        mpd_set_sign(res, signbit(dval));
+        mpd_set_sign(res, dval > 0 ? 1 : -1);
         return SUCCESS;
     }
 
@@ -636,7 +635,7 @@ static void php_decimal_mpd_set_double(mpd_t *res, double dval)
  * Sets an mpd to a given long value. The precision is to determine whether data
  * was lost, eg. 123 with a precision of 2 would be 120.
  */
-static void php_decimal_mpd_set_long(mpd_t *mpd, zend_long lval, php_decimal_prec_t prec)
+static void php_decimal_mpd_set_long(mpd_t *mpd, zend_long lval, zend_long prec)
 {
     uint32_t status = 0;
 
@@ -660,7 +659,7 @@ static void php_decimal_set_zero(php_decimal_t *obj)
 /**
  * Attempts to parse a non-object value as a decimal, using a given precision.
  */
-static php_success_t php_decimal_parse_scalar_ex(mpd_t *res, zval *value, php_decimal_prec_t prec, zend_bool quiet)
+static php_success_t php_decimal_parse_scalar_ex(mpd_t *res, zval *value, zend_long prec, zend_bool quiet)
 {
     switch (Z_TYPE_P(value)) {
         case IS_STRING:
@@ -690,7 +689,7 @@ static php_success_t php_decimal_parse_scalar_ex(mpd_t *res, zval *value, php_de
 /**
  * Attempts to parse a zval with a non-decimal value.
  */
-static php_success_t php_decimal_parse_scalar(mpd_t *mpd, zval *value, php_decimal_prec_t prec)
+static php_success_t php_decimal_parse_scalar(mpd_t *mpd, zval *value, zend_long prec)
 {
     return php_decimal_parse_scalar_ex(mpd, value, prec, false);
 }
@@ -698,7 +697,7 @@ static php_success_t php_decimal_parse_scalar(mpd_t *mpd, zval *value, php_decim
 /**
  * Attempts to parse a zval with a non-decimal value, ignoring exceptions.
  */
-static php_success_t php_decimal_parse_scalar_quiet(mpd_t *mpd, zval *value, php_decimal_prec_t prec)
+static php_success_t php_decimal_parse_scalar_quiet(mpd_t *mpd, zval *value, zend_long prec)
 {
     return php_decimal_parse_scalar_ex(mpd, value, prec, true);
 }
@@ -718,8 +717,8 @@ static php_success_t php_decimal_parse_into(php_decimal_t *obj, zval *value)
 
     /* Decimal object, set max precision, copy internal value. */
     } else {
-        php_decimal_prec_t prec1 = php_decimal_get_precision(obj);
-        php_decimal_prec_t prec2 = php_decimal_get_precision(Z_DECIMAL_P(value));
+        zend_long prec1 = php_decimal_get_precision(obj);
+        zend_long prec2 = php_decimal_get_precision(Z_DECIMAL_P(value));
 
         php_decimal_set_precision(obj, MAX(prec1, prec2));
         mpd_copy(PHP_DECIMAL_MPD(obj), Z_DECIMAL_MPD_P(value), php_decimal_context());
@@ -740,8 +739,12 @@ static double php_decimal_to_double(php_decimal_t *obj)
         return 0;
 
     } else if (mpd_isspecial(mpd)) {
-        return mpd_isqnan(mpd)     ? php_get_nan()
-             : mpd_ispositive(mpd) ? php_get_inf() : -php_get_inf();
+        if (mpd_isqnan(mpd)) {
+            return php_get_nan();
+        }
+
+        /* Infinity */
+        return php_get_inf() * mpd_ispositive(mpd) ? 1 : -1;
 
     } else {
         /* Convert the decimal to a string first. */
@@ -785,7 +788,7 @@ static zend_long php_decimal_to_long(php_decimal_t *obj)
     if (mpd_isinteger(mpd)) {
         result = mpd_qget_ssize(mpd, &status);
 
-    /* Truncate to an integer value first, otherwise mpd_get_ssize fails. */
+    /* Truncate to an integer value first, otherwise mpd_qget_ssize fails. */
     } else {
         PHP_DECIMAL_TEMP_MPD(tmp);
         mpd_qtrunc(&tmp, mpd, php_decimal_context(), &status);
@@ -1154,7 +1157,7 @@ static zend_long php_decimal_sum_array(php_decimal_t *res, HashTable *arr)
     ZEND_HASH_FOREACH_VAL(arr, value) {
         mpd_t *op1;
         mpd_t *op2;
-        php_decimal_prec_t prec;
+        zend_long prec;
         PHP_DECIMAL_TEMP_MPD(tmp);
 
         if (Z_IS_DECIMAL_P(value)) {
@@ -1212,7 +1215,7 @@ static zend_long php_decimal_sum_traversable(php_decimal_t *res, zval *values)
     while (iterator->funcs->valid(iterator) == SUCCESS) {
         mpd_t *op1;
         mpd_t *op2;
-        php_decimal_prec_t prec;
+        zend_long prec;
         PHP_DECIMAL_TEMP_MPD(tmp);
 
         /* Attempt to access the current value of the iterator. */
@@ -1334,7 +1337,7 @@ static void php_decimal_do_binary_op(php_decimal_binary_op_t op, php_decimal_t *
     mpd_t *mpd1;
     mpd_t *mpd2;
 
-    php_decimal_prec_t prec;
+    zend_long prec;
     PHP_DECIMAL_TEMP_MPD(tmp);
 
     if (Z_IS_DECIMAL_P(op1)) {
@@ -1531,8 +1534,8 @@ static int php_decimal_compare(php_decimal_t *op1, php_decimal_t *op2)
     int result = php_decimal_compare_mpd(PHP_DECIMAL_MPD(op1), PHP_DECIMAL_MPD(op2));
 
     if (result == 0) {
-        php_decimal_prec_t prec1 = php_decimal_get_precision(op1);
-        php_decimal_prec_t prec2 = php_decimal_get_precision(op2);
+        zend_long prec1 = php_decimal_get_precision(op1);
+        zend_long prec2 = php_decimal_get_precision(op2);
 
         return prec1 == prec2 ? 0 : (prec1 < prec2 ? -1 : 1);
     }
@@ -2318,7 +2321,7 @@ PHP_DECIMAL_METHOD(sum)
 {
     php_decimal_t     *res    = php_decimal();
     zval              *values = NULL;
-    php_decimal_prec_t prec   = PHP_DECIMAL_DEFAULT_PRECISION;
+    zend_long prec   = PHP_DECIMAL_DEFAULT_PRECISION;
 
     ZEND_PARSE_PARAMETERS_START(1, 2)
         Z_PARAM_ZVAL(values)
@@ -2340,7 +2343,7 @@ PHP_DECIMAL_METHOD(avg)
 {
     php_decimal_t     *res    = php_decimal();
     zval              *values = NULL;
-    php_decimal_prec_t prec   = PHP_DECIMAL_DEFAULT_PRECISION;
+    zend_long prec   = PHP_DECIMAL_DEFAULT_PRECISION;
 
     ZEND_PARSE_PARAMETERS_START(1, 2)
         Z_PARAM_ZVAL(values)

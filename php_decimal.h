@@ -105,7 +105,7 @@
  * Precision constants.
  */
 #define PHP_DECIMAL_MIN_PREC 1
-#define PHP_DECIMAL_MAX_PREC MPD_MAX_PREC
+#define PHP_DECIMAL_MAX_PREC MIN(ZEND_LONG_MAX, MPD_MAX_PREC)
 
 /**
  * Used to perform a task using a temporary precision. There is no need to reset
@@ -248,17 +248,16 @@ do { \
 /**
  * Custom definitions.
  */
-typedef mpd_ssize_t php_decimal_prec_t;
 typedef int         php_decimal_rounding_t;
 typedef int         php_success_t;
 
 /**
  * PHP decimal object.
  */
-typedef struct php_decimal {
-    zend_object         std;    /* Zend object, must be first! */
-    mpd_t               mpd;    /* Embedded MPD object */
-    php_decimal_prec_t  prec;   /* Precision */
+typedef struct _php_decimal_t {
+    zend_object  std;    /* Zend object, must be first! */
+    mpd_t        mpd;    /* Embedded MPD object */
+    zend_long    prec;   /* Precision */
 } php_decimal_t;
 
 /**
