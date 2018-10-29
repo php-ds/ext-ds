@@ -13,7 +13,7 @@
     <date>2018-10-28</date>
     <time>11:48:52</time>
     <version>
-        <release>1.0.0</release>
+        <release>1.0.1</release>
         <api>1.0.0</api>
     </version>
     <stability>
@@ -22,7 +22,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        Initial release, request for comments.
+        Package content updates, smarter .m4 @remicollet
     </notes>
     <contents>
         <dir name="/">
