@@ -4,7 +4,7 @@ PHP_ARG_ENABLE(decimal, whether to enable decimal support,
 if test "$PHP_DECIMAL" != "no"; then
 
     AC_MSG_CHECKING([for libmpdec files in default path])
-    for i in $(locate -e /usr/**/libmpdec.so); do
+    for i in /usr/$PHP_LIBDIR $(locate -e /usr/**/libmpdec.so); do
       if test -r $i; then
         LIBMPDEC_DIR=$(dirname $i)
         AC_MSG_RESULT(found in $LIBMPDEC_DIR)
