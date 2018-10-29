@@ -20,8 +20,6 @@ sudo apt-get install libmpdec-dev
 
 ## Install
 
-### PECL
-
 ```
 pecl install decimal
 ```
