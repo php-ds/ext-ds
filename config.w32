@@ -19,8 +19,8 @@ if (PHP_DECIMAL == "yes") {
     if (CHECK_HEADER_ADD_INCLUDE(DECIMAL_EXT_DEP_HEADER, "CFLAGS_DECIMAL")) {
         if (PHP_DECIMAL_SHARED && CHECK_LIB(DECIMAL_EXT_DEP_LIB_SHARED, DECIMAL_EXT_NAME, PHP_DECIMAL)) {
             setup_ok = true;
+            libmpdec_shared = true;
         } else if (CHECK_LIB(DECIMAL_EXT_DEP_LIB_STATIC, DECIMAL_EXT_NAME, PHP_DECIMAL)) {
-            libmpdec_shared = false;
             setup_ok = true;
         }
     }
