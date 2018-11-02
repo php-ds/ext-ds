@@ -64,9 +64,7 @@ build_script:
 
     copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\mpdecimal.h C:\projects\php-src\deps\include\mpdecimal.h
 
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\libmpdec-2.4.2.lib C:\projects\php-src\deps\lib\libmpdec.lib
-
-    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\libmpdec-2.4.2.dll C:\projects\php-decimal\bin\libmpdec.dll
+    copy C:\projects\mpdecimal\mpdecimal-2.4.2\vcbuild\dist%INT_SIZE%\libmpdec-2.4.2.lib C:\projects\php-src\deps\lib\libmpdec_a.lib
 
     cd C:\projects\php-src
 

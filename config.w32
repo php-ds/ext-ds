@@ -5,15 +5,31 @@ var DECIMAL_EXT_NAME        ="decimal";
 var DECIMAL_EXT_API         ="php_decimal.c";
 var DECIMAL_EXT_DEP_HEADER  ="mpdecimal.h";
 var DECIMAL_EXT_FLAGS       ="/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1";
-var DECIMAL_EXT_DEP_LIB     ="libmpdec.lib";
+var DECIMAL_EXT_DEP_LIB_SHARED ="libmpdec.lib";
+var DECIMAL_EXT_DEP_LIB_STATIC ="libmpdec_a.lib";
 
 /* --------------------------------------------------------------------- */
 
 ARG_WITH("decimal", "for decimal support", "yes");
 
 if (PHP_DECIMAL == "yes") {
-    if (CHECK_LIB(DECIMAL_EXT_DEP_LIB, DECIMAL_EXT_NAME, PHP_DECIMAL) && CHECK_HEADER_ADD_INCLUDE(DECIMAL_EXT_DEP_HEADER, "CFLAGS_DECIMAL")) {
+    var setup_ok = false;
+    var libmpdec_shared = false;
+
+    if (CHECK_HEADER_ADD_INCLUDE(DECIMAL_EXT_DEP_HEADER, "CFLAGS_DECIMAL")) {
+        if (PHP_DECIMAL_SHARED && CHECK_LIB(DECIMAL_EXT_DEP_LIB_SHARED, DECIMAL_EXT_NAME, PHP_DECIMAL)) {
+            setup_ok = true;
+            libmpdec_shared = true;
+        } else if (CHECK_LIB(DECIMAL_EXT_DEP_LIB_STATIC, DECIMAL_EXT_NAME, PHP_DECIMAL)) {
+            setup_ok = true;
+        }
+    }
+
+    if (setup_ok) {
         EXTENSION(DECIMAL_EXT_NAME, DECIMAL_EXT_API, PHP_DECIMAL_SHARED, DECIMAL_EXT_FLAGS);
+        if (libmpdec_shared) {
+            ADD_FLAG("CFLAGS_DECIMAL", "/D USE_DLL=1");
+        }
     } else {
         WARNING("decimal not enabled; libraries and headers not found");
     }
