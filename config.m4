@@ -6,32 +6,33 @@ PHP_ARG_WITH(libmpdec-path, for libmpdec custom path,
 
 if test "$PHP_DECIMAL" != "no"; then
 
+    MACHINE_INCLUDES=$($CC -dumpmachine)
     AC_MSG_CHECKING([for libmpdec library in default path])
     for i in $PHP_LIBMPDEC_PATH /usr /usr/local/; do
       if test -r $i/$PHP_LIBDIR/libmpdec.$SHLIB_SUFFIX_NAME || test -r $i/$PHP_LIBDIR/libmpdec.a; then
         LIBMPDEC_DIR=$i/$PHP_LIBDIR
+        LIBMPDEC_INC=$i/include
         AC_MSG_RESULT(found in $LIBMPDEC_DIR)
         break
       elif test -r $i/lib/libmpdec.$SHLIB_SUFFIX_NAME || test -r $i/lib/libmpdec.a; then
         LIBMPDEC_DIR=$i/lib
+        LIBMPDEC_INC=$i/include
+        AC_MSG_RESULT(found in $LIBMPDEC_DIR)
+        break
+      elif test   -r $i/lib/$MACHINE_INCLUDES/libmpdec.so ; then
+        LIBMPDEC_DIR=$i/lib/$MACHINE_INCLUDES
+        LIBMPDEC_INC=$i/include/$MACHINE_INCLUDES
         AC_MSG_RESULT(found in $LIBMPDEC_DIR)
         break
       fi
     done
 
-    MACHINE_INCLUDES=$($CC -dumpmachine)
-    if test -z "$LIBMPDEC_DIR" && test -r /usr/lib/$MACHINE_INCLUDES/libmpdec.so ; then
-      dnl deb/travis specific case
-      LIBMPDEC_DIR=/usr/lib/$MACHINE_INCLUDES
-      LIBMPDEC_INC=/usr/include/$MACHINE_INCLUDES
-      AC_MSG_RESULT(found in $LIBMPDEC_DIR)
 
-    elif test -z "$LIBMPDEC_DIR"; then
+    if test -z "$LIBMPDEC_DIR"; then
       AC_MSG_RESULT([Could not find libmpdec])
       AC_MSG_ERROR([Please reinstall the libmpdec distribution from http://www.bytereef.org/mpdecimal/])
 
     else
-      LIBMPDEC_INC=$(dirname $LIBMPDEC_DIR)/include
       AC_MSG_CHECKING([for libmpdec headers in default path])
       if test -r $LIBMPDEC_INC/mpdecimal.h; then
         PHP_ADD_INCLUDE(LIBMPDEC_INC)
