@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/php-ds/ext-ds.svg?branch=master)](https://travis-ci.org/php-ds/extension)
 [![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
-[![PECL](https://img.shields.io/badge/PECL-1.2.6-blue.svg)](https://pecl.php.net/package/ds)
+[![PECL](https://img.shields.io/badge/PECL-1.2.7-blue.svg)](https://pecl.php.net/package/ds)
 
 An extension providing specialized data structures as efficient alternatives to the PHP array.
 You can read about it in more detail [in this blog post](https://medium.com/p/9dda7af674cd) which highlights the API, performance and other benefits of using the extension.
