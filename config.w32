@@ -12,9 +12,9 @@ function ds_src(dir, files) {
 }
 
 ////////////////////////////////////
-ARG_ENABLE("ds", "enable ds support", "no");
+ARG_WITH("ds", "for extended data structure support", "yes");
 
-if (PHP_DS != "no") {
+if (PHP_DS == "yes") {
 	EXTENSION(DS_EXT_NAME, DS_EXT_API, PHP_DS_SHARED, DS_EXT_FLAGS);
 
     ds_src("/",
