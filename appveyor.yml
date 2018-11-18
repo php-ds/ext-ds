@@ -48,7 +48,7 @@ build_script:
 
     buildconf.bat
 
-    configure.bat --disable-all --with-openssl --enable-json --enable-cli --enable-zts --with-ds=shared --with-php-build=deps --enable-ipv6
+    configure.bat --disable-all --with-openssl --enable-json --enable-cli --enable-zts --with-php-build=deps --enable-ipv6
 
     nmake
 
