@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.7] - 2018-11-18
+### Fixed
+- Fixed pair reflection bugs. #119
+
 ## [1.2.6] - 2018-05-24
 ### Fixed
 - Fixed not clearing memory after buffer reallocation. #114
