@@ -1,55 +1,79 @@
 version: '{branch}.{build}'
 
+branches:
+  only:
+  - master
+
+image: Visual Studio 2017
+
+clone_folder: c:\projects\php-ds
+
+environment:
+  PHP_SDK_BINARY_TOOLS_VER: php-sdk-2.1.1
+
+  matrix:
+    - ARCH: x86
+      INT_SIZE: 32
+      PHP_VER: 7.2
+      VC_VER: vc15
+    - ARCH: x64
+      INT_SIZE: 64
+      PHP_VER: 7.2
+      VC_VER: vc15
+
 install:
-- cmd: choco feature enable -n=allowGlobalConfirmation
 - cmd: cinst wget
-- cmd: mkdir C:\projects\extension\bin
-- cmd: wget https://getcomposer.org/composer.phar -O C:\projects\extension\bin\composer.phar
 
 build_script:
 - cmd: >-
-    "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\vcvars32.bat"
-    
-    git clone https://github.com/php/php-src C:\projects\php-src
-    
-    cd C:\projects\php-src
-    
-    git checkout PHP-7.1
+    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
 
-    wget http://windows.php.net/downloads/php-sdk/php-sdk-binary-tools-20110915.zip
-    
-    7z x -y php-sdk-binary-tools-20110915.zip -oC:\projects\php-sdk
+    wget https://github.com/OSTC/php-sdk-binary-tools/archive/%PHP_SDK_BINARY_TOOLS_VER%.zip --no-check-certificate -q -O php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip
+
+    7z x -y php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip -oC:\projects
+
+    move C:\projects\php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER% C:\projects\php-sdk
 
     C:\projects\php-sdk\bin\phpsdk_setvars.bat
-    
+
+    git clone https://github.com/php/php-src C:\projects\php-src -b PHP-%PHP_VER% --depth=1
+
     mkdir C:\projects\php-src\ext\ds
 
-    xcopy C:\projects\extension C:\projects\php-src\ext\ds /s /e /y
+    xcopy C:\projects\php-ds C:\projects\php-src\ext\ds /s /e /y /q
 
-    wget http://windows.php.net/downloads/php-sdk/deps-7.1-vc14-x86.7z
-    
-    7z x -y deps-7.1-vc14-x86.7z -oC:\projects\php-src
+    phpsdk_deps -u -t %VC_VER% -b %PHP_VER% -a %ARCH% -f -d C:\projects\php-src\deps
+
+    cd C:\projects\php-src
 
     buildconf.bat
 
-    configure.bat --enable-phar --enable-json --enable-hash --enable-ctype --enable-filter --enable-tokenizer --enable-zip --with-iconv --with-openssl --with-dom --with-libxml --enable-cli --enable-zts --enable-ds=shared --enable-mbstring --with-config-file-scan-dir=C:\projects\extension\bin\modules.d --with-prefix=C:\projects\extension\bin --with-php-build=deps
+    configure.bat --disable-all --with-openssl --enable-json --enable-cli --enable-zts --with-ds=shared --with-php-build=deps --enable-ipv6
 
     nmake
 
     nmake install
 
-    copy php.ini-development C:\projects\extension\bin\php.ini
+    cd C:\projects\php-ds\bin
 
-    mkdir C:\projects\extension\bin\modules.d
+    echo [PHP] > php.ini
 
-    echo extension=php_ds.dll >> C:\projects\extension\bin\modules.d\php.ini
-    
-    echo extension=php_openssl.dll >> C:\projects\extension\bin\modules.d\php.ini
-    
+    echo extension_dir = "ext" >> php.ini
+
+    echo extension=php_ds.dll >> php.ini
+
+    echo extension=php_openssl.dll >> php.ini
+
+    set TEST_PHP_EXECUTABLE=%cd%\php.exe
+
+    php -v
+
+    php -m
+
 test_script:
-- cmd: cd C:\projects\extension
-- cmd: C:\projects\extension\bin\php.exe C:\projects\extension\bin\composer.phar update --prefer-source
-- cmd: C:\projects\extension\bin\php.exe test.php
+- cmd: cd C:\projects\php-ds
+- cmd: C:\projects\php-ds\bin\php.exe C:\projects\php-ds\bin\composer.phar update --prefer-source
+- cmd: C:\projects\php-ds\bin\php.exe test.php
 
 artifacts:
   - path: bin
