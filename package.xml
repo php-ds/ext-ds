@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2018-05-24</date>
-    <time>00:22:59</time>
+    <date>2018-11-18</date>
+    <time>12:31:19</time>
     <version>
-        <release>1.2.6</release>
+        <release>1.2.7</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Fixed not clearing memory after buffer reallocation. #114
+        - Fixed pair reflection bugs. #119
     </notes>
     <contents>
         <dir name="/">
@@ -51,8 +51,6 @@
                     <file role="src" name="ds_htable.h"/>
                     <file role="src" name="ds_map.c"/>
                     <file role="src" name="ds_map.h"/>
-                    <file role="src" name="ds_pair.c"/>
-                    <file role="src" name="ds_pair.h"/>
                     <file role="src" name="ds_priority_queue.c"/>
                     <file role="src" name="ds_priority_queue.h"/>
                     <file role="src" name="ds_queue.c"/>

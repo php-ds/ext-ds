@@ -8,7 +8,6 @@
 #include "ds_vector.h"
 #include "ds_map.h"
 #include "ds_set.h"
-#include "ds_pair.h"
 
 static ds_map_t *ds_map_ex(ds_htable_t *table)
 {
@@ -245,7 +244,7 @@ ds_map_t *ds_map_union(ds_map_t *map, ds_map_t *other)
     return ds_map_ex(ds_htable_merge(map->table, other->table));
 }
 
-ds_pair_t *ds_map_first(ds_map_t *map)
+php_ds_pair_t *ds_map_first(ds_map_t *map)
 {
     ds_htable_bucket_t *bucket = ds_htable_first(map->table);
 
@@ -254,10 +253,10 @@ ds_pair_t *ds_map_first(ds_map_t *map)
         return NULL;
     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
+    return php_ds_pair_ex(&bucket->key, &bucket->value);
 }
 
-ds_pair_t *ds_map_last(ds_map_t *map)
+php_ds_pair_t *ds_map_last(ds_map_t *map)
 {
     ds_htable_bucket_t *bucket = ds_htable_last(map->table);
 
@@ -266,10 +265,10 @@ ds_pair_t *ds_map_last(ds_map_t *map)
         return NULL;
     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
+    return php_ds_pair_ex(&bucket->key, &bucket->value);
 }
 
-ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
+php_ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
 {
     ds_htable_bucket_t *bucket = ds_htable_lookup_by_position(map->table, position);
 
@@ -278,7 +277,7 @@ ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position)
         return NULL;
     }
 
-    return ds_pair_ex(&bucket->key, &bucket->value);
+    return php_ds_pair_ex(&bucket->key, &bucket->value);
 }
 
 static int iterator_add(zend_object_iterator *iterator, void *puser)

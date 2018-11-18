@@ -1,6 +1,5 @@
 #include "../common.h"
 
-#include "ds_pair.h"
 #include "ds_htable.h"
 #include "ds_set.h"
 #include "ds_vector.h"

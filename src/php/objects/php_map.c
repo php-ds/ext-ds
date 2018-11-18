@@ -36,7 +36,7 @@ HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map)
     zend_hash_init(array, DS_MAP_SIZE(map), NULL, ZVAL_PTR_DTOR, 0);
 
     DS_HTABLE_FOREACH_KEY_VALUE(map->table, key, value) {
-        ZVAL_DS_PAIR(&pair, ds_pair_ex(key, value));
+        ZVAL_DS_PAIR(&pair, php_ds_pair_ex(key, value));
         zend_hash_next_index_insert(array, &pair);
     }
     DS_HTABLE_FOREACH_END();
@@ -53,7 +53,7 @@ zval *ds_map_pairs(ds_map_t *map)
     zval *value;
 
     DS_HTABLE_FOREACH_KEY_VALUE(map->table, key, value) {
-        ZVAL_DS_PAIR(target++, ds_pair_ex(key, value));
+        ZVAL_DS_PAIR(target++, php_ds_pair_ex(key, value));
     }
     DS_HTABLE_FOREACH_END();
 

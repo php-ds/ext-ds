@@ -30,7 +30,6 @@ if (PHP_DS != "no") {
         "ds_set.c",
         "ds_map.c",
         "ds_stack.c",
-        "ds_pair.c",
         "ds_priority_queue.c",
         "ds_queue.c",
     ]);

@@ -13,7 +13,6 @@ dnl Internal
   src/ds/ds_set.c                      \
   src/ds/ds_map.c                      \
   src/ds/ds_stack.c                    \
-  src/ds/ds_pair.c                     \
   src/ds/ds_priority_queue.c           \
   src/ds/ds_queue.c                    \
                                                   \

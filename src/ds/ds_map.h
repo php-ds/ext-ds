@@ -3,7 +3,7 @@
 
 #include "../common.h"
 #include "ds_htable.h"
-#include "ds_pair.h"
+#include "../php/objects/php_pair.h"
 
 typedef struct _ds_map_t {
     ds_htable_t *table;
@@ -62,9 +62,9 @@ ds_map_t *ds_map_diff(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_intersect(ds_map_t *map, ds_map_t *other);
 ds_map_t *ds_map_union(ds_map_t *map, ds_map_t *other);
 
-ds_pair_t *ds_map_first(ds_map_t *map);
-ds_pair_t *ds_map_last(ds_map_t *map);
-ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
+php_ds_pair_t *ds_map_first(ds_map_t *map);
+php_ds_pair_t *ds_map_last(ds_map_t *map);
+php_ds_pair_t *ds_map_skip(ds_map_t *map, zend_long position);
 
 void ds_map_sum(ds_map_t *map, zval *return_value);
 void ds_map_reduce(ds_map_t *map, FCI_PARAMS, zval *initial, zval *return_value);
