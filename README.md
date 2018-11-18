@@ -1,7 +1,7 @@
 # Data Structures for PHP 7
 
-[![Build Status](https://travis-ci.org/php-ds/ext-ds.svg?branch=master)](https://travis-ci.org/php-ds/extension)
-[![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/extension)
+[![Build Status](https://travis-ci.org/php-ds/ext-ds.svg?branch=master)](https://travis-ci.org/php-ds/ext-ds)
+[![Build status](https://ci.appveyor.com/api/projects/status/dbcssp6flml2gher?svg=true)](https://ci.appveyor.com/project/rtheunissen/ext-ds)
 [![PECL](https://img.shields.io/badge/PECL-1.2.7-blue.svg)](https://pecl.php.net/package/ds)
 
 An extension providing specialized data structures as efficient alternatives to the PHP array.
