@@ -16,10 +16,22 @@ environment:
       INT_SIZE: 32
       PHP_VER: 7.2
       VC_VER: vc15
+      ZTS: --enable-zts
     - ARCH: x64
       INT_SIZE: 64
       PHP_VER: 7.2
       VC_VER: vc15
+      ZTS: --enable-zts
+    - ARCH: x86
+      INT_SIZE: 32
+      PHP_VER: 7.2
+      VC_VER: vc15
+      ZTS: --disable-zts
+    - ARCH: x64
+      INT_SIZE: 64
+      PHP_VER: 7.2
+      VC_VER: vc15
+      ZTS: --disable-zts
 
 install:
 - cmd: cinst wget
@@ -48,7 +60,7 @@ build_script:
 
     buildconf.bat
 
-    configure.bat --disable-all --with-openssl --with-ds --enable-json --enable-cli --enable-zts --with-prefix=C:\projects\php-ds\bin --with-php-build=deps --enable-ipv6
+    cscript /nologo configure.js --enable-snapshot-build --enable-crt-debug %ZTS% --with-prefix=C:\projects\php-ds\bin --with-php-build=deps
 
     nmake
 
@@ -71,10 +83,7 @@ build_script:
     php -m
 
 test_script:
-- cmd: cd C:\projects\php-ds
-- cmd: C:\projects\php-ds\bin\php.exe C:\projects\php-ds\bin\composer.phar update --prefer-source
-- cmd: C:\projects\php-ds\bin\php.exe test.php
-
+- cmd: php.exe /projects/php-src/run-tests.php /projects/php-src/ext/ds -q --show-diff
 artifacts:
   - path: bin
     name: master
