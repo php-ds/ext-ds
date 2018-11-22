@@ -1,3 +1,5 @@
+// vim:ft=javascript
+
 var DS_EXT_NAME="ds";
 var DS_EXT_DIR="ext/ds/src";
 var DS_EXT_API="php_ds.c";
@@ -12,9 +14,9 @@ function ds_src(dir, files) {
 }
 
 ////////////////////////////////////
-ARG_WITH("ds", "for extended data structure support", "yes");
+ARG_ENABLE("ds", "for extended data structure support", "no");
 
-if (PHP_DS == "yes") {
+if (PHP_DS != "no") {
 	EXTENSION(DS_EXT_NAME, DS_EXT_API, PHP_DS_SHARED, DS_EXT_FLAGS);
 
     ds_src("/",
