@@ -60,7 +60,7 @@ build_script:
 
     buildconf.bat
 
-    cscript /nologo configure.js --enable-snapshot-build --enable-crt-debug %ZTS% --with-prefix=C:\projects\php-ds\bin --with-php-build=deps
+    cscript /nologo configure.js --disable-all --enable-cli %ZTS% --with-openssl --enable-ds=shared --enable-json=static --with-prefix=C:\projects\php-ds\bin --with-php-build=deps
 
     nmake
 
