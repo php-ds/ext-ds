@@ -34,7 +34,10 @@ environment:
       ZTS: --disable-zts
 
 install:
+- cmd: choco feature enable -n=allowGlobalConfirmation
 - cmd: cinst wget
+- cmd: mkdir C:\projects\php-ds\bin
+- cmd: wget https://getcomposer.org/composer.phar -O C:\projects\php-ds\bin\composer.phar
 
 build_script:
 - cmd: >-
@@ -60,21 +63,23 @@ build_script:
 
     buildconf.bat
 
-    cscript /nologo configure.js --disable-all --enable-cli %ZTS% --with-openssl --enable-ds=shared --enable-json=static --with-prefix=C:\projects\php-ds\bin --with-php-build=deps
+    cscript /nologo configure.js --disable-all --enable-cli --enable-cgi %ZTS% --with-openssl --enable-ds=shared --enable-phar --with-prefix=C:\projects\php-ds\bin --with-php-build=deps --with-config-file-scan-dir=C:\projects\php-ds\bin\modules.d --enable-bcmath --enable-calendar --enable-ctype --enable-filter --enable-hash --with-mhash --with-iconv --enable-json --enable-mbstring --with-readline --enable-session --enable-soap=shared --enable-tokenizer --enable-zip --enable-zlib --with-libxml --with-dom --with-simplexml --with-xml --with-wddx --enable-xmlreader --enable-xmlwriter
 
     nmake
 
     nmake install
 
+    copy php.ini-development C:\projects\php-ds\bin\php.ini
+
+    mkdir C:\projects\php-ds\bin\modules.d
+
+    echo extension=php_ds.dll >> C:\projects\php-ds\bin\modules.d\php.ini
+
+    echo extension=php_openssl.dll >> C:\projects\php-ds\bin\modules.d\php.ini
+
+    echo extension=php_soap.dll >> C:\projects\php-ds\bin\modules.d\php.ini
+
     cd C:\projects\php-ds\bin
-
-    echo [PHP] > php.ini
-
-    echo extension_dir = "ext" >> php.ini
-
-    echo extension=php_ds.dll >> php.ini
-
-    echo extension=php_openssl.dll >> php.ini
 
     set TEST_PHP_EXECUTABLE=%cd%\php.exe
 
@@ -83,7 +88,13 @@ build_script:
     php -m
 
 test_script:
+- cmd: cd C:\projects\php-ds
+- cmd: C:\projects\php-ds\bin\php.exe C:\projects\php-ds\bin\composer.phar update --prefer-source
+- cmd: C:\projects\php-ds\bin\php.exe test.php > test.txt
+- cmd: type test.txt
+- cmd: cd C:\projects\php-ds\bin
 - cmd: php.exe /projects/php-src/run-tests.php /projects/php-src/ext/ds -q --show-diff
+
 artifacts:
   - path: bin
     name: master
