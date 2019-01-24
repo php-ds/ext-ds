@@ -1210,7 +1210,7 @@ int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_
 
     PHP_VAR_UNSERIALIZE_INIT(unserialize_data);
 
-    while (*pos != '}') {
+    while (pos != end) {
 
         zval *key   = var_tmp_var(&unserialize_data);
         zval *value = var_tmp_var(&unserialize_data);
@@ -1228,10 +1228,6 @@ int ds_htable_unserialize(ds_htable_t *table, const unsigned char *buffer, size_
         }
 
         ds_htable_put(table, key, value);
-    }
-
-    if (pos != end) {
-        goto error;
     }
 
     PHP_VAR_UNSERIALIZE_DESTROY(unserialize_data);
