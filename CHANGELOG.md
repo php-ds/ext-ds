@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.8] - 2019-01-24
+### Fixed
+- Fixed buffer outflow during deserialization of map objects. #132 @rado-h
+
 ## [1.2.7] - 2018-11-18
 ### Fixed
 - Fixed pair reflection bugs. #119

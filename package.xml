@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2018-11-18</date>
-    <time>12:31:19</time>
+    <date>2019-01-24</date>
+    <time>16:47:19</time>
     <version>
-        <release>1.2.7</release>
+        <release>1.2.8</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Fixed pair reflection bugs. #119
+        - Fixed buffer outflow during deserialization of map objects. @rado-h
     </notes>
     <contents>
         <dir name="/">
