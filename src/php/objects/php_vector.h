@@ -3,9 +3,14 @@
 
 #include "../../ds/ds_vector.h"
 
-#define Z_DS_VECTOR(z)   (((php_ds_vector_t*)(Z_OBJ(z)))->vector)
+#define Z_DS_VECTOR_OBJ(z)   ((php_ds_vector_t*) (Z_OBJ(z)))
+#define Z_DS_VECTOR_OBJ_P(z) Z_DS_VECTOR_OBJ(*z)
+
+#define Z_DS_VECTOR(z)   ((Z_DS_VECTOR_OBJ(z))->vector)
 #define Z_DS_VECTOR_P(z) Z_DS_VECTOR(*z)
+
 #define THIS_DS_VECTOR() Z_DS_VECTOR_P(getThis())
+#define THIS_DS_VECTOR_OBJ() Z_DS_VECTOR_OBJ_P(getThis())
 
 #define ZVAL_DS_VECTOR(z, v) ZVAL_OBJ(z, php_ds_vector_create_object_ex(v))
 
@@ -23,6 +28,7 @@ do {                                        \
 typedef struct php_ds_vector {
     zend_object      std;
     ds_vector_t     *vector;
+    zend_ulong       iteratorCount;
 } php_ds_vector_t;
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector);

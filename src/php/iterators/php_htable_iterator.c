@@ -24,6 +24,10 @@ static void php_ds_htable_iterator_dtor(zend_object_iterator *iter)
 
     OBJ_RELEASE(iterator->obj);
     DTOR_AND_UNDEF(&iterator->intern.data);
+
+    if (iterator->dtor) {
+        iterator->dtor((zend_object_iterator *) iterator);
+    }
 }
 
 static int php_ds_htable_iterator_valid(zend_object_iterator *iter)
@@ -160,7 +164,9 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(
     zval *obj,
     ds_htable_t *table,
     zend_object_iterator_funcs *funcs,
-    int by_ref
+    int by_ref,
+    ds_htable_iterator_ctor ctor,
+    ds_htable_iterator_dtor dtor
 ) {
     ds_htable_iterator_t *iterator;
 
@@ -178,6 +184,8 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(
     iterator->intern.funcs  = funcs;
     iterator->table         = table;
     iterator->obj           = Z_OBJ_P(obj);
+    iterator->ctor          = ctor;
+    iterator->dtor          = dtor;
 
     // Add a reference to the object so that it doesn't get collected when
     // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
@@ -187,6 +195,10 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(
     ++GC_REFCOUNT(iterator->obj);
 #endif
 
+    if (iterator->ctor) {
+        iterator->ctor((zend_object_iterator *) iterator);
+    }
+
     return (zend_object_iterator *) iterator;
 }
 
@@ -194,38 +206,46 @@ zend_object_iterator *php_ds_htable_get_value_iterator_ex(
     zend_class_entry *ce,
     zval *obj,
     int by_ref,
-    ds_htable_t *table
+    ds_htable_t *table,
+    ds_htable_iterator_ctor ctor,
+    ds_htable_iterator_dtor dtor
 ){
     return php_ds_htable_create_htable_iterator(
-        obj, table, &php_ds_htable_get_value_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_value_iterator_funcs, by_ref, ctor, dtor);
 }
 
 zend_object_iterator *php_ds_htable_get_key_iterator_ex(
     zend_class_entry *ce,
     zval *obj,
     int by_ref,
-    ds_htable_t *table
+    ds_htable_t *table,
+    ds_htable_iterator_ctor ctor,
+    ds_htable_iterator_dtor dtor
 ){
     return php_ds_htable_create_htable_iterator(
-        obj, table, &php_ds_htable_get_key_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_key_iterator_funcs, by_ref, ctor, dtor);
 }
 
 zend_object_iterator *php_ds_htable_get_pair_iterator_ex(
     zend_class_entry *ce,
     zval *obj,
     int by_ref,
-    ds_htable_t *table
+    ds_htable_t *table,
+    ds_htable_iterator_ctor ctor,
+    ds_htable_iterator_dtor dtor
 ){
     return php_ds_htable_create_htable_iterator(
-        obj, table, &php_ds_htable_get_pair_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_pair_iterator_funcs, by_ref, ctor, dtor);
 }
 
 zend_object_iterator *php_ds_htable_get_assoc_iterator_ex(
     zend_class_entry *ce,
     zval *obj,
     int by_ref,
-    ds_htable_t *table
+    ds_htable_t *table,
+    ds_htable_iterator_ctor ctor,
+    ds_htable_iterator_dtor dtor
 ){
     return php_ds_htable_create_htable_iterator(
-        obj, table, &php_ds_htable_get_assoc_iterator_funcs, by_ref);
+        obj, table, &php_ds_htable_get_assoc_iterator_funcs, by_ref, ctor, dtor);
 }

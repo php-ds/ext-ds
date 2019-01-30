@@ -45,6 +45,7 @@ METHOD(capacity)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_clear(THIS_DS_VECTOR());
 }
 
@@ -97,6 +98,7 @@ METHOD(get)
 METHOD(insert)
 {
     PARSE_LONG_AND_VARIADIC_ZVAL(index);
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_insert_va(THIS_DS_VECTOR(), index, argc, argv);
 }
 
@@ -143,19 +145,15 @@ METHOD(merge)
 METHOD(pop)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_pop_throw(THIS_DS_VECTOR(), return_value);
 }
 
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_push_va(THIS_DS_VECTOR(), argc, argv);
-}
-
-METHOD(push_one)
-{
-    PARSE_ZVAL(value);
-    ds_vector_push(THIS_DS_VECTOR(), value);
 }
 
 METHOD(reduce)
@@ -167,6 +165,7 @@ METHOD(reduce)
 METHOD(remove)
 {
     PARSE_LONG(index);
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_remove(THIS_DS_VECTOR(), index, return_value);
 }
 
@@ -197,6 +196,7 @@ METHOD(set)
 METHOD(shift)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_shift_throw(THIS_DS_VECTOR(), return_value);
 }
 
@@ -254,6 +254,7 @@ METHOD(toArray)
 METHOD(unshift)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_VECTOR_OBJ());
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 

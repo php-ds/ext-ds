@@ -49,6 +49,7 @@ static void php_ds_map_write_dimension(zval *obj, zval *offset, zval *value)
 
     ZVAL_DEREF(offset);
 
+    PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_MAP_OBJ_P(obj));
     ds_htable_put(map->table, offset, value);
 }
 
@@ -67,6 +68,8 @@ static void php_ds_map_unset_dimension(zval *obj, zval *offset)
 
     ZVAL_DEREF(offset);
 
+
+    PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_MAP_OBJ_P(obj));
     ds_htable_remove(map->table, offset, NULL);
 }
 

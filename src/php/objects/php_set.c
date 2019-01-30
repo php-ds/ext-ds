@@ -7,9 +7,13 @@
 zend_object *php_ds_set_create_object_ex(ds_set_t *set)
 {
     php_ds_set_t *obj = ecalloc(1, sizeof(php_ds_set_t));
+
     zend_object_std_init(&obj->std, php_ds_set_ce);
-    obj->std.handlers = &php_ds_set_handlers;
-    obj->set = set;
+
+    obj->std.handlers  = &php_ds_set_handlers;
+    obj->set           = set;
+    obj->iteratorCount = 0;
+
     return &obj->std;
 }
 

@@ -4,7 +4,7 @@
 
 static void php_ds_stack_iterator_dtor(zend_object_iterator *iter)
 {
-
+    PHP_DS_DECR_ITERATOR((php_ds_stack_t *) (&iter->std));
 }
 
 static int php_ds_stack_iterator_valid(zend_object_iterator *iter)
@@ -63,12 +63,15 @@ zend_object_iterator *php_ds_stack_get_iterator(zend_class_entry *ce, zval *obje
         return NULL;
     }
 
+
     iterator = ecalloc(1, sizeof(php_ds_stack_iterator_t));
     zend_iterator_init((zend_object_iterator*) iterator);
 
     iterator->intern.funcs = &php_ds_stack_iterator_funcs;
     iterator->stack        = Z_DS_STACK_P(object);
     iterator->position     = 0;
+
+    PHP_DS_INCR_ITERATOR(Z_DS_STACK_OBJ_P(object));
 
     return (zend_object_iterator *) iterator;
 }

@@ -3,9 +3,14 @@
 
 #include "../../ds/ds_stack.h"
 
-#define Z_DS_STACK(z)   (((php_ds_stack_t*)(Z_OBJ(z)))->stack)
+#define Z_DS_STACK_OBJ(z)   ((php_ds_stack_t*) (Z_OBJ(z)))
+#define Z_DS_STACK_OBJ_P(z) Z_DS_STACK_OBJ(*z)
+
+#define Z_DS_STACK(z)   ((Z_DS_STACK_OBJ(z))->stack)
 #define Z_DS_STACK_P(z) Z_DS_STACK(*z)
+
 #define THIS_DS_STACK() Z_DS_STACK_P(getThis())
+#define THIS_DS_STACK_OBJ() Z_DS_STACK_OBJ_P(getThis())
 
 #define ZVAL_DS_STACK(z, s)  ZVAL_OBJ(z, php_ds_stack_create_object_ex(s))
 
@@ -23,6 +28,7 @@ do {                                        \
 typedef struct _php_ds_stack_t {
     zend_object      std;
     ds_stack_t      *stack;
+    zend_ulong       iteratorCount;
 } php_ds_stack_t;
 
 zend_object *php_ds_stack_create_object_ex(ds_stack_t *stack);

@@ -38,12 +38,14 @@ METHOD(capacity)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_QUEUE_OBJ());
     ds_queue_push(THIS_DS_QUEUE(), argc, argv);
 }
 
 METHOD(pop)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_QUEUE_OBJ());
     ds_queue_pop_throw(THIS_DS_QUEUE(), return_value);
 }
 
@@ -68,6 +70,7 @@ METHOD(count)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_QUEUE_OBJ());
     ds_queue_clear(THIS_DS_QUEUE());
 }
 

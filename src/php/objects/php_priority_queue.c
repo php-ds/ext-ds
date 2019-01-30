@@ -7,12 +7,14 @@
 zend_object *php_ds_priority_queue_create_object_ex(ds_priority_queue_t *queue)
 {
     php_ds_priority_queue_t *obj = ecalloc(1, sizeof(php_ds_priority_queue_t));
-    zend_object_std_init(&obj->std, php_ds_priority_queue_ce);
-    obj->std.handlers = &php_priority_queue_handlers;
 
-    obj->queue   = queue;
-    obj->gc_data = NULL;
-    obj->gc_size = 0;
+    zend_object_std_init(&obj->std, php_ds_priority_queue_ce);
+
+    obj->std.handlers  = &php_priority_queue_handlers;
+    obj->queue         = queue;
+    obj->gc_data       = NULL;
+    obj->gc_size       = 0;
+    obj->iteratorCount = 0;
 
     return &obj->std;
 }

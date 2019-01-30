@@ -3,9 +3,14 @@
 
 #include "../../ds/ds_map.h"
 
-#define Z_DS_MAP(z)   (((php_ds_map_t*)(Z_OBJ(z)))->map)
+#define Z_DS_MAP_OBJ(z)   ((php_ds_map_t*)(Z_OBJ(z)))
+#define Z_DS_MAP_OBJ_P(z) Z_DS_MAP_OBJ(*z)
+
+#define Z_DS_MAP(z)   ((Z_DS_MAP_OBJ(z))->map)
 #define Z_DS_MAP_P(z) Z_DS_MAP(*z)
-#define THIS_DS_MAP() Z_DS_MAP_P(getThis())
+
+#define THIS_DS_MAP()     Z_DS_MAP_P(getThis())
+#define THIS_DS_MAP_OBJ() Z_DS_MAP_OBJ_P(getThis())
 
 #define ZVAL_DS_MAP(z, map) ZVAL_OBJ(z, php_ds_map_create_object_ex(map))
 
@@ -23,6 +28,7 @@ do {                                        \
 typedef struct _php_ds_map_t {
     zend_object  std;
     ds_map_t    *map;
+    zend_ulong   iteratorCount;
 } php_ds_map_t;
 
 zend_object *php_ds_map_create_object_ex(ds_map_t *map);

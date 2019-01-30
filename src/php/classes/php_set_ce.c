@@ -49,12 +49,14 @@ METHOD(capacity)
 METHOD(add)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_SET_OBJ());
     ds_set_add_va(THIS_DS_SET(), argc, argv);
 }
 
 METHOD(remove)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_SET_OBJ());
     ds_set_remove_va(THIS_DS_SET(), argc, argv);
 }
 
@@ -121,6 +123,7 @@ METHOD(union)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_SET_OBJ());
     ds_set_clear(THIS_DS_SET());
 }
 
@@ -144,6 +147,8 @@ METHOD(isEmpty)
 
 METHOD(sort)
 {
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_SET_OBJ());
+
     if (ZEND_NUM_ARGS()) {
         PARSE_COMPARE_CALLABLE();
         ds_set_sort_callback(THIS_DS_SET());

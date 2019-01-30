@@ -48,12 +48,14 @@ METHOD(capacity)
 METHOD(put)
 {
     PARSE_ZVAL_ZVAL(key, value);
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_MAP_OBJ());
     ds_map_put(THIS_DS_MAP(), key, value);
 }
 
 METHOD(putAll)
 {
     PARSE_ZVAL(values);
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_MAP_OBJ());
     ds_map_put_all(THIS_DS_MAP(), values);
 }
 
@@ -96,6 +98,7 @@ METHOD(diff)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_MAP_OBJ());
     ds_map_clear(THIS_DS_MAP());
 }
 

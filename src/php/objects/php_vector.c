@@ -7,9 +7,12 @@
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
 {
     php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
+
     zend_object_std_init(&obj->std, php_ds_vector_ce);
-    obj->std.handlers = &php_vector_handlers;
-    obj->vector = vector;
+
+    obj->std.handlers  = &php_vector_handlers;
+    obj->vector        = vector;
+    obj->iteratorCount = 0;
 
     return &obj->std;
 }

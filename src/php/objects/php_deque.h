@@ -3,9 +3,14 @@
 
 #include "../../ds/ds_deque.h"
 
-#define Z_DS_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
+#define Z_DS_DEQUE_OBJ(z)   ((php_ds_deque_t*) (Z_OBJ(z)))
+#define Z_DS_DEQUE_OBJ_P(z) Z_DS_DEQUE_OBJ(*z)
+
+#define Z_DS_DEQUE(z)   ((Z_DS_DEQUE_OBJ(z))->deque)
 #define Z_DS_DEQUE_P(z) Z_DS_DEQUE(*z)
-#define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
+
+#define THIS_DS_DEQUE()     Z_DS_DEQUE_P(getThis())
+#define THIS_DS_DEQUE_OBJ() Z_DS_DEQUE_OBJ_P(getThis())
 
 #define ZVAL_DS_DEQUE(z, d)  ZVAL_OBJ(z, php_ds_deque_create_object_ex(d))
 
@@ -27,6 +32,7 @@ do {                                        \
 typedef struct php_ds_deque {
     zend_object  std;
     ds_deque_t  *deque;
+    zend_ulong   iteratorCount;
 } php_ds_deque_t;
 
 /**

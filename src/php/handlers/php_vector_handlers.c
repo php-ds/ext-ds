@@ -45,6 +45,7 @@ static void php_ds_vector_write_dimension(zval *obj, zval *offset, zval *value)
 
     /* $v[] = ... */
     if (offset == NULL) {
+        PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_VECTOR_OBJ_P(obj));
         ds_vector_push(vector, value);
 
     } else {
@@ -73,6 +74,8 @@ static void php_ds_vector_unset_dimension(zval *obj, zval *offset)
 {
     zend_long index;
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
+
+    PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_VECTOR_OBJ_P(obj));
 
     ZVAL_DEREF(offset);
 

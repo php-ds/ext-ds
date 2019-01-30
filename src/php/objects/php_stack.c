@@ -7,9 +7,13 @@
 zend_object *php_ds_stack_create_object_ex(ds_stack_t *stack)
 {
     php_ds_stack_t *obj = ecalloc(1, sizeof(php_ds_stack_t));
+
     zend_object_std_init(&obj->std, php_ds_stack_ce);
-    obj->std.handlers = &php_ds_stack_handlers;
-    obj->stack = stack;
+
+    obj->std.handlers  = &php_ds_stack_handlers;
+    obj->stack         = stack;
+    obj->iteratorCount = 0;
+
     return &obj->std;
 }
 

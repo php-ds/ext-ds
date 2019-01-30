@@ -40,12 +40,14 @@ METHOD(copy)
 METHOD(push)
 {
     PARSE_ZVAL_ZVAL(value, priority);
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_PRIORITY_QUEUE_OBJ());
     ds_priority_queue_push(THIS_DS_PRIORITY_QUEUE(), value, priority);
 }
 
 METHOD(pop)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_PRIORITY_QUEUE_OBJ());
     ds_priority_queue_pop(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
@@ -76,6 +78,7 @@ METHOD(count)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_PRIORITY_QUEUE_OBJ());
     ds_priority_queue_clear(THIS_DS_PRIORITY_QUEUE());
 }
 

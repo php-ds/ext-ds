@@ -11,6 +11,7 @@ static void php_ds_queue_write_dimension(zval *obj, zval *offset, zval *value)
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
 
     if (offset == NULL) {
+        PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_QUEUE_OBJ_P(obj));
         ds_queue_push_one(queue, value);
         return;
     }

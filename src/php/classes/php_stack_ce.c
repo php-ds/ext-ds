@@ -39,12 +39,14 @@ METHOD(capacity)
 METHOD(push)
 {
     PARSE_VARIADIC_ZVAL();
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_STACK_OBJ());
     ds_stack_push_va(THIS_DS_STACK(), argc, argv);
 }
 
 METHOD(pop)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_STACK_OBJ());
     ds_stack_pop_throw(THIS_DS_STACK(), return_value);
 }
 
@@ -69,6 +71,7 @@ METHOD(copy)
 METHOD(clear)
 {
     PARSE_NONE;
+    PHP_DS_NO_ITERATOR_OR_RETURN(THIS_DS_STACK_OBJ());
     ds_stack_clear(THIS_DS_STACK());
 }
 

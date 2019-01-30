@@ -45,6 +45,25 @@
 /**
  *
  */
+#define PHP_DS_NO_ITERATOR_OR_RETURN(obj) do { \
+    if (UNEXPECTED(obj->iteratorCount)) { \
+        MODIFIED_DURING_ITERATION(); \
+    } \
+} while (0)
+
+/**
+ * Increases the object's iterator count by 1.
+ */
+#define PHP_DS_INCR_ITERATOR(obj) (obj)->iteratorCount++
+
+/**
+ * Decreases the object's iterator count by 1.
+ */
+#define PHP_DS_DECR_ITERATOR(obj) (obj)->iteratorCount--
+
+/**
+ *
+ */
 #define DTOR_AND_UNDEF(z)           \
 do {                                \
     zval *_z = z;                   \
@@ -221,6 +240,10 @@ int name##_unserialize(                 \
 #define MUTABILITY_NOT_ALLOWED() ds_throw_exception( \
     zend_ce_error, \
     "Immutable objects may not be changed")
+
+#define MODIFIED_DURING_ITERATION() ds_throw_exception( \
+    spl_ce_LogicException, \
+    "Modification during iteration is not supported")
 
 /**
  *

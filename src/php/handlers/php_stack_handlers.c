@@ -10,6 +10,7 @@ static void php_ds_stack_write_dimension(zval *obj, zval *offset, zval *value)
     ds_stack_t *stack = Z_DS_STACK_P(obj);
 
     if (offset == NULL) {
+        PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_STACK_OBJ_P(obj));
         ds_stack_push(stack, value);
         return;
     }

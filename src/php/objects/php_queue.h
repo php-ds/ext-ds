@@ -3,9 +3,14 @@
 
 #include "../../ds/ds_queue.h"
 
-#define Z_DS_QUEUE(z)   (((php_ds_queue_t*)(Z_OBJ(z)))->queue)
+#define Z_DS_QUEUE_OBJ(z)   ((php_ds_queue_t*) (Z_OBJ(z)))
+#define Z_DS_QUEUE_OBJ_P(z) Z_DS_QUEUE_OBJ(*z)
+
+#define Z_DS_QUEUE(z)   ((Z_DS_QUEUE_OBJ(z))->queue)
 #define Z_DS_QUEUE_P(z) Z_DS_QUEUE(*z)
+
 #define THIS_DS_QUEUE() Z_DS_QUEUE_P(getThis())
+#define THIS_DS_QUEUE_OBJ() Z_DS_QUEUE_OBJ_P(getThis())
 
 #define ZVAL_DS_QUEUE(z, queue) \
     ZVAL_OBJ(z, php_ds_queue_create_object_ex(queue))
@@ -24,6 +29,7 @@ do {                                        \
 typedef struct _php_ds_queue_t {
     zend_object    std;
     ds_queue_t    *queue;
+    zend_ulong     iteratorCount;
 } php_ds_queue_t;
 
 zend_object *php_ds_queue_create_object_ex(ds_queue_t *queue);

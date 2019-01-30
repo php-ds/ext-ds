@@ -8,6 +8,8 @@ static void php_ds_vector_iterator_dtor(zend_object_iterator *iter)
 {
     php_ds_vector_iterator_t *iterator = (php_ds_vector_iterator_t *) iter;
 
+    PHP_DS_DECR_ITERATOR((php_ds_vector_t *) iterator->object);
+
     OBJ_RELEASE(iterator->object);
 }
 
@@ -53,6 +55,7 @@ static zend_object_iterator *php_ds_vector_create_iterator(zval *obj, int by_ref
 {
     php_ds_vector_iterator_t *iterator;
 
+// TODO: if we disable modification during iteration, could be reconsider this?
     if (by_ref) {
         ITERATION_BY_REF_NOT_SUPPORTED();
         return NULL;
@@ -66,6 +69,8 @@ static zend_object_iterator *php_ds_vector_create_iterator(zval *obj, int by_ref
     iterator->vector        = Z_DS_VECTOR_P(obj);
     iterator->object        = Z_OBJ_P(obj);
     iterator->position      = 0;
+
+    PHP_DS_INCR_ITERATOR((php_ds_vector_t *) iterator->object);
 
     // Add a reference to the object so that it doesn't get collected when
     // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }

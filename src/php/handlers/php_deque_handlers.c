@@ -44,6 +44,7 @@ static void php_ds_deque_write_dimension(zval *obj, zval *offset, zval *value)
     ds_deque_t *deque = Z_DS_DEQUE_P(obj);
 
     if (offset == NULL) { /* $v[] = ... */
+        PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_DEQUE_OBJ_P(obj));
         ds_deque_push(deque, value);
 
     } else {
@@ -71,6 +72,8 @@ static int php_ds_deque_has_dimension(zval *obj, zval *offset, int check_empty)
 static void php_ds_deque_unset_dimension(zval *obj, zval *offset)
 {
     ZVAL_DEREF(offset);
+
+    PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_DEQUE_OBJ_P(obj));
 
     if (Z_TYPE_P(offset) != IS_LONG) {
         return;

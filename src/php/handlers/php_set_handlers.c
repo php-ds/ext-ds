@@ -31,6 +31,7 @@ static zval *php_ds_set_read_dimension(zval *obj, zval *offset, int type, zval *
 static void php_ds_set_write_dimension(zval *obj, zval *offset, zval *value)
 {
     if (offset == NULL) {
+        PHP_DS_NO_ITERATOR_OR_RETURN(Z_DS_SET_OBJ_P(obj));
         ds_set_add(Z_DS_SET_P(obj), value);
         return;
     }
@@ -87,7 +88,7 @@ void php_ds_register_set_handlers()
 {
     memcpy(&php_ds_set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_set_handlers.offset = 0; // XtOffsetOf(php_ds_set_t, std);
+    php_ds_set_handlers.offset = 0;
 
     php_ds_set_handlers.cast_object     = php_ds_default_cast_object;
     php_ds_set_handlers.clone_obj       = php_ds_set_clone_obj;
