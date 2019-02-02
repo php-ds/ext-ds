@@ -251,6 +251,13 @@ interface Sequence
      * Moves all values between the given index and the end of the sequence one
      * position towards the back, then inserts the given value into the gap.
      *
+     * @todo "How do I insert the values of one sequence into another?"
+     *       I think we should consider variadic functions across the board,
+     *       so that we can do things like `$seq->insert(5, ...$other)` instead
+     *       of userland forloops passing a single argument every time.
+     *
+     * @todo We should also consider constructor syntax, like `new Vector(...?)`
+     *
      * @throws AccessException if the index is out of range [0, size]
      */
     function insert(int $index, $value);
