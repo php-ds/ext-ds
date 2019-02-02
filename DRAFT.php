@@ -88,6 +88,7 @@ interface Clearable
  * Indicates that a structure can be accessed using a zero-based integer index.
  *
  * @todo Maybe a better name? Hints at linear-time access a bit.
+ *       OffsetAccess, OrdinalAccess, ...
  */
 interface LinearAccess
 {
@@ -170,11 +171,13 @@ interface Collection
     function map(callable $callback): Collection;
 
     /**
-     * @param callback $predicate Called with value and key
+     * @param callback $predicate Called with value and key, determines whether
+     *                            the value should be includedin the result.
+     *                            Should return TRUE if the value should be
+     *                            included, FALSE otherwise. Keys are preserved.
      *
-     * @param mixed|null $initial The initial value of the result argument.
-     *
-     * @return mixed The final value of the result.
+     * @return Collection A collection of the same type, containing all keys and
+     *                    values for which the predicate returned TRUE.
      */
 
     function filter(callable $predicate): Collection;
@@ -868,4 +871,3 @@ final class Heap implements Iterator, Container, Cloneable, Clearable
     // count
     // isEmpty
 }
-
