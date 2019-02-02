@@ -196,19 +196,23 @@ interface Collection
     function reduce(callable $callback, $initial = null);
 
     /**
-     * @return bool TRUE if empty pr the predicate returns TRUE for any element
+     * @return bool TRUE if not empty and the predicate returns TRUE for any element
      *              in the collection, FALSE otherwise.
      *
      * @todo Many other implementations (lodash, js) use `some` here, but I have
      *       always liked the phrasing of "any" and "all". PHP doesn't have an
      *       array equivalent for these anyway, so we have no reference for
      *       consistency. Always be innovating, or accept the convention?
+     *
+     *       Rust refers to these as "any" and "all" too:
+     *         - https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.any
+     *         - https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.all
      */
     function any(callable $predicate): bool;
 
     /**
      * @return bool TRUE if not empty and the predicate returns TRUE for all
-     *              elements in the collection, FALSE otherwise.
+     *              elements in the collection, otherwise FALSE.
      */
     function all(callable $predicate): bool;
 
