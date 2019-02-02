@@ -172,7 +172,7 @@ interface Collection
 
     /**
      * @param callback $predicate Called with value and key, determines whether
-     *                            the value should be includedin the result.
+     *                            the value should be included in the result.
      *                            Should return TRUE if the value should be
      *                            included, FALSE otherwise. Keys are preserved.
      *
