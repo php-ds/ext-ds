@@ -14,16 +14,50 @@ namespace Ds;
 
 
 /**
- * Base exception class, to allow catching any library-related exception.
+ * Should be thrown when a structure is accessed unexpectedly, or in a way that
+ * is undefined, or to avoid ambiguous results. This is a marker interface to
+ * support catching all access exceptions.
  */
-class Exception extends \Exception {}
+interface AccessException {}
 
 
 /**
- * Should be thrown when a structure is accessed unexpectedly, or in a way that
- * is undefined, or to avoid ambiguous results.
+ * Should be thrown when an index or key is not within the given access bounds
+ * of a structure, such as a negative index on a list or
  */
-class AccessException extends Exception {}
+class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessException  {}
+
+
+/**
+ * Should be thrown when an empty container is accessed a clear, obvious result.
+ */
+class EmptyContainerException extends \LogicException implements AccessException {}
+
+
+/**
+ * Should be thrown when an undefined zval is accessed. I do not except any user
+ * classes to throw this, but it might be useful to catch it.
+ */
+class UndefinedValueException extends \LogicException implements AccessException {}
+
+
+/**
+ * Indicates that the elements of a structure can be represented by an array
+ * without altering the structure of the data, without any warnings or errors.
+ */
+interface Arrayable
+{
+    function toArray(): array;
+}
+
+
+/**
+ * Indicates that a structure can be cleared.
+ */
+interface Clearable
+{
+    function clear();
+}
 
 
 /**
@@ -47,71 +81,26 @@ interface Reversable
 interface Sortable
 {
     /**
-     * @return static A sorted copy or this structure sorted in-place.
+     * @return static A sorted copy, or $this structure sorted in-place.
      */
     function sort(callable $comparator = null);
 }
 
 
 /**
- * Indicates that the elements of a structure can be represented by an array
- * without altering the structure of the data, without any warnings or errors.
- */
-interface Arrayable
-{
-    function toArray(): array;
-}
-
-
-/**
- * Indicates that a structure can be duplicated without loss of data.
- */
-interface Cloneable
-{
-    /**
-     * @return static a copy of this structure, consistent with `clone`.
-     */
-    function clone();
-}
-
-
-/**
- * Indicates that a structure can be cleared.
- */
-interface Clearable
-{
-    function clear();
-}
-
-
-/**
- * Indicates that a structure can be accessed using a zero-based integer index.
+ * Indicates that a structure can be accessed using a zero-based integer index
+ * indicating the position of an element from the beginning of the structure.
  *
- * @todo Maybe a better name? Hints at linear-time access a bit.
- *       OffsetAccess, OrdinalAccess, ...
+ * @todo Naming - OrdinalAccess, LinearAccess, RandomAccess...
  */
-interface LinearAccess
+interface OffsetAccess
 {
-    /**
-     * @return mixed The first element, which could be a key or value.
-     *               Implementations should specify what happens when there are
-     *               no elements (eg. return NULL or throw AccessException).
-     */
-    function first();
-
-    /**
-     * @return mixed The last element, which could be a key or value.
-     *               Implementations should specify what happens when there are
-     *               no elements (eg. return NULL or throw AccessException).
-     */
-    function last();
-
     /**
      * @return mixed The value at the
      *
-     * @throws AccessException if the index is out of range.
+     * @throws IndexOutOfBoundsException if the index is not within [0, size).
      *
-     * @todo Potential for a better name, like "skip" or "atIndex"?
+     * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
      *
      * @todo We could change this to `get`, but that conflicts with structures
      *       like HashMap in which `get` does a table lookup by key. If we do
@@ -121,12 +110,7 @@ interface LinearAccess
      *       does (similar internal structure as arrays, insertion order pres.),
      *       it's an easy value-add at no cost. Will need some help with this.
      */
-    function at(int $index);
-
-    /**
-     * @return int the index of the value, or NULL if it could not be found.
-     */
-    function indexOf($value): ?int;
+    function offset(int $index);
 }
 
 
@@ -148,79 +132,6 @@ interface Container extends \Countable
 
 
 /**
- * Indicates that a structure is designed to process all elements to produce a
- * new value as a result.
- *
- * @todo this feels like it belongs in an iterator library, but we get some nice
- *       wins doing these internally, because we have low-level access to the
- *       structures without the need to invoke iterators or class lookups to
- *       determine the type of the result (for cases like map, filter etc).
- *       How else would you know how to create the instance? Clone?
- */
-interface Collection
-{
-
-    /**
-     * @param callable $callback Called with value and key, should return what
-     *                           should replace the value. Keys are preserved.
-     *
-     * @return static A copy of $this with each value replaced by the result of
-     *                called the callback with that value (and its index/key).
-     *                Keys are always preserved.
-     */
-    function map(callable $callback): Collection;
-
-    /**
-     * @param callback $predicate Called with value and key, determines whether
-     *                            the value should be included in the result.
-     *                            Should return TRUE if the value should be
-     *                            included, FALSE otherwise. Keys are preserved.
-     *
-     * @return Collection A collection of the same type, containing all keys and
-     *                    values for which the predicate returned TRUE.
-     */
-
-    function filter(callable $predicate): Collection;
-
-    /**
-     * Reduces the collection to a single value using a callback function
-     *
-     * @param callback $callback Called with the current value of the result and
-     *                           the value and key of the current iteration.
-     *                           The result is set to $initial at the start.
-     *
-     * @param mixed|null $initial The initial value of the result argument.
-     *
-     * @return mixed The final value of the result.
-     */
-    function reduce(callable $callback, $initial = null);
-
-    /**
-     * @return bool TRUE if empty pr the predicate returns TRUE for any element
-     *              in the collection, FALSE otherwise.
-     *
-     * @todo Many other implementations (lodash, js) use `some` here, but I have
-     *       always liked the phrasing of "any" and "all". PHP doesn't have an
-     *       array equivalent for these anyway, so we have no reference for
-     *       consistency. Always be innovating, or accept the convention?
-     */
-    function any(callable $predicate): bool;
-
-    /**
-     * @return bool TRUE if not empty and the predicate returns TRUE for all
-     *              elements in the collection, FALSE otherwise.
-     */
-    function all(callable $predicate): bool;
-
-    /**
-     * @return string The result of concatenating the string representations of
-     *                all values, separated by the given $glue.
-     */
-    function join(string $glue = ""): string;
-}
-
-
-/**
  * Indicates that a structure contains a series of contiguous elements.
  */
 interface Sequence
@@ -228,14 +139,25 @@ interface Sequence
     /**
      * @return mixed The value at the given position.
      *
-     * @throws AccessException if the index is out of range [0, size)
+     * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function get(int $index);
+
+
+    /**
+     * @return int the index of the value, or NULL if it could not be found.
+     */
+    function indexOf($value): ?int;
+
+    /**
+     *
+     */
+    function slice(int $offset, int $length): Sequence;
 
     /**
      * Sets the value at the given position.
      *
-     * @throws AccessException if the index is out of range [0, size)
+     * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function set(int $index, $value);
 
@@ -243,7 +165,9 @@ interface Sequence
      * Removes the value at the given position, moving all successive
      * values one position towards the front.
      *
-     * @throws AccessException if the index is out of range [0, size)
+     * @todo Naming - remove, pull?
+     *
+     * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function unset(int $index);
 
@@ -258,14 +182,15 @@ interface Sequence
      *
      * @todo We should also consider constructor syntax, like `new Vector(...?)`
      *
-     * @throws AccessException if the index is out of range [0, size]
+     * @throws IndexOutOfBoundsException if the index is out of range [0, size]
      */
     function insert(int $index, $value);
 }
 
 
 /**
- * Indicates that a structure is designed to operate efficiently at either end.
+ * Indicates that a structure is designed to operate efficiently at both the
+ * front and the back of a linear dataset.
  */
 interface Deque
 {
@@ -279,11 +204,11 @@ interface Deque
      *
      * @return mixed The value that was removed from the end of the structure.
      *
-     * @throws AccessException if the structure is empty.
+     * @throws EmptyContainerException if the structure is empty.
      *
      * @todo should we leave it up to the impl to throw or return NULL? I think
      *       we should aim for consistency by requiring a throw when empty. This
-     *       should be consistent with LinearAccess' first and last.
+     *       should be consistent with OffsetAccess' first and last.
      */
     function pop();
 
@@ -296,9 +221,12 @@ interface Deque
      * Removes and returns the first value of the structure.
      *
      * @return mixed The value that was removed from the front of the structure.
+     *
+     * @throws EmptyContainerException if the structure is empty.
      */
     function shift();
 }
+
 
 /**
  * A first-in-last-out structure.
@@ -324,50 +252,22 @@ interface Deque
  *       Maybe Deque can be a composite of two separate interfaces? Or we make
  *       `push` and `pop` part of Sequence? That doesn't feel quite right because
  *       a sequence of values does not necessarily imply that end-ops are O(1).
- *
- *
- *
- *
  */
 interface Stack
 {
     function push($value);
 
     /**
-     * @todo What happens when the stack is empty? AccessException?
-     *       We need a way to ensure that a stack can know when it is empty,
-     *       otherwise we can't implement iteration:
-     *
-     *           while (!$this->isEmpty()) {
-     *               yield $this->pop();
-     *           }
-     *
-     *       Maybe Stack can extend Container? Or at least Countable? What does
-     *       that mean for other structures that could extend Container? We can
-     *       define a policy like "only extend core interfaces" but I'm not sure
-     *       that that will always be wise. I don't see an issue with extension,
-     *       but I wanted to attept composition first and see how far we get.
-     *
-     *       We could also extend IteratorAggregate here and require that it
-     *       returns an iterator that is seekable which we can wrap, or simply
-     *       an instance of a reverse iterator interface? Or Stack can extend
-     *       something like "ReverseIterator"?
-     *
-     *       I think we should avoid IteratorAggregate as an unnecessary layer.
-     *       We could create our own interface which has methods like end(),
-     *       prev() and valid()? Create the iterator internally when implemented.
-     *
-     *       I'm starting to see more and more iterator-domain stuff creeping in
-     *       here. Is it counter-intuitive to separate iterators from ds? Why
-     *       can't iterators be considered data structures? Or why can't a ds
-     *       library also provide some iterators that are designed to work with
-     *       the structures. @Levi I think this is what you meant by external
-     *       iterators, so potentially on the same page here?
+     * @throws EmptyContainerException if the stack is empty.
      */
     function pop();
 
+    /**
+     * @throws EmptyContainerException if the stack is empty.
+     */
     function peek();
 }
+
 
 /**
  * A first-in-first-out structure.
@@ -381,12 +281,16 @@ interface Queue
     function push($value);
 
     /**
-     * See notes on Stack::pop -^
+     * @throws EmptyContainerException if the stack is empty.
      */
     function pop();
 
+    /**
+     * @throws EmptyContainerException if the stack is empty.
+     */
     function peek();
 }
+
 
 /**
  * Indicates that a structure is designed to quickly determine whether a given
@@ -428,26 +332,26 @@ interface Set
     function has($value): bool;
 
     /**
-     * @return Set A set from all values in $this, and all values from $other.
+     * @return static
      *
      * @todo Naming - or, union, merge
      */
     function or(Set $other): Set;
 
     /**
-     * @return Set A set from values in either $this or $other, but not in both.
+     * @return static
      */
     function xor(Set $other): Set;
 
     /**
-     * @return Set A set from values in $this that are not in $other.
+     * @return static
      *
      * @todo Naming - not, diff, without
      */
     function not(Set $other): Set;
 
     /**
-     * @return Set A set from values in $this that are not in $other.
+     * @return static
      *
      * @todo Naming - and, intersect
      */
@@ -458,6 +362,8 @@ interface Set
 /**
  * A structure that associates one value with another and provides the ability
  * to query or adjust associations efficiently.
+ *
+ * @todo Naming - dictionary
  */
 interface Map
 {
@@ -471,6 +377,8 @@ interface Map
     function set($key, $value);
 
     /**
+     * @todo if NULL keys are not allowed, should we throw if $key is NULL?
+     *
      * @return mixed The value associated with the $key, or $default if the key
      *               could not be found and a $default was provided.
      *
@@ -553,83 +461,51 @@ interface Map
      *       expose a view on the structure's values rather than an eager copy.
      */
     function values(): Sequence;
-
-    /**
-     * @return Map The result of adding all associations from $map to $this.
-     *
-     * @todo Feels a bit isolated here - isn't this part of the set operations
-     *       discussion? If so, this is already the equivalent of or/union, so
-     *       it is probably smart to consider unified naming that applies to the
-     *       semantics of both structures.
-     */
-    function merge(Map $map): Map;
 }
 
 
 /**
- * A low-level memory allocation abstraction which could be useful to build
- * structures in userland that do not want to use arrays or other structures
- * as a buffer.
- *
- * We have to be very careful to not go too far with this. Memory access should
- * be extremely well guarded here. We MUST have a sensible maximum capacity that
- * can be allocated, so that we do not expose the potential to crash anything.
- *
- * @todo is it safe to use undefined or should we set all elements to NULL?
- *       or we can convert to NULL when undefined is read? Would be strange to
- *       expose undefined to userland. Attempting to read an undefined value is
- *       almost certainly a bug though, so we could throw an exception if this
- *       happens rather than magically converting it to NULL (which would also
- *       make it ambiguous because you can't distinguish between null and undef)
- *
- * @todo What should clear do? I think that capacity should be preserved, but
- *       all values should be set the their initial state, ie. undefined
+ * Indicates that a structure supports tree traversals.
  */
-final class Allocation implements \ArrayAccess, Cloneable, Clearable
+interface TreeTraversal
 {
-    public function __construct(int $capacity) {}
+    /**
+     * Root, Left, Right
+     */
+    function preorder(): Traversable;
 
-    // capacity
-    // realloc
+    /**
+     * Left, Root, Right
+     */
+    function inorder(): Traversable;
 
-    // clone
-    // clear
+    /**
+     * Left, Right, Root
+     */
+    function postorder(): Traversable;
+
+    /**
+     * Right, Root, Left
+     */
+    function outorder(): Traversable;
 }
+
 
 /**
  * Basic list, dynamic size, contiguous, no ops at the front.
  */
-final class Vector implements \ArrayAccess, Container, Cloneable, Clearable, Sortable, Reversable, LinearAccess, Collection, Sequence, Stack
-{
-    // get
-    // set
-    // unset
-    // insert
+final class Vector implements
+    Traversable,
+    ArrayAccess,
+    Container,
+    Clearable,
+    Sortable,
+    Reversable,
+    OffsetAccess,
+    Sequence,
+    Stack
+    {}
 
-    // push
-    // pop
-    // peek
-
-    // map
-    // reduce
-    // filter
-    // any
-    // all
-    // join
-
-    // at
-    // indexOf
-    // first
-    // last
-
-    // sort
-    // reverse
-
-    // clone
-    // clear
-    // count
-    // isEmpty
-}
 
 /**
  * Not necessarily literally a linked list, but has the same theoretical props.
@@ -657,136 +533,83 @@ final class Vector implements \ArrayAccess, Container, Cloneable, Clearable, Sor
  * objection to effectively lying about the name, we should come up with another,
  * like... *no ideas*
  */
-final class LinkedList implements \ArrayAccess, Container, Cloneable, Clearable, Sortable, Reversable, LinearAccess, Collection, Sequence, Stack, Deque
-{
-    // get
-    // set
-    // unset
-    // insert
+final class LinkedList implements
+    Traversable,
+    ArrayAccess,
+    Container,
+    Clearable,
+    Sortable,
+    Reversable,
+    OffsetAccess,
+    Sequence,
+    Stack,
+    Deque
+    {}
 
-    // push
-    // pop
-    // peek
-
-    // shift
-    // unshift
-
-    // map
-    // reduce
-    // filter
-    // any
-    // all
-    // join
-
-    // at
-    // indexOf
-    // first
-    // last
-
-    // sort
-    // reverse
-
-    // clone
-    // clear
-    // count
-    // isEmpty
-}
 
 /**
- * The standard hash table, implemented as Map in ext-ds currently. It is modelled
- * after the PHP array but is not identical. We can implement LinearAccess because
- * insertion order is preserved. I don't believe we need a LinkedMap or anything
- * like that because the existing implementation is already very, very good. I did
- * experiment with open addressing for  a long time but I could not out-perform
- * the existing model.
- *
- * Keys can be any scalar value (@todo potentially not NULL though), or object
- * that implements Hashable. I don't think we should support object keys that do
- * not implement Hashable, which is a big side-step from ext-ds currently which
- * falls back to spl_object_hash. If non-hashable objects must be used as keys,
- * the implementation should use a BST instead, which does not rely on hashing.
- *
- * Alternatively, we could impelement a SortedMap using BST internally, which
- * removes the need for hashing and has the added benefit of sorted keys. This
- * could pretty easily be implemented in userland because it's such a simple
- * composition - I'm not convinced that we need to implement it internally. A
- * counter argument might be that we should standardise here while we can,
- * provide a dedicated implementation of a map that does not require hashing,
- * and is sorted by key. We could also accept an optional comparator.
- *
- * Something to consider is a SortedMap interface, implemented as TreeMap,
- * Java style, but I think a SortedMap implementation is sufficient. I can't
- * imagine many valid alternative implementations. We could also call the impl
- * TreeMap and not have "SortedMap" be anything at all.
+ * The standard hashtable, implemented as Map in ext-ds currently. It is based
+ * on the PHP array but is not identical. We can implement OffsetAccess because
+ * insertion order is preserved.
  */
-final class HashMap implements \ArrayAccess, Container, Cloneable, Clearable, Sortable, Reversable, LinearAccess, Collection, Map
-{
-    // get
-    // set/put <Hashable | scalar, *>
-    // unset
-    // has
-    // find (null if value not found)
+final class HashMap implements
+    Traversable,
+    ArrayAccess,
+    Container,
+    Clearable,
+    Sortable,
+    Reversable,
+    OffsetAccess,
+    Collection,
+    Map
+    {}
 
-    // keys
-    // values
-
-    // merge
-
-    // map
-    // reduce
-    // filter
-    // any
-    // all
-    // join
-
-    // at
-    // indexOf
-    // first
-    // last
-
-    // sort
-    // reverse
-
-    // clone
-    // clear
-    // count
-    // isEmpty
-}
 
 /**
- * The Set equivalent of HashMap.
+ * The Set equivalent of HashMap. Might not use the same internals as HashMap.
  */
-final class HashSet implements \ArrayAccess, Container, Cloneable, Clearable, Sortable, Reversable, LinearAccess, Collection, Set
-{
-    // add <Hashable | scalar>
-    // remove
-    // has
+final class HashSet implements
+    Traversable,
+    ArrayAccess,
+    Container,
+    Clearable,
+    Sortable,
+    Reversable,
+    OffsetAccess,
+    Collection,
+    Set
+    {}
 
-    // or
-    // xor
-    // not
-    // and
 
-    // map
-    // reduce
-    // filter
-    // any
-    // all
-    // join
+/**
+ * A structure that is always sorted and does not allow duplicate elements.
+ *
+ * See: https://github.com/php-ds/ext-ds/issues/121
+ */
+final class BinarySearchTree implements
+    Traversable,
+    TreeTraversal,
+    Container,
+    Clearable,
+    Set
+    {}
 
-    // at
-    // indexOf
-    // first
-    // last
 
-    // sort
-    // reverse
+/**
+ * A queue implementation that does not require hashing, a heap, or comparison.
+ *
+ * @todo This will be based on LinkedList, but LinkedList can't implement Queue
+ *       because it might have to implement destructive traversal. There are
+ *       some notes on Stack and Queue that would need to be resolved before we
+ *       can decide whether this structure is necessary at all.
+ */
+final class LinkedQueue implements
+    Traversable,
+    Container,
+    Clearable,
+    Queue
+    {}
 
-    // clone
-    // clear
-    // count
-    // isEmpty
-}
 
 /**
  * Binary heap-based queue with a mixed-type priority value associated with the
@@ -807,74 +630,46 @@ final class HashSet implements \ArrayAccess, Container, Cloneable, Clearable, So
  *       In other words it should follow insertion order if no comparator was
  *       given, which Heap would not do.
  */
-final class PriorityQueue implements Iterator, Container, Cloneable, Clearable, Queue
+final class PriorityQueue implements Traversable, Container, Clearable, Queue
 {
-    // push (value, priority = null)
-    // pop
-    // peek
-
-    // clone
-    // clear
-    // count
-    // isEmpty
+    // push(value, priority = null)
 }
 
-/**
- * A queue implementation that does not require hashing, a heap, or comparison.
- *
- * @todo This will be based on LinkedList, but LinkedList can't implement Queue
- *       because it might have to implement destructive traversal. There are
- *       some notes on Stack and Queue that would need to be resolved before we
- *       can decide whether this structure is necessary at all.
- */
-final class LinkedQueue implements Container, Cloneable, Clearable, Queue
-{
-    // push
-    // pop
-    // peek
-
-    // clone
-    // clear
-    // count
-
-    // isEmpty
-}
-
-/**
- * A structure that is always sorted and does not allow duplicate elements.
- *
- * See: https://github.com/php-ds/ext-ds/issues/121
- */
-final class BinarySearchTree implements Iterator, Container, Cloneable, Clearable
-{
-    // add
-    // remove
-    // has
-
-    // clone
-    // clear
-    // count
-    // isEmpty
-
-    public function inorder() : Iterator {}   // <-- default iterator?
-    public function preorder() : Iterator {}
-    public function postorder() : Iterator {}
-}
 
 /**
  * Stable binary heap with an optional comparator, defaulting to minimum. Could
  * potentially remove the nullable which clears up the min/max ambiguity.
+ *
+ * -> __construct(callable $comparator = null)
  */
-final class Heap implements Iterator, Container, Cloneable, Clearable
+final class Heap implements Traversable, Container, Clearable
 {
-    public function __construct(callable $comparator = null) {}
-
     // push
     // pop
     // peek
+}
 
-    // clone
-    // clear
-    // count
-    // isEmpty
+
+/**
+ * A low-level memory allocation abstraction which could be useful to build
+ * structures in userland that do not want to use arrays or other structures
+ * as a buffer.
+ *
+ * @todo how should we handle elements that are undefined, ie. a new allocation
+ *       will have undefined values. Internally these will be IS_UNDEF, but we
+ *       should not expose that to userland. Attempting to access an undefined
+ *       value will throw an exception.
+ *
+ * @todo What should clear do? I think that capacity should be preserved, but
+ *       all values should be set the their initial state, ie. undefined
+ */
+final class Allocation implements ArrayAccess, Clearable
+{
+    // __construct(int $capacity)
+
+    // capacity(): int
+    // realloc(int): void
+
+    // clone(): self
+    // clear(): void
 }
