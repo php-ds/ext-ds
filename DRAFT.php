@@ -149,7 +149,10 @@ interface Sequence
     function indexOf($value): ?int;
 
     /**
+     * Returns a subsection of the sequence.
      *
+     * Note: We can do this internally without creating a copy of the slice by
+     *       sharing the same contiguous memory with an offset and length.
      */
     function slice(int $offset, int $length): Sequence;
 
