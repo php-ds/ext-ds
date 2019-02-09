@@ -149,14 +149,6 @@ interface Sequence
     function indexOf($value): ?int;
 
     /**
-     * Returns a subsection of the sequence.
-     *
-     * Note: We can do this internally without creating a copy of the slice by
-     *       sharing the same contiguous memory with an offset and length.
-     */
-    function slice(int $offset, int $length): Sequence;
-
-    /**
      * Sets the value at the given position.
      *
      * @throws IndexOutOfBoundsException if the index is not within [0, size)
@@ -184,9 +176,19 @@ interface Sequence
      *
      * @todo We should also consider constructor syntax, like `new Vector(...?)`
      *
+     * @todo Should $value be ...$values? (This applies to all push, unshift etc)
+     *
      * @throws IndexOutOfBoundsException if the index is out of range [0, size]
      */
     function insert(int $index, $value);
+
+    /**
+     * Returns a subsection of the sequence.
+     *
+     * Note: We can do this internally without creating a copy of the slice by
+     *       sharing the same contiguous memory with an offset and length.
+     */
+    function slice(int $offset, int $length): Sequence;
 }
 
 
