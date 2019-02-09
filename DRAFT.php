@@ -143,7 +143,6 @@ interface Sequence
      */
     function get(int $index);
 
-
     /**
      * @return int the index of the value, or NULL if it could not be found.
      */
