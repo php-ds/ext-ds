@@ -137,16 +137,29 @@ interface Container extends \Countable
 interface Sequence
 {
     /**
+     * Appends the given value to the end of the structure.
+     */
+    function push($value);
+
+    /**
+     * Removes and returns the value at the end of the structure.
+     *
+     * @return mixed The value that was removed from the end of the structure.
+     *
+     * @throws EmptyContainerException if the structure is empty.
+     *
+     * @todo should we leave it up to the impl to throw or return NULL? I think
+     *       we should aim for consistency by requiring a throw when empty. This
+     *       should be consistent with OffsetAccess' first and last.
+     */
+    function pop();
+    
+    /**
      * @return mixed The value at the given position.
      *
      * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function get(int $index);
-
-    /**
-     * @return int the index of the value, or NULL if it could not be found.
-     */
-    function indexOf($value): ?int;
 
     /**
      * Sets the value at the given position.
@@ -164,7 +177,12 @@ interface Sequence
      * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function unset(int $index);
-
+    
+    /**
+     * @return int the index of the value, or NULL if it could not be found.
+     */
+    function indexOf($value): ?int;
+    
     /**
      * Moves all values between the given index and the end of the sequence one
      * position towards the back, then inserts the given value into the gap.
@@ -196,26 +214,8 @@ interface Sequence
  * Indicates that a structure is designed to operate efficiently at both the
  * front and the back of a linear dataset.
  */
-interface Deque
+interface Deque extends Sequence
 {
-    /**
-     * Appends the given value to the end of the structure.
-     */
-    function push($value);
-
-    /**
-     * Removes and returns the value at the end of the structure.
-     *
-     * @return mixed The value that was removed from the end of the structure.
-     *
-     * @throws EmptyContainerException if the structure is empty.
-     *
-     * @todo should we leave it up to the impl to throw or return NULL? I think
-     *       we should aim for consistency by requiring a throw when empty. This
-     *       should be consistent with OffsetAccess' first and last.
-     */
-    function pop();
-
     /**
      * Prepends the given value to the front of the structure.
      */
@@ -229,70 +229,6 @@ interface Deque
      * @throws EmptyContainerException if the structure is empty.
      */
     function shift();
-}
-
-
-/**
- * A first-in-last-out structure.
- *
- * @todo Should stacks be iterable, and if so, do they have to be destructive?
- *
- *       It gets tricky because stacks yield from the back as values as popped
- *       off the stack, but implementing structures like a Vector would iterate
- *       from the front, which would not be intuitive at all. Perhaps the best
- *       solution here is that implementations must iterate in reverse.
- *
- *       We could potentially do some internal magic to force reverse iteration?
- *       (Override iterator creation when a userland object implements Stack)
- *
- * @todo If we decide that this interface must be traversed in FILO order, then
- *       Vector can not implement it. We could instead make this a final class,
- *       using a vector internally? A stack is a stack, no?
- *
- *       Vector would need to find `push` and `pop` elsewhere, which are both
- *       constant time operations at the end of the buffer. LinkedList has these
- *       too, but they come as part of Deque, which Vector does not implement.
- *
- *       Maybe Deque can be a composite of two separate interfaces? Or we make
- *       `push` and `pop` part of Sequence? That doesn't feel quite right because
- *       a sequence of values does not necessarily imply that end-ops are O(1).
- */
-interface Stack
-{
-    function push($value);
-
-    /**
-     * @throws EmptyContainerException if the stack is empty.
-     */
-    function pop();
-
-    /**
-     * @throws EmptyContainerException if the stack is empty.
-     */
-    function peek();
-}
-
-
-/**
- * A first-in-first-out structure.
- *
- * @todo Should queues be iterable, and if so, do they have to be destructive.
- *
- * @todo If Stack becomes a class, should Queue remain an interface?
- */
-interface Queue
-{
-    function push($value);
-
-    /**
-     * @throws EmptyContainerException if the stack is empty.
-     */
-    function pop();
-
-    /**
-     * @throws EmptyContainerException if the stack is empty.
-     */
-    function peek();
 }
 
 
@@ -332,6 +268,8 @@ interface Set
 
     /**
      * @return bool TRUE if the value is in $this set, FALSE otherwise.
+     *
+     * @todo Naming - contains?
      */
     function has($value): bool;
 
@@ -506,13 +444,12 @@ final class Vector implements
     Sortable,
     Reversable,
     OffsetAccess,
-    Sequence,
-    Stack
+    Sequence
     {}
 
 
 /**
- * Not necessarily literally a linked list, but has the same theoretical props.
+ * Not necessarily literally a linked list, but has the same semantics.
  *
  * Very similar to vector, but does support operations at the front. Will most
  * likely be implemented as a circular buffer / "deque", but is an important
@@ -545,8 +482,6 @@ final class LinkedList implements
     Sortable,
     Reversable,
     OffsetAccess,
-    Sequence,
-    Stack,
     Deque
     {}
 
@@ -588,6 +523,8 @@ final class HashSet implements
 /**
  * A structure that is always sorted and does not allow duplicate elements.
  *
+ * This would be useful for building sorted datasets, or sets without hashing.
+ *
  * See: https://github.com/php-ds/ext-ds/issues/121
  */
 final class BinarySearchTree implements
@@ -600,25 +537,30 @@ final class BinarySearchTree implements
 
 
 /**
- * A queue implementation that does not require hashing, a heap, or comparison.
- *
- * @todo This will be based on LinkedList, but LinkedList can't implement Queue
- *       because it might have to implement destructive traversal. There are
- *       some notes on Stack and Queue that would need to be resolved before we
- *       can decide whether this structure is necessary at all.
+ * A first-in-last-out structure. Destructive traversal.
  */
-final class LinkedQueue implements
-    Traversable,
-    Container,
-    Clearable,
-    Queue
-    {}
+final class Stack implements Traversable, Container, Clearable
+{
+    public function push($value) {}
+    public function pop() {}
+    public function peek() {}
+}
+
+
+/**
+ * A first-in-first-out structure. Destructive traversal.
+ */
+final class Queue implements Traversable, Container, Clearable
+{
+    public function push($value) {}
+    public function pop() {}
+    public function peek() {}
+}
 
 
 /**
  * Binary heap-based queue with a mixed-type priority value associated with the
- * key. Iteration is destructive because that is how a heap works, and matches
- * the declared behaviour by Queue (destructive iteration).
+ * key. Iteration is destructive.
  *
  * @todo Should we provide the ability to adjust the priority of a value? I think
  *       it would be O(N) in a heap, and introduces ambiguity around duplicate
@@ -634,23 +576,25 @@ final class LinkedQueue implements
  *       In other words it should follow insertion order if no comparator was
  *       given, which Heap would not do.
  */
-final class PriorityQueue implements Traversable, Container, Clearable, Queue
+final class PriorityQueue implements Traversable, Container, Clearable
 {
-    // push(value, priority = null)
+    public function push($value, $priority = 0) {}
+    public function pop() {}
+    public function peek() {}
 }
 
 
 /**
  * Stable binary heap with an optional comparator, defaulting to minimum. Could
  * potentially remove the nullable which clears up the min/max ambiguity.
- *
- * -> __construct(callable $comparator = null)
  */
 final class Heap implements Traversable, Container, Clearable
 {
-    // push
-    // pop
-    // peek
+    public function __construct(callable $comparator = null) {}
+    
+    public function push($value) {}
+    public function pop() {}
+    public function peek() {}
 }
 
 
@@ -669,11 +613,9 @@ final class Heap implements Traversable, Container, Clearable
  */
 final class Allocation implements ArrayAccess, Clearable
 {
-    // __construct(int $capacity)
-
-    // capacity(): int
-    // realloc(int): void
-
-    // clone(): self
-    // clear(): void
+    public function __construct(int $capacity) {}
+    
+    public function capacity(): int {}
+    public function realloc(int): void {}
+    public function clear(): void {}
 }
