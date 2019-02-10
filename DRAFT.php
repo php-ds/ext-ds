@@ -90,6 +90,18 @@ interface Sortable
 
 
 /**
+ * Indicates that an object is designed to be used in hash-based structures.
+ */
+interface Hashable
+{
+    /**
+     * @return mixed A scalar value (or hashable delegate) that will be hashed.
+     */
+    function getHashSource();
+}
+
+
+/**
  * Indicates that a structure can be accessed using a zero-based integer index
  * indicating the position of an element from the beginning of the structure.
  *
@@ -155,7 +167,7 @@ interface Sequence
      *       should be consistent with OffsetAccess' first and last.
      */
     function pop();
-    
+
     /**
      * @return mixed The value at the given position.
      *
@@ -179,12 +191,12 @@ interface Sequence
      * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function unset(int $index);
-    
+
     /**
      * @return int the index of the value, or NULL if it could not be found.
      */
     function indexOf($value): ?int;
-    
+
     /**
      * Moves all values between the given index and the end of the sequence one
      * position towards the back, then inserts the given value into the gap.
@@ -593,7 +605,7 @@ final class PriorityQueue implements Traversable, Container, Clearable
 final class Heap implements Traversable, Container, Clearable
 {
     public function __construct(callable $comparator = null) {}
-    
+
     public function push($value) {}
     public function pop() {}
     public function peek() {}
@@ -616,7 +628,7 @@ final class Heap implements Traversable, Container, Clearable
 final class Allocation implements ArrayAccess, Clearable
 {
     public function __construct(int $capacity) {}
-    
+
     public function capacity(): int {}
     public function realloc(int): void {}
     public function clear(): void {}
