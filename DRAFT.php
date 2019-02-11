@@ -301,7 +301,7 @@ interface OffsetAccess extends \Countable
 /**
  * Indicates that a structure contains a series of contiguous elements.
  */
-interface Sequence extends OffsetAccess
+interface ReadOnlySequence extends OffsetAccess
 {
     /**
      * @return mixed The first value in $this sequence.
@@ -314,15 +314,15 @@ interface Sequence extends OffsetAccess
     function last();
 
     /**
-     * @return Sequence A partial sequence of $this.
+     * @return static A partial sequence of $this.
      */
-    function slice(int $offset, int $length): Sequence;
+    function slice(int $offset, int $length): ReadOnlySequence;
 }
 
 /**
  * A sequence which can be modified, either in-place or as a copy.
  */
-interface MutableSequence extends Sequence
+interface Sequence extends ReadOnlySequence
 {
     /**
      * Appends the given value to the end of the structure.
@@ -380,7 +380,7 @@ interface MutableSequence extends Sequence
  * Indicates that a structure is designed to operate efficiently at both the
  * front and the back of a linear dataset.
  */
-interface Deque extends MutableSequence
+interface Deque extends Sequence
 {
     /**
      * Prepends the given value to the front of the structure.
@@ -419,7 +419,7 @@ interface Deque extends MutableSequence
  *       methods like `diff`, `intersect`, etc to be consistent with arrays?
  *       If so, should the set operation methods share the same naming?
  */
-interface Set
+interface ReadOnlySet
 {
     /**
      * @return bool TRUE if the value is in $this set, FALSE otherwise.
@@ -429,26 +429,37 @@ interface Set
     function has($value): bool;
 
     /**
-     * @return static
+     * Operator: |
+     *
+     * @todo what about the + operator?
+     *
+     * @return static A set containing values in both $this and $other.
      *
      * @todo Naming - or, union, merge
      */
     function or(Set $other): Set;
 
     /**
-     * @return static
+     * Operator: ^
+     *
+     * @return static A set containing values in either $this or $other,
+     *                but not in both.
      */
     function xor(Set $other): Set;
 
     /**
-     * @return static
+     * Operator: -
+     *
+     * @return static A set containing values in $this but not in $other.
      *
      * @todo Naming - not, diff, without
      */
     function not(Set $other): Set;
 
     /**
-     * @return static
+     * Operator: &
+     *
+     * @return static A set containing values in $this that are also in $other.
      *
      * @todo Naming - and, intersect
      */
@@ -458,7 +469,7 @@ interface Set
 /**
  * A set which can be modified, either in-place or as a copy.
  */
-interface MutableSet extends Set
+interface Set extends ReadOnlySet
 {
     /**
      * Adds the given value to $this set if it is not already in $this set.
@@ -477,7 +488,7 @@ interface MutableSet extends Set
  *
  * @todo Naming - dictionary
  */
-interface Map
+interface ReadOnlyMap
 {
     /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
@@ -528,7 +539,7 @@ interface Map
 /**
  * A map which can be modified, either in-place or as a copy.
  */
-interface MutableMap extends Map
+interface Map extends ReadOnlyMap
 {
     /**
      * Associates the $key with the $value, overriding any previous association.
@@ -593,7 +604,7 @@ final class Vector implements
     Clearable,
     Sortable,
     Reversable,
-    MutableSequence
+    Sequence
     {}
 
 /**
@@ -649,7 +660,7 @@ final class HashMap implements
     Sortable,
     Reversable,
     OffsetAccess,
-    MutableMap
+    Map
     {}
 
 /**
@@ -664,8 +675,8 @@ final class HashSet implements
     Clearable,
     Sortable,
     Reversable,
-    Sequence,
-    MutableSet
+    ReadOnlySequence,
+    Set
     {}
 
 /**
@@ -680,7 +691,7 @@ final class BinarySearchTree implements
     Collection,
     Container,
     Clearable,
-    MutableSet,
+    Set,
     Tree,
     {}
 
