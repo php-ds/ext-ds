@@ -14,6 +14,13 @@
 */
 namespace Ds;
 
+/**
+ * @todo How do we handle comparisons? Proposal: == for objects, === otherwise.
+ */
+
+/******************************************************************************/
+/*                                EXCEPTIONS                                  */
+/******************************************************************************/
 
 /**
  * Should be thrown when a structure is accessed unexpectedly, or in a way that
@@ -22,19 +29,16 @@ namespace Ds;
  */
 interface AccessException {}
 
-
 /**
  * Should be thrown when an index or key is not within the given access bounds
  * of a structure, such as a negative index on a list or
  */
 class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessException  {}
 
-
 /**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
 class EmptyContainerException extends \LogicException implements AccessException {}
-
 
 /**
  * Should be thrown when an undefined zval is accessed. I do not except any user
@@ -42,91 +46,122 @@ class EmptyContainerException extends \LogicException implements AccessException
  */
 class UndefinedValueException extends \LogicException implements AccessException {}
 
+/**
+ * Should be thrown when a key is not supported, eg. when an attempt is made to
+ * associate a value with NULL in Map, causing ambiguity in `find`.
+ */
+class InvalidKeyException extends \LogicException implements AccessException {}
+
+
+/******************************************************************************/
+/*                                 ITERATORS                                  */
+/******************************************************************************/
 
 /**
- * Indicates that the elements of a structure can be represented by an array
- * without altering the structure of the data, without any warnings or errors.
+ * Yields each key and value from $iter, after applying $mapper to the value.
  */
-interface Arrayable
+function map(iterable $iter, callable $mapper): \Iterator
 {
-    function toArray(): array;
+    foreach ($iter as $key => $val) {
+        yield $key => $mapper($val, $key, $iter);
+    }
 }
 
-
 /**
- * Indicates that a structure can be cleared.
+ * Yields each key and value from $iter for which $predicate returns TRUE.
  */
-interface Clearable
+function filter(iterable $iter, callable $predicate): \Iterator
 {
-    function clear();
+    foreach ($iter as $key => $val) {
+        if ($predicate($val, $key, $iter)) {
+            yield $key => $val;
+        }
+    }
 }
 
-
 /**
- * Indicates that the order of the elements of a structure can be reversed.
+ * Yields each key and value from $iter for which $predicate returns FALSE.
  */
-interface Reversable
+function reject(iterable $iter, callable $predicate): \Iterator
 {
-    /**
-     * @return static A reversed copy or this structure reversed in-place.
-     */
-    function reverse();
+    foreach ($iter as $key => $val) {
+        if (!$predicate($val, $key, $iter)) {
+            yield $key => $val;
+        }
+    }
 }
 
+/**
+ * @return mixed|null The key of the first iteration for which $predicate
+ *                    returns TRUE, or NULL if none were found.
+ */
+function find(iterable $iter, callable $predicate)
+{
+    foreach (filter($iter, $predicate) as $key => $val) {
+        return $key;
+    }
+
+    return null;
+}
 
 /**
- * Indicates that the elements of a structure can be sorted.
+ * Reduces the keys and values of $iter to a single result, carrying forward
+ * intermediate results until the final iteration returns the final result.
+ */
+function reduce(iterable $iter, callable $reducer, $initial = null)
+{
+    $result = $initial;
+
+    foreach ($iter as $key => $val) {
+        $result = $reducer($result, $value, $key, $iter);
+    }
+
+    return $result;
+}
+
+/**
+ * @return bool TRUE if the $predicate returns TRUE for any iteration of $iter.
  *
- * This interface does not guarantee that the sorting algorithm will be stable.
- * Implementations should use a domain-specific tiebreaker when required.
  */
-interface Sortable
+function any(iterable $iter, callable $predicate = null): bool
 {
-    /**
-     * @return static A sorted copy, or $this structure sorted in-place.
-     */
-    function sort(callable $comparator = null);
+    foreach (filter($iter) as $key => $val) {
+        return true;
+    }
+
+    return false;
 }
 
-
 /**
- * Indicates that an object is designed to be used in hash-based structures.
+ * @return bool TRUE if the $predicate returns TRUE for all iterations of $iter,
+ *                   or if $iter did not produce any iterations at all (empty).
  */
-interface Hashable
+function all(iterable $iter, callable $predicate = null): bool
 {
-    /**
-     * @return mixed A scalar value (or hashable delegate) that will be hashed.
-     */
-    function getHashSource();
+    foreach (reject($iter) as $key => $val) {
+        return false;
+    }
+
+    return true;
 }
 
-
 /**
- * Indicates that a structure can be accessed using a zero-based integer index
- * indicating the position of an element from the beginning of the structure.
+ * @todo I am not sure how viable this is, but it could be useful to find the
+ *       kth smallest value without having to sort the entire container. We must
+ *       be able to access the structure by offset in order to implement partial
+ *       algorithms like quick-select.
  *
- * @todo Naming - OrdinalAccess, LinearAccess, RandomAccess...
+ * See: https://en.wikipedia.org/wiki/Partial_sorting
  */
-interface OffsetAccess
+function sort(OffsetAccess $iter, callable $comparator = null): \Iterator
 {
-    /**
-     * @return mixed The value at the
-     *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size).
-     *
-     * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
-     *
-     * @todo We could change this to `get`, but that conflicts with structures
-     *       like HashMap in which `get` does a table lookup by key. If we do
-     *       want to change this to `get`, it would mean that HashMap can't
-     *       implement it, which may not be such a bad thing? Feels _slightly_
-     *       odd for HashMap to implement linear access, but because it already
-     *       does (similar internal structure as arrays, insertion order pres.),
-     *       it's an easy value-add at no cost. Will need some help with this.
-     */
-    function offset(int $index);
+    // Partial sort...
 }
 
+
+/******************************************************************************/
+/*                                INTERFACES                                  */
+/******************************************************************************/
 
 /**
  * Indicates that a structure contains elements and is aware of the number of
@@ -144,11 +179,150 @@ interface Container extends \Countable
     function isEmpty(): bool;
 }
 
+/**
+ * An interface which mirrors some of the iterator functions.
+ */
+interface Collection extends \Traversable
+{
+    /**
+     * @return static
+     */
+    function map(callable $mapper): Collection;
+
+    /**
+     * @return static
+     */
+    function filter(callable $predicate): Collection;
+
+    /**
+     * @return static
+     */
+    function reject(callable $predicate): Collection;
+
+    /**
+     * @return mixed|null
+     */
+    function find(callable $predicate);
+
+    /**
+     * @return mixed
+     */
+    function reduce(callable $reducer, $initial = null);
+
+    /**
+     * @return bool
+     */
+    function any(callable $predicate = null): bool;
+
+    /**
+     * @return bool
+     */
+    function all(callable $predicate = null): bool;
+}
+
+/**
+ * Indicates that the elements of a structure can be represented by an array
+ * without altering the structure of the data, without any warnings or errors.
+ */
+interface Arrayable
+{
+    /**
+     * This method should not fail. There is an implicit expectation that any
+     * structure converted to an array must be able to be converted back to
+     * the structure in such a way that it is considered equal to the initial.
+     */
+    function toArray(): array;
+}
+
+/**
+ * Indicates that a structure can be cleared.
+ */
+interface Clearable
+{
+    function clear();
+}
+
+/**
+ * Indicates that the order of the elements of a structure can be reversed.
+ */
+interface Reversable
+{
+    /**
+     * @return static A reversed copy or this structure reversed in-place.
+     */
+    function reverse();
+}
+
+/**
+ * Indicates that the elements of a structure can be sorted.
+ *
+ * This interface does not guarantee that the sorting algorithm will be stable.
+ * Implementations should use a domain-specific tiebreaker when required.
+ */
+interface Sortable
+{
+    /**
+     * @return static A sorted copy, or $this structure sorted in-place.
+     */
+    function sort(callable $comparator = null);
+}
+
+/**
+ * Indicates that an object is designed to be used in hash-based structures.
+ */
+interface Hashable
+{
+    /**
+     * @return mixed A scalar value (or hashable delegate) that will be hashed.
+     */
+    function getHashSource();
+}
+
+/**
+ * Indicates that a structure can be accessed using a zero-based integer index
+ * indicating the position of an element from the beginning of the structure.
+ *
+ * We extend Countable because it should always be possible to determine bounds.
+ *
+ * @todo Naming - OrdinalAccess, LinearAccess, RandomAccess...
+ */
+interface OffsetAccess extends \Countable
+{
+    /**
+     * @return mixed The value at the
+     *
+     * @throws IndexOutOfBoundsException if the index is not within [0, size).
+     *
+     * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
+     */
+    function offset(int $index);
+}
 
 /**
  * Indicates that a structure contains a series of contiguous elements.
  */
-interface Sequence
+interface Sequence extends OffsetAccess
+{
+    /**
+     * @return mixed The first value in $this sequence.
+     */
+    function first();
+
+    /**
+     * @return mixed The last value in $this sequence.
+     */
+    function last();
+
+    /**
+     * @return Sequence A partial sequence of $this.
+     */
+    function slice(int $offset, int $length): Sequence;
+}
+
+/**
+ * A sequence which can be modified, either in-place or as a copy.
+ */
+interface MutableSequence extends Sequence
 {
     /**
      * Appends the given value to the end of the structure.
@@ -167,14 +341,6 @@ interface Sequence
      *       should be consistent with OffsetAccess' first and last.
      */
     function pop();
-
-    /**
-     * @return mixed The value at the given position.
-     *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size)
-     */
-    function get(int $index);
-
     /**
      * Sets the value at the given position.
      *
@@ -193,11 +359,6 @@ interface Sequence
     function unset(int $index);
 
     /**
-     * @return int the index of the value, or NULL if it could not be found.
-     */
-    function indexOf($value): ?int;
-
-    /**
      * Moves all values between the given index and the end of the sequence one
      * position towards the back, then inserts the given value into the gap.
      *
@@ -213,22 +374,13 @@ interface Sequence
      * @throws IndexOutOfBoundsException if the index is out of range [0, size]
      */
     function insert(int $index, $value);
-
-    /**
-     * Returns a subsection of the sequence.
-     *
-     * Note: We can do this internally without creating a copy of the slice by
-     *       sharing the same contiguous memory with an offset and length.
-     */
-    function slice(int $offset, int $length): Sequence;
 }
-
 
 /**
  * Indicates that a structure is designed to operate efficiently at both the
  * front and the back of a linear dataset.
  */
-interface Deque extends Sequence
+interface Deque extends MutableSequence
 {
     /**
      * Prepends the given value to the front of the structure.
@@ -244,7 +396,6 @@ interface Deque extends Sequence
      */
     function shift();
 }
-
 
 /**
  * Indicates that a structure is designed to quickly determine whether a given
@@ -270,16 +421,6 @@ interface Deque extends Sequence
  */
 interface Set
 {
-    /**
-     * Adds the given value to $this set if it is not already in $this set.
-     */
-    function add($value);
-
-    /**
-     * @todo what happens when the value could not be found? Silent no-op?
-     */
-    function remove($value);
-
     /**
      * @return bool TRUE if the value is in $this set, FALSE otherwise.
      *
@@ -314,6 +455,21 @@ interface Set
     function and(Set $other): Set;
 }
 
+/**
+ * A set which can be modified, either in-place or as a copy.
+ */
+interface MutableSet extends Set
+{
+    /**
+     * Adds the given value to $this set if it is not already in $this set.
+     */
+    function add($value);
+
+    /**
+     * @todo what happens when the value could not be found? Silent no-op?
+     */
+    function remove($value);
+}
 
 /**
  * A structure that associates one value with another and provides the ability
@@ -324,15 +480,6 @@ interface Set
 interface Map
 {
     /**
-     * Associates the $key with the $value, overriding any previous association.
-     *
-     * Note: Might not be able to support NULL keys. (See `find`)
-     *
-     * @todo Naming - set/put (set/unset symmetry, add/remove, put/pull?)
-     */
-    function set($key, $value);
-
-    /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
      *
      * @return mixed The value associated with the $key, or $default if the key
@@ -341,16 +488,6 @@ interface Map
      * @throws AccessException if the $key was not found with default given.
      */
     function get($key, $default = null);
-
-    /**
-     * Removes the given $key from the map, and does nothing if they key could
-     * not be found.
-     *
-     * @todo Should we return the removed value? (No, ambiguous and two-in-one)
-     *
-     * @todo Key not found: should we throw, do nothing, or not enforce either?
-     */
-    function unset($key);
 
     /**
      * @return bool TRUE if $this map has an association for the given $key,
@@ -383,26 +520,6 @@ interface Map
     function has($key): bool;
 
     /**
-     * @return mixed The first key that is associated with the given value, or
-     *               NULL if the value could not be found.
-     *
-     * @todo This could potentially double as a `has`, just like `indexOf` can.
-     *
-     * @todo The NULL return here forces the contraint that maps can't have NULL
-     *       values, which implementations should enforce themselves. Ideally we
-     *       should be able to do reverse lookups like these, but we have no way
-     *       to indicate "no key" without being ambiguous.
-     *
-     *       We could choose not to support lookups by value. It's a very simple
-     *       thing to implement (foreach, if value equal value, return key), so
-     *       there wouldn't be a large capability gap. We could instead look at
-     *       bi-directional later on? Or leave this to iteration-based projects.
-     *
-     * @todo Naming - find, lookup,
-     */
-    function find($value);
-
-    /**
      * @return Set All keys from the map added in traversal order.
      *
      * @todo We have to come up with a clever way to make this lazy, so we can
@@ -419,11 +536,37 @@ interface Map
     function values(): Sequence;
 }
 
+/**
+ * A map which can be modified, either in-place or as a copy.
+ */
+interface MutableMap extends Map
+{
+    /**
+     * Associates the $key with the $value, overriding any previous association.
+     *
+     * @throws InvalidKeyException if the map implementation does not support
+     *                             the given key, eg. NULL
+     *
+     * @todo Naming - set/put (set/unset symmetry, add/remove, put/pull?)
+     */
+    function set($key, $value);
+
+
+    /**
+     * Removes the given $key from the map, and does nothing if they key could
+     * not be found.
+     *
+     * @todo Should we return the removed value? (No, ambiguous and two-in-one)
+     *
+     * @todo Key not found: should we throw, do nothing, or not enforce either?
+     */
+    function unset($key);
+}
 
 /**
  * Indicates that a structure supports tree traversals.
  */
-interface TreeTraversal
+interface Tree
 {
     /**
      * Root, Left, Right
@@ -447,20 +590,23 @@ interface TreeTraversal
 }
 
 
+/******************************************************************************/
+/*                                 CLASSES                                    */
+/******************************************************************************/
+
 /**
  * Basic list, dynamic size, contiguous, no ops at the front.
  */
 final class Vector implements
-    Traversable,
     ArrayAccess,
+    Arrayable,
+    Collection,
     Container,
     Clearable,
     Sortable,
     Reversable,
-    OffsetAccess,
-    Sequence
+    MutableSequence
     {}
-
 
 /**
  * Not necessarily literally a linked list, but has the same semantics.
@@ -489,50 +635,50 @@ final class Vector implements
  * like... *no ideas*
  */
 final class LinkedList implements
-    Traversable,
     ArrayAccess,
+    Arrayable,
+    Collection,
     Container,
     Clearable,
     Sortable,
     Reversable,
-    OffsetAccess,
     Deque
     {}
-
 
 /**
  * The standard hashtable, implemented as Map in ext-ds currently. It is based
  * on the PHP array but is not identical. We can implement OffsetAccess because
  * insertion order is preserved.
+ *
+ * @todo Should we implement Arrayable here? We would have to throw if an object
+ *       is used as a key, and there will also be inconsistencies eg. "1" and 1.
  */
 final class HashMap implements
-    Traversable,
     ArrayAccess,
+    Collection,
     Container,
     Clearable,
     Sortable,
     Reversable,
     OffsetAccess,
-    Collection,
-    Map
+    MutableMap
     {}
-
 
 /**
- * The Set equivalent of HashMap. Might not use the same internals as HashMap.
+ * The Set equivalent of HashMap, which might not use a HashMap internally, but
+ * will always preserve insertion order.
  */
 final class HashSet implements
-    Traversable,
     ArrayAccess,
+    Arrayable,
+    Collection,
     Container,
     Clearable,
     Sortable,
     Reversable,
-    OffsetAccess,
-    Collection,
-    Set
+    Sequence,
+    MutableSet
     {}
-
 
 /**
  * A structure that is always sorted and does not allow duplicate elements.
@@ -542,35 +688,33 @@ final class HashSet implements
  * See: https://github.com/php-ds/ext-ds/issues/121
  */
 final class BinarySearchTree implements
-    Traversable,
-    TreeTraversal,
+    Arrayable,
+    Collection,
     Container,
     Clearable,
-    Set
+    MutableSet,
+    Tree,
     {}
-
 
 /**
  * A first-in-last-out structure. Destructive traversal.
  */
-final class Stack implements Traversable, Container, Clearable
+final class Stack implements Traversable, Arrayable, Container, Clearable
 {
     public function push($value) {}
     public function pop() {}
     public function peek() {}
 }
-
 
 /**
  * A first-in-first-out structure. Destructive traversal.
  */
-final class Queue implements Traversable, Container, Clearable
+final class Queue implements Traversable, Arrayable, Container, Clearable
 {
     public function push($value) {}
     public function pop() {}
     public function peek() {}
 }
-
 
 /**
  * Binary heap-based queue with a mixed-type priority value associated with the
@@ -590,19 +734,18 @@ final class Queue implements Traversable, Container, Clearable
  *       In other words it should follow insertion order if no comparator was
  *       given, which Heap would not do.
  */
-final class PriorityQueue implements Traversable, Container, Clearable
+final class PriorityQueue implements Traversable, Arrayable, Container, Clearable
 {
     public function push($value, $priority = 0) {}
     public function pop() {}
     public function peek() {}
 }
 
-
 /**
  * Stable binary heap with an optional comparator, defaulting to minimum. Could
  * potentially remove the nullable which clears up the min/max ambiguity.
  */
-final class Heap implements Traversable, Container, Clearable
+final class Heap implements Traversable, Arrayable, Container, Clearable
 {
     public function __construct(callable $comparator = null) {}
 
@@ -610,7 +753,6 @@ final class Heap implements Traversable, Container, Clearable
     public function pop() {}
     public function peek() {}
 }
-
 
 /**
  * A low-level memory allocation abstraction which could be useful to build
