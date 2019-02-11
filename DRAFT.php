@@ -15,7 +15,7 @@
 namespace Ds;
 
 /**
- * @todo How do we handle comparisons? Proposal: == for objects, === otherwise.
+ * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
  */
 
 /******************************************************************************/
@@ -498,24 +498,13 @@ interface Map
      *       can achieve that without intermediaries? That would make the `has`
      *       here a bit redundant, where we would not get much value for the
      *       cost of the ambiguity. The other alternative is hasKey + hasValue,
-     *       but that feels more specific than it needs to be, or just me?
+     *       but that feels more specific than it needs to be.
      *
-     *       This also has a very "set" vibe to it. What other structures have a
-     *       `has` as part of its semantics? Lists usually opt for `contains` or
-     *       have `indexOf` return something nonesense to indicate no result.
-     *
-     *       "What if we implement Set" would be weird because we would also get
-     *       `add` and `remove` and all the potential set operations. But is it
-     *       that bad really? The `add`, yes. The `remove`, a bit yes (ambig.)
-     *       But we want the `has` and we don't care for the operations much.
-     *       So we could extract `has` to another interface which Set extends,
-     *       allowing us to implement that here?
-     *
-     *       Or we _do_ care about the set operations, if we can get the naming
-     *       right we can also intersect values, diff, etc. Works for arrays.
-     *       In that case the Set interface only has `add` and `remove` that
-     *       are throwing us off. We could move `add` and `remove` to another
-     *       interface like a `Bag` or merge into `Container`?
+     * @todo What if we extend "Set" here? `has` would refer to the keys here
+     *       though, but I think that is valid and intuitive enough. We would
+     *       need to make sure that the set operation methods have names that
+     *       also apply to Map, without ambiguity or confusion. I get that this
+     *       is a bit strange but it makes sense to me contractually.
      */
     function has($key): bool;
 
@@ -550,7 +539,6 @@ interface MutableMap extends Map
      * @todo Naming - set/put (set/unset symmetry, add/remove, put/pull?)
      */
     function set($key, $value);
-
 
     /**
      * Removes the given $key from the map, and does nothing if they key could
