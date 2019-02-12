@@ -54,112 +54,6 @@ class InvalidKeyException extends \LogicException implements AccessException {}
 
 
 /******************************************************************************/
-/*                                 ITERATORS                                  */
-/******************************************************************************/
-
-/**
- * Yields each key and value from $iter, after applying $mapper to the value.
- */
-function map(iterable $iter, callable $mapper): \Iterator
-{
-    foreach ($iter as $key => $val) {
-        yield $key => $mapper($val, $key, $iter);
-    }
-}
-
-/**
- * Yields each key and value from $iter for which $predicate returns TRUE.
- */
-function filter(iterable $iter, callable $predicate): \Iterator
-{
-    foreach ($iter as $key => $val) {
-        if ($predicate($val, $key, $iter)) {
-            yield $key => $val;
-        }
-    }
-}
-
-/**
- * Yields each key and value from $iter for which $predicate returns FALSE.
- */
-function reject(iterable $iter, callable $predicate): \Iterator
-{
-    foreach ($iter as $key => $val) {
-        if (!$predicate($val, $key, $iter)) {
-            yield $key => $val;
-        }
-    }
-}
-
-/**
- * @return mixed|null The key of the first iteration for which $predicate
- *                    returns TRUE, or NULL if none were found.
- */
-function find(iterable $iter, callable $predicate)
-{
-    foreach (filter($iter, $predicate) as $key => $val) {
-        return $key;
-    }
-
-    return null;
-}
-
-/**
- * Reduces the keys and values of $iter to a single result, carrying forward
- * intermediate results until the final iteration returns the final result.
- */
-function reduce(iterable $iter, callable $reducer, $initial = null)
-{
-    $result = $initial;
-
-    foreach ($iter as $key => $val) {
-        $result = $reducer($result, $value, $key, $iter);
-    }
-
-    return $result;
-}
-
-/**
- * @return bool TRUE if the $predicate returns TRUE for any iteration of $iter.
- *
- */
-function any(iterable $iter, callable $predicate = null): bool
-{
-    foreach (filter($iter) as $key => $val) {
-        return true;
-    }
-
-    return false;
-}
-
-/**
- * @return bool TRUE if the $predicate returns TRUE for all iterations of $iter,
- *                   or if $iter did not produce any iterations at all (empty).
- */
-function all(iterable $iter, callable $predicate = null): bool
-{
-    foreach (reject($iter) as $key => $val) {
-        return false;
-    }
-
-    return true;
-}
-
-/**
- * @todo I am not sure how viable this is, but it could be useful to find the
- *       kth smallest value without having to sort the entire container. We must
- *       be able to access the structure by offset in order to implement partial
- *       algorithms like quick-select.
- *
- * See: https://en.wikipedia.org/wiki/Partial_sorting
- */
-function sort(OffsetAccess $iter, callable $comparator = null): \Iterator
-{
-    // Partial sort...
-}
-
-
-/******************************************************************************/
 /*                                INTERFACES                                  */
 /******************************************************************************/
 
@@ -177,47 +71,6 @@ interface Container extends \Countable
      *              the number of elements is non-zero.
      */
     function isEmpty(): bool;
-}
-
-/**
- * An interface which mirrors some of the iterator functions.
- */
-interface Collection extends \Traversable
-{
-    /**
-     * @return static
-     */
-    function map(callable $mapper): Collection;
-
-    /**
-     * @return static
-     */
-    function filter(callable $predicate): Collection;
-
-    /**
-     * @return static
-     */
-    function reject(callable $predicate): Collection;
-
-    /**
-     * @return mixed|null
-     */
-    function find(callable $predicate);
-
-    /**
-     * @return mixed
-     */
-    function reduce(callable $reducer, $initial = null);
-
-    /**
-     * @return bool
-     */
-    function any(callable $predicate = null): bool;
-
-    /**
-     * @return bool
-     */
-    function all(callable $predicate = null): bool;
 }
 
 /**
@@ -597,9 +450,9 @@ interface Tree
  * Basic list, dynamic size, contiguous, no ops at the front.
  */
 final class Vector implements
+    IteratorAggregate,
     ArrayAccess,
     Arrayable,
-    Collection,
     Container,
     Clearable,
     Sortable,
@@ -634,9 +487,9 @@ final class Vector implements
  * like... *no ideas*
  */
 final class LinkedList implements
+    IteratorAggregate,
     ArrayAccess,
     Arrayable,
-    Collection,
     Container,
     Clearable,
     Sortable,
@@ -653,8 +506,8 @@ final class LinkedList implements
  *       is used as a key, and there will also be inconsistencies eg. "1" and 1.
  */
 final class HashMap implements
+    IteratorAggregate,
     ArrayAccess,
-    Collection,
     Container,
     Clearable,
     Sortable,
@@ -668,9 +521,9 @@ final class HashMap implements
  * will always preserve insertion order.
  */
 final class HashSet implements
+    IteratorAggregate,
     ArrayAccess,
     Arrayable,
-    Collection,
     Container,
     Clearable,
     Sortable,
@@ -687,8 +540,8 @@ final class HashSet implements
  * See: https://github.com/php-ds/ext-ds/issues/121
  */
 final class BinarySearchTree implements
+    IteratorAggregate,
     Arrayable,
-    Collection,
     Container,
     Clearable,
     Set,
@@ -698,7 +551,7 @@ final class BinarySearchTree implements
 /**
  * A first-in-last-out structure. Destructive traversal.
  */
-final class Stack implements Traversable, Arrayable, Container, Clearable
+final class Stack implements IteratorAggregate, Arrayable, Container, Clearable
 {
     public function push($value) {}
     public function pop() {}
@@ -708,7 +561,7 @@ final class Stack implements Traversable, Arrayable, Container, Clearable
 /**
  * A first-in-first-out structure. Destructive traversal.
  */
-final class Queue implements Traversable, Arrayable, Container, Clearable
+final class Queue implements IteratorAggregate, Arrayable, Container, Clearable
 {
     public function push($value) {}
     public function pop() {}
@@ -733,7 +586,7 @@ final class Queue implements Traversable, Arrayable, Container, Clearable
  *       In other words it should follow insertion order if no comparator was
  *       given, which Heap would not do.
  */
-final class PriorityQueue implements Traversable, Arrayable, Container, Clearable
+final class PriorityQueue implements IteratorAggregate, Arrayable, Container, Clearable
 {
     public function push($value, $priority = 0) {}
     public function pop() {}
@@ -744,7 +597,7 @@ final class PriorityQueue implements Traversable, Arrayable, Container, Clearabl
  * Stable binary heap with an optional comparator, defaulting to minimum. Could
  * potentially remove the nullable which clears up the min/max ambiguity.
  */
-final class Heap implements Traversable, Arrayable, Container, Clearable
+final class Heap implements IteratorAggregate, Arrayable, Container, Clearable
 {
     public function __construct(callable $comparator = null) {}
 
