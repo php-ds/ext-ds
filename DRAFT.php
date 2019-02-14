@@ -16,8 +16,7 @@ namespace Ds;
 
 /**
  * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
- * @todo send/poll interface?
- * @todo Which methods should accept variadic arguments?
+ * @todo give/take interface?
  */
 
 /******************************************************************************/
@@ -32,10 +31,9 @@ namespace Ds;
 interface AccessException {}
 
 /**
- * Should be thrown when an index or key is not within the given access bounds
- * of a structure, such as a negative index on a list or
+ * Should be thrown when a structure can not contain more values (is full).
  */
-class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessException  {}
+class FullContainerException extends \OverflowException {}
 
 /**
  * Should be thrown when an empty container is accessed a clear, obvious result.
@@ -43,10 +41,16 @@ class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessE
 class EmptyContainerException extends \UnderflowException implements AccessException {}
 
 /**
+ * Should be thrown when an index or key is not within the given access bounds
+ * of a structure, such as a negative index on a list or
+ */
+class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessException  {}
+
+/**
  * Should be thrown when an undefined zval is accessed. I do not except any user
  * classes to throw this, but it might be useful to catch it.
  */
-class UndefinedValueException extends \RuntimeException implements AccessException {}
+class InvalidAccessException extends \RuntimeException implements AccessException {}
 
 /**
  * Should be thrown when a key is not supported, eg. when an attempt is made to
@@ -220,12 +224,12 @@ interface MutableSequence extends Sequence
     function unset(int $index);
 
     /**
-     * Moves all values between the given index and the end of the sequence one
-     * position towards the back, then inserts the given value into the gap.
+     * Moves all values between the given index and the end of the sequence
+     * towards the back, then inserts the given values into the gap.
      *
      * @throws IndexOutOfBoundsException if the index is out of range [0, size]
      */
-    function insert(int $index, $value);
+    function insert(int $index, ...$values);
 }
 
 /**
@@ -290,10 +294,10 @@ interface MutableSet extends Set
     /**
      * Adds the given value to $this set if it is not already in $this set.
      */
-    function add($value);
+    function add(...$values);
 
     /**
-     * @todo what happens when the value could not be found? Silent no-op?
+     * @todo what happens when the value could not be found? Silent no-op? bool?
      */
     function remove($value);
 }
@@ -378,7 +382,7 @@ interface Queue
     /**
      * Adds a value to the queue.
      */
-    function push($value);
+    function push(...$values);
 
     /**
      * Removes and returns the next value in the queue.
@@ -394,14 +398,14 @@ interface Stack
     /**
      * Adds a value to the top of the stack.
      */
-    public function push($value) {}
+    function push(...$values) {}
 
     /**
      * Removes and returns the value at the top of the stack.
      *
      * @throws EmptyContainerException
      */
-    public function pop() {}
+    function pop() {}
 }
 
 /**
@@ -542,7 +546,7 @@ final class Deque implements
     Arrayable,
     Container,
     Clearable,
-    Sequence,
+    OffsetAccess,
     Queue
     {
         /**
@@ -560,7 +564,7 @@ final class Deque implements
         /**
          * Adds a value to the front of the deque.
          */
-        public function unshift($value);
+        public function unshift(...$values);
 
         /* ArrayAccess */
         // offsetGet
@@ -578,18 +582,10 @@ final class Deque implements
         /* Clearable */
         // clear
 
-        /* Sortable */
-        // sort
-
-        /* Reversable */
-        // reverse
-
-        /* OffsetAccess | Sequence */
+        /* OffsetAccess */
         // offset
         // first
         // last
-        //
-        // get
 
         /* Queue */
         // push
@@ -827,7 +823,7 @@ final class Heap implements
         /**
          * Adds a value to the heap.
          */
-        public function push($value) {}
+        public function push(...$values) {}
 
         /**
          * Removes and returns the value at the top of the heap.
