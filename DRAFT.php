@@ -16,8 +16,9 @@ namespace Ds;
 
 /**
  * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
+ * @todo send/poll interface?
+ * @todo Which methods should accept variadic arguments?
  */
-
 
 /******************************************************************************/
 /*                                EXCEPTIONS                                  */
@@ -39,7 +40,7 @@ class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessE
 /**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
-class EmptyContainerException extends \RuntimeException implements AccessException {}
+class EmptyContainerException extends \UnderflowException implements AccessException {}
 
 /**
  * Should be thrown when an undefined zval is accessed. I do not except any user
@@ -168,74 +169,25 @@ interface OffsetAccess extends \Countable
      * @throws IndexOutOfBoundsException if the index is not within [0, size).
      *
      * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
+     *       Because it clashes with ArrayAccess a little bit here.
      */
     function offset(int $index);
-}
-
-/**
- * Indicates that a structure can be appended to, ie. add or remove values at
- * the end of the structure.
- */
-interface Pushable
-{
-    /**
-     * Appends the given value to the end of the structure.
-     */
-    function push($value);
 
     /**
-     * Removes and returns the value at the end of the structure.
-     *
-     * @return mixed The value that was removed from the end of the structure.
-     *
-     * @throws EmptyContainerException if the structure is empty.
-     *
-     * @todo should we leave it up to the impl to throw or return NULL? I think
-     *       we should aim for consistency by requiring a throw when empty. This
-     *       should be consistent with OffsetAccess' first and last.
+     * @return mixed The first value in $this structure.
      */
-    function pop();
-}
-
-/**
- * Indicates that a structure can be prepended to, ie. add or remove values at
- * the start of the structure.
- */
-interface Shiftable
-{
-    /**
-     * Prepends the given value to the front of the structure.
-     */
-    function unshift($value);
+    function first();
 
     /**
-     * Removes and returns the first value of the structure.
-     *
-     * @return mixed The value that was removed from the front of the structure.
-     *
-     * @throws EmptyContainerException if the structure is empty.
+     * @return mixed The last value in $this structure.
      */
-    function shift();
-}
-
-/**
- * Indicates that a structure has a defined "next" value, and that it can be
- * produces without modifying the contents of the structure.
- */
-interface Peekable
-{
-    /**
-     * Returns what is considered the "next" value in a structure.
-     *
-     * @throws EmptyContainerException
-     */
-    function peek();
+    function last();
 }
 
 /**
  * Indicates that a structure contains a series of contiguous elements.
  */
-interface Sequence
+interface Sequence extends OffsetAccess
 {
     /**
      * Returns the value at the given position.
@@ -243,16 +195,6 @@ interface Sequence
      * @throws IndexOutOfBoundsException if the index is not within [0, size)
      */
     function get(int $index);
-
-    /**
-     * @return mixed The first value in $this sequence.
-     */
-    function first();
-
-    /**
-     * @return mixed The last value in $this sequence.
-     */
-    function last();
 }
 
 /**
@@ -429,6 +371,40 @@ interface MutableDictionary extends Dictionary
 }
 
 /**
+ * Indicates that a structure has first-in-first-out semantics.
+ */
+interface Queue
+{
+    /**
+     * Adds a value to the queue.
+     */
+    function push($value);
+
+    /**
+     * Removes and returns the next value in the queue.
+     */
+    function shift();
+}
+
+/**
+ * Indicates that a structure has first-in-last-out semantics.
+ */
+interface Stack
+{
+    /**
+     * Adds a value to the top of the stack.
+     */
+    public function push($value) {}
+
+    /**
+     * Removes and returns the value at the top of the stack.
+     *
+     * @throws EmptyContainerException
+     */
+    public function pop() {}
+}
+
+/**
  * Indicates that a structure supports tree traversals.
  */
 interface TreeTraversal
@@ -492,6 +468,15 @@ final class Allocation implements
          * @param int $capacity Resulting capacity, > 0
          */
         public function realloc(int $capacity): void {}
+
+        /* ArrayAccess */
+        // offsetGet
+        // offsetSet
+        // offsetUnset
+        // offsetExists
+
+        /* Clearable */
+        // clear
     }
 
 /**
@@ -504,14 +489,49 @@ final class Vector implements
     Clearable,
     Sortable,
     Reversable,
-    Pushable,
-    OffsetAccess,
-    MutableSequence
+    MutableSequence,
+    Stack
     {
         /**
-         * Creates a new vector using values from $iter, if any.
+         * Creates a new vector using values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
+        public static function from(iterable $iter): self {}
+
+        /* ArrayAccess */
+        // offsetGet
+        // offsetSet
+        // offsetUnset
+        // offsetExists
+
+        /* Arrayable */
+        // toArray
+
+        /* Countable | Container */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* Sortable */
+        // sort
+
+        /* Reversable */
+        // reverse
+
+        /* OffsetAccess | Sequence | MutableSequence */
+        // offset
+        // first
+        // last
+        //
+        // get
+        // set
+        // unset
+        // insert
+
+        /* Stack */
+        // push
+        // pop
     }
 
 /**
@@ -522,17 +542,58 @@ final class Deque implements
     Arrayable,
     Container,
     Clearable,
-    Sortable,
-    Reversable,
-    Pushable,
-    Shiftable,
-    OffsetAccess,
-    Sequence
+    Sequence,
+    Queue
     {
         /**
-         * Creates a new deque using values from $iter, if any.
+         * Creates a new deque using values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
+        public static function from(iterable $iter): self {}
+
+        /**
+         * Removes and returns the value at the back of the deque.
+         *
+         * @throws EmptyContainerException
+         */
+        public function pop();
+
+        /**
+         * Adds a value to the front of the deque.
+         */
+        public function unshift($value);
+
+        /* ArrayAccess */
+        // offsetGet
+        // offsetSet
+        // offsetUnset
+        // offsetExists
+
+        /* Arrayable */
+        // toArray
+
+        /* Countable | Container */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* Sortable */
+        // sort
+
+        /* Reversable */
+        // reverse
+
+        /* OffsetAccess | Sequence */
+        // offset
+        // first
+        // last
+        //
+        // get
+
+        /* Queue */
+        // push
+        // shift
     }
 
 /**
@@ -554,9 +615,45 @@ final class HashMap implements
     MutableDictionary
     {
         /**
-         * Creates a new map using keys and values from $iter, if any.
+         * Creates a new dictionary using keys and values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
+        public static function from(iterable $iter): self {}
+
+        /* ArrayAccess */
+        // offsetGet
+        // offsetSet
+        // offsetUnset
+        // offsetExists
+
+        /* Countable | Container */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* Sortable */
+        // sort
+
+        /* SortableKeys */
+        // ksort
+
+        /* Reversable */
+        // reverse
+
+        /* OffsetAccess */
+        // offset
+        // first
+        // last
+
+        /* Dictionary | MutableDictionary */
+        // get
+        // has
+        // keys
+        // values
+        //
+        // set
+        // unset
     }
 
 /**
@@ -571,13 +668,49 @@ final class HashSet implements
     Sortable,
     Reversable,
     OffsetAccess,
-    Sequence,
     MutableSet
     {
         /**
-         * Creates a new set using values from $iter, if any.
+         * Creates a new set using values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
+        public static function from(iterable $iter): self {}
+
+        /* ArrayAccess */
+        // offsetGet
+        // offsetSet
+        // offsetUnset
+        // offsetExists
+
+        /* Arrayable */
+        // toArray
+
+        /* Container | Countable */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* Sortable */
+        // sort
+
+        /* Reversable */
+        // reverse
+
+        /* OffsetAccess */
+        // offset
+        // first
+        // last
+
+        /* Set | MutableSet */
+        // has
+        // or
+        // xor
+        // not
+        // and
+        //
+        // add
+        // remove
     }
 
 /**
@@ -591,44 +724,39 @@ final class BinarySearchTree implements
     Arrayable,
     Container,
     Clearable,
-    OffsetAccess,
     TreeTraversal,
     MutableSet,
     {
         /**
-         * Creates a new bst using values from $iter, if any.
+         * Creates a new bst using values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
-    }
+        public static function from(iterable $iter): self {}
 
-/**
- * A first-in-last-out structure.
- */
-final class Stack implements
-    Container,
-    Clearable,
-    Pushable,
-    Peekable
-    {
-        /**
-         * Creates a new stack using values from $iter, if any.
-         */
-        public function __construct(iterable $iter = []) {}
-    }
+        /* Arrayable */
+        // toArray
 
-/**
- * A first-in-first-out structure.
- */
-final class Queue implements
-    Container,
-    Clearable,
-    Pushable,
-    Peekable
-    {
-        /**
-         * Creates a new queue using values from $iter, if any.
-         */
-        public function __construct(iterable $iter = []) {}
+        /* Container | Countable */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* TreeTraversal */
+        // preorder
+        // inorder
+        // postorder
+        // outorder
+
+        /* Set | MutableSet */
+        // has
+        // or
+        // xor
+        // not
+        // and
+        //
+        // add
+        // remove
     }
 
 /**
@@ -638,26 +766,44 @@ final class Queue implements
  */
 final class PriorityQueue implements
     Container,
-    Clearable,
-    Pushable,
-    Peekable
+    Clearable
     {
         /**
-         * Creates a new priority queue using values from $iter, if any.
+         * Creates a new queue using values from $iter.
          */
-        public function __construct(iterable $iter = []) {}
+        public static function from(iterable $iter): self {}
 
         /**
          * Adds a value to the queue, using a given priority.
          */
-        public function push($value, $priority = null) {}
+        public function push($value, $priority) {}
 
         /**
-         * Updates the priority of the first encountered instance of $value.
+         * Updates the priority of all found instances of $value.
          *
-         * @throws ValueNotFoundException
+         * @throws ValueNotFoundException if none were found.
          */
         public function update($value, $priority) {}
+
+        /**
+         * Removes and returns the next value in the queue, ie. the value with
+         * the next highest priority.
+         */
+        public function shift() {}
+
+        /**
+         * Returns the next value in the queue without removing it.
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek() {}
+
+        /* Container | Countable */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
     }
 
 /**
@@ -665,103 +811,42 @@ final class PriorityQueue implements
  * potentially remove the nullable which clears up the min/max ambiguity.
  */
 final class Heap implements
-    Arrayable,
     Container,
-    Clearable,
-    Pushable,
-    Peekable
+    Clearable
     {
         /**
          * Creates a new heap using values from $iter, if any.
          */
-        public function __construct(iterable $iter = [], callable $comparator = null) {}
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Creates a new heap using values from $iter.
+         */
+        public static function from(iterable $iter, callable $comparator = null): self {}
+
+        /**
+         * Adds a value to the heap.
+         */
+        public function push($value) {}
+
+        /**
+         * Removes and returns the value at the top of the heap.
+         *
+         * @throws EmptyContainerException
+         */
+        public function shift() {}
+
+        /**
+         * Returns the value at the top of the heap without removing it.
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek() {}
+
+        /* Container | Countable */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
     }
-
-
-/******************************************************************************/
-/*                                 FUNCTIONS                                  */
-/******************************************************************************/
-
-/**
- * Shortcut to create a new allocation.
- */
-function alloc(int $capacity): Allocation
-{
-    return new Allocation($capacity);
-}
-
-/**
- * Shortcut to create a new sequence.
- */
-function seq(...$v): MutableSequence
-{
-    return new Vector($v);
-}
-
-/**
- * Shortcut to create a new deque.
- */
-function deque(...$v): Deque
-{
-    return new Deque($v);
-}
-
-/**
- * Shortcut to create a new set.
- */
-function set(...$v): MutableSet
-{
-    return new HashSet($v);
-}
-
-/**
- * Shortcut to create a new dictionary.
- */
-function dict(...$v): MutableDictionary
-{
-    return new HashMap($v);
-}
-
-/**
- * Shortcut to create a new binary search tree.
- */
-function bst(...$v): BinarySearchTree
-{
-    return new BinarySearchTree($v);
-}
-
-/**
- * Shortcut to create a new stack.
- */
-function stack(...$v): Stack
-{
-    return new Stack($v);
-}
-
-/**
- * Shortcut to create a new queue.
- */
-function queue(...$v): Queue
-{
-    return new Queue($v);
-}
-
-/**
- * Shortcut to create a new priority queue.
- */
-function pqueue(...$v): PriorityQueue
-{
-    return new PriorityQueue($v);
-}
-
-/**
- * Shortcut to create a new heap.
- *
- * @todo We can't support variadic values before the comparator, so either we
- *       do not provide this shortcut, or we do not provide a way to initialize.
- */
-function heap(callable $comparator = null): Heap
-{
-    return new Heap([], $comparator);
-}
-
