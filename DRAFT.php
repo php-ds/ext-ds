@@ -542,7 +542,6 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
-    ArrayAccess,
     Arrayable,
     Container,
     Clearable,
@@ -565,12 +564,6 @@ final class Deque implements
          * Adds a value to the front of the deque.
          */
         public function unshift(...$values);
-
-        /* ArrayAccess */
-        // offsetGet
-        // offsetSet
-        // offsetUnset
-        // offsetExists
 
         /* Arrayable */
         // toArray
