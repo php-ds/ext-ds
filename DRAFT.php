@@ -31,11 +31,6 @@ namespace Ds;
 interface AccessException {}
 
 /**
- * Should be thrown when a structure can not contain more values (is full).
- */
-class FullContainerException extends \OverflowException {}
-
-/**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
 class EmptyContainerException extends \UnderflowException implements AccessException {}
