@@ -298,6 +298,14 @@ interface MutableSet extends Set
 }
 
 /**
+ * Indicates that a structure is a set that is always sorted. 
+ */
+interface SortedSet extends Set {} 
+
+
+
+
+/**
  * A structure that associates one value with another and provides the ability
  * to query or adjust associations efficiently.
  */
@@ -710,6 +718,7 @@ final class BinarySearchTree implements
     Clearable,
     TreeTraversal,
     MutableSet,
+    SortedSet
     {
         /**
          * Creates a new bst using values from $iter.
