@@ -14,6 +14,13 @@
 */
 namespace Ds;
 
+use ArrayAccess;
+use Countable;
+use OutOfBoundsException;
+use RuntimeException;
+use Traversable;
+use UnderflowException;
+
 /**
  * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
  * @todo give/take interface?
@@ -33,31 +40,31 @@ interface AccessException {}
 /**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
-class EmptyContainerException extends \UnderflowException implements AccessException {}
+class EmptyContainerException extends UnderflowException implements AccessException {}
 
 /**
  * Should be thrown when an index or key is not within the given access bounds
  * of a structure, such as a negative index on a list or
  */
-class IndexOutOfBoundsException extends \OutOfBoundsException implements AccessException  {}
+class IndexOutOfBoundsException extends OutOfBoundsException implements AccessException  {}
 
 /**
  * Should be thrown when an undefined zval is accessed. I do not except any user
  * classes to throw this, but it might be useful to catch it.
  */
-class InvalidAccessException extends \RuntimeException implements AccessException {}
+class InvalidAccessException extends RuntimeException implements AccessException {}
 
 /**
  * Should be thrown when a key is not supported, eg. when an attempt is made to
- * associate a value with NULL in Dictionary, causing ambiguity in `find`.
+ * associate a value with NULL in Map, causing ambiguity in `find`.
  */
-class InvalidKeyException extends \RuntimeException implements AccessException {}
+class InvalidKeyException extends RuntimeException implements AccessException {}
 
 /**
  * Should be thrown when a value could not be found in a context where it was
  * expected. This should only be used if an operation is undefined if not found.
  */
-class ValueNotFoundException extends \RuntimeException implements AccessException {}
+class ValueNotFoundException extends RuntimeException implements AccessException {}
 
 
 /******************************************************************************/
@@ -65,20 +72,9 @@ class ValueNotFoundException extends \RuntimeException implements AccessExceptio
 /******************************************************************************/
 
 /**
- * Indicates that a structure contains elements and is aware of the number of
- * items contained at any point in time. How a container must determine the
- * count is implementation-specific.
- *
- * This interface does not imply that a structure is traversable.
+ * Marker interface to indicate that a class is immutable.
  */
-interface Container extends \Countable
-{
-    /**
-     * @return bool whether the container is empty, which can be TRUE even when
-     *              the number of elements is non-zero.
-     */
-    function isEmpty(): bool;
-}
+interface Immutable {}
 
 /**
  * Indicates that the elements of a structure can be represented by an array
@@ -144,7 +140,7 @@ interface SortableKeys
 /**
  * Indicates that an object is designed to be used in hash-based structures.
  */
-interface Hashable
+interface Hashable extends Immutable
 {
     /**
      * @return mixed A scalar value (or hashable delegate) that will be hashed.
@@ -160,7 +156,7 @@ interface Hashable
  *
  * @todo Naming - OrdinalAccess, LinearAccess, RandomAccess...
  */
-interface OffsetAccess extends \Countable
+interface OffsetAccess extends Countable
 {
     /**
      * @return mixed The value at the
@@ -181,6 +177,22 @@ interface OffsetAccess extends \Countable
      * @return mixed The last value in $this structure.
      */
     function last();
+}
+
+/**
+ * Indicates that a structure contains elements and is aware of the number of
+ * items contained at any point in time. How a container must determine the
+ * count is implementation-specific.
+ *
+ * This interface does not imply that a structure is traversable.
+ */
+interface Container extends Countable
+{
+    /**
+     * @return bool whether the container is empty, which can be TRUE even when
+     *              the number of elements is non-zero.
+     */
+    function isEmpty(): bool;
 }
 
 /**
@@ -302,14 +314,11 @@ interface MutableSet extends Set
  */
 interface SortedSet extends Set {} 
 
-
-
-
 /**
  * A structure that associates one value with another and provides the ability
  * to query or adjust associations efficiently.
  */
-interface Dictionary
+interface Map
 {
     /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
@@ -354,7 +363,7 @@ interface Dictionary
 /**
  * A map which can be modified, either in-place or as a copy.
  */
-interface MutableDictionary extends Dictionary
+interface MutableMap extends Map
 {
     /**
      * Associates the $key with the $value, overriding any previous association.
@@ -401,40 +410,14 @@ interface Stack
     /**
      * Adds a value to the top of the stack.
      */
-    function push(...$values) {}
+    function push(...$values);
 
     /**
      * Removes and returns the value at the top of the stack.
      *
      * @throws EmptyContainerException
      */
-    function pop() {}
-}
-
-/**
- * Indicates that a structure supports tree traversals.
- */
-interface TreeTraversal
-{
-    /**
-     * Root, Left, Right
-     */
-    function preorder(): Traversable;
-
-    /**
-     * Left, Root, Right
-     */
-    function inorder(): Traversable;
-
-    /**
-     * Left, Right, Root
-     */
-    function postorder(): Traversable;
-
-    /**
-     * Right, Root, Left
-     */
-    function outorder(): Traversable;
+    function pop();
 }
 
 
@@ -487,10 +470,30 @@ final class Allocation implements
     }
 
 /**
+ * A fixed-size immutable sequence.
+ */
+final class Tuple implements
+    Traversable,
+    Arrayable,
+    Container,
+    Sequence,
+    Hashable
+    {
+        /**
+         * Creats a new tuple using values from $iter. 
+         * 
+         * @todo  If the number of items is not known (not array or countable), 
+         *        should we use `iterator_count`?
+         */
+        public static function from(iterable $iter): self {}
+    }
+
+/**
  * List structure, dynamic size, contiguous, no ops at the front.
  */
 final class Vector implements
     ArrayAccess,
+    Traversable,
     Arrayable,
     Container,
     Clearable,
@@ -545,6 +548,7 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
+    Traversable,
     Arrayable,
     Container,
     Clearable,
@@ -561,12 +565,12 @@ final class Deque implements
          *
          * @throws EmptyContainerException
          */
-        public function pop();
+        public function pop() {}
 
         /**
          * Adds a value to the front of the deque.
          */
-        public function unshift(...$values);
+        public function unshift(...$values) {}
 
         /* Arrayable */
         // toArray
@@ -598,13 +602,14 @@ final class Deque implements
  */
 final class HashMap implements
     ArrayAccess,
+    Traversable,
     Container,
     Clearable,
     Sortable,
     SortableKeys,
     Reversable,
     OffsetAccess,
-    MutableDictionary
+    MutableMap
     {
         /**
          * Creates a new dictionary using keys and values from $iter.
@@ -638,7 +643,7 @@ final class HashMap implements
         // first
         // last
 
-        /* Dictionary | MutableDictionary */
+        /* Map | MutableMap */
         // get
         // has
         // keys
@@ -654,6 +659,7 @@ final class HashMap implements
  */
 final class HashSet implements
     ArrayAccess,
+    Traversable,
     Arrayable,
     Container,
     Clearable,
@@ -713,6 +719,7 @@ final class HashSet implements
  * See: https://github.com/php-ds/ext-ds/issues/121
  */
 final class BinarySearchTree implements
+    Traversable,
     Arrayable,
     Container,
     Clearable,
@@ -724,6 +731,26 @@ final class BinarySearchTree implements
          * Creates a new bst using values from $iter.
          */
         public static function from(iterable $iter): self {}
+
+        /**
+         * Root, Left, Right
+         */
+        public function preorder(): Traversable {}
+
+        /**
+         * Left, Root, Right
+         */
+        public function inorder(): Traversable {}
+
+        /**
+         * Left, Right, Root
+         */
+        public function postorder(): Traversable {}
+
+        /**
+         * Right, Root, Left
+         */
+        public function outorder(): Traversable {}
 
         /* Arrayable */
         // toArray
