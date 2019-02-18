@@ -14,8 +14,7 @@ ds_vector_t *ds_vector(uint32_t capacity)
 
     zend_object_std_init(object, ds_vector_ce);
 
-    /* */
-    ZVAL_OBJ(&vector->data, (zend_object *) ds_buffer(capacity));
+    DS_VECTOR_SET_BUFFER(vector, ds_buffer(capacity));
     object->handlers = &ds_vector_handlers;
     vector->size = 0;
 
@@ -39,7 +38,6 @@ static void ds_vector_separate(ds_vector_t *vector)
 {
     ds_buffer_t *buffer = DS_VECTOR_BUFFER(vector);
 
-    /* Do nothing if the buffer is only referenced by one thing (the vector). */
     if (GC_REFCOUNT((zend_object *) buffer) == 1) {
         return;
     }

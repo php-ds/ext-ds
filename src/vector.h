@@ -24,7 +24,7 @@
  */
 typedef struct ds_vector {
     zend_object  std;
-    zval         data;  // Refcounted buffer (zval array)
+    zval         data;  // Copy-on-write buffer
     uint32_t     size;  // Number of items in the vector
 } ds_vector_t;
 
