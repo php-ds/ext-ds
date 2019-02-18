@@ -16,8 +16,6 @@
 .idea
 .libs
 /include
-/libmpdec
-/mpdecimal*
 /tests/**/*.diff
 /tests/**/*.exp
 /tests/**/*.log
