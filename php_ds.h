@@ -2,11 +2,11 @@
 #define HAVE_PHP_DS_H
 
 #ifdef PHP_WIN32
-#   define PHP_DS_API __declspec(dllexport)
+#define PHP_DS_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
-#   define PHP_DS_API __attribute__ ((visibility("default")))
+#define PHP_DS_API __attribute__((visibility("default")))
 #else
-#   define PHP_DS_API
+#define PHP_DS_API
 #endif
 
 #ifdef ZTS
@@ -29,15 +29,15 @@ ZEND_BEGIN_MODULE_GLOBALS(ds)
 ZEND_END_MODULE_GLOBALS(ds)
 
 #ifdef ZTS
-    #define DS_G(v) TSRMG(ds_globals_id, zend_ds_globals *, v)
+#define DS_G(v) TSRMG(ds_globals_id, zend_ds_globals *, v)
 #else
-    #define DS_G(v) (ds_globals.v)
+#define DS_G(v) (ds_globals.v)
 #endif
 
 ZEND_EXTERN_MODULE_GLOBALS(ds)
 
 #if defined(ZTS) && defined(COMPILE_DL_DS)
-    ZEND_TSRMLS_CACHE_EXTERN();
+ZEND_TSRMLS_CACHE_EXTERN();
 #endif
 
 #endif

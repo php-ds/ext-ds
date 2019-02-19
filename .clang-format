@@ -1,0 +1,15 @@
+BasedOnStyle: LLVM
+BreakBeforeBraces: Linux
+ColumnLimit: 0
+IndentWidth: 4
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlinesLeft: true
+AllowShortFunctionsOnASingleLine: None
+AllowShortLoopsOnASingleLine: false
+PointerAlignment: Right
+SortIncludes: false
+SpaceAfterCStyleCast: true
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 2

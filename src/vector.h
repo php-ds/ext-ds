@@ -6,25 +6,25 @@
 /**
  * zval* -> ds_vector_t*
  */
-#define DS_ZVAL_GET_VECTOR(z) ((ds_vector_t*) (Z_OBJ_P(z)))
+#define DS_ZVAL_GET_VECTOR(z) ((ds_vector_t *) (Z_OBJ_P(z)))
 
 /**
  * ds_vector_t* -> ds_buffer_t*
  */
-#define DS_VECTOR_BUFFER(v) ((ds_buffer_t*) (Z_OBJ(v->data)))
+#define DS_VECTOR_BUFFER(v) ((ds_buffer_t *) (Z_OBJ(v->data)))
 
 /**
  * Replaces the existing vector buffer without freeing existing data.
  */
-#define DS_VECTOR_SET_BUFFER(v, b) ZVAL_OBJ(&v->data, (zend_object*) b)
+#define DS_VECTOR_SET_BUFFER(v, b) ZVAL_OBJ(&v->data, (zend_object *) b)
 
 /**
  * Vector object.
  */
 typedef struct ds_vector {
-    zend_object  std;
-    zval         data;  // Copy-on-write buffer
-    uint32_t     size;  // Number of items in the vector
+    zend_object std;
+    zval data;      // Copy-on-write buffer
+    uint32_t size;  // Number of items in the vector
 } ds_vector_t;
 
 /**

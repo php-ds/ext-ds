@@ -16,19 +16,19 @@ ds_vector_t *ds_vector(uint32_t capacity)
 
     DS_VECTOR_SET_BUFFER(vector, ds_buffer(capacity));
     object->handlers = &ds_vector_handlers;
-    vector->size = 0;
+    vector->size     = 0;
 
     return vector;
 }
 
 static zend_object *ds_vector_create_object(zend_class_entry *ce)
 {
-    return (zend_object*) ds_vector(2); // 2 is low, but easy to test for now.
+    return (zend_object *) ds_vector(2);  // 2 is low, but easy to test for now.
 }
 
 static void ds_vector_free_object(zend_object *obj)
 {
-    ds_vector_t *vector = (ds_vector_t*) obj;
+    ds_vector_t *vector = (ds_vector_t *) obj;
 
     zend_object_std_dtor(obj);
     zval_ptr_dtor(&vector->data);
@@ -141,9 +141,9 @@ void ds_register_vector()
 
     memcpy(&ds_vector_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    ds_vector_handlers.get_gc           = ds_vector_get_gc;
-    ds_vector_handlers.free_obj         = ds_vector_free_object;
-    ds_vector_handlers.get_debug_info   = ds_vector_get_debug_info;
-    ds_vector_handlers.read_dimension   = ds_vector_read_dimension;
-    ds_vector_handlers.write_dimension  = ds_vector_write_dimension;
+    ds_vector_handlers.get_gc          = ds_vector_get_gc;
+    ds_vector_handlers.free_obj        = ds_vector_free_object;
+    ds_vector_handlers.get_debug_info  = ds_vector_get_debug_info;
+    ds_vector_handlers.read_dimension  = ds_vector_read_dimension;
+    ds_vector_handlers.write_dimension = ds_vector_write_dimension;
 }

@@ -59,15 +59,13 @@ zend_module_entry ds_module_entry = {
     PHP_RSHUTDOWN(ds),
     PHP_MINFO(ds),
     "0.0.0",
-    STANDARD_MODULE_PROPERTIES
-};
+    STANDARD_MODULE_PROPERTIES};
 
 /**
  * Module information displayed by phpinfo()
  */
 PHP_MINFO_FUNCTION(ds)
 {
-
 }
 
 /**
@@ -112,7 +110,7 @@ PHP_RSHUTDOWN_FUNCTION(ds)
 
 #ifdef COMPILE_DL_DS
 #ifdef ZTS
-    ZEND_TSRMLS_CACHE_DEFINE();
+ZEND_TSRMLS_CACHE_DEFINE();
 #endif
-    ZEND_GET_MODULE(ds)
+ZEND_GET_MODULE(ds)
 #endif

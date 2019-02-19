@@ -6,15 +6,15 @@
 /**
  * zval* -> ds_buffer_t*
  */
-#define DS_ZVAL_GET_BUFFER(z) ((ds_buffer_t*) (Z_OBJ_P(z)))
+#define DS_ZVAL_GET_BUFFER(z) ((ds_buffer_t *) (Z_OBJ_P(z)))
 
 /**
  * Buffer object.
  */
 typedef struct ds_buffer {
     zend_object std;
-    zval       *data;
-    uint32_t    len;
+    zval *data;
+    uint32_t len;
 } ds_buffer_t;
 
 /**
@@ -22,9 +22,9 @@ typedef struct ds_buffer {
  */
 typedef struct ds_buffer_iterator {
     zend_object_iterator intern;
-    uint32_t             offset;
-    uint32_t             len;
-    uint32_t             pos;
+    uint32_t offset;
+    uint32_t len;
+    uint32_t pos;
 } ds_buffer_iterator_t;
 
 /**

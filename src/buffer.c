@@ -23,7 +23,7 @@ ds_buffer_t *ds_buffer(uint32_t capacity)
 
 static void ds_buffer_free_object(zend_object *obj)
 {
-    ds_buffer_t *buffer = (ds_buffer_t*) obj;
+    ds_buffer_t *buffer = (ds_buffer_t *) obj;
 
     zend_object_std_dtor(obj);
     efree(buffer->data);
@@ -120,8 +120,7 @@ static zend_object_iterator_funcs ds_buffer_iterator_functions = {
     ds_buffer_iterator_get_current_data,
     ds_buffer_iterator_get_current_key,
     ds_buffer_iterator_move_forward,
-    ds_buffer_iterator_rewind
-};
+    ds_buffer_iterator_rewind};
 
 zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buffer, uint32_t offset, uint32_t len)
 {
@@ -129,10 +128,10 @@ zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buffer, uint32_t offset, u
 
     zend_iterator_init(&iter->intern);
 
-    iter->intern.funcs  = &ds_buffer_iterator_functions;
-    iter->offset        = offset;
-    iter->len           = len;
-    iter->pos           = 0;
+    iter->intern.funcs = &ds_buffer_iterator_functions;
+    iter->offset       = offset;
+    iter->len          = len;
+    iter->pos          = 0;
 
     ZVAL_OBJ(&iter->intern.data, (zend_object *) buffer);
     Z_TRY_ADDREF(iter->intern.data);
