@@ -7,7 +7,7 @@ zend_class_entry *ds_vector_ce;
 
 static zend_object_handlers ds_vector_handlers;
 
-ds_vector_t *ds_vector(uint32_t capacity)
+ds_vector_t *ds_vector(zend_long capacity)
 {
     ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
     zend_object *object = (zend_object *) vector;
@@ -53,7 +53,7 @@ zval *ds_vector_get(ds_vector_t *vector, zend_long offset)
 
 void ds_vector_set(ds_vector_t *vector, zend_long offset, zval *value)
 {
-    php_printf("vector: update offset %d\n", offset);
+    php_printf("vector: update offset " ZEND_LONG_FMT "\n", offset);
     ds_buffer_t *buffer;
     ds_vector_separate(vector);
     buffer = DS_VECTOR_BUFFER(vector);
@@ -61,12 +61,12 @@ void ds_vector_set(ds_vector_t *vector, zend_long offset, zval *value)
     ds_buffer_set(buffer, offset, value);
     vector->size++;
 
-    php_printf("vector: size is now %d\n", vector->size);
+    php_printf("vector: size is now " ZEND_LONG_FMT "\n", vector->size);
 }
 
 void ds_vector_push(ds_vector_t *vector, zval *value)
 {
-    php_printf("vector: push into offset %d\n", vector->size);
+    php_printf("vector: push into offset " ZEND_LONG_FMT "\n", vector->size);
 
     ds_buffer_t *buffer;
     ds_vector_separate(vector);
@@ -80,7 +80,7 @@ void ds_vector_push(ds_vector_t *vector, zval *value)
     ds_buffer_set(buffer, vector->size, value);
     vector->size++;
 
-    php_printf("vector: size is now %d\n", vector->size);
+    php_printf("vector: size is now " ZEND_LONG_FMT "\n", vector->size);
 }
 
 zend_object_iterator *ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)

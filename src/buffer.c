@@ -5,9 +5,9 @@ zend_class_entry *ds_buffer_ce;
 
 static zend_object_handlers ds_buffer_handlers;
 
-ds_buffer_t *ds_buffer(uint32_t capacity)
+ds_buffer_t *ds_buffer(zend_long capacity)
 {
-    php_printf("buffer: allocate capacity of %d\n", capacity);
+    php_printf("buffer: allocate capacity of " ZEND_LONG_FMT "\n", capacity);
 
     ds_buffer_t *buffer = ecalloc(1, sizeof(ds_buffer_t));
     zend_object *object = (zend_object *) buffer;
@@ -29,7 +29,7 @@ static void ds_buffer_free_object(zend_object *obj)
     efree(buffer->data);
 }
 
-void ds_buffer_to_array(zval *arr, ds_buffer_t *buffer, uint32_t len)
+void ds_buffer_to_array(zval *arr, ds_buffer_t *buffer, zend_long len)
 {
     zval *pos = buffer->data;
     zval *end = buffer->data + len;
@@ -42,19 +42,19 @@ void ds_buffer_to_array(zval *arr, ds_buffer_t *buffer, uint32_t len)
     }
 }
 
-zval *ds_buffer_get(ds_buffer_t *buffer, uint32_t offset)
+zval *ds_buffer_get(ds_buffer_t *buffer, zend_long offset)
 {
     return &buffer->data[offset];
 }
 
-void ds_buffer_set(ds_buffer_t *buffer, uint32_t offset, zval *value)
+void ds_buffer_set(ds_buffer_t *buffer, zend_long offset, zval *value)
 {
     ZVAL_COPY(&buffer->data[offset], value);
 }
 
-void ds_buffer_realloc(ds_buffer_t *buffer, uint32_t capacity)
+void ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity)
 {
-    php_printf("buffer: increase capacity to %d\n", capacity);
+    php_printf("buffer: increase capacity to " ZEND_LONG_FMT "\n", capacity);
 
     buffer->data = erealloc(buffer->data, capacity * sizeof(zval));
     buffer->len  = capacity;
@@ -64,7 +64,7 @@ ds_buffer_t *ds_buffer_create_copy(ds_buffer_t *src)
 {
     php_printf("buffer: create copy!\n");
 
-    uint32_t i;
+    zend_long i;
     ds_buffer_t *dst = ds_buffer(src->len);
 
     for (i = 0; i < src->len; i++) {
@@ -122,7 +122,7 @@ static zend_object_iterator_funcs ds_buffer_iterator_functions = {
     ds_buffer_iterator_move_forward,
     ds_buffer_iterator_rewind};
 
-zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buffer, uint32_t offset, uint32_t len)
+zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buffer, zend_long offset, zend_long len)
 {
     ds_buffer_iterator_t *iter = ecalloc(1, sizeof(ds_buffer_iterator_t));
 
