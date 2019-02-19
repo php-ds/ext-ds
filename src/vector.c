@@ -23,7 +23,7 @@ ds_vector_t *ds_vector(uint32_t capacity)
 
 static zend_object *ds_vector_create_object(zend_class_entry *ce)
 {
-    return (zend_object*) ds_vector(2);
+    return (zend_object*) ds_vector(2); // 2 is low, but easy to test for now.
 }
 
 static void ds_vector_free_object(zend_object *obj)
