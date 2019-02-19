@@ -2,7 +2,6 @@
 #define HAVE_DS_VECTOR_H
 
 #include <php.h>
-#include "buffer.h"
 
 /**
  * zval* -> ds_vector_t*
