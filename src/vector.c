@@ -42,7 +42,7 @@ static void ds_vector_separate(ds_vector_t *vector)
         return;
     }
 
-    GC_REFCOUNT((zend_object *) buffer)--;
+    GC_DELREF((zend_object *) buffer);
     DS_VECTOR_SET_BUFFER(vector, ds_buffer_create_copy(buffer));
 }
 
