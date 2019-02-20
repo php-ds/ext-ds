@@ -310,13 +310,16 @@ interface MutableSet extends Set
 }
 
 /**
- * Indicates that a structure is a set that is always sorted. 
+ * Indicates that a structure is a set that is always sorted.
  */
-interface SortedSet extends Set {} 
+interface SortedSet extends Set {}
 
 /**
  * A structure that associates one value with another and provides the ability
  * to query or adjust associations efficiently.
+ *
+ * @todo Should Map extend Set? What about the set operation methods then?
+ * @todo Should Map require some kind of merge, diff, and intersection support?
  */
 interface Map
 {
@@ -334,12 +337,9 @@ interface Map
      * @return bool TRUE if $this map has an association for the given $key,
      *              FALSE otherwise.
      *
-     * @todo "This is ambiguous! 'has' ...what? has key or has value?"
-     *       What about `$map->keys()->has(x)` or `$map->values()->has(x)` if we
-     *       can achieve that without intermediaries? That would make the `has`
-     *       here a bit redundant, where we would not get much value for the
-     *       cost of the ambiguity. The other alternative is hasKey + hasValue,
-     *       but that feels more specific than it needs to be.
+     * @todo if we don't extend Set, should we remove this in favour of
+     *       $map->keys()->has()? This would only work if keys() is O(1), which
+     *       would not always be the case.
      */
     function has($key): bool;
 
@@ -480,9 +480,9 @@ final class Tuple implements
     Hashable
     {
         /**
-         * Creats a new tuple using values from $iter. 
-         * 
-         * @todo  If the number of items is not known (not array or countable), 
+         * Creates a new tuple using values from $iter.
+         *
+         * @todo  If the number of items is not known (not array or countable),
          *        should we use `iterator_count`?
          */
         public static function from(iterable $iter): self {}
