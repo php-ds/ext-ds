@@ -55,6 +55,8 @@ ds_buffer_t *ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity)
 {
     php_printf("buffer: increase capacity to " ZEND_LONG_FMT "\n", capacity);
 
+    GC_REMOVE_FROM_BUFFER((zend_object *) buffer);
+
     buffer      = erealloc(buffer, DS_BUFFER_ALLOC_SIZE(capacity));
     buffer->len = capacity;
 
