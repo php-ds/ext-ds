@@ -49,22 +49,10 @@ class EmptyContainerException extends UnderflowException implements AccessExcept
 class IndexOutOfBoundsException extends OutOfBoundsException implements AccessException  {}
 
 /**
- * Should be thrown when an undefined zval is accessed. I do not except any user
- * classes to throw this, but it might be useful to catch it.
- */
-class InvalidAccessException extends RuntimeException implements AccessException {}
-
-/**
  * Should be thrown when a key is not supported, eg. when an attempt is made to
  * associate a value with NULL in Map, causing ambiguity in `find`.
  */
 class InvalidKeyException extends RuntimeException implements AccessException {}
-
-/**
- * Should be thrown when a value could not be found in a context where it was
- * expected. This should only be used if an operation is undefined if not found.
- */
-class ValueNotFoundException extends RuntimeException implements AccessException {}
 
 
 /******************************************************************************/
@@ -121,20 +109,6 @@ interface Sortable
      * @return static A sorted copy, or $this structure sorted in-place.
      */
     function sort(callable $comparator = null);
-}
-
-/**
- * Indicates that a structure can be sorted by key.
- *
- * This interface does not guarantee that the sorting algorithm will be stable.
- * Implementations should use a domain-specific tiebreaker when required.
- */
-interface SortableKeys
-{
-    /**
-     * @return static A sorted copy, or $this structure sorted in-place.
-     */
-    function ksort(callable $comparator = null);
 }
 
 /**
@@ -426,50 +400,6 @@ interface Stack
 /******************************************************************************/
 
 /**
- * A low-level memory allocation abstraction which could be useful to build
- * structures in userland that do not want to use arrays or other structures
- * as a buffer.
- *
- * @todo how should we handle elements that are undefined, ie. a new allocation
- *       will have undefined values. Internally these will be IS_UNDEF, but we
- *       should not expose that to userland. Attempting to access an undefined
- *       value will throw an exception.
- *
- * @todo What should clear do? I think that capacity should be preserved, but
- *       all values should be set the their initial state, ie. undefined
- */
-final class Allocation implements
-    ArrayAccess,
-    Clearable
-    {
-        /**
-         * Creates a new allocation using a given capacity.
-         */
-        public function __construct(int $capacity) {}
-
-        /**
-         * @return int The capacity of $this allocation.
-         */
-        public function capacity(): int {}
-
-        /**
-         * Adjusts the capacity of $this allocation, regardless of current capacity.
-         *
-         * @param int $capacity Resulting capacity, > 0
-         */
-        public function realloc(int $capacity): void {}
-
-        /* ArrayAccess */
-        // offsetGet
-        // offsetSet
-        // offsetUnset
-        // offsetExists
-
-        /* Clearable */
-        // clear
-    }
-
-/**
  * A fixed-size immutable sequence.
  */
 final class Tuple implements
@@ -481,11 +411,8 @@ final class Tuple implements
     {
         /**
          * Creates a new tuple using values from $iter.
-         *
-         * @todo  If the number of items is not known (not array or countable),
-         *        should we use `iterator_count`?
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
     }
 
 /**
@@ -505,7 +432,7 @@ final class Vector implements
         /**
          * Creates a new vector using values from $iter.
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
 
         /* ArrayAccess */
         // offsetGet
@@ -558,7 +485,7 @@ final class Deque implements
         /**
          * Creates a new deque using values from $iter.
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
 
         /**
          * Removes and returns the value at the back of the deque.
@@ -606,7 +533,6 @@ final class HashMap implements
     Container,
     Clearable,
     Sortable,
-    SortableKeys,
     Reversable,
     OffsetAccess,
     MutableMap
@@ -614,7 +540,7 @@ final class HashMap implements
         /**
          * Creates a new dictionary using keys and values from $iter.
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
 
         /* ArrayAccess */
         // offsetGet
@@ -631,9 +557,6 @@ final class HashMap implements
 
         /* Sortable */
         // sort
-
-        /* SortableKeys */
-        // ksort
 
         /* Reversable */
         // reverse
@@ -671,7 +594,7 @@ final class HashSet implements
         /**
          * Creates a new set using values from $iter.
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
 
         /* ArrayAccess */
         // offsetGet
@@ -730,7 +653,7 @@ final class BinarySearchTree implements
         /**
          * Creates a new bst using values from $iter.
          */
-        public static function from(iterable $iter): self {}
+        public function __construct(iterable $iter = null) {}
 
         /**
          * Root, Left, Right
@@ -780,53 +703,6 @@ final class BinarySearchTree implements
     }
 
 /**
- * Heap-based queue with a mixed-type priority value associated with the key.
- *
- * @todo Should we support duplicate values?
- */
-final class PriorityQueue implements
-    Container,
-    Clearable
-    {
-        /**
-         * Creates a new queue using values from $iter.
-         */
-        public static function from(iterable $iter): self {}
-
-        /**
-         * Adds a value to the queue, using a given priority.
-         */
-        public function push($value, $priority) {}
-
-        /**
-         * Updates the priority of all found instances of $value.
-         *
-         * @throws ValueNotFoundException if none were found.
-         */
-        public function update($value, $priority) {}
-
-        /**
-         * Removes and returns the next value in the queue, ie. the value with
-         * the next highest priority.
-         */
-        public function shift() {}
-
-        /**
-         * Returns the next value in the queue without removing it.
-         *
-         * @throws EmptyContainerException
-         */
-        public function peek() {}
-
-        /* Container | Countable */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-    }
-
-/**
  * Stable heap with an optional comparator, defaulting to minimum. We could
  * potentially remove the nullable which clears up the min/max ambiguity.
  */
@@ -835,19 +711,27 @@ final class Heap implements
     Clearable
     {
         /**
-         * Creates a new heap using values from $iter, if any.
+         * Creates a new heap using an optional comparator.
          */
         public function __construct(callable $comparator = null) {}
-
-        /**
-         * Creates a new heap using values from $iter.
-         */
-        public static function from(iterable $iter, callable $comparator = null): self {}
 
         /**
          * Adds a value to the heap.
          */
         public function push(...$values) {}
+
+        /**
+         * Applies a given callback function to all instances of value in the
+         * heap. Each instance will be replaced by the value returned by its
+         * invocation of the mutator.
+         *
+         * This provides a safe way to update elements in the heap because it
+         * knows to correct itself after values have been updated. Otherwise an
+         * object can change without the heap knowing about it.
+         *
+         * @todo Should we consider observables instead?
+         */
+        public function update($value, callable $mutator) {}
 
         /**
          * Removes and returns the value at the top of the heap.
