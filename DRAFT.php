@@ -409,10 +409,21 @@ final class Tuple implements
     Sequence,
     Hashable
     {
-        /**
-         * Creates a new tuple using values from $iter.
-         */
-        public function __construct(iterable $iter = null) {}
+        /* Arrayable */
+        // toArray
+
+        /* Countable | Container */
+        // count
+        // isEmpty
+
+        /* OffsetAccess | Sequence */
+        // offset
+        // first
+        // last
+        // get
+
+        /* Hashable | Immutable */
+        // getHashSource
     }
 
 /**
@@ -429,11 +440,6 @@ final class Vector implements
     MutableSequence,
     Stack
     {
-        /**
-         * Creates a new vector using values from $iter.
-         */
-        public function __construct(iterable $iter = null) {}
-
         /* ArrayAccess */
         // offsetGet
         // offsetSet
@@ -482,11 +488,6 @@ final class Deque implements
     OffsetAccess,
     Queue
     {
-        /**
-         * Creates a new deque using values from $iter.
-         */
-        public function __construct(iterable $iter = null) {}
-
         /**
          * Removes and returns the value at the back of the deque.
          *
@@ -537,11 +538,6 @@ final class HashMap implements
     OffsetAccess,
     MutableMap
     {
-        /**
-         * Creates a new dictionary using keys and values from $iter.
-         */
-        public function __construct(iterable $iter = null) {}
-
         /* ArrayAccess */
         // offsetGet
         // offsetSet
@@ -591,11 +587,6 @@ final class HashSet implements
     OffsetAccess,
     MutableSet
     {
-        /**
-         * Creates a new set using values from $iter.
-         */
-        public function __construct(iterable $iter = null) {}
-
         /* ArrayAccess */
         // offsetGet
         // offsetSet
@@ -646,14 +637,13 @@ final class BinarySearchTree implements
     Arrayable,
     Container,
     Clearable,
-    TreeTraversal,
     MutableSet,
     SortedSet
     {
         /**
          * Creates a new bst using values from $iter.
          */
-        public function __construct(iterable $iter = null) {}
+        public function __construct(callable $comparator = null) {}
 
         /**
          * Root, Left, Right
@@ -684,12 +674,6 @@ final class BinarySearchTree implements
 
         /* Clearable */
         // clear
-
-        /* TreeTraversal */
-        // preorder
-        // inorder
-        // postorder
-        // outorder
 
         /* Set | MutableSet */
         // has
