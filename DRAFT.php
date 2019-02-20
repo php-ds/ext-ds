@@ -38,6 +38,16 @@ use UnderflowException;
 interface AccessException {}
 
 /**
+ * Marker interface for all state-related exceptions, such as heap corruption.
+ */
+interface StateException {}
+
+/**
+ * Marker interface for all transfer-related exceptions.
+ */
+interface TransferException {}
+
+/**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
 class EmptyContainerException extends UnderflowException implements AccessException {}
@@ -53,6 +63,18 @@ class IndexOutOfBoundsException extends OutOfBoundsException implements AccessEx
  * associate a value with NULL in Map, causing ambiguity in `find`.
  */
 class InvalidKeyException extends RuntimeException implements AccessException {}
+
+/**
+ * Should be thrown whenever a structure is in an unexpected state. This state
+ * should not be resolvable without ambiguity, so an exception is thrown.
+ */
+class InvalidStateException extends RuntimeException implements StateException {}
+
+/**
+ * Should be thrown when a transfer is polled but there were no values available,
+ * or
+ */
+class InvalidPollException extends UnderflowException implements TransferException {}
 
 
 /******************************************************************************/
@@ -135,7 +157,7 @@ interface OffsetAccess extends Countable
     /**
      * @return mixed The value at the
      *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size).
+     * @throws OutOfBoundsException if the index is not within [0, size).
      *
      * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
      *       Because it clashes with ArrayAccess a little bit here.
@@ -177,7 +199,7 @@ interface Sequence extends OffsetAccess
     /**
      * Returns the value at the given position.
      *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size)
+     * @throws OutOfBoundsException if the index is not within [0, size)
      */
     function get(int $index);
 }
@@ -190,7 +212,7 @@ interface MutableSequence extends Sequence
     /**
      * Sets the value at the given position.
      *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size)
+     * @throws OutOfBoundsException if the index is not within [0, size)
      */
     function set(int $index, $value);
 
@@ -200,7 +222,7 @@ interface MutableSequence extends Sequence
      *
      * @todo Naming - remove, pull?
      *
-     * @throws IndexOutOfBoundsException if the index is not within [0, size)
+     * @throws OutOfBoundsException if the index is not within [0, size)
      */
     function unset(int $index);
 
@@ -208,7 +230,7 @@ interface MutableSequence extends Sequence
      * Moves all values between the given index and the end of the sequence
      * towards the back, then inserts the given values into the gap.
      *
-     * @throws IndexOutOfBoundsException if the index is out of range [0, size]
+     * @throws OutOfBoundsException if the index is out of range [0, size]
      */
     function insert(int $index, ...$values);
 }
@@ -320,16 +342,14 @@ interface Map
     /**
      * @return Set All keys from the map added in traversal order.
      *
-     * @todo We have to come up with a clever way to make this lazy, so we can
-     *       expose a view on the structure's keys rather than an eager copy.
+     * @todo Should this return an iterator?
      */
     function keys(): Set;
 
     /**
      * @return Set All keys from the map added in traversal order.
      *
-     * @todo We have to come up with a clever way to make this lazy, so we can
-     *       expose a view on the structure's values rather than an eager copy.
+     * @todo Should this return an iterator?
      */
     function values(): Sequence;
 }
@@ -389,15 +409,55 @@ interface Stack
     /**
      * Removes and returns the value at the top of the stack.
      *
-     * @throws EmptyContainerException
+     * @throws UnderflowException
      */
     function pop();
 }
 
+/**
+ * Indicates that a structure can receive and produce values in a semantically
+ * defined order.
+ */
+interface Transferable
+{
+    /**
+     * Offers one or more values to the transfer.
+     */
+    function send(...$values);
+
+    /**
+     * @throws UnderflowException
+     */
+    function poll();
+}
 
 /******************************************************************************/
 /*                                 CLASSES                                    */
 /******************************************************************************/
+
+/**
+ * A transfer adapter for stacks.
+ */
+final class StackTransfer implements Transferable
+{
+    /* Transferable */
+    // send (stack->push)
+    // poll (stack->pop)
+
+    public function __construct(Stack $stack) {}
+}
+
+/**
+ * A transfer adapter for queues.
+ */
+final class QueueTransfer implements Transferable
+{
+    /* Transferable */
+    // send (queue->push)
+    // poll (queue->shift)
+
+    public function __construct(Queue $queue) {}
+}
 
 /**
  * A fixed-size immutable sequence.
@@ -481,28 +541,11 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
-    Traversable,
-    Arrayable,
     Container,
     Clearable,
-    OffsetAccess,
-    Queue
+    Queue,
+    Stack
     {
-        /**
-         * Removes and returns the value at the back of the deque.
-         *
-         * @throws EmptyContainerException
-         */
-        public function pop() {}
-
-        /**
-         * Adds a value to the front of the deque.
-         */
-        public function unshift(...$values) {}
-
-        /* Arrayable */
-        // toArray
-
         /* Countable | Container */
         // count
         // isEmpty
@@ -510,14 +553,30 @@ final class Deque implements
         /* Clearable */
         // clear
 
-        /* OffsetAccess */
-        // offset
-        // first
-        // last
-
         /* Queue */
         // push
         // shift
+
+        /* Stack */
+        // push
+        // pop
+
+        /**
+         * Adds one or more values to the front of the deque.
+         */
+        public function unshift(...$values);
+
+        /**
+         * Returns the value at the front of the deque. This would be the next
+         * value in a queue, or the last value in a stack.
+         */
+        public function front();
+
+        /**
+         * Returns the value at the back of the deque. This would be the next
+         * value in a stack, or the last value in a queue.
+         */
+        public function back();
     }
 
 /**
@@ -640,30 +699,6 @@ final class BinarySearchTree implements
     MutableSet,
     SortedSet
     {
-        /**
-         * Creates a new bst using values from $iter.
-         */
-        public function __construct(callable $comparator = null) {}
-
-        /**
-         * Root, Left, Right
-         */
-        public function preorder(): Traversable {}
-
-        /**
-         * Left, Root, Right
-         */
-        public function inorder(): Traversable {}
-
-        /**
-         * Left, Right, Root
-         */
-        public function postorder(): Traversable {}
-
-        /**
-         * Right, Root, Left
-         */
-        public function outorder(): Traversable {}
 
         /* Arrayable */
         // toArray
@@ -684,6 +719,31 @@ final class BinarySearchTree implements
         //
         // add
         // remove
+
+        /**
+         * Creates a new bst using values from $iter.
+         */
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Root, Left, Right
+         */
+        public function preorder(): iterable {}
+
+        /**
+         * Left, Root, Right
+         */
+        public function inorder(): iterable {}
+
+        /**
+         * Left, Right, Root
+         */
+        public function postorder(): iterable {}
+
+        /**
+         * Right, Root, Left
+         */
+        public function outorder(): iterable {}
     }
 
 /**
@@ -692,8 +752,20 @@ final class BinarySearchTree implements
  */
 final class Heap implements
     Container,
-    Clearable
+    Clearable,
+    Transferable
     {
+        /* Container | Countable */
+        // count
+        // isEmpty
+
+        /* Clearable */
+        // clear
+
+        /* Transferable */
+        // send (push)
+        // poll (shift)
+
         /**
          * Creates a new heap using an optional comparator.
          */
@@ -710,18 +782,4 @@ final class Heap implements
          * @throws EmptyContainerException
          */
         public function shift() {}
-
-        /**
-         * Returns the value at the top of the heap without removing it.
-         *
-         * @throws EmptyContainerException
-         */
-        public function peek() {}
-
-        /* Container | Countable */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
     }
