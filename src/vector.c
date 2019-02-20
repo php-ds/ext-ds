@@ -130,6 +130,13 @@ static HashTable *ds_vector_get_gc(zval *obj, zval **gc_data, int *gc_count)
     return NULL;
 }
 
+static int ds_vector_count_elements(zval *obj, zend_long *count)
+{
+    ds_vector_t *vector = DS_ZVAL_GET_VECTOR(obj);
+    *count              = vector->size;
+    return SUCCESS;
+}
+
 void ds_register_vector()
 {
     zend_class_entry ce;
@@ -146,4 +153,5 @@ void ds_register_vector()
     ds_vector_handlers.get_debug_info  = ds_vector_get_debug_info;
     ds_vector_handlers.read_dimension  = ds_vector_read_dimension;
     ds_vector_handlers.write_dimension = ds_vector_write_dimension;
+    ds_vector_handlers.count_elements  = ds_vector_count_elements;
 }
