@@ -70,12 +70,6 @@ class InvalidKeyException extends RuntimeException implements AccessException {}
  */
 class InvalidStateException extends RuntimeException implements StateException {}
 
-/**
- * Should be thrown when a transfer is polled but there were no values available,
- * or
- */
-class InvalidPollException extends UnderflowException implements TransferException {}
-
 
 /******************************************************************************/
 /*                                INTERFACES                                  */
@@ -85,20 +79,6 @@ class InvalidPollException extends UnderflowException implements TransferExcepti
  * Marker interface to indicate that a class is immutable.
  */
 interface Immutable {}
-
-/**
- * Indicates that the elements of a structure can be represented by an array
- * without altering the structure of the data, without any warnings or errors.
- */
-interface Arrayable
-{
-    /**
-     * This method should not fail. There is an implicit expectation that any
-     * structure converted to an array must be able to be converted back to
-     * the structure in such a way that it is considered equal to the initial.
-     */
-    function toArray(): array;
-}
 
 /**
  * Indicates that a structure can be cleared.
@@ -464,14 +444,10 @@ final class QueueTransfer implements Transferable
  */
 final class Tuple implements
     Traversable,
-    Arrayable,
     Container,
     Sequence,
     Hashable
     {
-        /* Arrayable */
-        // toArray
-
         /* Countable | Container */
         // count
         // isEmpty
@@ -492,7 +468,6 @@ final class Tuple implements
 final class Vector implements
     ArrayAccess,
     Traversable,
-    Arrayable,
     Container,
     Clearable,
     Sortable,
@@ -505,9 +480,6 @@ final class Vector implements
         // offsetSet
         // offsetUnset
         // offsetExists
-
-        /* Arrayable */
-        // toArray
 
         /* Countable | Container */
         // count
@@ -583,9 +555,6 @@ final class Deque implements
  * The standard hashtable, implemented as Map in ext-ds currently. It is based
  * on the PHP array but is not identical. We can implement OffsetAccess because
  * insertion order is preserved.
- *
- * @todo Should we implement Arrayable here? We would have to throw if an object
- *       is used as a key, and there will also be inconsistencies eg. "1" and 1.
  */
 final class HashMap implements
     ArrayAccess,
@@ -638,7 +607,6 @@ final class HashMap implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
-    Arrayable,
     Container,
     Clearable,
     Sortable,
@@ -651,9 +619,6 @@ final class HashSet implements
         // offsetSet
         // offsetUnset
         // offsetExists
-
-        /* Arrayable */
-        // toArray
 
         /* Container | Countable */
         // count
@@ -693,16 +658,11 @@ final class HashSet implements
  */
 final class BinarySearchTree implements
     Traversable,
-    Arrayable,
     Container,
     Clearable,
     MutableSet,
     SortedSet
     {
-
-        /* Arrayable */
-        // toArray
-
         /* Container | Countable */
         // count
         // isEmpty
