@@ -9,13 +9,12 @@ ds_buffer_t *ds_buffer(zend_long capacity)
 {
     php_printf("buffer: allocate capacity of " ZEND_LONG_FMT "\n", capacity);
 
-    ds_buffer_t *buffer = ecalloc(1, sizeof(ds_buffer_t));
+    ds_buffer_t *buffer = ecalloc(1, DS_BUFFER_ALLOC_SIZE(capacity));
     zend_object *object = (zend_object *) buffer;
 
     zend_object_std_init((zend_object *) buffer, ds_buffer_ce);
 
     object->handlers = &ds_buffer_handlers;
-    buffer->data     = ecalloc(capacity, sizeof(zval));
     buffer->len      = capacity;
 
     return buffer;
@@ -52,12 +51,14 @@ void ds_buffer_set(ds_buffer_t *buffer, zend_long offset, zval *value)
     ZVAL_COPY(&buffer->data[offset], value);
 }
 
-void ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity)
+ds_buffer_t *ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity)
 {
     php_printf("buffer: increase capacity to " ZEND_LONG_FMT "\n", capacity);
 
-    buffer->data = erealloc(buffer->data, capacity * sizeof(zval));
-    buffer->len  = capacity;
+    buffer      = erealloc(buffer, DS_BUFFER_ALLOC_SIZE(capacity));
+    buffer->len = capacity;
+
+    return buffer;
 }
 
 ds_buffer_t *ds_buffer_create_copy(ds_buffer_t *src)

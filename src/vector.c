@@ -74,7 +74,8 @@ void ds_vector_push(ds_vector_t *vector, zval *value)
 
     /* Check if we need to grow. */
     if (vector->size == buffer->len) {
-        ds_buffer_realloc(buffer, buffer->len * 2 + 1);
+        buffer = ds_buffer_realloc(buffer, buffer->len * 2 + 1);
+        DS_VECTOR_SET_BUFFER(vector, buffer);
     }
 
     ds_buffer_set(buffer, vector->size, value);

@@ -9,12 +9,18 @@
 #define DS_ZVAL_GET_BUFFER(z) ((ds_buffer_t *) (Z_OBJ_P(z)))
 
 /**
+ * Allocation length for the buffer struct and data.
+ */
+#define DS_BUFFER_ALLOC_SIZE(capacity) \
+    (sizeof(ds_buffer_t) + sizeof(zval) * (capacity - 1))
+
+/**
  * Buffer object.
  */
 typedef struct ds_buffer {
     zend_object std;
-    zval *data;
     zend_long len;
+    zval data[1];
 } ds_buffer_t;
 
 /**
@@ -50,7 +56,7 @@ ds_buffer_t *ds_buffer_create_copy(ds_buffer_t *src);
 /**
  * Reallocates the buffer to a given capacity.
  */
-void ds_buffer_realloc(ds_buffer_t *obj, zend_long capacity);
+ds_buffer_t *ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity);
 
 /**
  * Sets the array representation of a given buffer.
