@@ -340,42 +340,8 @@ interface MutableMap extends Map
 }
 
 /**
- * Indicates that a structure has first-in-first-out semantics.
- */
-interface Queue
-{
-    /**
-     * Adds a value to the queue.
-     */
-    function push(...$values);
-
-    /**
-     * Removes and returns the next value in the queue.
-     */
-    function shift();
-}
-
-/**
- * Indicates that a structure has first-in-last-out semantics.
- */
-interface Stack
-{
-    /**
-     * Adds a value to the top of the stack.
-     */
-    function push(...$values);
-
-    /**
-     * Removes and returns the value at the top of the stack.
-     *
-     * @throws EmptyStateException
-     */
-    function pop();
-}
-
-/**
- * Indicates that a structure can receive and produce values in a semantically
- * defined order.
+ * Indicates that a structure can receive and produce values efficiently in a
+ * semantically defined order. Both operations should be O(1).
  */
 interface Transferable
 {
@@ -385,6 +351,8 @@ interface Transferable
     function send(...$values);
 
     /**
+     * Removes and returns the next value.
+     *
      * @throws EmptyStateException
      */
     function poll();
@@ -397,26 +365,48 @@ interface Transferable
 /**
  * A transfer adapter for stacks.
  */
-final class StackTransfer implements Transferable
-{
-    /* Transferable */
-    // send (stack->push)
-    // poll (stack->pop)
+final class Stack implements
+    Container,
+    Transferable
+    {
+        /* Transferable */
+        // send (push)
+        // poll (pop)
 
-    public function __construct(Stack $stack) {}
-}
+        /**
+         * Adds a value to the top of the stack.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the value at the top of the stack.
+         *
+         * @throws EmptyStateException
+         */
+        function pop();
+    }
 
 /**
  * A transfer adapter for queues.
  */
-final class QueueTransfer implements Transferable
-{
-    /* Transferable */
-    // send (queue->push)
-    // poll (queue->shift)
+final class Queue implements
+    Container,
+    Transferable
+    {
+        /* Transferable */
+        // send (push)
+        // poll (shift)
 
-    public function __construct(Queue $queue) {}
-}
+        /**
+         * Adds a value to the queue.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the next value in the queue.
+         */
+        function shift();
+    }
 
 /**
  * A fixed-size immutable sequence.
@@ -483,9 +473,17 @@ final class Vector implements
         // unset
         // insert
 
-        /* Stack */
-        // push
-        // pop
+        /**
+         * Adds one or more values to the end of the vector.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the value at the end of the vector.
+         *
+         * @throws EmptyStateException
+         */
+        function pop();
     }
 
 /**
@@ -494,8 +492,8 @@ final class Vector implements
 final class Deque implements
     Container,
     Clearable,
-    Queue,
-    Stack
+    Transferable,
+    Sequence
     {
         /* Countable | Container */
         // count
@@ -504,34 +502,39 @@ final class Deque implements
         /* Clearable */
         // clear
 
-        /* Queue */
-        // push
-        // shift
+        /* Transferable */
+        // send (push)
+        // poll (shift)
 
-        /* Stack */
-        // push
-        // pop
+        /* OffsetAccess | Sequence */
+        // offset
+        // first
+        // last
+        // get
 
         /**
-         * Adds one or more values to the front of the deque.
+         * Adds one or more values to the end of the deque.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the value at the end of the deque.
+         *
+         * @throws EmptyStateException
+         */
+        function pop();
+
+        /**
+         * Adds one or more values to the start of the deque.
          */
         public function unshift(...$values);
 
         /**
-         * Returns the value at the front of the deque. This would be the next
-         * value in a queue, or the last value in a stack.
+         * Removes and returns the value at the start of the deque.
          *
          * @throws EmptyStateException
          */
-        public function front();
-
-        /**
-         * Returns the value at the back of the deque. This would be the next
-         * value in a stack, or the last value in a queue.
-         *
-         * @throws EmptyStateException
-         */
-        public function back();
+        function shift();
     }
 
 /**
@@ -594,6 +597,7 @@ final class HashSet implements
     Clearable,
     Sortable,
     Reversable,
+    Transferable,
     OffsetAccess,
     MutableSet
     {
@@ -615,6 +619,10 @@ final class HashSet implements
 
         /* Reversable */
         // reverse
+
+        /* Transferable */
+        // send (add)
+        // poll (remove[0])
 
         /* OffsetAccess */
         // offset
