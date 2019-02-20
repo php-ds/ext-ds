@@ -705,19 +705,6 @@ final class Heap implements
         public function push(...$values) {}
 
         /**
-         * Applies a given callback function to all instances of value in the
-         * heap. Each instance will be replaced by the value returned by its
-         * invocation of the mutator.
-         *
-         * This provides a safe way to update elements in the heap because it
-         * knows to correct itself after values have been updated. Otherwise an
-         * object can change without the heap knowing about it.
-         *
-         * @todo Should we consider observables instead?
-         */
-        public function update($value, callable $mutator) {}
-
-        /**
          * Removes and returns the value at the top of the heap.
          *
          * @throws EmptyContainerException
