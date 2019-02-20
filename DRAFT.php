@@ -14,16 +14,12 @@
 */
 namespace Ds;
 
-use ArrayAccess;
 use Countable;
-use OutOfBoundsException;
 use RuntimeException;
 use Traversable;
-use UnderflowException;
 
 /**
  * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
- * @todo give/take interface?
  */
 
 /******************************************************************************/
@@ -43,32 +39,21 @@ interface AccessException {}
 interface StateException {}
 
 /**
- * Marker interface for all transfer-related exceptions.
- */
-interface TransferException {}
-
-/**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
-class EmptyContainerException extends UnderflowException implements AccessException {}
+class EmptyStateException implements StateException {}
 
 /**
  * Should be thrown when an index or key is not within the given access bounds
- * of a structure, such as a negative index on a list or
+ * of a structure, such as attempting to access beyond the length.
  */
-class IndexOutOfBoundsException extends OutOfBoundsException implements AccessException  {}
+class OffsetException extends RuntimeException implements AccessException  {}
 
 /**
  * Should be thrown when a key is not supported, eg. when an attempt is made to
  * associate a value with NULL in Map, causing ambiguity in `find`.
  */
-class InvalidKeyException extends RuntimeException implements AccessException {}
-
-/**
- * Should be thrown whenever a structure is in an unexpected state. This state
- * should not be resolvable without ambiguity, so an exception is thrown.
- */
-class InvalidStateException extends RuntimeException implements StateException {}
+class KeyException extends RuntimeException implements AccessException {}
 
 
 /******************************************************************************/
@@ -129,28 +114,27 @@ interface Hashable extends Immutable
  * indicating the position of an element from the beginning of the structure.
  *
  * We extend Countable because it should always be possible to determine bounds.
- *
- * @todo Naming - OrdinalAccess, LinearAccess, RandomAccess...
  */
 interface OffsetAccess extends Countable
 {
     /**
      * @return mixed The value at the
      *
-     * @throws OutOfBoundsException if the index is not within [0, size).
-     *
-     * @todo Potential for a better name, like "skip" or "atIndex" or "at"?
-     *       Because it clashes with ArrayAccess a little bit here.
+     * @throws OffsetException if the index is not within [0, size).
      */
-    function offset(int $index);
+    function offset(int $offset);
 
     /**
      * @return mixed The first value in $this structure.
+     *
+     * @throws EmptyStateException
      */
     function first();
 
     /**
      * @return mixed The last value in $this structure.
+     *
+     * @throws EmptyStateException
      */
     function last();
 }
@@ -177,11 +161,11 @@ interface Container extends Countable
 interface Sequence extends OffsetAccess
 {
     /**
-     * Returns the value at the given position.
+     * Returns the value at the given offset.
      *
-     * @throws OutOfBoundsException if the index is not within [0, size)
+     * @throws OffsetException if the index is not within [0, size)
      */
-    function get(int $index);
+    function get(int $offset);
 }
 
 /**
@@ -190,29 +174,27 @@ interface Sequence extends OffsetAccess
 interface MutableSequence extends Sequence
 {
     /**
-     * Sets the value at the given position.
+     * Sets the value at the given offset.
      *
-     * @throws OutOfBoundsException if the index is not within [0, size)
+     * @throws OffsetException if the index is not within [0, size)
      */
-    function set(int $index, $value);
+    function set(int $offset, $value);
 
     /**
-     * Removes the value at the given position, moving all successive
+     * Removes the value at the given offset, moving all successive
      * values one position towards the front.
      *
-     * @todo Naming - remove, pull?
-     *
-     * @throws OutOfBoundsException if the index is not within [0, size)
+     * @throws OffsetException if the index is not within [0, size)
      */
-    function unset(int $index);
+    function unset(int $offset);
 
     /**
      * Moves all values between the given index and the end of the sequence
      * towards the back, then inserts the given values into the gap.
      *
-     * @throws OutOfBoundsException if the index is out of range [0, size]
+     * @throws OffsetException if the index is out of range [0, size]
      */
-    function insert(int $index, ...$values);
+    function insert(int $offset, ...$values);
 }
 
 /**
@@ -226,8 +208,6 @@ interface Set
 {
     /**
      * @return bool TRUE if the value is in $this set, FALSE otherwise.
-     *
-     * @todo Naming - contains?
      */
     function has($value): bool;
 
@@ -280,7 +260,10 @@ interface MutableSet extends Set
     function add(...$values);
 
     /**
-     * @todo what happens when the value could not be found? Silent no-op? bool?
+     * Removes a given value from $this set, or does nothing if that value could
+     * not be found. The caller can use `has` to determine membership before
+     * removal. This method therefore promises only that the given value is not
+     * a member of the set on return.
      */
     function remove($value);
 }
@@ -294,7 +277,9 @@ interface SortedSet extends Set {}
  * A structure that associates one value with another and provides the ability
  * to query or adjust associations efficiently.
  *
- * @todo Should Map extend Set? What about the set operation methods then?
+ * @todo Should Map extend Set (not mutable)?
+ *       What about the set operation methods then?
+ *
  * @todo Should Map require some kind of merge, diff, and intersection support?
  */
 interface Map
@@ -342,20 +327,14 @@ interface MutableMap extends Map
     /**
      * Associates the $key with the $value, overriding any previous association.
      *
-     * @throws InvalidKeyException if the map implementation does not support
+     * @throws KeyException if the map implementation does not support
      *                             the given key, eg. NULL
-     *
-     * @todo Naming - set/put (set/unset symmetry, add/remove, put/pull?)
      */
     function set($key, $value);
 
     /**
      * Removes the given $key from the map, and does nothing if they key could
-     * not be found.
-     *
-     * @todo Should we return the removed value? (No, ambiguous and two-in-one)
-     *
-     * @todo Key not found: should we throw, do nothing, or not enforce either?
+     * not be found. This emulates `unset`
      */
     function unset($key);
 }
@@ -389,7 +368,7 @@ interface Stack
     /**
      * Removes and returns the value at the top of the stack.
      *
-     * @throws UnderflowException
+     * @throws EmptyStateException
      */
     function pop();
 }
@@ -406,7 +385,7 @@ interface Transferable
     function send(...$values);
 
     /**
-     * @throws UnderflowException
+     * @throws EmptyStateException
      */
     function poll();
 }
@@ -541,12 +520,16 @@ final class Deque implements
         /**
          * Returns the value at the front of the deque. This would be the next
          * value in a queue, or the last value in a stack.
+         *
+         * @throws EmptyStateException
          */
         public function front();
 
         /**
          * Returns the value at the back of the deque. This would be the next
          * value in a stack, or the last value in a queue.
+         *
+         * @throws EmptyStateException
          */
         public function back();
     }
@@ -739,7 +722,7 @@ final class Heap implements
         /**
          * Removes and returns the value at the top of the heap.
          *
-         * @throws EmptyContainerException
+         * @throws EmptyStateException
          */
         public function shift() {}
     }
