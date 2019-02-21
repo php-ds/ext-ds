@@ -11,7 +11,7 @@ $a[] = "c";
  */
 printf("---\n");
 foreach ($a as $k => $v) {
-    printf("key=%s, val=%s\n", $k, $v);
+    printf("iteration of A: key=%s, val=%s\n", $k, $v);
 }
 
 /**
@@ -20,16 +20,12 @@ foreach ($a as $k => $v) {
  */
 printf("---\n");
 foreach ($a as $k => $v) {
-    $a[] = $k;
-    printf("key=%s, val=%s\n", $k, $v);
+    printf("iteration of A: key=%s, val=%s\n", $k, $v);
+    $a[] = uniqid();
 }
 
 /**
- * Objects should still preserve object semantics (not full copy-on-write).
+ *
  */
-$b = $a;
-$b[] = "x";
-
 printf("---\n");
 var_dump($a);
-var_dump($b);

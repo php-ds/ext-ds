@@ -4,24 +4,69 @@
 #include <php.h>
 
 /**
- * zval* -> ds_buffer_t*
+ * Buffer Data Layout
+ * =====================
+ *
+ * ds_buffer_t is a zend_object. We use the existing struct hack (which is used
+ * for object properties) to store the buffer data. We allocate the buffer data
+ * directly after the zend_object, preserving the one zval that is allocated as
+ * part of the struct. This zval can be accessed as DS_BUFFER_INFO.
+ *
+ * We use DS_BUFFER_INFO to store 2 values:
+ *   - The allocated length of the buffer.        => DS_BUFFER_SIZE
+ *   - The number of used slots from the front.   => DS_BUFFER_USED
+ *
+ * The buffer data can be accessed using DS_BUFFER_DATA.
  */
-#define DS_ZVAL_GET_BUFFER(z) ((ds_buffer_t *) (Z_OBJ_P(z)))
 
 /**
- * Allocation length for the buffer struct and data.
+ * zval* -> ds_buffer_t*
+ */
+#define DS_ZVAL_GET_BUFFER(z) Z_OBJ_P(z)
+
+/**
+ * Capacity and used slots information.
+ */
+#define DS_BUFFER_INFO(b) ((b)->properties_table)
+
+/**
+ * zval* at the start of a buffer's contiguous zval array.
+ */
+#define DS_BUFFER_DATA(b) ((b)->properties_table + 1)
+
+/**
+ * The number of zval's that we have allocated memory for in this buffer.
+ */
+#define DS_BUFFER_SIZE(b) Z_LVAL_P(DS_BUFFER_INFO(b))
+
+/**
+ * The number of slots used (from the front of the buffer).
+ */
+#define DS_BUFFER_USED(b) Z_NEXT_P(DS_BUFFER_INFO(b))
+
+/**
+ * Allocation length for the object including data for a given capacity.
  */
 #define DS_BUFFER_ALLOC_SIZE(capacity) \
-    (sizeof(ds_buffer_t) + sizeof(zval) * (capacity - 1))
+    (sizeof(zend_object) + sizeof(zval) * capacity)
+
+/**
+ * Perform a task for each value in the given buffer.
+ */
+#define DS_BUFFER_FOREACH(buffer, var, task) do { \
+    ds_buffer_t *_buf = buffer; \
+    zval        *_pos = DS_BUFFER_DATA(_buf); \
+    zval        *_end = DS_BUFFER_USED(_buf) + _pos; \
+    \
+    for (; _pos < _end; ++_pos) { \
+        var = _pos; task; \
+    } \
+} while (0)
 
 /**
  * Buffer object.
  */
-typedef struct ds_buffer {
-    zend_object std;
-    zend_long len;
-    zval data[1];
-} ds_buffer_t;
+typedef zend_object ds_buffer_t;
 
 /**
  * Buffer iterator.

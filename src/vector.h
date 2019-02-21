@@ -6,26 +6,42 @@
 /**
  * zval* -> ds_vector_t*
  */
-#define DS_ZVAL_GET_VECTOR(z) ((ds_vector_t *) (Z_OBJ_P(z)))
+#define DS_VECTOR_FROM_ZVAL(z) ((ds_vector_t *) Z_OBJ_P(z))
+
+/**
+ * zval* at the start of a vector's contiguous buffer.
+ */
+#define DS_VECTOR_BUFFER_ZVAL(v) ((v)->properties_table)
 
 /**
  * ds_vector_t* -> ds_buffer_t*
  */
-#define DS_VECTOR_BUFFER(v) ((ds_buffer_t *) (Z_OBJ(v->data)))
+#define DS_VECTOR_BUFFER(v) ((ds_buffer_t *) Z_OBJ_P(DS_VECTOR_BUFFER_ZVAL(v)))
 
 /**
- * Replaces the existing vector buffer without freeing existing data.
+ * The number of items in a vector.
  */
-#define DS_VECTOR_SET_BUFFER(v, b) ZVAL_OBJ(&v->data, (zend_object *) b)
+#define DS_VECTOR_SIZE(v) DS_BUFFER_USED(DS_VECTOR_BUFFER(v))
+
+/**
+ * Replaces the existing vector buffer.
+ */
+#define DS_VECTOR_SET_BUFFER(v, b) ZVAL_OBJ(DS_VECTOR_BUFFER_ZVAL(v), b)
+
+/**
+ * Minimum buffer capacity of an allocated vector.
+ */
+#define DS_VECTOR_MIN_ALLOC 4
 
 /**
  * Vector object.
  */
-typedef struct ds_vector {
-    zend_object std;
-    zval data;       // Copy-on-write buffer
-    zend_long size;  // Number of items in the vector
-} ds_vector_t;
+typedef zend_object ds_vector_t;
+
+/**
+ * Creates a new, empty ds_vector_t.
+ */
+ds_vector_t *ds_vector();
 
 /**
  * Sets the value of a given vector at a given offset.
