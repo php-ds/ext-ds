@@ -12,16 +12,16 @@ static zend_object_handlers ds_vector_handlers;
  */
 static ds_vector_t *ds_vector_with_capacity(zend_long capacity)
 {
-    ds_vector_t *vector = ecalloc(1, sizeof(ds_vector_t));
+    ds_vector_t *obj = ecalloc(1, sizeof(ds_vector_t));
 
-    vector->handlers = &ds_vector_handlers;
+    obj->handlers = &ds_vector_handlers;
 
-    zend_object_std_init(vector, ds_vector_ce);
+    zend_object_std_init(obj, ds_vector_ce);
 
-    DS_VECTOR_SET_BUFFER(vector, ds_buffer(capacity));
-    DS_VECTOR_SIZE(vector) = 0;
+    DS_VECTOR_SET_BUFFER(obj, ds_buffer(capacity));
+    DS_VECTOR_SIZE(obj) = 0;
 
-    return vector;
+    return obj;
 }
 
 /**
@@ -53,76 +53,76 @@ static void ds_vector_free_object(zend_object *obj)
  *
  * Determines if the given vector's buffer is shared, creating a copy if it is.
  */
-static void ds_vector_separate(ds_vector_t *vector)
+static void ds_vector_separate(ds_vector_t *obj)
 {
-    ds_buffer_t *buffer = DS_VECTOR_BUFFER(vector);
+    ds_buffer_t *buffer = DS_VECTOR_BUFFER(obj);
 
     if (GC_REFCOUNT(buffer) == 1) {
         return;
     }
 
     GC_DELREF(buffer);
-    DS_VECTOR_SET_BUFFER(vector, ds_buffer_create_copy(buffer));
+    DS_VECTOR_SET_BUFFER(obj, ds_buffer_create_copy(buffer));
 }
 
 /**
  * Returns the value at a given offset.
  */
-zval *ds_vector_get(ds_vector_t *vector, zend_long offset)
+zval *ds_vector_get(ds_vector_t *obj, zend_long offset)
 {
-    return ds_buffer_get(DS_VECTOR_BUFFER(vector), offset);
+    return ds_buffer_get(DS_VECTOR_BUFFER(obj), offset);
 }
 
 /**
  * Sets the value at the given offset to a given value.
  */
-void ds_vector_set(ds_vector_t *vector, zend_long offset, zval *value)
+void ds_vector_set(ds_vector_t *obj, zend_long offset, zval *value)
 {
-    ds_vector_separate(vector);
-    ds_buffer_set(DS_VECTOR_BUFFER(vector), offset, value);
+    ds_vector_separate(obj);
+    ds_buffer_set(DS_VECTOR_BUFFER(obj), offset, value);
 }
 
 /**
  * Increase capacity of the given vector's buffer.
  */
-static void ds_vector_grow(ds_vector_t *vector)
+static void ds_vector_grow(ds_vector_t *obj)
 {
     /* Capacity is double existing size. */
-    zend_long capacity = MAX(DS_VECTOR_MIN_ALLOC, DS_VECTOR_SIZE(vector) << 1);
+    zend_long capacity = MAX(DS_VECTOR_MIN_ALLOC, DS_VECTOR_SIZE(obj) << 1);
 
     /* Re-allocate the existing buffer. */
-    ds_buffer_t *buffer = ds_buffer_realloc(DS_VECTOR_BUFFER(vector), capacity);
+    ds_buffer_t *buffer = ds_buffer_realloc(DS_VECTOR_BUFFER(obj), capacity);
 
     /* Replace the vector's buffer. */
-    DS_VECTOR_SET_BUFFER(vector, buffer);
+    DS_VECTOR_SET_BUFFER(obj, buffer);
 }
 
 /**
  * Append a value to the given vector.
  */
-void ds_vector_push(ds_vector_t *vector, zval *value)
+void ds_vector_push(ds_vector_t *obj, zval *value)
 {
-    ds_vector_separate(vector);
+    ds_vector_separate(obj);
 
     /* Check if we need to grow.. */
-    if (DS_VECTOR_SIZE(vector) == DS_BUFFER_SIZE(DS_VECTOR_BUFFER(vector))) {
-        ds_vector_grow(vector);
+    if (DS_VECTOR_SIZE(obj) == DS_BUFFER_SIZE(DS_VECTOR_BUFFER(obj))) {
+        ds_vector_grow(obj);
     }
 
-    ds_buffer_set(DS_VECTOR_BUFFER(vector), DS_VECTOR_SIZE(vector)++, value);
+    ds_buffer_set(DS_VECTOR_BUFFER(obj), DS_VECTOR_SIZE(obj)++, value);
 }
 
 /**
  * Debug info handler (var_dump).
  */
-static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)
+static HashTable *ds_vector_get_debug_info(zval *object, int *is_temp)
 {
     zval arr;
-    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
+    ds_vector_t *obj = Z_DS_VECTOR_P(object);
+
+    ds_buffer_to_array(&arr, DS_VECTOR_BUFFER(obj), DS_VECTOR_SIZE(obj));
 
     *is_temp = 1;
-
-    ds_buffer_to_array(&arr, DS_VECTOR_BUFFER(vector), DS_VECTOR_SIZE(vector));
 
     return Z_ARRVAL(arr);
 }
@@ -191,7 +191,6 @@ void ds_register_vector()
     INIT_CLASS_ENTRY(ce, "Vector", NULL);
     ds_vector_ce = zend_register_internal_class(&ce);
 
-    /* */
     ds_vector_ce->ce_flags     |= ZEND_ACC_FINAL;
     ds_vector_ce->create_object = ds_vector_create_object;
     ds_vector_ce->get_iterator  = ds_vector_get_iterator;

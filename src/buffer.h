@@ -37,12 +37,22 @@
 /**
  * The number of zval's that we have allocated memory for in this buffer.
  */
-#define DS_BUFFER_SIZE(b) Z_LVAL_P(DS_BUFFER_INFO(b))
+#define DS_BUFFER_SIZE(b) Z_NEXT_P(DS_BUFFER_INFO(b))
 
 /**
  * The number of slots used (from the front of the buffer).
  */
-#define DS_BUFFER_USED(b) Z_NEXT_P(DS_BUFFER_INFO(b))
+#define DS_BUFFER_USED(b) Z_LVAL_P(DS_BUFFER_INFO(b))
+
+/**
+ * Maximum capacity of a buffer.
+ *
+ * TODO: We should calculate this in such a way that we can check if a capacity
+ *       exceeds the maximum without having to check for an overflow. We do not
+ *       yet know the growth factors and minimum capacities of all structures
+ *       that might use a buffer, so we should come back to this later on.
+ */
+#define DS_BUFFER_MAX_CAPACITY ((UINT32_MAX >> 1) - 1)
 
 /**
  * Allocation length for the object including data for a given capacity.
@@ -86,12 +96,12 @@ ds_buffer_t *ds_buffer(zend_long capacity);
 /**
  * Returns the value at a given offset.
  */
-zval *ds_buffer_get(ds_buffer_t *buffer, zend_long offset);
+zval *ds_buffer_get(ds_buffer_t *obj, zend_long offset);
 
 /**
  * Sets the value at a given offset.
  */
-void ds_buffer_set(ds_buffer_t *buffer, zend_long offset, zval *value);
+void ds_buffer_set(ds_buffer_t *obj, zend_long offset, zval *value);
 
 /**
  * Create a copy of the given buffer.
@@ -101,7 +111,7 @@ ds_buffer_t *ds_buffer_create_copy(ds_buffer_t *src);
 /**
  * Reallocates the buffer to a given capacity.
  */
-ds_buffer_t *ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity);
+ds_buffer_t *ds_buffer_realloc(ds_buffer_t *obj, zend_long capacity);
 
 /**
  * Sets the array representation of a given buffer.
@@ -111,7 +121,7 @@ void ds_buffer_to_array(zval *arr, ds_buffer_t *obj, zend_long len);
 /**
  * Creates a new buffer iterator.
  */
-zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buf, zend_long start, zend_long len);
+zend_object_iterator *ds_buffer_iterator(ds_buffer_t *obj, zend_long offset, zend_long len);
 
 /**
  * Registers buffer class entry.
