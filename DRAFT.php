@@ -18,8 +18,12 @@ use Countable;
 use RuntimeException;
 use Traversable;
 
+/******************************************************************************/
+/*                           ORDERING & EQUALITY                              */
+/******************************************************************************/
+
 /**
- * @todo How do we handle comparison? Proposal: == for objects, === otherwise.
+ * @todo Proposal: == for objects, === otherwise.
  */
 
 /******************************************************************************/
@@ -71,17 +75,6 @@ interface Immutable {}
 interface Clearable
 {
     function clear();
-}
-
-/**
- * Indicates that the order of the elements of a structure can be reversed.
- */
-interface Reversable
-{
-    /**
-     * @return static A reversed copy or this structure reversed in-place.
-     */
-    function reverse();
 }
 
 /**
@@ -346,12 +339,12 @@ interface MutableMap extends Map
 interface Transferable
 {
     /**
-     * Offers one or more values to the transfer.
+     * Offers one or more values to this transferable.
      */
     function send(...$values);
 
     /**
-     * Removes and returns the next value.
+     * Removes and returns the next value produced by this transferable.
      *
      * @throws EmptyStateException
      */
@@ -440,9 +433,7 @@ final class Vector implements
     Container,
     Clearable,
     Sortable,
-    Reversable,
-    MutableSequence,
-    Stack
+    MutableSequence
     {
         /* ArrayAccess */
         // offsetGet
@@ -459,9 +450,6 @@ final class Vector implements
 
         /* Sortable */
         // sort
-
-        /* Reversable */
-        // reverse
 
         /* OffsetAccess | Sequence | MutableSequence */
         // offset
@@ -548,7 +536,6 @@ final class HashMap implements
     Container,
     Clearable,
     Sortable,
-    Reversable,
     OffsetAccess,
     MutableMap
     {
@@ -567,9 +554,6 @@ final class HashMap implements
 
         /* Sortable */
         // sort
-
-        /* Reversable */
-        // reverse
 
         /* OffsetAccess */
         // offset
@@ -596,7 +580,6 @@ final class HashSet implements
     Container,
     Clearable,
     Sortable,
-    Reversable,
     Transferable,
     OffsetAccess,
     MutableSet
@@ -616,9 +599,6 @@ final class HashSet implements
 
         /* Sortable */
         // sort
-
-        /* Reversable */
-        // reverse
 
         /* Transferable */
         // send (add)
