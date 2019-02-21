@@ -6,7 +6,7 @@
 /**
  * zval* -> ds_vector_t*
  */
-#define DS_VECTOR_FROM_ZVAL(z) ((ds_vector_t *) Z_OBJ_P(z))
+#define Z_DS_VECTOR_P(z) Z_OBJ_P(z)
 
 /**
  * zval* at the start of a vector's contiguous buffer.
@@ -16,7 +16,7 @@
 /**
  * ds_vector_t* -> ds_buffer_t*
  */
-#define DS_VECTOR_BUFFER(v) ((ds_buffer_t *) Z_OBJ_P(DS_VECTOR_BUFFER_ZVAL(v)))
+#define DS_VECTOR_BUFFER(v) Z_OBJ_P(DS_VECTOR_BUFFER_ZVAL(v))
 
 /**
  * The number of items in a vector.

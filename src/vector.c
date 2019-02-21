@@ -118,7 +118,7 @@ void ds_vector_push(ds_vector_t *vector, zval *value)
 static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)
 {
     zval arr;
-    ds_vector_t *vector = DS_VECTOR_FROM_ZVAL(obj);
+    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
 
     *is_temp = 1;
 
@@ -132,7 +132,7 @@ static HashTable *ds_vector_get_debug_info(zval *obj, int *is_temp)
  */
 static zval *ds_vector_read_dimension(zval *obj, zval *offset, int type, zval *rv)
 {
-    return ds_vector_get(DS_VECTOR_FROM_ZVAL(obj), Z_LVAL_P(offset));
+    return ds_vector_get(Z_DS_VECTOR_P(obj), Z_LVAL_P(offset));
 }
 
 /**
@@ -140,7 +140,7 @@ static zval *ds_vector_read_dimension(zval *obj, zval *offset, int type, zval *r
  */
 static void ds_vector_write_dimension(zval *obj, zval *offset, zval *value)
 {
-    ds_vector_t *vector = DS_VECTOR_FROM_ZVAL(obj);
+    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
 
     /* $v[] = ... */
     if (offset == NULL) {
@@ -155,7 +155,7 @@ static void ds_vector_write_dimension(zval *obj, zval *offset, zval *value)
  */
 static HashTable *ds_vector_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
-    *gc_data  = DS_VECTOR_BUFFER_ZVAL(DS_VECTOR_FROM_ZVAL(obj));
+    *gc_data  = DS_VECTOR_BUFFER_ZVAL(Z_DS_VECTOR_P(obj));
     *gc_count = 1;
 
     return NULL;
@@ -166,7 +166,7 @@ static HashTable *ds_vector_get_gc(zval *obj, zval **gc_data, int *gc_count)
  */
 static int ds_vector_count_elements(zval *obj, zend_long *count)
 {
-    *count = DS_VECTOR_SIZE(DS_VECTOR_FROM_ZVAL(obj));
+    *count = DS_VECTOR_SIZE(Z_DS_VECTOR_P(obj));
 
     return SUCCESS;
 }
@@ -176,7 +176,7 @@ static int ds_vector_count_elements(zval *obj, zend_long *count)
  */
 zend_object_iterator *ds_vector_get_iterator(zend_class_entry *ce, zval *obj, int by_ref)
 {
-    ds_vector_t *vector = DS_VECTOR_FROM_ZVAL(obj);
+    ds_vector_t *vector = Z_DS_VECTOR_P(obj);
     ds_buffer_t *buffer = DS_VECTOR_BUFFER(vector);
 
     return ds_buffer_iterator(buffer, 0, DS_VECTOR_SIZE(vector));

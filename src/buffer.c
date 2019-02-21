@@ -25,7 +25,7 @@ static zval *ds_buffer_iterator_get_current_data(zend_object_iterator *iterator)
 {
     ds_buffer_iterator_t *iter = (ds_buffer_iterator_t *) iterator;
 
-    return ds_buffer_get(DS_ZVAL_GET_BUFFER(&iterator->data), iter->pos + iter->offset);
+    return ds_buffer_get(Z_DS_BUFFER_P(&iterator->data), iter->pos + iter->offset);
 }
 
 static void ds_buffer_iterator_get_current_key(zend_object_iterator *iterator, zval *key)
@@ -86,7 +86,7 @@ zend_object_iterator *ds_buffer_iterator(ds_buffer_t *buffer, zend_long offset, 
 
 ds_buffer_t *ds_buffer(zend_long capacity)
 {
-    ds_buffer_t *buffer = ecalloc(1, DS_BUFFER_ALLOC_SIZE(capacity));
+    ds_buffer_t *buffer = ecalloc(1, DS_BUFFER_GET_ALLOC_SIZE(capacity));
 
     buffer->handlers = &ds_buffer_handlers;
 
@@ -169,7 +169,7 @@ ds_buffer_t *ds_buffer_realloc(ds_buffer_t *buffer, zend_long capacity)
     GC_REMOVE_FROM_BUFFER(buffer);
 
     /* Re-allocate the entire object, including the existing buffer */
-    buffer = erealloc(buffer, DS_BUFFER_ALLOC_SIZE(capacity));
+    buffer = erealloc(buffer, DS_BUFFER_GET_ALLOC_SIZE(capacity));
 
     /* Update the size of the buffer. */
     DS_BUFFER_SIZE(buffer) = capacity;
@@ -205,7 +205,7 @@ ds_buffer_t *ds_buffer_create_copy(ds_buffer_t *buffer)
  */
 static HashTable *ds_buffer_get_gc(zval *obj, zval **gc_data, int *gc_count)
 {
-    ds_buffer_t *buffer = DS_ZVAL_GET_BUFFER(obj);
+    ds_buffer_t *buffer = Z_DS_BUFFER_P(obj);
 
     *gc_data  = DS_BUFFER_DATA(buffer);
     *gc_count = DS_BUFFER_SIZE(buffer);

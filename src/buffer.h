@@ -22,7 +22,7 @@
 /**
  * zval* -> ds_buffer_t*
  */
-#define DS_ZVAL_GET_BUFFER(z) Z_OBJ_P(z)
+#define Z_DS_BUFFER_P(z) Z_OBJ_P(z)
 
 /**
  * Capacity and used slots information.
@@ -47,7 +47,7 @@
 /**
  * Allocation length for the object including data for a given capacity.
  */
-#define DS_BUFFER_ALLOC_SIZE(capacity) \
+#define DS_BUFFER_GET_ALLOC_SIZE(capacity) \
     (sizeof(zend_object) + sizeof(zval) * capacity)
 
 /**
