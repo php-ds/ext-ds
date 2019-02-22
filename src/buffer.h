@@ -66,7 +66,7 @@
 #define DS_BUFFER_FOREACH(buffer, var, task) do { \
     ds_buffer_t *_buf = buffer; \
     zval        *_pos = DS_BUFFER_DATA(_buf); \
-    zval        *_end = DS_BUFFER_USED(_buf) + _pos; \
+    zval        *_end = DS_BUFFER_DATA(_buf) + DS_BUFFER_USED(_buf); \
     \
     for (; _pos < _end; ++_pos) { \
         var = _pos; task; \
@@ -83,9 +83,9 @@ typedef zend_object ds_buffer_t;
  */
 typedef struct ds_buffer_iterator {
     zend_object_iterator intern;
-    zend_long offset;
-    zend_long len;
-    zend_long pos;
+    zend_long offset;               // Buffer offset
+    zend_long len;                  // Length of the traversal
+    zend_long pos;                  // Position of the current iteration
 } ds_buffer_iterator_t;
 
 /**
