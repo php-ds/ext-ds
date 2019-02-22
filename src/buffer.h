@@ -45,12 +45,22 @@
 #define DS_BUFFER_USED(b) Z_LVAL_P(DS_BUFFER_INFO(b))
 
 /**
+ * Determines whether a buffer has used all of its allocated slots.
+ */
+#define DS_BUFFER_IS_FULL(b) (DS_BUFFER_USED(b) == DS_BUFFER_SIZE(b))
+
+/**
  * Maximum capacity of a buffer.
  *
  * TODO: We should calculate this in such a way that we can check if a capacity
  *       exceeds the maximum without having to check for an overflow. We do not
  *       yet know the growth factors and minimum capacities of all structures
  *       that might use a buffer, so we should come back to this later on.
+ *
+ *       Alternatively, would it be enough to check whether the target capacity
+ *       is less than the current capacity? With a maximum growth factor of 2,
+ *       uint32_t would overflow and continue to not greater than the current
+ *       capacity. There could therefore be no need for a hard maximum capacity?
  */
 #define DS_BUFFER_MAX_CAPACITY ((UINT32_MAX >> 1) - 1)
 
