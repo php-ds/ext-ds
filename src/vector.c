@@ -62,11 +62,11 @@ static void ds_vector_grow_if_full(ds_vector_t *obj)
 {
     const ds_buffer_t *buffer = DS_VECTOR_BUFFER(obj);
 
-    if (DS_BUFFER_IS_FULL(buffer)) {
-        ds_buffer_t *current = DS_VECTOR_BUFFER(obj);
-        ds_buffer_t *realloc = ds_buffer_realloc(current, DS_BUFFER_SIZE(current) << 1);
+    const zend_long size = DS_BUFFER_SIZE(buffer);
+    const zend_long used = DS_BUFFER_SIZE(buffer);
 
-        DS_VECTOR_SET_BUFFER(obj, realloc);
+    if (size == used) {
+        DS_VECTOR_SET_BUFFER(obj, ds_buffer_realloc(buffer, size << 1));
     }
 }
 
