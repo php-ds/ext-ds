@@ -178,11 +178,6 @@ interface MutableSequence extends Sequence
 }
 
 /**
- * Indicates that a structure is a sequence that is always sorted.
- */
-interface SortedSequence extends Sequence {}
-
-/**
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
  *
@@ -457,19 +452,6 @@ final class Deque implements
          */
         function shift();
     }
-
-/**
- * A set that allows duplicate values
- */
-final class MultiSet implements
-    ArrayAccess,
-    Traversable,
-    Container,      /* Countable */
-    Clearable,
-    Transferable,
-    SortedSequence, /* Sequence */
-    MutableSet      /* Set */
-    {}
 
 /**
  * The Set equivalent of HashMap, which might not use a HashMap internally, but
