@@ -37,7 +37,7 @@
 /**
  * The number of zval's that we have allocated memory for in this buffer.
  */
-#define DS_BUFFER_SIZE(b) ((zend_long) Z_NEXT_P(DS_BUFFER_INFO(b)))
+#define DS_BUFFER_SIZE(b) Z_NEXT_P(DS_BUFFER_INFO(b))
 
 /**
  * The number of slots used (from the front of the buffer).
