@@ -103,12 +103,28 @@ interface Hashable extends Immutable
 }
 
 /**
+ * Indicates that a structure contains elements and is aware of the number of
+ * items contained at any point in time. How a container must determine the
+ * count is implementation-specific.
+ *
+ * This interface does not imply that a structure is traversable.
+ */
+interface Container extends Countable
+{
+    /**
+     * @return bool whether the container is empty, which can be TRUE even when
+     *              the number of elements is non-zero.
+     */
+    function isEmpty(): bool;
+}
+
+/**
  * Indicates that a structure can be accessed using a zero-based integer index
  * indicating the position of an element from the beginning of the structure.
  *
  * We extend Countable because it should always be possible to determine bounds.
  */
-interface OffsetAccess extends Countable
+interface Sequence extends Countable
 {
     /**
      * @return mixed The value at the
@@ -130,35 +146,6 @@ interface OffsetAccess extends Countable
      * @throws EmptyStateException
      */
     function last();
-}
-
-/**
- * Indicates that a structure contains elements and is aware of the number of
- * items contained at any point in time. How a container must determine the
- * count is implementation-specific.
- *
- * This interface does not imply that a structure is traversable.
- */
-interface Container extends Countable
-{
-    /**
-     * @return bool whether the container is empty, which can be TRUE even when
-     *              the number of elements is non-zero.
-     */
-    function isEmpty(): bool;
-}
-
-/**
- * Indicates that a structure contains a series of contiguous elements.
- */
-interface Sequence extends OffsetAccess
-{
-    /**
-     * Returns the value at the given offset.
-     *
-     * @throws OffsetException if the index is not within [0, size)
-     */
-    function get(int $offset);
 }
 
 /**
@@ -189,6 +176,11 @@ interface MutableSequence extends Sequence
      */
     function insert(int $offset, ...$values);
 }
+
+/**
+ * Indicates that a structure is a sequence that is always sorted.
+ */
+interface SortedSequence extends Sequence {}
 
 /**
  * Indicates that a structure is designed to quickly determine whether a given
@@ -333,6 +325,11 @@ interface MutableMap extends Map
 }
 
 /**
+ * Indicates that a structure is a map that is always sorted.
+ */
+interface SortedMap extends Map {}
+
+/**
  * Indicates that a structure can receive and produce values efficiently in a
  * semantically defined order. Both operations should be O(1).
  */
@@ -359,13 +356,9 @@ interface Transferable
  * A transfer adapter for stacks.
  */
 final class Stack implements
-    Container,
+    Container, /* Countable */
     Transferable
     {
-        /* Transferable */
-        // send (push)
-        // poll (pop)
-
         /**
          * Adds a value to the top of the stack.
          */
@@ -383,13 +376,9 @@ final class Stack implements
  * A transfer adapter for queues.
  */
 final class Queue implements
-    Container,
+    Container, /* Countable */
     Transferable
     {
-        /* Transferable */
-        // send (push)
-        // poll (shift)
-
         /**
          * Adds a value to the queue.
          */
@@ -406,23 +395,10 @@ final class Queue implements
  */
 final class Tuple implements
     Traversable,
-    Container,
-    Sequence,
-    Hashable
-    {
-        /* Countable | Container */
-        // count
-        // isEmpty
-
-        /* OffsetAccess | Sequence */
-        // offset
-        // first
-        // last
-        // get
-
-        /* Hashable | Immutable */
-        // getHashSource
-    }
+    Container, /* Countable */
+    Sequence,  /* Countable */
+    Hashable   /* Immutable */
+    {}
 
 /**
  * List structure, dynamic size, contiguous, no ops at the front.
@@ -430,37 +406,11 @@ final class Tuple implements
 final class Vector implements
     ArrayAccess,
     Traversable,
-    Container,
+    Container,      /* Countable */
     Clearable,
     Sortable,
-    MutableSequence
+    MutableSequence /* Sequence, Countable */
     {
-        /* ArrayAccess */
-        // offsetGet
-        // offsetSet
-        // offsetUnset
-        // offsetExists
-
-        /* Countable | Container */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Sortable */
-        // sort
-
-        /* OffsetAccess | Sequence | MutableSequence */
-        // offset
-        // first
-        // last
-        //
-        // get
-        // set
-        // unset
-        // insert
-
         /**
          * Adds one or more values to the end of the vector.
          */
@@ -478,28 +428,11 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
-    Container,
+    Container,      /* Countable */
     Clearable,
     Transferable,
-    Sequence
+    SortedSequence  /* Sequence, Countable */
     {
-        /* Countable | Container */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Transferable */
-        // send (push)
-        // poll (shift)
-
-        /* OffsetAccess | Sequence */
-        // offset
-        // first
-        // last
-        // get
-
         /**
          * Adds one or more values to the end of the deque.
          */
@@ -526,49 +459,17 @@ final class Deque implements
     }
 
 /**
- * The standard hashtable, implemented as Map in ext-ds currently. It is based
- * on the PHP array but is not identical. We can implement OffsetAccess because
- * insertion order is preserved.
+ * A set that allows duplicate values
  */
-final class HashMap implements
+final class MultiSet implements
     ArrayAccess,
     Traversable,
-    Container,
+    Container,      /* Countable */
     Clearable,
-    Sortable,
-    OffsetAccess,
-    MutableMap
-    {
-        /* ArrayAccess */
-        // offsetGet
-        // offsetSet
-        // offsetUnset
-        // offsetExists
-
-        /* Countable | Container */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Sortable */
-        // sort
-
-        /* OffsetAccess */
-        // offset
-        // first
-        // last
-
-        /* Map | MutableMap */
-        // get
-        // has
-        // keys
-        // values
-        //
-        // set
-        // unset
-    }
+    Transferable,
+    SortedSequence, /* Sequence */
+    MutableSet      /* Set */
+    {}
 
 /**
  * The Set equivalent of HashMap, which might not use a HashMap internally, but
@@ -577,48 +478,13 @@ final class HashMap implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
-    Container,
+    Container,  /* Countable */
     Clearable,
     Sortable,
     Transferable,
-    OffsetAccess,
-    MutableSet
-    {
-        /* ArrayAccess */
-        // offsetGet
-        // offsetSet
-        // offsetUnset
-        // offsetExists
-
-        /* Container | Countable */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Sortable */
-        // sort
-
-        /* Transferable */
-        // send (add)
-        // poll (remove[0])
-
-        /* OffsetAccess */
-        // offset
-        // first
-        // last
-
-        /* Set | MutableSet */
-        // has
-        // or
-        // xor
-        // not
-        // and
-        //
-        // add
-        // remove
-    }
+    Sequence,   /* Countable */
+    MutableSet  /* Set */
+    {}
 
 /**
  * A structure that is always sorted and does not allow duplicate elements.
@@ -627,76 +493,57 @@ final class HashSet implements
  *
  * See: https://github.com/php-ds/ext-ds/issues/121
  */
-final class BinarySearchTree implements
+final class TreeSet implements
     Traversable,
-    Container,
+    Container,  /* Countable */
     Clearable,
-    MutableSet,
-    SortedSet
+    MutableSet, /* Set */
+    SortedSet   /* Set */
     {
-        /* Container | Countable */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Set | MutableSet */
-        // has
-        // or
-        // xor
-        // not
-        // and
-        //
-        // add
-        // remove
-
         /**
          * Creates a new bst using values from $iter.
          */
         public function __construct(callable $comparator = null) {}
-
-        /**
-         * Root, Left, Right
-         */
-        public function preorder(): iterable {}
-
-        /**
-         * Left, Root, Right
-         */
-        public function inorder(): iterable {}
-
-        /**
-         * Left, Right, Root
-         */
-        public function postorder(): iterable {}
-
-        /**
-         * Right, Root, Left
-         */
-        public function outorder(): iterable {}
     }
+
+/**
+ * This structure is based on the same internal structure of the PHP array,
+ * but is not identical. We can use hashable objects as keys, and insertion
+ * order is still preserved.
+ */
+final class HashMap implements
+    ArrayAccess,
+    Traversable,
+    Container,  /* Countable */
+    Clearable,
+    Sortable,
+    Sequence,   /* Countable */
+    MutableMap  /* Map */
+    {}
+
+/**
+ *
+ */
+final class TreeMap implements
+    ArrayAccess,
+    Traversable,
+    Container,  /* Countable */
+    Clearable,
+    Sortable,
+    Sequence,   /* Countable */
+    MutableMap, /* Map */
+    SortedMap   /* Map */
+    {}
 
 /**
  * Stable heap with an optional comparator, defaulting to minimum. We could
  * potentially remove the nullable which clears up the min/max ambiguity.
  */
 final class Heap implements
-    Container,
+    Container, /* Countable */
     Clearable,
     Transferable
     {
-        /* Container | Countable */
-        // count
-        // isEmpty
-
-        /* Clearable */
-        // clear
-
-        /* Transferable */
-        // send (push)
-        // poll (shift)
-
         /**
          * Creates a new heap using an optional comparator.
          */
