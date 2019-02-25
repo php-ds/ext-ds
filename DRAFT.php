@@ -356,7 +356,7 @@ interface Transferable
 /**
  *
  */
-final class Buffer implements
+final class Allocation implements
     ArrayAccess,
     Clearable,
     Sortable
@@ -580,10 +580,6 @@ final class MultiSet implements
         /**
          * Returns an iterator of the values with the highest frequencies, where
          * the key is the element and the value is the frequency.
-         *
-         * This uses a heap internally.
-         *   - Building the heap is O(n)
-         *   - Every iteration is O(log n)
          */
         public function rank(): iterable {}
 
