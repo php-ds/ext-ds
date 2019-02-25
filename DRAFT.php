@@ -408,7 +408,7 @@ final class Buffer implements
         public function realloc(int $capacity) {}
 
         /**
-         * Accesses and casts the value at the given offset to the value type
+         * Returns the value at the given offset as a standard value of the type
          * that this buffer stores. Type validation is done on write. If nothing
          * has been stored at the given offset, this method will return an
          * appropriate "null" value for the type (see notes on constants).
