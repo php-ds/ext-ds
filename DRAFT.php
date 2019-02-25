@@ -361,12 +361,12 @@ final class Buffer implements
     Clearable,
     Sortable
     {
-        public const TYPE_BOOL      = 0; // bitset
-        public const TYPE_INTEGER   = 1;
-        public const TYPE_FLOAT     = 2;
-        public const TYPE_STRING    = 3;
-        public const TYPE_ARRAY     = 4;
-        public const TYPE_OBJECT    = 5;
+        public const TYPE_BOOL      = 0; // undefined => false
+        public const TYPE_INTEGER   = 1; // undefined => 0
+        public const TYPE_FLOAT     = 2; // undefined => 0.0
+        public const TYPE_STRING    = 3; // undefined => NULL
+        public const TYPE_ARRAY     = 4; // undefined => NULL
+        public const TYPE_OBJECT    = 5; // undefined => NULL
 
         /**
          * Allow buffers to be truncated to 0.
@@ -378,8 +378,8 @@ final class Buffer implements
          * only support up to max int values. This is absolutely massive though
          * so should be incredibly rare to approach.
          *
-         * @todo Should we consider when USE_ZEND_ALLOC might be false? Is this
-         *       a potential security or buffer overflow issue? I'm not sure...
+         * @todo Should we consider when USE_ZEND_ALLOC might be 0? Is this a
+         *       potential security or buffer overflow issue? I'm not sure...
          */
         public const MAX_CAPACITY = PHP_INT_MAX;
 
@@ -410,7 +410,8 @@ final class Buffer implements
         /**
          * Accesses and casts the value at the given offset to the value type
          * that this buffer stores. Type validation is done on write. If nothing
-         * has been stored at the given offset, NULL will be returned.
+         * has been stored at the given offset, this method will return an
+         * appropriate "null" value for the type (see notes on constants).
          *
          * @throws OffsetException if the offset is not within [0, capacity)
          */
@@ -419,7 +420,7 @@ final class Buffer implements
         /**
          * Sets the value at the given offset after validating its value type.
          *
-         * Note: NULL is supported and will be returned as NULL.
+         * Note: NULL is not supported. Use `unset` to clear a value by offset.
          *
          * @throws OffsetException if the offset is not within [0, capacity)
          */
