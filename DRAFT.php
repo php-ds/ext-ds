@@ -178,6 +178,11 @@ interface MutableSequence extends Sequence
 }
 
 /**
+ * Indicates that a structure is a sequence that is always sorted.
+ */
+interface SortedSequence extends Sequence {}
+
+/**
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
  *
@@ -343,47 +348,10 @@ interface Transferable
     function poll();
 }
 
+
 /******************************************************************************/
 /*                                 CLASSES                                    */
 /******************************************************************************/
-
-/**
- * A transfer adapter for stacks.
- */
-final class Stack implements
-    Container, /* Countable */
-    Transferable
-    {
-        /**
-         * Adds a value to the top of the stack.
-         */
-        function push(...$values);
-
-        /**
-         * Removes and returns the value at the top of the stack.
-         *
-         * @throws EmptyStateException
-         */
-        function pop();
-    }
-
-/**
- * A transfer adapter for queues.
- */
-final class Queue implements
-    Container, /* Countable */
-    Transferable
-    {
-        /**
-         * Adds a value to the queue.
-         */
-        function push(...$values);
-
-        /**
-         * Removes and returns the next value in the queue.
-         */
-        function shift();
-    }
 
 /**
  * A fixed-size immutable sequence.
@@ -393,7 +361,9 @@ final class Tuple implements
     Container, /* Countable */
     Sequence,  /* Countable */
     Hashable   /* Immutable */
-    {}
+    {
+        public function __construct(...$values) {}
+    }
 
 /**
  * List structure, dynamic size, contiguous, no ops at the front.
@@ -488,6 +458,54 @@ final class TreeSet implements
         public function __construct(callable $comparator = null) {}
     }
 
+ /**
+ * A set that allows duplicate values, and keeps a count of the number of times
+ * a value appears in the set. This is a set because we can determine whether
+ * it contains a value _at all_, and it is also a sequence because the traversal
+ * can yield a value more than once.
+ */
+final class MultiSet implements
+    ArrayAccess,
+    Traversable,
+    Container,      /* Countable */
+    Clearable,
+    Transferable,
+    SortedSequence,/* Sequence */
+    SortedSet,     /* Set */
+    MutableSet     /* Set */
+    {
+        /**
+         * Adjusts the count of a value by a given number:
+         *   > 0: Add
+         *   < 0: Remove
+         *
+         * @return The resulting frequency after the adjustment.
+         */
+        public function adjust($value, int $count = 1): int {}
+
+        /**
+         * @return int The number of instances of a given value that $this set
+         *             contains, which could be 0 if not in the set at all.
+         */
+        public function freq($value): int {}
+
+        /**
+         * Returns an iterator of the values with the highest frequencies, where
+         * the key is the element and the value is the frequency.
+         *
+         * This uses a heap internally.
+         *   - Building the heap is O(n)
+         *   - Every iteration is O(log n)
+         */
+        public function rank(): iterable {}
+
+        /**
+         * Creates an iterable where the key is the element in the set and the
+         * value is the frequency / multiplicity.
+         */
+        public function enumerate(): iterable {}
+    }
+
 /**
  * This structure is based on the same internal structure of the PHP array,
  * but is not identical. We can use hashable objects as keys, and insertion
@@ -518,8 +536,45 @@ final class TreeMap implements
     {}
 
 /**
- * Stable heap with an optional comparator, defaulting to minimum. We could
- * potentially remove the nullable which clears up the min/max ambiguity.
+ * A transfer adapter for stacks.
+ */
+final class Stack implements
+    Container, /* Countable */
+    Transferable
+    {
+        /**
+         * Adds a value to the top of the stack.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the value at the top of the stack.
+         *
+         * @throws EmptyStateException
+         */
+        function pop();
+    }
+
+/**
+ * A transfer adapter for queues.
+ */
+final class Queue implements
+    Container, /* Countable */
+    Transferable
+    {
+        /**
+         * Adds a value to the queue.
+         */
+        function push(...$values);
+
+        /**
+         * Removes and returns the next value in the queue.
+         */
+        function shift();
+    }
+
+/**
+ * Stable heap with an optional comparator, defaulting to minimum.
  */
 final class Heap implements
     Container, /* Countable */
@@ -538,6 +593,38 @@ final class Heap implements
 
         /**
          * Removes and returns the value at the top of the heap.
+         *
+         * @throws EmptyStateException
+         */
+        public function shift() {}
+    }
+
+/**
+ * A queue that yields value in order of priority, from high to low.
+ */
+final class PriorityQueue implements
+    Container, /* Countable */
+    Clearable,
+    Transferable
+    {
+        /**
+         * Creates a new priority queue using an optional comparator.
+         */
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Adjusts the priority of a given value, setting it to the return value
+         * of the given mutator, then ensures that heap invariants are resolved.
+         */
+        public function adjust($value, callable $mutator) {}
+
+        /**
+         * Adds a value to the priority queue, using a given initial priority.
+         */
+        public function push($value, $priority) {}
+
+        /**
+         * Removes and returns the value at the front of the priority queue.
          *
          * @throws EmptyStateException
          */
