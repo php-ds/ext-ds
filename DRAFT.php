@@ -354,6 +354,93 @@ interface Transferable
 /******************************************************************************/
 
 /**
+ *
+ */
+final class Buffer implements
+    ArrayAccess,
+    Clearable,
+    Sortable
+    {
+        public const TYPE_BOOL      = 0; // bitset
+        public const TYPE_INTEGER   = 1;
+        public const TYPE_FLOAT     = 2;
+        public const TYPE_STRING    = 3;
+        public const TYPE_ARRAY     = 4;
+        public const TYPE_OBJECT    = 5;
+
+        /**
+         * Allow buffers to be truncated to 0.
+         */
+        public const MIN_CAPACITY = 0;
+
+        /**
+         * We must be able to accept and return capacity as integer, so we can
+         * only support up to max int values. This is absolutely massive though
+         * so should be incredibly rare to approach.
+         *
+         * @todo Should we consider when USE_ZEND_ALLOC might be false? Is this
+         *       a potential security or buffer overflow issue? I'm not sure...
+         */
+        public const MAX_CAPACITY = PHP_INT_MAX;
+
+        /**
+         * @throws UnexpectedValueException if the type is not a valid constant.
+         */
+        public function __construct(int $capacity, int $type) {}
+
+        /**
+         * @return int The type of the values in this buffer.
+         */
+        public function type(): int {}
+
+        /**
+         * @return int The current capacity of this buffer.
+         */
+        public function capacity(): int {}
+
+        /**
+         * Re-allocates this buffer to a new capacity, which may truncate the
+         * current buffer. It is up to user to manage this case.
+         *
+         * @throws RangeException if the capacity is not within the valid range:
+         *                        MIN_CAPACITY <= $capacity <= MAX_CAPACITY
+         */
+        public function realloc(int $capacity) {}
+
+        /**
+         * Accesses and casts the value at the given offset to the value type
+         * that this buffer stores. Type validation is done on write. If nothing
+         * has been stored at the given offset, NULL will be returned.
+         *
+         * @throws OffsetException if the offset is not within [0, capacity)
+         */
+        public function offsetGet($offset) {}
+
+        /**
+         * Sets the value at the given offset after validating its value type.
+         *
+         * Note: NULL is supported and will be returned as NULL.
+         *
+         * @throws OffsetException if the offset is not within [0, capacity)
+         */
+        public function offsetSet($offset, $value) {}
+
+        /**
+         * Sets the value at the given offset to NULL.
+         *
+         * @throws OffsetException if the offset is not within [0, capacity),
+         *                         unless called as part of a silent `unset`.
+         */
+        public function offsetUnset($offset) {}
+
+        /**
+         * Returns whether there is a non-NULL value at the given offset. This
+         * method returns FALSE if the offset is not within [0, capacity).
+         */
+        public function offsetExists($offset) {}
+    }
+
+/**
  * A fixed-size immutable sequence.
  */
 final class Tuple implements
