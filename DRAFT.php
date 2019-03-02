@@ -51,13 +51,13 @@ class EmptyStateException implements StateException {}
  * Should be thrown when an index or key is not within the given access bounds
  * of a structure, such as attempting to access beyond the length.
  */
-class OffsetException extends RuntimeException implements AccessException  {}
+class InvalidOffsetException extends RuntimeException implements AccessException  {}
 
 /**
  * Should be thrown when a key is not supported, eg. when an attempt is made to
  * associate a value with NULL in Map, causing ambiguity in `find`.
  */
-class KeyException extends RuntimeException implements AccessException {}
+class InvalidKeyException extends RuntimeException implements AccessException {}
 
 
 /******************************************************************************/
@@ -124,12 +124,12 @@ interface Container extends Countable
  *
  * We extend Countable because it should always be possible to determine bounds.
  */
-interface Sequence extends Countable
+interface Sequence extends Container
 {
     /**
      * @return mixed The value at the
      *
-     * @throws OffsetException if the index is not within [0, size).
+     * @throws InvalidOffsetException if the index is not within [0, size).
      */
     function offset(int $offset);
 
@@ -156,7 +156,7 @@ interface MutableSequence extends Sequence
     /**
      * Sets the value at the given offset.
      *
-     * @throws OffsetException if the index is not within [0, size)
+     * @throws InvalidOffsetException if the index is not within [0, size)
      */
     function set(int $offset, $value);
 
@@ -164,7 +164,7 @@ interface MutableSequence extends Sequence
      * Removes the value at the given offset, moving all successive
      * values one position towards the front.
      *
-     * @throws OffsetException if the index is not within [0, size)
+     * @throws InvalidOffsetException if the index is not within [0, size)
      */
     function unset(int $offset);
 
@@ -172,7 +172,7 @@ interface MutableSequence extends Sequence
      * Moves all values between the given index and the end of the sequence
      * towards the back, then inserts the given values into the gap.
      *
-     * @throws OffsetException if the index is out of range [0, size]
+     * @throws InvalidOffsetException if the index is out of range [0, size]
      */
     function insert(int $offset, ...$values);
 }
@@ -183,53 +183,41 @@ interface MutableSequence extends Sequence
 interface SortedSequence extends Sequence {}
 
 /**
- * Indicates that a structure is designed to quickly determine whether a given
- * value is already contained by it.
- *
- * Note: The intention will be that all implementations of Set will use a
- *       do_operation handler to override |, ^, -, &.
+ * A structure to supports an efficient way to determine whether a given value
+ * is contained within the structure.
  */
-interface Set
+interface Searchable
 {
     /**
-     * @return bool TRUE if the value is in $this set, FALSE otherwise.
+     * @return bool TRUE if the value is in $this structure, FALSE otherwise.
      */
     function has($value): bool;
+}
 
+/**
+ * Indicates that a structure is designed to quickly determine whether a given
+ * value is already contained by it.
+ */
+interface Set extends Searchable, Container
+{
     /**
-     * Operator: |
-     *
-     * @todo what about the + operator?
-     *
      * @return static A set containing values in both $this and $other.
-     *
-     * @todo Naming - or, union, merge
      */
     function or(Set $other): Set;
 
     /**
-     * Operator: ^
-     *
      * @return static A set containing values in either $this or $other,
      *                but not in both.
      */
     function xor(Set $other): Set;
 
     /**
-     * Operator: -
-     *
      * @return static A set containing values in $this but not in $other.
-     *
-     * @todo Naming - not, diff, without
      */
     function not(Set $other): Set;
 
     /**
-     * Operator: &
-     *
      * @return static A set containing values in $this that are also in $other.
-     *
-     * @todo Naming - and, intersect
      */
     function and(Set $other): Set;
 }
@@ -267,7 +255,7 @@ interface SortedSet extends Set {}
  *
  * @todo Should Map require some kind of merge, diff, and intersection support?
  */
-interface Map
+interface Map extends Container
 {
     /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
@@ -278,16 +266,6 @@ interface Map
      * @throws AccessException if the $key was not found with default given.
      */
     function get($key, $default = null);
-
-    /**
-     * @return bool TRUE if $this map has an association for the given $key,
-     *              FALSE otherwise.
-     *
-     * @todo if we don't extend Set, should we remove this in favour of
-     *       $map->keys()->has()? This would only work if keys() is O(1), which
-     *       would not always be the case.
-     */
-    function has($key): bool;
 
     /**
      * @return Set All keys from the map added in traversal order.
@@ -312,7 +290,7 @@ interface MutableMap extends Map
     /**
      * Associates the $key with the $value, overriding any previous association.
      *
-     * @throws KeyException if the map implementation does not support
+     * @throws InvalidKeyException if the map implementation does not support
      *                             the given key, eg. NULL
      */
     function set($key, $value);
@@ -413,7 +391,7 @@ final class Allocation implements
          * has been stored at the given offset, this method will return an
          * appropriate "null" value for the type (see notes on constants).
          *
-         * @throws OffsetException if the offset is not within [0, capacity)
+         * @throws InvalidOffsetException if the offset is not within [0, capacity)
          */
         public function offsetGet($offset) {}
 
@@ -422,14 +400,14 @@ final class Allocation implements
          *
          * Note: NULL is not supported. Use `unset` to clear a value by offset.
          *
-         * @throws OffsetException if the offset is not within [0, capacity)
+         * @throws InvalidOffsetException if the offset is not within [0, capacity)
          */
         public function offsetSet($offset, $value) {}
 
         /**
          * Sets the value at the given offset to NULL.
          *
-         * @throws OffsetException if the offset is not within [0, capacity),
+         * @throws InvalidOffsetException if the offset is not within [0, capacity),
          *                         unless called as part of a silent `unset`.
          */
         public function offsetUnset($offset) {}
@@ -446,11 +424,10 @@ final class Allocation implements
  */
 final class Tuple implements
     Traversable,
-    Container, /* Countable */
-    Sequence,  /* Countable */
+    Sequence,  /* Container, Countable */
     Hashable   /* Immutable */
     {
-        public function __construct(...$values) {}
+        public function __construct(iterable $iter) {}
     }
 
 /**
@@ -459,10 +436,9 @@ final class Tuple implements
 final class Vector implements
     ArrayAccess,
     Traversable,
-    Container,      /* Countable */
     Clearable,
     Sortable,
-    MutableSequence /* Sequence, Countable */
+    MutableSequence /* Sequence, Container, Countable */
     {
         /**
          * Adds one or more values to the end of the vector.
@@ -481,10 +457,9 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
-    Container,      /* Countable */
     Clearable,
     Transferable,
-    SortedSequence  /* Sequence, Countable */
+    SortedSequence  /* Sequence, Container, Countable */
     {
         /**
          * Adds one or more values to the end of the deque.
@@ -512,18 +487,30 @@ final class Deque implements
     }
 
 /**
+ * An immutable sequence that is evaluated and sorted on first access.
+ */
+final class SetSequence implements
+    ArrayAccess,
+    Traversable,
+    Immutable,
+    Searchable,
+    SortedSequence, /* Sequence, Container, Countable */
+    {
+        public function __construct(iterable $iter) {}
+    }
+
+/**
  * The Set equivalent of HashMap, which might not use a HashMap internally, but
  * will always preserve insertion order.
  */
 final class HashSet implements
     ArrayAccess,
     Traversable,
-    Container,  /* Countable */
     Clearable,
     Sortable,
     Transferable,
-    Sequence,   /* Countable */
-    MutableSet  /* Set */
+    Sequence,   /* Countable, Container, Countable */
+    MutableSet  /* Set, Container, Countable2 */
     {}
 
 /**
@@ -541,7 +528,7 @@ final class TreeSet implements
     SortedSet   /* Set */
     {
         /**
-         * Creates a new bst using values from $iter.
+         * Creates a new tree set using an optional comparator.
          */
         public function __construct(callable $comparator = null) {}
     }
@@ -558,12 +545,18 @@ final class MultiSet implements
     Container,      /* Countable */
     Clearable,
     Transferable,
-    SortedSequence,/* Sequence */
-    SortedSet,     /* Set */
     MutableSet     /* Set */
     {
         /**
-         * Adjusts the count of a value by a given number:
+         * Creates a new multiset using values from $iter.
+         */
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Adjusts the count of a value by a given count. If the resulting count
+         * becomes <= 0, the value will be removed. If a value is not already in
+         * the set, it will be added before the count is adjusted.
+         *
          *   > 0: Add
          *   < 0: Remove
          *
@@ -598,10 +591,9 @@ final class MultiSet implements
 final class HashMap implements
     ArrayAccess,
     Traversable,
-    Container,  /* Countable */
     Clearable,
     Sortable,
-    Sequence,   /* Countable */
+    Sequence,   /* Container, Countable */
     MutableMap  /* Map */
     {}
 
@@ -611,16 +603,15 @@ final class HashMap implements
 final class TreeMap implements
     ArrayAccess,
     Traversable,
-    Container,  /* Countable */
     Clearable,
     Sortable,
-    Sequence,   /* Countable */
+    Sequence,   /* Container, Countable */
     MutableMap, /* Map */
     SortedMap   /* Map */
     {}
 
 /**
- * A transfer adapter for stacks.
+ * A basic first-in-last-out structure.
  */
 final class Stack implements
     Container, /* Countable */
@@ -640,7 +631,7 @@ final class Stack implements
     }
 
 /**
- * A transfer adapter for queues.
+ * A basic first-in-first-out structure.
  */
 final class Queue implements
     Container, /* Countable */
@@ -684,7 +675,7 @@ final class Heap implements
     }
 
 /**
- * A queue that yields value in order of priority, from high to low.
+ * A queue that yields values in order of priority, from high to low.
  */
 final class PriorityQueue implements
     Container, /* Countable */
