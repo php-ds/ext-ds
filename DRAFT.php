@@ -59,7 +59,7 @@ interface Immutable
  */
 interface Clearable
 {
-    function clear();
+    function clear(): void;
 }
 
 /**
@@ -161,7 +161,7 @@ interface MutableSequence extends Sequence
      *
      * @throws InvalidOffsetException if the index is not within [0, size)
      */
-    function set(int $offset, $value);
+    function set(int $offset, $value): void;
 
     /**
      * Removes the value at the given offset, moving all successive
@@ -169,7 +169,7 @@ interface MutableSequence extends Sequence
      *
      * @throws InvalidOffsetException if the index is not within [0, size)
      */
-    function unset(int $offset);
+    function unset(int $offset): void;
 
     /**
      * Moves all values between the given index and the end of the sequence
@@ -177,7 +177,7 @@ interface MutableSequence extends Sequence
      *
      * @throws InvalidOffsetException if the index is out of range [0, size]
      */
-    function insert(int $offset, ...$values);
+    function insert(int $offset, ...$values): void;
 }
 
 /**
@@ -230,7 +230,7 @@ interface MutableSet extends Set
     /**
      * Adds the given value to $this set if it is not already in $this set.
      */
-    function add(...$values);
+    function add(...$values): void;
 
     /**
      * Removes a given value from $this set, or does nothing if that value could
@@ -238,7 +238,7 @@ interface MutableSet extends Set
      * removal. This method therefore promises only that the given value is not
      * a member of the set on return.
      */
-    function remove($value);
+    function remove($value): void;
 }
 
 /**
@@ -295,13 +295,13 @@ interface MutableMap extends Map
      * @throws InvalidKeyException if the map implementation does not support
      *                             the given key, eg. NULL
      */
-    function set($key, $value);
+    function set($key, $value): void;
 
     /**
      * Removes the given $key from the map, and does nothing if they key could
      * not be found. This emulates `unset`
      */
-    function unset($key);
+    function unset($key): void;
 }
 
 /**
@@ -320,7 +320,7 @@ interface Transferable
     /**
      * Offers one or more values to this transferable.
      */
-    function send(...$values);
+    function send(...$values): void;
 
     /**
      * Removes and returns the next value produced by this transferable.
@@ -388,7 +388,7 @@ final class Allocation implements
          * @throws RangeException if the capacity is not within the valid range:
          *                        MIN_CAPACITY <= $capacity <= MAX_CAPACITY
          */
-        public function realloc(int $capacity) {}
+        public function realloc(int $capacity): void {}
 
         /**
          * Returns the value at the given offset as a standard value of the type
@@ -407,7 +407,7 @@ final class Allocation implements
          *
          * @throws InvalidOffsetException if the offset is not within [0, capacity)
          */
-        public function offsetSet($offset, $value) {}
+        public function offsetSet($offset, $value): void {}
 
         /**
          * Sets the value at the given offset to NULL.
@@ -415,7 +415,7 @@ final class Allocation implements
          * @throws InvalidOffsetException if the offset is not within [0, capacity),
          *                         unless called as part of a silent `unset`.
          */
-        public function offsetUnset($offset) {}
+        public function offsetUnset($offset): void {}
 
         /**
          * Returns whether there is a non-NULL value at the given offset. This
@@ -451,7 +451,7 @@ final class Vector implements
         /**
          * Adds one or more values to the end of the vector.
          */
-        function push(...$values);
+        function push(...$values): void;
 
         /**
          * Removes and returns the value at the end of the vector.
@@ -475,7 +475,7 @@ final class Deque implements
         /**
          * Adds one or more values to the end of the deque.
          */
-        function push(...$values);
+        function push(...$values): void;
 
         /**
          * Removes and returns the value at the end of the deque.
@@ -487,7 +487,7 @@ final class Deque implements
         /**
          * Adds one or more values to the start of the deque.
          */
-        public function unshift(...$values);
+        public function unshift(...$values): void;
 
         /**
          * Removes and returns the value at the start of the deque.
@@ -638,7 +638,7 @@ final class Stack implements
         /**
          * Adds a value to the top of the stack.
          */
-        function push(...$values);
+        function push(...$values): void;
 
         /**
          * Removes and returns the value at the top of the stack.
@@ -658,7 +658,7 @@ final class Queue implements
         /**
          * Adds a value to the queue.
          */
-        function push(...$values);
+        function push(...$values): void;
 
         /**
          * Removes and returns the next value in the queue.
@@ -682,7 +682,7 @@ final class Heap implements
         /**
          * Adds a value to the heap.
          */
-        public function push(...$values) {}
+        public function push(...$values): void {}
 
         /**
          * Removes and returns the value at the top of the heap.
@@ -709,12 +709,12 @@ final class PriorityQueue implements
          * Adjusts the priority of a given value, setting it to the return value
          * of the given mutator, then ensures that heap invariants are resolved.
          */
-        public function adjust($value, callable $mutator) {}
+        public function adjust($value, callable $mutator): void {}
 
         /**
          * Adds a value to the priority queue, using a given initial priority.
          */
-        public function push($value, $priority) {}
+        public function push($value, $priority): void {}
 
         /**
          * Removes and returns the value at the front of the priority queue.
