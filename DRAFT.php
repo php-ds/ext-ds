@@ -15,50 +15,28 @@
 namespace Ds;
 
 use Countable;
-use RuntimeException;
+use LogicException;
 use Traversable;
-
-/******************************************************************************/
-/*                           ORDERING & EQUALITY                              */
-/******************************************************************************/
-
-/**
- * @todo Proposal: == for objects, === otherwise.
- */
 
 /******************************************************************************/
 /*                                EXCEPTIONS                                  */
 /******************************************************************************/
 
 /**
- * Should be thrown when a structure is accessed unexpectedly, or in a way that
- * is undefined, or to avoid ambiguous results. This is a marker interface to
- * support catching all access exceptions.
+ * Should be thrown when an empty container is polled in an empty state.
  */
-interface AccessException {}
+class EmptyContainerException extends LogicException {}
 
 /**
- * Marker interface for all state-related exceptions, such as heap corruption.
+ * Should be thrown when a key is not supported.
  */
-interface StateException {}
-
-/**
- * Should be thrown when an empty container is accessed a clear, obvious result.
- */
-class EmptyStateException implements StateException {}
+class InvalidKeyException extends LogicException {}
 
 /**
  * Should be thrown when an index or key is not within the given access bounds
  * of a structure, such as attempting to access beyond the length.
  */
-class InvalidOffsetException extends RuntimeException implements AccessException  {}
-
-/**
- * Should be thrown when a key is not supported, eg. when an attempt is made to
- * associate a value with NULL in Map, causing ambiguity in `find`.
- */
-class InvalidKeyException extends RuntimeException implements AccessException {}
-
+class InvalidOffsetException extends LogicException {}
 
 /******************************************************************************/
 /*                                INTERFACES                                  */
@@ -80,21 +58,6 @@ interface Clearable
 }
 
 /**
- * Indicates that a structure contains elements and is aware of the number of
- * items contained at any point in time. How a container must determine the
- * count is implementation-specific.
- *
- * This interface does not imply that a structure is traversable.
- */
-interface Countable extends \Countable
-{
-    /**
-     *
-     */
-    function count(): int;
-}
-
-/**
  * Indicates that a structure can be sorted by value.
  *
  * This interface does not guarantee that the sorting algorithm will be stable.
@@ -109,9 +72,21 @@ interface Sortable
 }
 
 /**
+ * Indicates that an object is designed to be equated using `==`.
+ * The operator will be overloaded for all classes that implement Equatable.
+ */
+interface Equatable 
+{
+    /**
+     * @param static $other 
+     */
+    function equals($other): bool;
+}
+
+/**
  * Indicates that an object is designed to be used in hash-based structures.
  */
-interface Hashable extends Immutable
+interface Hashable extends Equatable, Immutable
 {
     /**
      * @return mixed A scalar value to be used when generating a hashcode.
@@ -121,18 +96,17 @@ interface Hashable extends Immutable
 
 /**
  * Indicates that a structure contains elements and is aware of the number of
- * items contained at any point in time. How a container must determine the
- * count is implementation-specific.
+ * items contained at any point in time.
  */
-interface Container
+interface Container extends \Countable
 {
     /**
-     * @return bool TRUE if the value is in $this structure, FALSE otherwise.
+     * @return int The number of items in this container.
      */
-    function contains($value): bool;
+    function count(): int;
 
     /**
-     *
+     * @return bool Whether this container is empty.
      */
     function isEmpty(): bool;
 }
@@ -141,9 +115,9 @@ interface Container
  * Indicates that a structure can be accessed using a zero-based integer index
  * indicating the position of an element from the beginning of the structure.
  *
- * We extend Countable because it should always be possible to determine bounds.
+ * We extend Container because it should always be possible to determine bounds.
  */
-interface Sequence extends Countable, Container
+interface Sequence extends Container
 {
     /**
      * @return mixed The value at the
@@ -158,16 +132,21 @@ interface Sequence extends Countable, Container
     function indexOf($value): int;
 
     /**
+     * @return bool TRUE if this sequence contains the given value, FALSE otherwise.
+     */
+    function contains($value): bool;
+
+    /**
      * @return mixed The first value in $this structure.
      *
-     * @throws EmptyStateException
+     * @throws EmptyContainerException
      */
     function first();
 
     /**
      * @return mixed The last value in $this structure.
      *
-     * @throws EmptyStateException
+     * @throws EmptyContainerException
      */
     function last();
 }
@@ -212,8 +191,13 @@ interface SortedSequence extends Sequence
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
  */
-interface Set extends Container
+interface Set
 {
+    /**
+     * @return bool TRUE if this set contains the given value, FALSE otherwise.
+     */
+    function contains($value): bool;
+
     /**
      * @return static A set containing values in both $this and $other.
      */
@@ -339,7 +323,7 @@ interface Transferable
     /**
      * Removes and returns the next value produced by this transferable.
      *
-     * @throws EmptyStateException
+     * @throws EmptyContainerException
      */
     function poll();
 }
@@ -442,7 +426,7 @@ final class Allocation implements
  */
 final class Tuple implements
     Traversable,
-    Sequence,  /* Countable, Container */
+    Sequence,  /* Container, \Countable */
     Hashable   /* Immutable */
     {
         public function __construct(iterable $iter) {}
@@ -455,8 +439,9 @@ final class Vector implements
     ArrayAccess,
     Traversable,
     Clearable,
+    Container,
     Sortable,
-    MutableSequence /* Sequence, Countable, Container */
+    MutableSequence /* Sequence, Container, \Countable */
     {
         /**
          * Adds one or more values to the end of the vector.
@@ -466,7 +451,7 @@ final class Vector implements
         /**
          * Removes and returns the value at the end of the vector.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         function pop();
     }
@@ -476,8 +461,9 @@ final class Vector implements
  */
 final class Deque implements
     Clearable,
+    Container,
     Transferable,
-    MutableSequence  /* Sequence, Countable, Container */
+    MutableSequence  /* Sequence, Container, \Countable */
     {
         /**
          * Adds one or more values to the end of the deque.
@@ -487,7 +473,7 @@ final class Deque implements
         /**
          * Removes and returns the value at the end of the deque.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         function pop();
 
@@ -499,7 +485,7 @@ final class Deque implements
         /**
          * Removes and returns the value at the start of the deque.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         function shift();
     }
@@ -510,9 +496,10 @@ final class Deque implements
 final class SetSequence implements
     ArrayAccess,
     Traversable,
+    Container,
     Immutable,
-    SortedSet,      /* Set, Container */
-    SortedSequence, /* Sequence, Countable, Container */
+    SortedSet,      /* Set */
+    SortedSequence, /* Sequence, Container, \Countable */
     {
         public function __construct(iterable $iter) {}
     }
@@ -524,12 +511,12 @@ final class SetSequence implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
-    Countable,
     Clearable,
+    Container,
     Transferable,
     Sortable,
-    Sequence,     /* Countable, Container */
-    MutableSet    /* Set, Container */
+    Sequence,     /* Container, \Countable */
+    MutableSet    /* Set */
     {}
 
 /**
@@ -541,10 +528,10 @@ final class HashSet implements
  */
 final class TreeSet implements
     Traversable,
-    Countable,
     Clearable,
-    MutableSet, /* Set, Container */
-    SortedSet   /* Set, Container */
+    Container,
+    MutableSet, /* Set */
+    SortedSet   /* Set */
     {
         /**
          * Creates a new tree set using an optional comparator.
@@ -561,9 +548,9 @@ final class TreeSet implements
 final class MultiSet implements
     ArrayAccess,
     Traversable,
-    Countable,
-    Clearable,
     Transferable,
+    Container,
+    Clearable,
     MutableSet     /* Set */
     {
         /**
@@ -610,7 +597,7 @@ final class MultiSet implements
 final class HashMap implements
     ArrayAccess,
     Traversable,
-    Countable,
+    Container,
     Clearable,
     Sortable,
     MutableMap  /* Map */
@@ -622,7 +609,7 @@ final class HashMap implements
 final class TreeMap implements
     ArrayAccess,
     Traversable,
-    Countable,
+    Container,
     Clearable,
     MutableMap, /* Map */
     SortedMap   /* Map */
@@ -632,7 +619,7 @@ final class TreeMap implements
  * A basic first-in-last-out structure.
  */
 final class Stack implements
-    Countable,
+    Container,
     Transferable
     {
         /**
@@ -643,7 +630,7 @@ final class Stack implements
         /**
          * Removes and returns the value at the top of the stack.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         function pop();
     }
@@ -652,7 +639,7 @@ final class Stack implements
  * A basic first-in-first-out structure.
  */
 final class Queue implements
-    Countable,
+    Container,
     Transferable
     {
         /**
@@ -670,7 +657,7 @@ final class Queue implements
  * Stable heap with an optional comparator, defaulting to minimum.
  */
 final class Heap implements
-    Countable,
+    Container,
     Clearable,
     Transferable
     {
@@ -687,7 +674,7 @@ final class Heap implements
         /**
          * Removes and returns the value at the top of the heap.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         public function shift() {}
     }
@@ -696,7 +683,7 @@ final class Heap implements
  * A queue that yields values in order of priority, from high to low.
  */
 final class PriorityQueue implements
-    Countable,
+    Container,
     Clearable,
     Transferable
     {
@@ -719,7 +706,7 @@ final class PriorityQueue implements
         /**
          * Removes and returns the value at the front of the priority queue.
          *
-         * @throws EmptyStateException
+         * @throws EmptyContainerException
          */
         public function shift() {}
     }
