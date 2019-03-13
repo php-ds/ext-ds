@@ -67,7 +67,9 @@ class InvalidKeyException extends RuntimeException implements AccessException {}
 /**
  * Marker interface to indicate that a class is immutable.
  */
-interface Immutable {}
+interface Immutable 
+{
+}
 
 /**
  * Indicates that a structure can be cleared.
@@ -75,6 +77,21 @@ interface Immutable {}
 interface Clearable
 {
     function clear();
+}
+
+/**
+ * Indicates that a structure contains elements and is aware of the number of
+ * items contained at any point in time. How a container must determine the
+ * count is implementation-specific.
+ *
+ * This interface does not imply that a structure is traversable.
+ */
+interface Countable extends \Countable
+{
+    /**
+     *
+     */
+    function count(): int;
 }
 
 /**
@@ -97,23 +114,25 @@ interface Sortable
 interface Hashable extends Immutable
 {
     /**
-     * @return mixed A scalar value (or hashable delegate) that will be hashed.
+     * @return mixed A scalar value to be used when generating a hashcode.
      */
-    function getHashSource();
+    function getHashSource(): string;
 }
 
 /**
  * Indicates that a structure contains elements and is aware of the number of
  * items contained at any point in time. How a container must determine the
  * count is implementation-specific.
- *
- * This interface does not imply that a structure is traversable.
  */
-interface Container extends Countable
+interface Container
 {
     /**
-     * @return bool whether the container is empty, which can be TRUE even when
-     *              the number of elements is non-zero.
+     * @return bool TRUE if the value is in $this structure, FALSE otherwise.
+     */
+    function contains($value): bool;
+
+    /**
+     *
      */
     function isEmpty(): bool;
 }
@@ -124,14 +143,19 @@ interface Container extends Countable
  *
  * We extend Countable because it should always be possible to determine bounds.
  */
-interface Sequence extends Container
+interface Sequence extends Countable, Container
 {
     /**
      * @return mixed The value at the
      *
-     * @throws InvalidOffsetException if the index is not within [0, size).
+     * @throws InvalidOffsetException if the $offset is not within [0, size).
      */
-    function offset(int $offset);
+    function get(int $offset);
+    
+    /**
+     * @return int The offset of the given value, or -1 if the value could not be found.
+     */
+    function indexOf($value): int;
 
     /**
      * @return mixed The first value in $this structure.
@@ -180,25 +204,15 @@ interface MutableSequence extends Sequence
 /**
  * Indicates that a structure is a sequence that is always sorted.
  */
-interface SortedSequence extends Sequence {}
-
-/**
- * A structure to supports an efficient way to determine whether a given value
- * is contained within the structure.
- */
-interface Searchable
+interface SortedSequence extends Sequence 
 {
-    /**
-     * @return bool TRUE if the value is in $this structure, FALSE otherwise.
-     */
-    function has($value): bool;
 }
 
 /**
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
  */
-interface Set extends Searchable, Container
+interface Set extends Container
 {
     /**
      * @return static A set containing values in both $this and $other.
@@ -244,7 +258,9 @@ interface MutableSet extends Set
 /**
  * Indicates that a structure is a set that is always sorted.
  */
-interface SortedSet extends Set {}
+interface SortedSet extends Set 
+{
+}
 
 /**
  * A structure that associates one value with another and provides the ability
@@ -255,7 +271,7 @@ interface SortedSet extends Set {}
  *
  * @todo Should Map require some kind of merge, diff, and intersection support?
  */
-interface Map extends Container
+interface Map
 {
     /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
@@ -305,7 +321,9 @@ interface MutableMap extends Map
 /**
  * Indicates that a structure is a map that is always sorted.
  */
-interface SortedMap extends Map {}
+interface SortedMap extends Map 
+{
+}
 
 /**
  * Indicates that a structure can receive and produce values efficiently in a
@@ -424,7 +442,7 @@ final class Allocation implements
  */
 final class Tuple implements
     Traversable,
-    Sequence,  /* Container, Countable */
+    Sequence,  /* Countable, Container */
     Hashable   /* Immutable */
     {
         public function __construct(iterable $iter) {}
@@ -438,7 +456,7 @@ final class Vector implements
     Traversable,
     Clearable,
     Sortable,
-    MutableSequence /* Sequence, Container, Countable */
+    MutableSequence /* Sequence, Countable, Container */
     {
         /**
          * Adds one or more values to the end of the vector.
@@ -459,7 +477,7 @@ final class Vector implements
 final class Deque implements
     Clearable,
     Transferable,
-    SortedSequence  /* Sequence, Container, Countable */
+    MutableSequence  /* Sequence, Countable, Container */
     {
         /**
          * Adds one or more values to the end of the deque.
@@ -493,8 +511,8 @@ final class SetSequence implements
     ArrayAccess,
     Traversable,
     Immutable,
-    Searchable,
-    SortedSequence, /* Sequence, Container, Countable */
+    SortedSet,      /* Set, Container */
+    SortedSequence, /* Sequence, Countable, Container */
     {
         public function __construct(iterable $iter) {}
     }
@@ -506,11 +524,12 @@ final class SetSequence implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
+    Countable,
     Clearable,
-    Sortable,
     Transferable,
-    Sequence,   /* Countable, Container, Countable */
-    MutableSet  /* Set, Container, Countable2 */
+    Sortable,
+    Sequence,     /* Countable, Container */
+    MutableSet    /* Set, Container */
     {}
 
 /**
@@ -522,10 +541,10 @@ final class HashSet implements
  */
 final class TreeSet implements
     Traversable,
-    Container,  /* Countable */
+    Countable,
     Clearable,
-    MutableSet, /* Set */
-    SortedSet   /* Set */
+    MutableSet, /* Set, Container */
+    SortedSet   /* Set, Container */
     {
         /**
          * Creates a new tree set using an optional comparator.
@@ -542,7 +561,7 @@ final class TreeSet implements
 final class MultiSet implements
     ArrayAccess,
     Traversable,
-    Container,      /* Countable */
+    Countable,
     Clearable,
     Transferable,
     MutableSet     /* Set */
@@ -591,9 +610,9 @@ final class MultiSet implements
 final class HashMap implements
     ArrayAccess,
     Traversable,
+    Countable,
     Clearable,
     Sortable,
-    Sequence,   /* Container, Countable */
     MutableMap  /* Map */
     {}
 
@@ -603,9 +622,8 @@ final class HashMap implements
 final class TreeMap implements
     ArrayAccess,
     Traversable,
+    Countable,
     Clearable,
-    Sortable,
-    Sequence,   /* Container, Countable */
     MutableMap, /* Map */
     SortedMap   /* Map */
     {}
@@ -614,7 +632,7 @@ final class TreeMap implements
  * A basic first-in-last-out structure.
  */
 final class Stack implements
-    Container, /* Countable */
+    Countable,
     Transferable
     {
         /**
@@ -634,7 +652,7 @@ final class Stack implements
  * A basic first-in-first-out structure.
  */
 final class Queue implements
-    Container, /* Countable */
+    Countable,
     Transferable
     {
         /**
@@ -652,7 +670,7 @@ final class Queue implements
  * Stable heap with an optional comparator, defaulting to minimum.
  */
 final class Heap implements
-    Container, /* Countable */
+    Countable,
     Clearable,
     Transferable
     {
@@ -678,7 +696,7 @@ final class Heap implements
  * A queue that yields values in order of priority, from high to low.
  */
 final class PriorityQueue implements
-    Container, /* Countable */
+    Countable,
     Clearable,
     Transferable
     {
