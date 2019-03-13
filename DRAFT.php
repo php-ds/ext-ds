@@ -69,6 +69,8 @@ interface Sortable
 {
     /**
      * Sorts the keys and/or values of $this structure in place.
+     *
+     * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this this sortable.
      */
     function sort(callable $comparator = null): void;
 }
@@ -80,7 +82,9 @@ interface Sortable
 interface Equatable 
 {
     /**
-     * @param static $other 
+     * @param static $other The other structure to compare with.
+     *
+     * @return bool Whether this structure equates to the given one.
      */
     function equals($other): bool;
 }
@@ -120,18 +124,24 @@ interface Container extends \Countable
 interface Sequence extends Container
 {
     /**
-     * @return mixed The value at the
+     * @param mixed $value The value to look for.
+     *
+     * @return mixed The value at the given offset.
      *
      * @throws InvalidOffsetException if the $offset is not within [0, size).
      */
     function get(int $offset);
     
     /**
+     * @param mixed $value The value to search for.
+     *
      * @return int The offset of the given value, or -1 if the value could not be found.
      */
     function indexOf($value): int;
 
     /**
+     * @param mixed $value The value to search for.
+     *
      * @return bool TRUE if this sequence contains the given value, FALSE otherwise.
      */
     function contains($value): bool;
@@ -159,6 +169,9 @@ interface MutableSequence extends Sequence
     /**
      * Sets the value at the given offset.
      *
+     * @param int   $offset The offset at which the value should be set.
+     * @param mixed $value  The value to set.
+     *
      * @throws InvalidOffsetException if the index is not within [0, size)
      */
     function set(int $offset, $value): void;
@@ -167,6 +180,8 @@ interface MutableSequence extends Sequence
      * Removes the value at the given offset, moving all successive
      * values one position towards the front.
      *
+     * @param int The offset to be removed.
+     *
      * @throws InvalidOffsetException if the index is not within [0, size)
      */
     function unset(int $offset): void;
@@ -174,6 +189,9 @@ interface MutableSequence extends Sequence
     /**
      * Moves all values between the given index and the end of the sequence
      * towards the back, then inserts the given values into the gap.
+     *
+     * @param int   $offset    The offset to insert values at.
+     * @param mixed ...$values The value to insert at the specified offset.
      *
      * @throws InvalidOffsetException if the index is out of range [0, size]
      */
@@ -196,27 +214,37 @@ interface SortedSequence extends Sequence
 interface Set
 {
     /**
+     * @param mixed $value The value to search for.
+     *
      * @return bool TRUE if this set contains the given value, FALSE otherwise.
      */
     function contains($value): bool;
 
     /**
+     * @param self $other The other set to union with.
+     *
      * @return static A set containing values in both $this and $other.
      */
     function or(Set $other): Set;
 
     /**
+     * @param self $other The other set to xor with.
+     *
      * @return static A set containing values in either $this or $other,
      *                but not in both.
      */
     function xor(Set $other): Set;
 
     /**
+     * @param self $other The other set to diff against.
+     *
      * @return static A set containing values in $this but not in $other.
      */
     function not(Set $other): Set;
 
     /**
+     * @param self $other The other set to intersect with.
+     *
      * @return static A set containing values in $this that are also in $other.
      */
     function and(Set $other): Set;
@@ -228,11 +256,15 @@ interface Set
 interface MutableSet extends Set
 {
     /**
+     * @param mixed ...$values The values to be added.
+     *
      * Adds the given value to $this set if it is not already in $this set.
      */
     function add(...$values): void;
 
     /**
+     * @param mixed $value The value to be removed.
+     *
      * Removes a given value from $this set, or does nothing if that value could
      * not be found. The caller can use `has` to determine membership before
      * removal. This method therefore promises only that the given value is not
@@ -261,6 +293,9 @@ interface Map
 {
     /**
      * @todo if NULL keys are not allowed, should we throw if $key is NULL?
+     *
+     * @param mixed $key     The key at which the value should be looked for.
+     * @param mixed $default The fallback value of no value exists at specified key.
      *
      * @return mixed The value associated with the $key, or $default if the key
      *               could not be found and a $default was provided.
@@ -292,6 +327,9 @@ interface MutableMap extends Map
     /**
      * Associates the $key with the $value, overriding any previous association.
      *
+     * @param mixed $key   The key to set the value for.
+     * @param mixed $value The value to set.
+     *
      * @throws InvalidKeyException if the map implementation does not support
      *                             the given key, eg. NULL
      */
@@ -300,6 +338,8 @@ interface MutableMap extends Map
     /**
      * Removes the given $key from the map, and does nothing if they key could
      * not be found. This emulates `unset`
+     *
+     * @param mixed $key The key at which the value should be unset.
      */
     function unset($key): void;
 }
@@ -319,11 +359,15 @@ interface Transferable
 {
     /**
      * Offers one or more values to this transferable.
+     *
+     * @param mixed ...$values The values that should be transferred.
      */
     function send(...$values): void;
 
     /**
      * Removes and returns the next value produced by this transferable.
+     *
+     * @return mixed The transferred value.
      *
      * @throws EmptyContainerException
      */
@@ -367,6 +411,9 @@ final class Allocation implements
         public const MAX_CAPACITY = PHP_INT_MAX;
 
         /**
+         * @param int $capacity Initial capacity of the structure.
+         * @param int $type     The type for which the allocation is being made (one of Allocation::Type_* constants).
+         *
          * @throws UnexpectedValueException if the type is not a valid constant.
          */
         public function __construct(int $capacity, int $type) {}
@@ -385,6 +432,8 @@ final class Allocation implements
          * Re-allocates this buffer to a new capacity, which may truncate the
          * current buffer. It is up to user to manage this case.
          *
+         * @param int $capacity The new capacity to which this buffer should be resized.
+         *
          * @throws RangeException if the capacity is not within the valid range:
          *                        MIN_CAPACITY <= $capacity <= MAX_CAPACITY
          */
@@ -396,6 +445,10 @@ final class Allocation implements
          * has been stored at the given offset, this method will return an
          * appropriate "null" value for the type (see notes on constants).
          *
+         * @param mixed $offset The offset at which to look for a value.
+         *
+         * @return mixed The value at the specified offset.
+         *
          * @throws InvalidOffsetException if the offset is not within [0, capacity)
          */
         public function offsetGet($offset) {}
@@ -405,12 +458,17 @@ final class Allocation implements
          *
          * Note: NULL is not supported. Use `unset` to clear a value by offset.
          *
+         * @param mixed $offset The offset at which to set the new value.
+         * @param mixed $value  The value to set at the specified offset.
+         *
          * @throws InvalidOffsetException if the offset is not within [0, capacity)
          */
         public function offsetSet($offset, $value): void {}
 
         /**
          * Sets the value at the given offset to NULL.
+         *
+         * @param mixed $offset The offset at which to unset a value.
          *
          * @throws InvalidOffsetException if the offset is not within [0, capacity),
          *                         unless called as part of a silent `unset`.
@@ -420,8 +478,12 @@ final class Allocation implements
         /**
          * Returns whether there is a non-NULL value at the given offset. This
          * method returns FALSE if the offset is not within [0, capacity).
+         *
+         * @param mixed $offset The offset at which to look for a value.
+         *
+         * @return bool Whether the specified offset contains a value or not.
          */
-        public function offsetExists($offset) {}
+        public function offsetExists($offset): bool {}
     }
 
 /**
@@ -433,7 +495,10 @@ final class Tuple implements
     Sequence,  /* Container, \Countable */
     Hashable   /* Equatable, Immutable */
     {
-        public function __construct(iterable $iter) {}
+        /**
+         * @param mixed[] $source The values used to fill this tuple.
+         */
+        public function __construct(iterable $source) {}
     }
 
 /**
@@ -450,11 +515,15 @@ final class Vector implements
     {
         /**
          * Adds one or more values to the end of the vector.
+         *
+         * @param mixed ...$values The values to append to the vector.
          */
         function push(...$values): void;
 
         /**
          * Removes and returns the value at the end of the vector.
+         *
+         * @return mixed The value at the end of the vector.
          *
          * @throws EmptyContainerException
          */
@@ -474,11 +543,15 @@ final class Deque implements
     {
         /**
          * Adds one or more values to the end of the deque.
+         *
+         * @param mixed ...$values The values to push at the end of this deque.
          */
         function push(...$values): void;
 
         /**
          * Removes and returns the value at the end of the deque.
+         *
+         * @return mixed The value at the end of this deque.
          *
          * @throws EmptyContainerException
          */
@@ -486,11 +559,15 @@ final class Deque implements
 
         /**
          * Adds one or more values to the start of the deque.
+         *
+         * @param mixed ...$values The values to insert to the start of this deque.
          */
         public function unshift(...$values): void;
 
         /**
          * Removes and returns the value at the start of the deque.
+         *
+         * @return mixed The value at the beginning of this deque.
          *
          * @throws EmptyContainerException
          */
@@ -509,7 +586,10 @@ final class SetSequence implements
     SortedSet,      /* Set */
     SortedSequence, /* Sequence, Container, \Countable */
     {
-        public function __construct(iterable $iter) {}
+        /**
+         * @param mixed[] $source The values used to fill this sequence.
+         */
+        public function __construct(iterable $source) {}
     }
 
 /**
@@ -545,6 +625,8 @@ final class TreeSet implements
     {
         /**
          * Creates a new tree set using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this tree set.
          */
         public function __construct(callable $comparator = null) {}
     }
@@ -566,6 +648,8 @@ final class MultiSet implements
     {
         /**
          * Creates a new multiset using values from $iter.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this multi set.
          */
         public function __construct(callable $comparator = null) {}
 
@@ -577,11 +661,16 @@ final class MultiSet implements
          *   > 0: Add
          *   < 0: Remove
          *
-         * @return The resulting frequency after the adjustment.
+         * @param mixed $value The value to be adjusted.
+         * @param int   $count The amount by which the value should be adjusted.
+         *
+         * @return int The resulting frequency after the adjustment.
          */
         public function adjust($value, int $count = 1): int {}
 
         /**
+         * @param mixed $value The value of which the frequency is to be inspected.
+         *
          * @return int The number of instances of a given value that $this set
          *             contains, which could be 0 if not in the set at all.
          */
@@ -590,12 +679,16 @@ final class MultiSet implements
         /**
          * Returns an iterator of the values with the highest frequencies, where
          * the key is the element and the value is the frequency.
+         *
+         * @return iterable<mixed, int> The values as keys and their frequency/multiplicity as values.
          */
         public function rank(): iterable {}
 
         /**
          * Creates an iterable where the key is the element in the set and the
          * value is the frequency / multiplicity.
+         *
+         * @return iterable<mixed, int> The values as keys and their frequency/multiplicity as values.
          */
         public function enumerate(): iterable {}
     }
@@ -637,11 +730,15 @@ final class Stack implements
     {
         /**
          * Adds a value to the top of the stack.
+         *
+         * @param mixed ...$values The values to be pushed onto the stack.
          */
         function push(...$values): void;
 
         /**
          * Removes and returns the value at the top of the stack.
+         *
+         * @return mixed The value at the top.
          *
          * @throws EmptyContainerException
          */
@@ -657,11 +754,15 @@ final class Queue implements
     {
         /**
          * Adds a value to the queue.
+         *
+         * @param mixed ...$values The values to be pushed into the queue.
          */
         function push(...$values): void;
 
         /**
          * Removes and returns the next value in the queue.
+         *
+         * @return mixed The next value.
          */
         function shift();
     }
@@ -676,16 +777,22 @@ final class Heap implements
     {
         /**
          * Creates a new heap using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this heap.
          */
         public function __construct(callable $comparator = null) {}
 
         /**
          * Adds a value to the heap.
+         *
+         * @param mixed ...$values The values to be pushed onto the heap.
          */
         public function push(...$values): void {}
 
         /**
          * Removes and returns the value at the top of the heap.
+         *
+         * @return mixed The value at the top.
          *
          * @throws EmptyContainerException
          */
@@ -702,22 +809,32 @@ final class PriorityQueue implements
     {
         /**
          * Creates a new priority queue using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this heap.
          */
         public function __construct(callable $comparator = null) {}
 
         /**
          * Adjusts the priority of a given value, setting it to the return value
          * of the given mutator, then ensures that heap invariants are resolved.
+         *
+         * @param mixed           $value   The value of which the priority should be adjusted.
+         * @param callable(): int $mutator The mutator returning the new priority.
          */
         public function adjust($value, callable $mutator): void {}
 
         /**
          * Adds a value to the priority queue, using a given initial priority.
+         *
+         * @param mixed $value    The value to be pushed into the queue.
+         * @param int   $priority The priority of the inserted value.
          */
-        public function push($value, $priority): void {}
+        public function push($value, int $priority): void {}
 
         /**
          * Removes and returns the value at the front of the priority queue.
+         *
+         * @return mixed The next value.
          *
          * @throws EmptyContainerException
          */
