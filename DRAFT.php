@@ -16,6 +16,7 @@ namespace Ds;
 
 use Countable;
 use RuntimeException;
+use Throwable;
 use Traversable;
 
 /******************************************************************************/
@@ -35,17 +36,17 @@ use Traversable;
  * is undefined, or to avoid ambiguous results. This is a marker interface to
  * support catching all access exceptions.
  */
-interface AccessException {}
+interface AccessException extends Throwable {}
 
 /**
  * Marker interface for all state-related exceptions, such as heap corruption.
  */
-interface StateException {}
+interface StateException extends Throwable {}
 
 /**
  * Should be thrown when an empty container is accessed a clear, obvious result.
  */
-class EmptyStateException implements StateException {}
+class EmptyStateException extends RuntimeException implements StateException {}
 
 /**
  * Should be thrown when an index or key is not within the given access bounds
