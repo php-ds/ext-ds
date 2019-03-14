@@ -429,7 +429,7 @@ final class Allocation implements
         public function capacity(): int {}
 
         /**
-         * Re-allocates this buffer to a new capacity, which may truncate the
+         * Re-sizes this buffer to a new capacity, which may truncate the
          * current buffer. It is up to user to manage this case.
          *
          * @param int $capacity The new capacity to which this buffer should be resized.
@@ -437,7 +437,7 @@ final class Allocation implements
          * @throws RangeException if the capacity is not within the valid range:
          *                        MIN_CAPACITY <= $capacity <= MAX_CAPACITY
          */
-        public function realloc(int $capacity): void {}
+        public function resize(int $capacity): void {}
 
         /**
          * Returns the value at the given offset as a standard value of the type
