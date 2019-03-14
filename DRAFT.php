@@ -63,17 +63,14 @@ interface Clearable
 }
 
 /**
- * Indicates that a structure can be sorted by value.
- *
- * This interface does not guarantee that the sorting algorithm will be stable.
- * Implementations should use a domain-specific tiebreaker when required.
+ * Indicates that a structure can be sorted.
  */
 interface Sortable
 {
     /**
-     * @return static A sorted copy, or $this structure sorted in-place.
+     * Sorts the keys and/or values of $this structure in place.
      */
-    function sort(callable $comparator = null);
+    function sort(callable $comparator = null): void;
 }
 
 /**
