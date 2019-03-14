@@ -23,20 +23,25 @@ use Traversable;
 /******************************************************************************/
 
 /**
+ * A marker interface that is implemented by all exceptions within this library. 
+ */
+interface Exception implements Throwable {}
+
+/**
  * Should be thrown when an empty container is polled in an empty state.
  */
-class EmptyContainerException extends LogicException {}
+class EmptyContainerException extends RuntimeException implements Exception {}
 
 /**
  * Should be thrown when a key is not supported.
  */
-class InvalidKeyException extends LogicException {}
+class InvalidKeyException extends LogicException implements Exception {}
 
 /**
  * Should be thrown when an index or key is not within the given access bounds
  * of a structure, such as attempting to access beyond the length.
  */
-class InvalidOffsetException extends LogicException {}
+class InvalidOffsetException extends LogicException implements Exception {}
 
 /******************************************************************************/
 /*                                INTERFACES                                  */
@@ -114,8 +119,6 @@ interface Container extends \Countable
 /**
  * Indicates that a structure can be accessed using a zero-based integer index
  * indicating the position of an element from the beginning of the structure.
- *
- * We extend Container because it should always be possible to determine bounds.
  */
 interface Sequence extends Container
 {
@@ -190,6 +193,8 @@ interface SortedSequence extends Sequence
 /**
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
+ * 
+ * 
  */
 interface Set
 {
@@ -338,6 +343,7 @@ interface Transferable
  */
 final class Allocation implements
     ArrayAccess,
+    Equatable,  /* Same type, capacity and values at each offset. */
     Clearable,
     Sortable
     {
@@ -426,8 +432,9 @@ final class Allocation implements
  */
 final class Tuple implements
     Traversable,
+    Equatable,
     Sequence,  /* Container, \Countable */
-    Hashable   /* Immutable */
+    Hashable   /* Equatable, Immutable */
     {
         public function __construct(iterable $iter) {}
     }
@@ -438,6 +445,7 @@ final class Tuple implements
 final class Vector implements
     ArrayAccess,
     Traversable,
+    Equatable,      /* Same values in the same order. */
     Clearable,
     Container,
     Sortable,
@@ -460,10 +468,12 @@ final class Vector implements
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
+    Equatable,        /* Same values in the same order. */
     Clearable,
     Container,
-    Transferable,
-    MutableSequence  /* Sequence, Container, \Countable */
+    Sortable,
+    MutableSequence,  /* Sequence, Container, \Countable */
+    Transferable
     {
         /**
          * Adds one or more values to the end of the deque.
@@ -496,6 +506,7 @@ final class Deque implements
 final class SetSequence implements
     ArrayAccess,
     Traversable,
+    Equatable,      /* Same values in the same order. */
     Container,
     Immutable,
     SortedSet,      /* Set */
@@ -511,6 +522,7 @@ final class SetSequence implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
+    Equatable,    /* Same values in the same order. */
     Clearable,
     Container,
     Transferable,
@@ -528,6 +540,7 @@ final class HashSet implements
  */
 final class TreeSet implements
     Traversable,
+    Equatable,  /* Same values in the same order. */
     Clearable,
     Container,
     MutableSet, /* Set */
@@ -548,10 +561,11 @@ final class TreeSet implements
 final class MultiSet implements
     ArrayAccess,
     Traversable,
+    Equatable,    /* Same values and frequencies. */
     Transferable,
     Container,
     Clearable,
-    MutableSet     /* Set */
+    MutableSet    /* Set */
     {
         /**
          * Creates a new multiset using values from $iter.
@@ -597,6 +611,7 @@ final class MultiSet implements
 final class HashMap implements
     ArrayAccess,
     Traversable,
+    Equatable,  /* Same key => value associations, ordering not considered. */
     Container,
     Clearable,
     Sortable,
@@ -609,6 +624,7 @@ final class HashMap implements
 final class TreeMap implements
     ArrayAccess,
     Traversable,
+    Equatable,  /* Same key => value associations. */
     Container,
     Clearable,
     MutableMap, /* Map */
