@@ -674,7 +674,7 @@ final class MultiSet implements
          * @return int The number of instances of a given value that $this set
          *             contains, which could be 0 if not in the set at all.
          */
-        public function freq($value): int {}
+        public function frequencyOf($value): int {}
 
         /**
          * Returns an iterator of the values with the highest frequencies, where
