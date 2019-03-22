@@ -23,7 +23,7 @@ use Traversable;
 /******************************************************************************/
 
 /**
- * A marker interface that is implemented by all exceptions within this library. 
+ * A marker interface that is implemented by all exceptions within this library.
  */
 interface Exception implements Throwable {}
 
@@ -50,7 +50,7 @@ class InvalidOffsetException extends LogicException implements Exception {}
 /**
  * Marker interface to indicate that a class is immutable.
  */
-interface Immutable 
+interface Immutable
 {
 }
 
@@ -68,18 +68,21 @@ interface Clearable
 interface Sortable
 {
     /**
-     * Sorts the keys and/or values of $this structure in place.
+     * Sorts the keys and/or values of $this structure.
      *
-     * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this this sortable.
+     * This interface does not specify whether sorting is done in-place or not.
+     *
+     * @return static A sorted version of $this structure,
+     *                which could be itself or a sorted copy.
      */
-    function sort(callable $comparator = null): void;
+    function sort(callable $comparator = null): self;
 }
 
 /**
  * Indicates that an object is designed to be equated using `==`.
  * The operator will be overloaded for all classes that implement Equatable.
  */
-interface Equatable 
+interface Equatable
 {
     /**
      * @param static $other The other structure to compare with.
@@ -97,7 +100,7 @@ interface Hashable extends Equatable, Immutable
     /**
      * @return mixed A scalar value to be used when generating a hashcode.
      */
-    function getHashSource(): string;
+    function hashSource(): string;
 }
 
 /**
@@ -121,7 +124,7 @@ interface Container extends \Countable
  * Indicates that a structure can be accessed using a zero-based integer index
  * indicating the position of an element from the beginning of the structure.
  */
-interface Sequence extends Container
+interface Sequence extends \Countable
 {
     /**
      * @param mixed $value The value to look for.
@@ -131,7 +134,7 @@ interface Sequence extends Container
      * @throws InvalidOffsetException if the $offset is not within [0, size).
      */
     function get(int $offset);
-    
+
     /**
      * @param mixed $value The value to search for.
      *
@@ -199,17 +202,54 @@ interface MutableSequence extends Sequence
 }
 
 /**
+ * A sequence which can be modified, either in-place or as a copy.
+ */
+interface ImmutableSequence extends Sequence, Immutable
+{
+    /**
+     * Sets the value at the given offset.
+     *
+     * @param int   $offset The offset at which the value should be set.
+     * @param mixed $value  The value to set.
+     *
+     * @throws InvalidOffsetException if the index is not within [0, size)
+     */
+    function set(int $offset, $value): ImmutableSequence;
+
+    /**
+     * Removes the value at the given offset, moving all successive
+     * values one position towards the front.
+     *
+     * @param int The offset to be removed.
+     *
+     * @throws InvalidOffsetException if the index is not within [0, size)
+     */
+    function unset(int $offset): ImmutableSequence;
+
+    /**
+     * Moves all values between the given index and the end of the sequence
+     * towards the back, then inserts the given values into the gap.
+     *
+     * @param int   $offset    The offset to insert values at.
+     * @param mixed ...$values The value to insert at the specified offset.
+     *
+     * @throws InvalidOffsetException if the index is out of range [0, size]
+     */
+    function insert(int $offset, ...$values): ImmutableSequence;
+}
+
+/**
  * Indicates that a structure is a sequence that is always sorted.
  */
-interface SortedSequence extends Sequence 
+interface SortedSequence extends Sequence
 {
 }
 
 /**
  * Indicates that a structure is designed to quickly determine whether a given
  * value is already contained by it.
- * 
- * 
+ *
+ *
  */
 interface Set
 {
@@ -274,10 +314,78 @@ interface MutableSet extends Set
 }
 
 /**
+ * A set which can be modified, either in-place or as a copy.
+ */
+interface ImmutableSet extends Set, Immutable
+{
+    /**
+     * @param mixed ...$values The values to be added.
+     *
+     * Adds the given value to $this set if it is not already in $this set.
+     */
+    function add(...$values): ImmutableSet;
+
+    /**
+     * @param mixed $value The value to be removed.
+     *
+     * Removes a given value from $this set, or does nothing if that value could
+     * not be found. The caller can use `has` to determine membership before
+     * removal. This method therefore promises only that the given value is not
+     * a member of the set on return.
+     */
+    function remove($value): ImmutableSet;
+}
+
+/**
  * Indicates that a structure is a set that is always sorted.
  */
-interface SortedSet extends Set 
+interface SortedSet extends Set
 {
+}
+
+/**
+ * A set that allows duplicate values, and keeps a count of the number of times
+ * a value appears in the set.
+ */
+interface MultiSet extends Set
+{
+    /**
+     * @param mixed $value The value of which the frequency is to be inspected.
+     *
+     * @return int The number of instances of a given value that $this set
+     *             contains, which could be 0 if not in the set at all.
+     */
+    public function countOf($value): int {}
+
+    /**
+     * Adjusts the count of a value by a given count. If the resulting count
+     * becomes <= 0, the value will be removed. If a value is not already in
+     * the set, it will be added before the count is adjusted.
+     *
+     *   > 0: Add
+     *   < 0: Remove
+     *
+     * @param mixed $value The value to be adjusted.
+     * @param int   $count The amount by which the value should be adjusted.
+     *
+     * @return int The resulting frequency after the adjustment.
+     */
+    public function adjust($value, int $count): int {}
+
+    /**
+     * Returns an iterator of the values with the highest frequencies, where
+     * the key is the element and the value is the frequency.
+     *
+     * @return iterable<mixed, int> The values as keys and their frequency as values.
+     */
+    public function rank(): iterable {}
+
+    /**
+     * Creates an iterable where keys are produced multiple times based on their frequency.
+     *
+     * @return iterable<int, mixed> Keys as values, possibly multiple times.
+     */
+    public function enumerate(): iterable {}
 }
 
 /**
@@ -345,9 +453,34 @@ interface MutableMap extends Map
 }
 
 /**
- * Indicates that a structure is a map that is always sorted.
+ * A map which can be modified, either in-place or as a copy.
  */
-interface SortedMap extends Map 
+interface ImmutableMap extends Map, Immutable
+{
+    /**
+     * Associates the $key with the $value, overriding any previous association.
+     *
+     * @param mixed $key   The key to set the value for.
+     * @param mixed $value The value to set.
+     *
+     * @throws InvalidKeyException if the map implementation does not support
+     *                             the given key, eg. NULL
+     */
+    function set($key, $value): ImmutableMap;
+
+    /**
+     * Removes the given $key from the map, and does nothing if they key could
+     * not be found. This emulates `unset`
+     *
+     * @param mixed $key The key at which the value should be unset.
+     */
+    function unset($key): ImmutableMap;
+}
+
+/**
+ * Indicates that a structure is a map that is always sorted by key.
+ */
+interface SortedMap extends Map
 {
 }
 
@@ -382,9 +515,9 @@ interface Transferable
 /**
  *
  */
-final class Allocation implements
+final class Buffer implements
     ArrayAccess,
-    Equatable,  /* Same type, capacity and values at each offset. */
+    Equatable,  /* Same type, size and values at each offset. */
     Clearable,
     Sortable
     {
@@ -398,25 +531,26 @@ final class Allocation implements
         /**
          * Allow buffers to be truncated to 0.
          */
-        public const MIN_CAPACITY = 0;
+        public const MIN_SIZE = 0;
 
         /**
-         * We must be able to accept and return capacity as integer, so we can
-         * only support up to max int values. This is absolutely massive though
-         * so should be incredibly rare to approach.
+         * We must be able to accept and return size as integer, so we can only
+         * support up to max int values. This is absolutely massive though so
+         * should be incredibly rare to approach.
          *
          * @todo Should we consider when USE_ZEND_ALLOC might be 0? Is this a
          *       potential security or buffer overflow issue? I'm not sure...
          */
-        public const MAX_CAPACITY = PHP_INT_MAX;
+        public const MAX_SIZE = PHP_INT_MAX;
 
         /**
          * @param int $capacity Initial capacity of the structure.
-         * @param int $type     The type for which the allocation is being made (one of Allocation::Type_* constants).
+         * @param int $type     Value type of the buffer, which must be one of
+         *                      the Buffer::Type_* constants.
          *
          * @throws UnexpectedValueException if the type is not a valid constant.
          */
-        public function __construct(int $capacity, int $type) {}
+        public function __construct(int $size, int $type) {}
 
         /**
          * @return int The type of the values in this buffer.
@@ -424,20 +558,20 @@ final class Allocation implements
         public function type(): int {}
 
         /**
-         * @return int The current capacity of this buffer.
+         * @return int The current size of this buffer.
          */
-        public function capacity(): int {}
+        public function size(): int {}
 
         /**
-         * Re-sizes this buffer to a new capacity, which may truncate the
-         * current buffer. It is up to user to manage this case.
+         * Re-sizes this buffer to a new size, which may truncate the current buffer.
+         * It is up to user to manage this case.
          *
-         * @param int $capacity The new capacity to which this buffer should be resized.
+         * @param int $size The new size to which this buffer should be resized.
          *
-         * @throws RangeException if the capacity is not within the valid range:
-         *                        MIN_CAPACITY <= $capacity <= MAX_CAPACITY
+         * @throws RangeException if the size is not within the valid range:
+         *                        MIN_SIZE <= $size <= MAX_SIZE
          */
-        public function resize(int $capacity): void {}
+        public function resize(int $size): void {}
 
         /**
          * Returns the value at the given offset as a standard value of the type
@@ -449,7 +583,7 @@ final class Allocation implements
          *
          * @return mixed The value at the specified offset.
          *
-         * @throws InvalidOffsetException if the offset is not within [0, capacity)
+         * @throws InvalidOffsetException if the offset is not within [0, size)
          */
         public function offsetGet($offset) {}
 
@@ -461,7 +595,7 @@ final class Allocation implements
          * @param mixed $offset The offset at which to set the new value.
          * @param mixed $value  The value to set at the specified offset.
          *
-         * @throws InvalidOffsetException if the offset is not within [0, capacity)
+         * @throws InvalidOffsetException if the offset is not within [0, size)
          */
         public function offsetSet($offset, $value): void {}
 
@@ -470,14 +604,14 @@ final class Allocation implements
          *
          * @param mixed $offset The offset at which to unset a value.
          *
-         * @throws InvalidOffsetException if the offset is not within [0, capacity),
+         * @throws InvalidOffsetException if the offset is not within [0, size),
          *                         unless called as part of a silent `unset`.
          */
         public function offsetUnset($offset): void {}
 
         /**
          * Returns whether there is a non-NULL value at the given offset. This
-         * method returns FALSE if the offset is not within [0, capacity).
+         * method returns FALSE if the offset is not within [0, size).
          *
          * @param mixed $offset The offset at which to look for a value.
          *
@@ -491,8 +625,10 @@ final class Allocation implements
  */
 final class Tuple implements
     Traversable,
+    Immutable,
     Equatable,
-    Sequence,  /* Container, \Countable */
+    Container, /* \Countable */
+    Sequence,  /* \Countable */
     Hashable   /* Equatable, Immutable */
     {
         /**
@@ -509,16 +645,16 @@ final class Vector implements
     Traversable,
     Equatable,      /* Same values in the same order. */
     Clearable,
-    Container,
+    Container,      /* \Countable */
     Sortable,
-    MutableSequence /* Sequence, Container, \Countable */
+    MutableSequence /* Sequence, \Countable */
     {
         /**
          * Adds one or more values to the end of the vector.
          *
          * @param mixed ...$values The values to append to the vector.
          */
-        function push(...$values): void;
+        public function push(...$values): void;
 
         /**
          * Removes and returns the value at the end of the vector.
@@ -527,26 +663,64 @@ final class Vector implements
          *
          * @throws EmptyContainerException
          */
-        function pop();
+        public function pop();
+    }
+
+/**
+ * List structure, dynamic size, contiguous, no ops at the front.
+ */
+final class ImmutableVector implements
+    ArrayAccess,
+    Traversable,
+    Equatable,        /* Same values in the same order. */
+    Container,        /* \Countable */
+    Sortable,
+    ImmutableSequence /* Sequence, \Countable, Immutable */
+    {
+        /**
+         * Adds one or more values to the end of the vector.
+         *
+         * @param mixed ...$values The values to append to the vector.
+         */
+        public function push(...$values): ImmutableVector;
+
+        /**
+         * Returns the value at the end of the vector.
+         *
+         * @return mixed The value at the end of the vector.
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek();
+
+        /**
+         * Removes and returns the value at the end of the vector.
+         *
+         * @return mixed The value at the end of the vector.
+         *
+         * @throws EmptyContainerException
+         */
+        public function pop(): ImmutableVector;
     }
 
 /**
  * Double-ended-queue, supports prepend and append, but nothing in-between.
  */
 final class Deque implements
+    Traversable,
     Equatable,        /* Same values in the same order. */
     Clearable,
-    Container,
+    Container,        /* \Countable */
     Sortable,
-    MutableSequence,  /* Sequence, Container, \Countable */
-    Transferable
+    Sequence,         /* \Countable */
+    Transferable,
     {
         /**
          * Adds one or more values to the end of the deque.
          *
          * @param mixed ...$values The values to push at the end of this deque.
          */
-        function push(...$values): void;
+        public function push(...$values): void {}
 
         /**
          * Removes and returns the value at the end of the deque.
@@ -555,14 +729,14 @@ final class Deque implements
          *
          * @throws EmptyContainerException
          */
-        function pop();
+        public function pop() {}
 
         /**
          * Adds one or more values to the start of the deque.
          *
          * @param mixed ...$values The values to insert to the start of this deque.
          */
-        public function unshift(...$values): void;
+        public function unshift(...$values): void {}
 
         /**
          * Removes and returns the value at the start of the deque.
@@ -571,7 +745,53 @@ final class Deque implements
          *
          * @throws EmptyContainerException
          */
-        function shift();
+        public function shift() {}
+    }
+
+/**
+ * Double-ended-queue.
+ */
+final class ImmutableDeque implements
+    Traversable,
+    Equatable,          /* Same values in the same order. */
+    Clearable,
+    Container,          /* \Countable */
+    Sortable,
+    Sequence,           /* \Countable */
+    Immutable,
+    Transferable
+    {
+        /**
+         * Adds one or more values to the end of the deque.
+         *
+         * @param mixed ...$values The values to push at the end of this deque.
+         */
+        public function push(...$values): ImmutableDeque {}
+
+        /**
+         * Removes and returns the value at the end of the deque.
+         *
+         * @return ImmutableDeque
+         *
+         * @throws EmptyContainerException
+         */
+        public function pop(): ImmutableDeque {}
+
+        /**
+         * Adds one or more values to the start of the deque.
+         *
+         * @param mixed ...$values The values to insert to the start of this deque.
+         */
+        public function unshift(...$values): ImmutableDeque {}
+
+        /**
+         * Removes and returns the value at the start of the deque.
+         *
+         * @return ImmutableDeque
+         *
+         * @throws EmptyContainerException
+         */
+        public function shift(): ImmutableDeque {}
     }
 
 /**
@@ -581,10 +801,10 @@ final class SetSequence implements
     ArrayAccess,
     Traversable,
     Equatable,      /* Same values in the same order. */
-    Container,
+    Container,      /* \Countable */
     Immutable,
     SortedSet,      /* Set */
-    SortedSequence, /* Sequence, Container, \Countable */
+    SortedSequence, /* Sequence, \Countable */
     {
         /**
          * @param mixed[] $source The values used to fill this sequence.
@@ -599,15 +819,29 @@ final class SetSequence implements
 final class HashSet implements
     ArrayAccess,
     Traversable,
+    Transferable,
     Equatable,    /* Same values in the same order. */
     Clearable,
-    Container,
-    Transferable,
+    Container,    /* \Countable */
     Sortable,
-    Sequence,     /* Container, \Countable */
+    Sequence,     /* \Countable */
     MutableSet    /* Set */
     {}
 
+/**
+ *
+ */
+final class ImmutableHashSet implements
+    ArrayAccess,
+    Traversable,
+    Transferable,
+    Equatable,    /* Same values in the same order. */
+    Clearable,
+    Container,    /* \Countable */
+    Sortable,
+    Sequence,     /* \Countable */
+    ImmutableSet  /* Set, Immutable */
+    {}
 /**
  * A structure that is always sorted and does not allow duplicate elements.
  *
@@ -619,7 +853,7 @@ final class TreeSet implements
     Traversable,
     Equatable,  /* Same values in the same order. */
     Clearable,
-    Container,
+    Container,  /* \Countable */
     MutableSet, /* Set */
     SortedSet   /* Set */
     {
@@ -631,20 +865,54 @@ final class TreeSet implements
         public function __construct(callable $comparator = null) {}
     }
 
- /**
- * A set that allows duplicate values, and keeps a count of the number of times
- * a value appears in the set. This is a set because we can determine whether
- * it contains a value _at all_, and it is also a sequence because the traversal
- * can yield a value more than once.
+/**
+ *
  */
-final class MultiSet implements
+final class ImmutableTreeSet implements
+    Traversable,
+    Equatable,    /* Same values in the same order. */
+    Clearable,
+    Container,    /* \Countable */
+    ImmutableSet, /* Set, Immutable */
+    SortedSet     /* Set */
+    {
+        /**
+         * Creates a new tree set using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this tree set.
+         */
+        public function __construct(callable $comparator = null) {}
+    }
+
+/**
+ * A set that allows duplicate values, and keeps a count of the number of times
+ * a value appears in the set.
+ */
+final class HashMultiSet implements
+    ArrayAccess,
+    Traversable,
+    Transferable,
+    Equatable,    /* Same values and frequencies. */
+    Clearable,
+    Container,    /* \Countable */
+    MutableSet,   /* Set */
+    MultiSet      /* Set */
+    {}
+
+/**
+ * A set that allows duplicate values, and keeps a count of the number of times
+ * a value appears in the set.
+ */
+final class TreeMultiSet implements
     ArrayAccess,
     Traversable,
     Equatable,    /* Same values and frequencies. */
     Transferable,
-    Container,
+    Container,    /* \Countable */
     Clearable,
-    MutableSet    /* Set */
+    MutableSet,   /* Set */
+    SortedSet,    /* Set */
+    MultiSet      /* Set */
     {
         /**
          * Creates a new multiset using values from $iter.
@@ -652,45 +920,6 @@ final class MultiSet implements
          * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this multi set.
          */
         public function __construct(callable $comparator = null) {}
-
-        /**
-         * Adjusts the count of a value by a given count. If the resulting count
-         * becomes <= 0, the value will be removed. If a value is not already in
-         * the set, it will be added before the count is adjusted.
-         *
-         *   > 0: Add
-         *   < 0: Remove
-         *
-         * @param mixed $value The value to be adjusted.
-         * @param int   $count The amount by which the value should be adjusted.
-         *
-         * @return int The resulting frequency after the adjustment.
-         */
-        public function adjust($value, int $count = 1): int {}
-
-        /**
-         * @param mixed $value The value of which the frequency is to be inspected.
-         *
-         * @return int The number of instances of a given value that $this set
-         *             contains, which could be 0 if not in the set at all.
-         */
-        public function freq($value): int {}
-
-        /**
-         * Returns an iterator of the values with the highest frequencies, where
-         * the key is the element and the value is the frequency.
-         *
-         * @return iterable<mixed, int> The values as keys and their frequency/multiplicity as values.
-         */
-        public function rank(): iterable {}
-
-        /**
-         * Creates an iterable where the key is the element in the set and the
-         * value is the frequency / multiplicity.
-         *
-         * @return iterable<mixed, int> The values as keys and their frequency/multiplicity as values.
-         */
-        public function enumerate(): iterable {}
     }
 
 /**
@@ -702,10 +931,23 @@ final class HashMap implements
     ArrayAccess,
     Traversable,
     Equatable,  /* Same key => value associations, ordering not considered. */
-    Container,
+    Container,  /* \Countable */
     Clearable,
     Sortable,
     MutableMap  /* Map */
+    {}
+
+/**
+ *
+ */
+final class ImmutableHashMap implements
+    ArrayAccess,
+    Traversable,
+    Equatable,  /* Same key => value associations, ordering not considered. */
+    Container,  /* \Countable */
+    Clearable,
+    Sortable,
+    ImmutableMap  /* Map, Immutable */
     {}
 
 /**
@@ -715,17 +957,30 @@ final class TreeMap implements
     ArrayAccess,
     Traversable,
     Equatable,  /* Same key => value associations. */
-    Container,
+    Container,  /* \Countable */
     Clearable,
     MutableMap, /* Map */
     SortedMap   /* Map */
     {}
 
 /**
+ *
+ */
+final class ImmutableTreeMap implements
+    ArrayAccess,
+    Traversable,
+    Equatable,    /* Same key => value associations. */
+    Container,    /* \Countable */
+    Clearable,
+    ImmutableMap, /* Map, Immutable */
+    SortedMap     /* Map */
+    {}
+
+/**
  * A basic first-in-last-out structure.
  */
 final class Stack implements
-    Container,
+    Container,   /* \Countable */
     Transferable
     {
         /**
@@ -733,7 +988,7 @@ final class Stack implements
          *
          * @param mixed ...$values The values to be pushed onto the stack.
          */
-        function push(...$values): void;
+        public function push(...$values): void {}
 
         /**
          * Removes and returns the value at the top of the stack.
@@ -742,36 +997,101 @@ final class Stack implements
          *
          * @throws EmptyContainerException
          */
-        function pop();
+        public function pop() {}
+    }
+
+/**
+ * A basic first-in-last-out structure.
+ */
+final class ImmutableStack implements
+    Container,   /* \Countable */
+    Transferable,
+    Immutable
+    {
+        /**
+         * Adds a value to the top of the stack.
+         *
+         * @param mixed ...$values The values to be pushed onto the stack.
+         */
+        public function push(...$values): ImmutableStack {}
+
+        /**
+         * Returns the value at the top of the stack.
+         *
+         * @return mixed The value at the top.
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek() {}
+
+        /**
+         *
+         *
+         * @return ImmutableStack
+         *
+         * @throws EmptyContainerException
+         */
+        public function pop(): ImmutableStack {}
     }
 
 /**
  * A basic first-in-first-out structure.
  */
 final class Queue implements
-    Container,
-    Transferable
+    Container,   /* \Countable */
+    Transferable,
+    Immutable
     {
         /**
          * Adds a value to the queue.
          *
          * @param mixed ...$values The values to be pushed into the queue.
          */
-        function push(...$values): void;
+        public function push(...$values): void {}
 
         /**
          * Removes and returns the next value in the queue.
          *
          * @return mixed The next value.
          */
-        function shift();
+        public function shift();
+    }
+
+/**
+ * A basic first-in-first-out structure.
+ */
+final class ImmutableQueue implements
+    Container,   /* \Countable */
+    Transferable,
+    Immutable
+    {
+        /**
+         * Adds a value to the queue.
+         *
+         * @param mixed ...$values The values to be pushed into the queue.
+         */
+        public function push(...$values): ImmutableQueue {}
+
+        /**
+         * Returns the next value in the queue.
+         *
+         * @return mixed The next value.
+         */
+        public function peek();
+
+        /**
+         *
+         *
+         * @return ImmutableQueue
+         */
+        public function shift(): ImmutableQueue;
     }
 
 /**
  * Stable heap with an optional comparator, defaulting to minimum.
  */
 final class Heap implements
-    Container,
+    Container,   /* \Countable */
     Clearable,
     Transferable
     {
@@ -800,10 +1120,52 @@ final class Heap implements
     }
 
 /**
+ * Stable heap with an optional comparator, defaulting to minimum.
+ */
+final class ImmutableHeap implements
+    Container,   /* \Countable */
+    Clearable,
+    Transferable,
+    Immutable
+    {
+        /**
+         * Creates a new heap using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this heap.
+         */
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Adds a value to the heap.
+         *
+         * @param mixed ...$values The values to be pushed onto the heap.
+         */
+        public function push(...$values): ImmutableHeap {}
+
+        /**
+         * Returns the value at the top of the heap.
+         *
+         * @return mixed
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek() {}
+
+        /**
+         *
+         *
+         * @return ImmutableHeap
+         *
+         * @throws EmptyContainerException
+         */
+        public function shift(): ImmutableHeap {}
+    }
+
+/**
  * A queue that yields values in order of priority, from high to low.
  */
 final class PriorityQueue implements
-    Container,
+    Container,   /* \Countable */
     Clearable,
     Transferable
     {
@@ -827,9 +1189,9 @@ final class PriorityQueue implements
          * Adds a value to the priority queue, using a given initial priority.
          *
          * @param mixed $value    The value to be pushed into the queue.
-         * @param int   $priority The priority of the inserted value.
+         * @param mixed $priority The priority of the inserted value.
          */
-        public function push($value, int $priority): void {}
+        public function push($value, $priority): void {}
 
         /**
          * Removes and returns the value at the front of the priority queue.
@@ -839,4 +1201,57 @@ final class PriorityQueue implements
          * @throws EmptyContainerException
          */
         public function shift() {}
+    }
+
+
+/**
+ * A queue that yields values in order of priority, from high to low.
+ */
+final class ImmutablePriorityQueue implements
+    Container,   /* \Countable */
+    Clearable,
+    Transferable,
+    Immutable
+    {
+        /**
+         * Creates a new priority queue using an optional comparator.
+         *
+         * @param (callable(mixed $a, mixed $b): int)|null $comparator The comparator used to sort this heap.
+         */
+        public function __construct(callable $comparator = null) {}
+
+        /**
+         * Adjusts the priority of a given value, setting it to the return value
+         * of the given mutator, then ensures that heap invariants are resolved.
+         *
+         * @param mixed           $value   The value of which the priority should be adjusted.
+         * @param callable(): int $mutator The mutator returning the new priority.
+         */
+        public function adjust($value, callable $mutator): ImmutablePriorityQueue {}
+
+        /**
+         * Adds a value to the priority queue, using a given initial priority.
+         *
+         * @param mixed $value    The value to be pushed into the queue.
+         * @param mixed $priority The priority of the inserted value.
+         */
+        public function push($value, $priority): ImmutablePriorityQueue {}
+
+        /**
+         * Returns the value at the front of the priority queue.
+         *
+         * @return mixed The next value.
+         *
+         * @throws EmptyContainerException
+         */
+        public function peek() {}
+
+        /**
+         *
+         *
+         * @return ImmutablePriorityQueue
+         *
+         * @throws EmptyContainerException
+         */
+        public function shift(): ImmutablePriorityQueue {}
     }
