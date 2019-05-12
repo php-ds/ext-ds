@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.2.9] - 2019-05-11
+### Fixed
+- Segfault when iterating an implicit instance of Stack, Queue or PriorityQueue
+
 ## [1.2.8] - 2019-01-24
 ### Fixed
 - Fixed buffer outflow during deserialization of map objects. #132 @rado-h

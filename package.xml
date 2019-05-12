@@ -16,10 +16,10 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2019-01-24</date>
+    <date>2019-05-11</date>
     <time>16:47:19</time>
     <version>
-        <release>1.2.8</release>
+        <release>1.2.9</release>
         <api>1.1.0</api>
     </version>
     <stability>
@@ -28,7 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Fixed buffer outflow during deserialization of map objects. @rado-h
+        - Segfault when iterating an implicit instance of Stack, Queue or PriorityQueue
     </notes>
     <contents>
         <dir name="/">
