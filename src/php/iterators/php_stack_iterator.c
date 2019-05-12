@@ -4,7 +4,9 @@
 
 static void php_ds_stack_iterator_dtor(zend_object_iterator *iter)
 {
-
+    zval tmp;
+    ZVAL_OBJ(&tmp, (zend_object *) ((php_ds_stack_iterator_t *) iter)->stack);
+    zval_ptr_dtor(&tmp);
 }
 
 static int php_ds_stack_iterator_valid(zend_object_iterator *iter)
@@ -21,12 +23,12 @@ static void php_ds_stack_iterator_get_current_key(zend_object_iterator *iter, zv
     ZVAL_LONG(key, ((php_ds_stack_iterator_t *) iter)->position);
 }
 
-static void php_ds_stack_iterator_set_current(ds_stack_t *stack, zval *data)
+static void php_ds_stack_iterator_set_current(php_ds_stack_t *stack, zval *data)
 {
-    if (DS_STACK_IS_EMPTY(stack)) {
+    if (DS_STACK_IS_EMPTY(stack->stack)) {
         ZVAL_UNDEF(data);
     } else {
-        ds_stack_pop(stack, data);
+        ds_stack_pop(stack->stack, data);
         Z_TRY_DELREF_P(data);
     }
 }
@@ -67,8 +69,16 @@ zend_object_iterator *php_ds_stack_get_iterator(zend_class_entry *ce, zval *obje
     zend_iterator_init((zend_object_iterator*) iterator);
 
     iterator->intern.funcs = &php_ds_stack_iterator_funcs;
-    iterator->stack        = Z_DS_STACK_P(object);
+    iterator->stack        = (php_ds_stack_t *) Z_OBJ_P(object);
     iterator->position     = 0;
+
+    // Add a reference to the object so that it doesn't get collected when
+    // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
+#if PHP_VERSION_ID >= 70300
+    GC_ADDREF((zend_object *) iterator->stack);
+#else
+    ++GC_REFCOUNT((zend_object *) iterator->stack);
+#endif
 
     return (zend_object_iterator *) iterator;
 }

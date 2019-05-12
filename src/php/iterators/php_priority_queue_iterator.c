@@ -74,5 +74,13 @@ zend_object_iterator *php_ds_priority_queue_get_iterator(zend_class_entry *ce, z
     iterator->queue        = Z_DS_PRIORITY_QUEUE_P(object);
     iterator->position     = 0;
 
+    // Add a reference to the object so that it doesn't get collected when
+    // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
+#if PHP_VERSION_ID >= 70300
+    GC_ADDREF(Z_OBJ_P(object));
+#else
+    ++GC_REFCOUNT(Z_OBJ_P(object));
+#endif
+
     return (zend_object_iterator *) iterator;
 }
