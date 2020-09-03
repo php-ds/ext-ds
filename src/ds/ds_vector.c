@@ -64,9 +64,9 @@ ds_vector_t *ds_vector_from_buffer(zval *buffer, zend_long capacity, zend_long s
         capacity = DS_VECTOR_MIN_CAPACITY;
     }
 
-    vector->buffer      = buffer;
-    vector->capacity    = capacity;
-    vector->size        = size;
+    vector->buffer   = buffer;
+    vector->capacity = capacity;
+    vector->size     = size;
 
     return vector;
 }
@@ -551,7 +551,7 @@ ds_vector_t *ds_vector_map(ds_vector_t *vector, FCI_PARAMS)
 {
     zval retval;
     zval *value;
-    zval *buffer = ds_allocate_zval_buffer(vector->size);
+    zval *buffer = ds_allocate_zval_buffer(vector->capacity);
     zval *target = buffer;
 
     DS_VECTOR_FOREACH(vector, value) {

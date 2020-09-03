@@ -271,7 +271,7 @@ void php_ds_register_vector()
 
     INIT_CLASS_ENTRY(ce, PHP_DS_NS(Vector), methods);
 
-    php_ds_vector_ce = zend_register_internal_class(&ce);
+    php_ds_vector_ce                 = zend_register_internal_class(&ce);
     php_ds_vector_ce->ce_flags      |= ZEND_ACC_FINAL;
     php_ds_vector_ce->create_object  = php_ds_vector_create_object;
     php_ds_vector_ce->get_iterator   = php_ds_vector_get_iterator;
