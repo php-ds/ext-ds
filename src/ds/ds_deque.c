@@ -566,14 +566,14 @@ void ds_deque_to_array(ds_deque_t *deque, zval *array)
     }
 }
 
-int ds_deque_index_exists(ds_deque_t *deque, zend_long index)
+bool ds_deque_index_exists(ds_deque_t *deque, zend_long index)
 {
     return index >= 0 && index < deque->size;
 }
 
 bool ds_deque_isset(ds_deque_t *deque, zend_long index, int check_empty)
 {
-    if (index < 0 || index >= deque->size) {
+    if (!ds_deque_index_exists(deque, index)) {
         return false;
     }
 

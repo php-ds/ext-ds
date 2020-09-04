@@ -31,6 +31,7 @@ ARGINFO_CALLABLE_RETURN_DS(                 Set_map, callback, Set);
 ARGINFO_NONE(                               Set_reverse);
 ARGINFO_NONE_RETURN_DS(                     Set_reversed, Set);
 ARGINFO_NONE(                               Set_sum);
+ARGINFO_NONE_RETURN_OBJ(					Set_getIterator, Traversable);
 
 void php_ds_register_set();
 

@@ -13,6 +13,7 @@ ARGINFO_NONE_RETURN_LONG(       Stack_capacity);
 ARGINFO_VARIADIC_ZVAL(          Stack_push, values);
 ARGINFO_NONE(                   Stack_pop);
 ARGINFO_NONE(                   Stack_peek);
+ARGINFO_NONE_RETURN_OBJ(		Stack_getIterator, Traversable);
 
 void php_ds_register_stack();
 

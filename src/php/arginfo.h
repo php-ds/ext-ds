@@ -82,24 +82,32 @@ ZEND_ARG_TYPE_INFO(0, i, IS_LONG, 0) \
 ZEND_ARG_VARIADIC_INFO(0, v) \
 ZEND_END_ARG_INFO()
 
-#if PHP_VERSION_ID >= 70200
-#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, class_name, allow_null) \
+#if PHP_VERSION_ID >= 80000
+#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null, 0), pass_by_ref},
+#elif PHP_VERSION_ID >= 70200
+#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null), return_reference, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null), pass_by_ref, 0 },
 #else
-#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, return_reference, required_num_args, class_name, allow_null) \
+#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), PHP_DS_NS_NAME#class_name, IS_OBJECT, return_reference, allow_null, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), PHP_DS_NS_NAME#class_name, IS_OBJECT, pass_by_ref, allow_null, 0 },
 #endif
 
-#if PHP_VERSION_ID >= 70200
-#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+#if PHP_VERSION_ID >= 80000
+#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, pass_by_ref, required_num_args, type, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CODE(type, allow_null, _ZEND_ARG_INFO_FLAGS(pass_by_ref, 0)) },
+#elif PHP_VERSION_ID >= 70200
+#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, pass_by_ref, required_num_args, type, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE(type, allow_null), return_reference, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE(type, allow_null), pass_by_ref, 0 },
 #else
-#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, return_reference, required_num_args, type, allow_null) \
+#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, pass_by_ref, required_num_args, type, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), NULL, type, return_reference, allow_null, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), NULL, type, pass_by_ref, allow_null, 0 },
 #endif
 
 #define ARGINFO_ZVAL_RETURN_BOOL(name, z) \

@@ -13,6 +13,7 @@ ARGINFO_NONE_RETURN_LONG(       Queue_capacity);
 ARGINFO_VARIADIC_ZVAL(          Queue_push, values);
 ARGINFO_NONE(                   Queue_pop);
 ARGINFO_NONE(                   Queue_peek);
+ARGINFO_NONE_RETURN_OBJ(		Queue_getIterator, Traversable);
 
 void php_ds_register_queue();
 

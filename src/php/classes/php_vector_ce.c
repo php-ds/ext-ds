@@ -257,12 +257,18 @@ METHOD(unshift)
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_vector()
 {
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
         PHP_DS_ME(Vector, __construct)
+        PHP_DS_ME(Vector, getIterator)
 
         PHP_DS_SEQUENCE_ME_LIST(Vector)
         PHP_DS_COLLECTION_ME_LIST(Vector)

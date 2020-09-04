@@ -6,14 +6,18 @@
 
 zend_object_handlers php_ds_set_handlers;
 
-static zval *php_ds_set_read_dimension(zval *obj, zval *offset, int type, zval *rv)
-{
+static zval *php_ds_set_read_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, int type, zval *rv) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj, zval *offset, int type, zval *rv) {
     ds_set_t *set = Z_DS_SET_P(obj);
-
-    if (offset == NULL) {
-        ds_set_add(set, obj);
-        return NULL;
-    }
+#endif
+    // if (offset == NULL) {
+    //     ds_set_add(set, obj);
+    //     return NULL;
+    // }
 
     if (Z_TYPE_P(offset) != IS_LONG) {
         INTEGER_INDEX_REQUIRED(offset);
@@ -28,19 +32,30 @@ static zval *php_ds_set_read_dimension(zval *obj, zval *offset, int type, zval *
     return ds_set_get(set, Z_LVAL_P(offset));
 }
 
-static void php_ds_set_write_dimension(zval *obj, zval *offset, zval *value)
-{
+static void php_ds_set_write_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, zval *value) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj, zval *offset, zval *value) {
+    ds_set_t *set = Z_DS_SET_P(obj);
+#endif
     if (offset == NULL) {
-        ds_set_add(Z_DS_SET_P(obj), value);
+        ds_set_add(set, value);
         return;
     }
-
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
-static int php_ds_set_count_elements(zval *obj, zend_long *count)
-{
-    *count = DS_SET_SIZE(Z_DS_SET_P(obj));
+static int php_ds_set_count_elements
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zend_long *count) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj, zend_long *count) {
+    ds_set_t *set = Z_DS_SET_P(obj);
+#endif    
+    *count = DS_SET_SIZE(set);
     return SUCCESS;
 }
 
@@ -51,26 +66,40 @@ static void php_ds_set_free_object(zend_object *object)
     ds_set_free(obj->set);
 }
 
-static HashTable *php_ds_set_get_debug_info(zval *obj, int *is_temp)
-{
-    zval arr;
+static HashTable *php_ds_set_get_debug_info
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, int *is_temp) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj, int *is_temp) {
     ds_set_t *set = Z_DS_SET_P(obj);
-
+#endif    
+    zval arr;
     *is_temp = 1;
 
     ds_set_to_array(set, &arr);
     return Z_ARRVAL(arr);
 }
 
-static zend_object *php_ds_set_clone_obj(zval *obj)
-{
-    return php_ds_set_create_clone(Z_DS_SET_P(obj));
+static zend_object *php_ds_set_clone_obj
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj) {
+    ds_set_t *set = Z_DS_SET_P(obj);
+#endif
+    return php_ds_set_create_clone(set);
 }
 
-static HashTable *php_ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
-{
+static HashTable *php_ds_set_get_gc
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval **gc_data, int *gc_count) {
+    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+#else
+(zval *obj, zval **gc_data, int *gc_count) {
     ds_set_t *set = Z_DS_SET_P(obj);
-
+#endif 
     if (DS_SET_IS_EMPTY(set)) {
         *gc_data  = NULL;
         *gc_count = 0;
@@ -79,7 +108,6 @@ static HashTable *php_ds_set_get_gc(zval *obj, zval **gc_data, int *gc_count)
         *gc_data  = (zval*) set->table->buckets;
         *gc_count = (int)   set->table->next * 2;
     }
-
     return NULL;
 }
 

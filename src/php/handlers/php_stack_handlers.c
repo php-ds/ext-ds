@@ -5,15 +5,18 @@
 
 zend_object_handlers php_ds_stack_handlers;
 
-static void php_ds_stack_write_dimension(zval *obj, zval *offset, zval *value)
-{
+static void php_ds_stack_write_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, zval *value) {
+    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+#else
+(zval *obj, zval *offset, zval *value) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
-
+#endif
     if (offset == NULL) {
         ds_stack_push(stack, value);
         return;
     }
-
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
@@ -24,35 +27,54 @@ static void php_ds_stack_free_object(zend_object *object)
     ds_stack_free(obj->stack);
 }
 
-static int php_ds_stack_count_elements(zval *obj, zend_long *count)
-{
-    *count = DS_STACK_SIZE(Z_DS_STACK_P(obj));
+static int php_ds_stack_count_elements
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zend_long *count) {
+    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+#else
+(zval *obj, zend_long *count) {
+    ds_stack_t *stack = Z_DS_STACK_P(obj);
+#endif
+    *count = DS_STACK_SIZE(stack);
     return SUCCESS;
 }
 
-static zend_object *php_ds_stack_clone_obj(zval *obj)
-{
-    return php_ds_stack_create_clone(Z_DS_STACK_P(obj));
+static zend_object *php_ds_stack_clone_obj
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj) {
+    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+#else
+(zval *obj) {
+    ds_stack_t *stack = Z_DS_STACK_P(obj);
+#endif 
+    return php_ds_stack_create_clone(stack);
 }
 
-static HashTable *php_ds_stack_get_debug_info(zval *obj, int *is_temp)
-{
-    zval arr;
+static HashTable *php_ds_stack_get_debug_info
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, int *is_temp) {
+    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+#else
+(zval *obj, int *is_temp) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
-
+#endif 
+    zval arr;
     *is_temp = 1;
 
     ds_stack_to_array(stack, &arr);
     return Z_ARRVAL(arr);
 }
 
-static HashTable *php_ds_stack_get_gc(zval *obj, zval **gc_data, int *gc_count)
-{
+static HashTable *php_ds_stack_get_gc
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval **gc_data, int *gc_count) {
+    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+#else
+(zval *obj, zval **gc_data, int *gc_count) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
-
+#endif 
     *gc_data  = (zval*) stack->vector->buffer;
     *gc_count = (int)   stack->vector->size;
-
     return NULL;
 }
 

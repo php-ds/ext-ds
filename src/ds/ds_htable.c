@@ -183,7 +183,11 @@ static inline bool implements_hashable(zval *key) {
 
     } else {
         zval equals;
+#if PHP_VERSION_ID >= 80000
+        zend_call_method_with_1_params(Z_OBJ_P(a), Z_OBJCE_P(a), NULL, "equals", &equals, b);
+#else
         zend_call_method_with_1_params(a, Z_OBJCE_P(a), NULL, "equals", &equals, b);
+#endif        
         return Z_TYPE(equals) == IS_TRUE;
      }
  }
@@ -263,8 +267,12 @@ static uint32_t get_object_hash(zval *obj)
 {
     if (implements_hashable(obj)) {
         zval hash;
+#if PHP_VERSION_ID >= 80000
+        zend_call_method_with_0_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), NULL, "hash", &hash);
+#else
         zend_call_method_with_0_params(obj, Z_OBJCE_P(obj), NULL, "hash", &hash);
-
+#endif         
+        
         switch (Z_TYPE(hash)) {
             case IS_LONG:
                 return Z_LVAL(hash);

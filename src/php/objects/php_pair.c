@@ -37,32 +37,48 @@ zend_object *php_ds_pair_create_clone(php_ds_pair_t *obj)
 
 void php_ds_pair_set_key(php_ds_pair_t *pair, zval *key)
 {
+#if PHP_VERSION_ID >= 80000
+    zend_update_property(php_ds_pair_ce, (zend_object*) pair, STR_AND_LEN("key"), key);
+#else
     zval tmp;
     ZVAL_DS_PAIR(&tmp, pair);
     zend_update_property(php_ds_pair_ce, &tmp, STR_AND_LEN("key"), key);
+#endif      
 }
 
 void php_ds_pair_set_value(php_ds_pair_t *pair, zval *value)
 {
+#if PHP_VERSION_ID >= 80000
+    zend_update_property(php_ds_pair_ce, (zend_object*) pair, STR_AND_LEN("value"), value);
+#else
     zval tmp;
     ZVAL_DS_PAIR(&tmp, pair);
     zend_update_property(php_ds_pair_ce, &tmp, STR_AND_LEN("value"), value);
+#endif      
 }
 
 zval *php_ds_pair_get_key(php_ds_pair_t *pair)
 {
-    zval tmp;
     zval rv;
+#if PHP_VERSION_ID >= 80000  
+    return zend_read_property(php_ds_pair_ce, (zend_object*) pair, STR_AND_LEN("key"), false, &rv);
+#else
+    zval tmp;
     ZVAL_DS_PAIR(&tmp, pair);
     return zend_read_property(php_ds_pair_ce, &tmp, STR_AND_LEN("key"), false, &rv);
+#endif       
 }
 
 zval *php_ds_pair_get_value(php_ds_pair_t *pair)
 {
-    zval tmp;
     zval rv;
+#if PHP_VERSION_ID >= 80000  
+    return zend_read_property(php_ds_pair_ce, (zend_object*) pair, STR_AND_LEN("value"), false, &rv);
+#else
+    zval tmp;
     ZVAL_DS_PAIR(&tmp, pair);
     return zend_read_property(php_ds_pair_ce, &tmp, STR_AND_LEN("value"), false, &rv);
+#endif   
 }
 
 void php_ds_pair_to_array(php_ds_pair_t *obj, zval *result)

@@ -62,6 +62,7 @@ zval *ds_deque_get_first_throw(ds_deque_t *deque);
 
 bool ds_deque_contains_va(ds_deque_t *deque, VA_PARAMS);
 bool ds_deque_isset(ds_deque_t *deque, zend_long index, int check_empty);
+bool ds_deque_index_exists(ds_deque_t *deque, zend_long index);
 
 ds_deque_t *ds_deque_map(ds_deque_t *deque, FCI_PARAMS);
 ds_deque_t *ds_deque_filter(ds_deque_t *deque);

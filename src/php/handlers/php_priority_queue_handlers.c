@@ -17,42 +17,58 @@ static void php_ds_priority_queue_free_object(zend_object *object)
     }
 }
 
-static int php_ds_priority_queue_count_elements(zval *obj, zend_long *count)
-{
-    *count = DS_PRIORITY_QUEUE_SIZE(Z_DS_PRIORITY_QUEUE_P(obj));
+static int php_ds_priority_queue_count_elements
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zend_long *count) {
+    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+#else
+(zval *obj, zend_long *count) {
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
+#endif
+    *count = DS_PRIORITY_QUEUE_SIZE(pq);
     return SUCCESS;
 }
 
-static zend_object *php_ds_priority_queue_clone_obj(zval *obj)
-{
-    return php_ds_priority_queue_create_clone(Z_DS_PRIORITY_QUEUE_P(obj));
+static zend_object *php_ds_priority_queue_clone_obj
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj) {
+    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+#else
+(zval *obj) {
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
+#endif
+    return php_ds_priority_queue_create_clone(pq);  
 }
 
-static HashTable *php_ds_priority_queue_get_debug_info(zval *obj, int *is_temp)
-{
-    zval array;
-    ds_priority_queue_t *queue = Z_DS_PRIORITY_QUEUE_P(obj);
-
+static HashTable *php_ds_priority_queue_get_debug_info
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, int *is_temp) {
+    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+#else
+(zval *obj, int *is_temp) {
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
+#endif
+    zval arr;
     *is_temp = 1;
-
-    ds_priority_queue_to_array(queue, &array);
-
-    return Z_ARRVAL(array);
+    ds_priority_queue_to_array(pq, &arr);
+    return Z_ARRVAL(arr);
 }
 
-static HashTable *php_ds_priority_queue_get_gc(zval *object, zval **gc_data, int *gc_size)
-{
-    php_ds_priority_queue_t *obj = (php_ds_priority_queue_t *) Z_OBJ_P(object);
-
-    if (DS_PRIORITY_QUEUE_IS_EMPTY(obj->queue)) {
+static HashTable *php_ds_priority_queue_get_gc
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval **gc_data, int *gc_size) {
+    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+#else
+(zval *obj, zval **gc_data, int *gc_size) {
+    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
+#endif
+    if (DS_PRIORITY_QUEUE_IS_EMPTY(pq)) {
         *gc_data = NULL;
         *gc_size = 0;
-
     } else {
-        *gc_data = (zval*) obj->queue->nodes;
-        *gc_size = obj->queue->size * 2;
+        *gc_data = (zval*) pq->nodes;
+        *gc_size = pq->size * 2;
     }
-
     return NULL;
 }
 

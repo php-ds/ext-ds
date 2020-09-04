@@ -14,6 +14,7 @@ ARGINFO_NONE_RETURN_DS(         PriorityQueue_copy, PriorityQueue);
 ARGINFO_ZVAL_ZVAL(              PriorityQueue_push, value, priority);
 ARGINFO_NONE(                   PriorityQueue_pop);
 ARGINFO_NONE(                   PriorityQueue_peek);
+ARGINFO_NONE_RETURN_OBJ(		PriorityQueue_getIterator, Traversable);
 
 void php_ds_register_priority_queue();
 

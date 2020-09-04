@@ -90,6 +90,11 @@ METHOD(jsonSerialize)
     ds_stack_to_array(THIS_DS_STACK(), return_value);
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_stack()
 {
     zend_class_entry ce;
@@ -101,6 +106,7 @@ void php_ds_register_stack()
         PHP_DS_ME(Stack, peek)
         PHP_DS_ME(Stack, pop)
         PHP_DS_ME(Stack, push)
+        PHP_DS_ME(Stack, getIterator)
 
         PHP_DS_COLLECTION_ME_LIST(Stack)
         PHP_FE_END

@@ -5,9 +5,9 @@
 zend_fcall_info fci = empty_fcall_info; \
 zend_fcall_info_cache fci_cache = empty_fcall_info_cache;
 
-#define PARSE_1(spec, a)        if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), spec, a) == FAILURE) return
-#define PARSE_2(spec, a, b)     if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), spec, a, b) == FAILURE) return
-#define PARSE_3(spec, a, b, c)  if (zend_parse_parameters_throw(ZEND_NUM_ARGS(), spec, a, b, c) == FAILURE) return
+#define PARSE_1(spec, a)        if (zend_parse_parameters(ZEND_NUM_ARGS(), spec, a) == FAILURE) return
+#define PARSE_2(spec, a, b)     if (zend_parse_parameters(ZEND_NUM_ARGS(), spec, a, b) == FAILURE) return
+#define PARSE_3(spec, a, b, c)  if (zend_parse_parameters(ZEND_NUM_ARGS(), spec, a, b, c) == FAILURE) return
 
 #define PARSE_NONE if (zend_parse_parameters_none() == FAILURE) return
 

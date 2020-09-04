@@ -280,6 +280,11 @@ METHOD(xor)
     RETURN_DS_MAP(ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_map()
 {
     zend_class_entry ce;
@@ -317,6 +322,7 @@ void php_ds_register_map()
         PHP_DS_ME(Map, union)
         PHP_DS_ME(Map, values)
         PHP_DS_ME(Map, xor)
+        PHP_DS_ME(Map, getIterator)
 
         PHP_DS_COLLECTION_ME_LIST(Map)
         PHP_FE_END

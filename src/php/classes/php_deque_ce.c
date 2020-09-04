@@ -263,12 +263,18 @@ METHOD(jsonSerialize)
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_deque()
 {
     zend_class_entry ce;
 
     zend_function_entry methods[] = {
         PHP_DS_ME(Deque, __construct)
+        PHP_DS_ME(Deque, getIterator)
 
         PHP_DS_COLLECTION_ME_LIST(Deque)
         PHP_DS_SEQUENCE_ME_LIST(Deque)

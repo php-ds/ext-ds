@@ -85,6 +85,11 @@ METHOD(jsonSerialize)
     ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_priority_queue()
 {
     zend_class_entry ce;
@@ -96,6 +101,7 @@ void php_ds_register_priority_queue()
         PHP_DS_ME(PriorityQueue, peek)
         PHP_DS_ME(PriorityQueue, pop)
         PHP_DS_ME(PriorityQueue, push)
+        PHP_DS_ME(PriorityQueue, getIterator)
 
         PHP_DS_COLLECTION_ME_LIST(PriorityQueue)
         PHP_FE_END

@@ -89,6 +89,11 @@ METHOD(jsonSerialize)
     ds_queue_to_array(THIS_DS_QUEUE(), return_value);
 }
 
+METHOD(getIterator) {
+    PARSE_NONE;
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+}
+
 void php_ds_register_queue()
 {
     zend_class_entry ce;
@@ -100,6 +105,7 @@ void php_ds_register_queue()
         PHP_DS_ME(Queue, peek)
         PHP_DS_ME(Queue, pop)
         PHP_DS_ME(Queue, push)
+        PHP_DS_ME(Queue, getIterator)
 
         PHP_DS_COLLECTION_ME_LIST(Queue)
         PHP_FE_END

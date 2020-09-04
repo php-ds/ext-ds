@@ -5,14 +5,19 @@
 
 zend_object_handlers php_map_handlers;
 
-static zval *php_ds_map_read_dimension(zval *obj, zval *offset, int type, zval *rv)
-{
+static zval *php_ds_map_read_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, int type, zval *rv) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zval *offset, int type, zval *rv) {
+    ds_map_t *map = Z_DS_MAP_P(obj);
+#endif    
     if (offset == NULL) {
         ARRAY_ACCESS_PUSH_NOT_SUPPORTED();
         return NULL;
 
     } else {
-        ds_map_t *map = Z_DS_MAP_P(obj);
         zval *value;
 
         // Dereference the offset if it's a reference.
@@ -38,41 +43,56 @@ static zval *php_ds_map_read_dimension(zval *obj, zval *offset, int type, zval *
     }
 }
 
-static void php_ds_map_write_dimension(zval *obj, zval *offset, zval *value)
-{
+static void php_ds_map_write_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, zval *value) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zval *offset, zval *value) {
     ds_map_t *map = Z_DS_MAP_P(obj);
-
+#endif
     if (offset == NULL) {
         ARRAY_ACCESS_PUSH_NOT_SUPPORTED();
         return;
     }
 
     ZVAL_DEREF(offset);
-
     ds_htable_put(map->table, offset, value);
 }
 
-static int php_ds_map_has_dimension(zval *obj, zval *offset, int check_empty)
-{
+static int php_ds_map_has_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, int check_empty) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zval *offset, int check_empty) {
     ds_map_t *map = Z_DS_MAP_P(obj);
-
+#endif
     ZVAL_DEREF(offset);
-
     return ds_htable_isset(map->table, offset, check_empty);
 }
 
-static void php_ds_map_unset_dimension(zval *obj, zval *offset)
-{
+static void php_ds_map_unset_dimension
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zval *offset) {
     ds_map_t *map = Z_DS_MAP_P(obj);
-
+#endif
     ZVAL_DEREF(offset);
-
     ds_htable_remove(map->table, offset, NULL);
 }
 
-static int php_ds_map_count_elements(zval *obj, zend_long *count)
-{
-    *count = DS_MAP_SIZE(Z_DS_MAP_P(obj));
+static int php_ds_map_count_elements
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zend_long *count) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zend_long *count) {
+    ds_map_t *map = Z_DS_MAP_P(obj);
+#endif
+    *count = DS_MAP_SIZE(map); 
     return SUCCESS;
 }
 
@@ -83,30 +103,44 @@ static void php_ds_map_free_object(zend_object *object)
     ds_map_free(intern->map);
 }
 
-static HashTable *php_ds_map_get_debug_info(zval *obj, int *is_temp)
-{
-    *is_temp = 1;
-    return ds_map_pairs_to_php_hashtable(Z_DS_MAP_P(obj));
-}
-
-static zend_object *php_ds_map_clone_obj(zval *obj)
-{
-    return php_ds_map_create_clone(Z_DS_MAP_P(obj));
-}
-
-static HashTable *php_ds_map_get_gc(zval *obj, zval **gc_data, int *gc_size)
-{
+static HashTable *php_ds_map_get_debug_info
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, int *is_temp) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, int *is_temp) {
     ds_map_t *map = Z_DS_MAP_P(obj);
+#endif
+    *is_temp = 1;
+    return ds_map_pairs_to_php_hashtable(map);
+}
 
+static zend_object *php_ds_map_clone_obj
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj) {
+    ds_map_t *map = Z_DS_MAP_P(obj);
+#endif
+    return php_ds_map_create_clone(map);
+}
+
+static HashTable *php_ds_map_get_gc
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval **gc_data, int *gc_size) {
+    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+#else
+(zval *obj, zval **gc_data, int *gc_size) {
+    ds_map_t *map = Z_DS_MAP_P(obj);
+#endif
     if (DS_MAP_IS_EMPTY(map)) {
         *gc_data  = NULL;
         *gc_size = 0;
-
     } else {
         *gc_data = (zval*) map->table->buckets;
         *gc_size = (int)   map->table->next * 2;
     }
-
     return NULL;
 }
 

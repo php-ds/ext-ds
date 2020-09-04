@@ -40,6 +40,7 @@ ARGINFO_NONE(                               Map_sum);
 ARGINFO_ZVAL_RETURN_DS(                     Map_union, map, Map);
 ARGINFO_NONE_RETURN_DS(                     Map_values, Sequence);
 ARGINFO_DS_RETURN_DS(                       Map_xor, map, Map, Map);
+ARGINFO_NONE_RETURN_OBJ(					Map_getIterator, Traversable);
 
 void php_ds_register_map();
 
