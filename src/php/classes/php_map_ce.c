@@ -193,6 +193,7 @@ METHOD(jsonSerialize)
 {
     PARSE_NONE;
     ds_map_to_array(THIS_DS_MAP(), return_value);
+    convert_to_object(return_value);
 }
 
 METHOD(filter)
