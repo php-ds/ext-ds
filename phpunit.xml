@@ -1,10 +1,9 @@
 <phpunit
-    cacheTokens             = "false"
     backupGlobals           = "false"
     backupStaticAttributes  = "false"
     >
     <testsuites>
-        <testsuite>
+        <testsuite name="all">
             <directory>vendor/php-ds/tests/tests</directory>
         </testsuite>
     </testsuites>
