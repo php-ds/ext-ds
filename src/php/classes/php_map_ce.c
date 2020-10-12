@@ -282,7 +282,7 @@ METHOD(xor)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, ZEND_THIS);
 }
 
 void php_ds_register_map()

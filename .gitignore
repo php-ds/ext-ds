@@ -15,6 +15,7 @@
 .deps
 .idea
 .libs
+.phpunit.result.cache
 /include
 acinclude.m4
 aclocal.m4

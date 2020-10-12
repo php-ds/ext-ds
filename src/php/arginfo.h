@@ -83,17 +83,31 @@ ZEND_ARG_VARIADIC_INFO(0, v) \
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 80000
-#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
+#define DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
     static const zend_internal_arg_info arginfo_##name[] = { \
         { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null, 0), pass_by_ref},
 #elif PHP_VERSION_ID >= 70200
+#define DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null), pass_by_ref, 0 },
+#else
+#define DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), PHP_DS_NS_NAME#class_name, IS_OBJECT, pass_by_ref, allow_null, 0 },
+#endif
+
+#if PHP_VERSION_ID >= 80000
+#define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CLASS_CONST(class_name, allow_null, 0), pass_by_ref},
+#elif PHP_VERSION_ID >= 70200
 #define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE_CLASS_CONST(PHP_DS_NS_NAME#class_name, allow_null), pass_by_ref, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_ENCODE_CLASS_CONST(class_name, allow_null), pass_by_ref, 0 },
 #else
 #define DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
 	static const zend_internal_arg_info arginfo_##name[] = { \
-		{ (const char*)(zend_uintptr_t)(required_num_args), PHP_DS_NS_NAME#class_name, IS_OBJECT, pass_by_ref, allow_null, 0 },
+		{ (const char*)(zend_uintptr_t)(required_num_args), class_name, IS_OBJECT, pass_by_ref, allow_null, 0 },
 #endif
 
 #if PHP_VERSION_ID >= 80000
@@ -116,12 +130,12 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_CALLABLE_RETURN_DS(name, c, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, c, IS_CALLABLE, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_OPTIONAL_ZVAL_RETURN_DS(name, z, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 0, col, 0) \
     ZEND_ARG_INFO(0, z) \
     ZEND_END_ARG_INFO()
 
@@ -131,23 +145,23 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_ZVAL_RETURN_DS(name, z, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_INFO(0, z) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(name, c, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 0, col, 0) \
     ZEND_ARG_TYPE_INFO(0, c, IS_CALLABLE, 1) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_LONG_OPTIONAL_LONG_RETURN_DS(name, i1, i2, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, i1, IS_LONG, 0) \
     ZEND_ARG_TYPE_INFO(0, i2, IS_LONG, 1) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_LONG_RETURN_DS(name, i, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_TYPE_INFO(0, i, IS_LONG, 0) \
     ZEND_END_ARG_INFO()
 
@@ -160,11 +174,11 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_DS(name, class_name) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, class_name, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 0, class_name, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_OBJ(name, class_name) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, class_name, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, #class_name, 1) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_BOOL(name) \
@@ -181,7 +195,7 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_DS_RETURN_DS(name, obj, cls, col) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 1, col, 0) \
+    DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, 0, 1, col, 0) \
     ZEND_ARG_OBJ_INFO(0, obj, Ds\\cls, 0) \
     ZEND_END_ARG_INFO()
 
