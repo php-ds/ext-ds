@@ -16,11 +16,11 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2019-05-11</date>
-    <time>16:47:19</time>
+    <date>2020-10-13</date>
+    <time>21:24:19</time>
     <version>
-        <release>1.2.9</release>
-        <api>1.1.0</api>
+        <release>1.3.0</release>
+        <api>1.3.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,7 +28,9 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Segfault when iterating an implicit instance of Stack, Queue or PriorityQueue
+        - ArrayAccess implemented consistently
+        - IteratorAggregate implemented consistently
+        - A few incorrect return types
     </notes>
     <contents>
         <dir name="/">
