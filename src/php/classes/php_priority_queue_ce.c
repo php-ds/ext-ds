@@ -87,7 +87,7 @@ METHOD(jsonSerialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
 }
 
 void php_ds_register_priority_queue()

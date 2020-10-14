@@ -42,6 +42,11 @@ ARGINFO_NONE_RETURN_DS(                     Map_values, Sequence);
 ARGINFO_DS_RETURN_DS(                       Map_xor, map, Map, Map);
 ARGINFO_NONE_RETURN_OBJ(					Map_getIterator, Traversable);
 
+ARGINFO_ZVAL_RETURN_BOOL(                   Map_offsetExists, offset);
+ARGINFO_ZVAL(                               Map_offsetGet, offset);
+ARGINFO_ZVAL_ZVAL(                          Map_offsetSet, offset, value);
+ARGINFO_ZVAL(                               Map_offsetUnset, offset);
+
 void php_ds_register_map();
 
 #endif

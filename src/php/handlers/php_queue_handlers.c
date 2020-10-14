@@ -95,4 +95,7 @@ void php_ds_register_queue_handlers()
     php_queue_handlers.get_debug_info    = php_ds_queue_get_debug_info;
     php_queue_handlers.count_elements    = php_ds_queue_count_elements;
     php_queue_handlers.write_dimension   = php_ds_queue_write_dimension;
+    php_queue_handlers.read_dimension    = php_ds_read_dimension_by_key_not_supported;
+    php_queue_handlers.unset_dimension   = php_ds_unset_dimension_by_key_not_supported;
+    php_queue_handlers.has_dimension     = php_ds_has_dimension_by_key_not_supported;
 }

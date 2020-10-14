@@ -92,4 +92,7 @@ void php_register_ds_stack_handlers()
     php_ds_stack_handlers.get_debug_info    = php_ds_stack_get_debug_info;
     php_ds_stack_handlers.count_elements    = php_ds_stack_count_elements;
     php_ds_stack_handlers.write_dimension   = php_ds_stack_write_dimension;
+    php_ds_stack_handlers.read_dimension    = php_ds_read_dimension_by_key_not_supported;
+    php_ds_stack_handlers.unset_dimension   = php_ds_unset_dimension_by_key_not_supported;
+    php_ds_stack_handlers.has_dimension     = php_ds_has_dimension_by_key_not_supported;
 }

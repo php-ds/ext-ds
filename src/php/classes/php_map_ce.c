@@ -283,7 +283,31 @@ METHOD(xor)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+METHOD(offsetExists)
+{
+    PARSE_ZVAL(offset);
+    RETURN_BOOL(ds_htable_isset(THIS_DS_MAP()->table, offset, false));
+}
+
+METHOD(offsetGet)
+{
+    PARSE_ZVAL(offset);
+    RETURN_ZVAL_COPY(ds_map_get(THIS_DS_MAP(), offset, NULL));
+}
+
+METHOD(offsetSet)
+{
+    PARSE_ZVAL_ZVAL(offset, value);
+    ds_map_put(THIS_DS_MAP(), offset, value);
+}
+
+METHOD(offsetUnset)
+{
+    PARSE_ZVAL(offset);
+    ds_map_remove(THIS_DS_MAP(), offset, NULL, return_value);
 }
 
 void php_ds_register_map()
@@ -325,6 +349,11 @@ void php_ds_register_map()
         PHP_DS_ME(Map, xor)
         PHP_DS_ME(Map, getIterator)
 
+        PHP_DS_ME(Map, offsetExists)
+        PHP_DS_ME(Map, offsetGet) 
+        PHP_DS_ME(Map, offsetSet) 
+        PHP_DS_ME(Map, offsetUnset)
+
         PHP_DS_COLLECTION_ME_LIST(Map)
         PHP_FE_END
     };
@@ -343,7 +372,11 @@ void php_ds_register_map()
         STR_AND_LEN("MIN_CAPACITY"),
         DS_HTABLE_MIN_CAPACITY
     );
+    
+    zend_class_implements(php_ds_map_ce, 2, 
+        collection_ce, 
+        zend_ce_arrayaccess
+    );
 
-    zend_class_implements(php_ds_map_ce, 1, collection_ce);
     php_ds_register_map_handlers();
 }

@@ -92,7 +92,35 @@ METHOD(jsonSerialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+METHOD(offsetExists)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+METHOD(offsetGet)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+METHOD(offsetSet)
+{
+    ds_stack_t *stack = THIS_DS_STACK();
+
+    PARSE_ZVAL_ZVAL(offset, value);
+
+    if (Z_TYPE_P(offset) == IS_NULL) {
+        ds_stack_push(stack, value);
+    } else {
+        ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+    }
+}
+
+METHOD(offsetUnset)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
 void php_ds_register_stack()
@@ -108,6 +136,11 @@ void php_ds_register_stack()
         PHP_DS_ME(Stack, push)
         PHP_DS_ME(Stack, getIterator)
 
+        PHP_DS_ME(Stack, offsetExists)
+        PHP_DS_ME(Stack, offsetGet) 
+        PHP_DS_ME(Stack, offsetSet) 
+        PHP_DS_ME(Stack, offsetUnset)
+
         PHP_DS_COLLECTION_ME_LIST(Stack)
         PHP_FE_END
     };
@@ -121,6 +154,10 @@ void php_ds_register_stack()
     php_ds_stack_ce->serialize      = php_ds_stack_serialize;
     php_ds_stack_ce->unserialize    = php_ds_stack_unserialize;
 
-    zend_class_implements(php_ds_stack_ce, 1, collection_ce);
+    zend_class_implements(php_ds_stack_ce, 2, 
+        collection_ce, 
+        zend_ce_arrayaccess
+    );
+
     php_register_ds_stack_handlers();
 }

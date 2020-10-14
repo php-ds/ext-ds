@@ -91,7 +91,33 @@ METHOD(jsonSerialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+METHOD(offsetExists)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+METHOD(offsetGet)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+METHOD(offsetSet)
+{
+    PARSE_ZVAL_ZVAL(offset, value);
+
+    if (Z_TYPE_P(offset) == IS_NULL) {
+        ds_queue_push(THIS_DS_QUEUE(), 1, value);
+    } else {
+        ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+    }
+}
+
+METHOD(offsetUnset)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
 void php_ds_register_queue()
@@ -106,6 +132,11 @@ void php_ds_register_queue()
         PHP_DS_ME(Queue, pop)
         PHP_DS_ME(Queue, push)
         PHP_DS_ME(Queue, getIterator)
+
+        PHP_DS_ME(Queue, offsetExists)
+        PHP_DS_ME(Queue, offsetGet) 
+        PHP_DS_ME(Queue, offsetSet) 
+        PHP_DS_ME(Queue, offsetUnset)
 
         PHP_DS_COLLECTION_ME_LIST(Queue)
         PHP_FE_END

@@ -52,12 +52,6 @@ METHOD(capacity)
     RETURN_LONG((THIS_DS_DEQUE())->capacity);
 }
 
-METHOD(pushAll)
-{
-    PARSE_ZVAL(values);
-    ds_deque_push_all(THIS_DS_DEQUE(), values);
-}
-
 METHOD(map)
 {
     PARSE_CALLABLE();
@@ -265,8 +259,40 @@ METHOD(jsonSerialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    // zend_object_iterator *iterator = php_ds_deque_get_iterator(php_ds_deque_ce, ZEND_THIS, 0);
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+METHOD(offsetExists)
+{
+    PARSE_LONG(index);
+    RETURN_BOOL(ds_deque_isset(THIS_DS_DEQUE(), index, false));
+}
+
+METHOD(offsetGet)
+{
+    PARSE_LONG(index);
+    RETURN_ZVAL_COPY(ds_deque_get(THIS_DS_DEQUE(), index));
+}
+
+METHOD(offsetSet)
+{
+    PARSE_ZVAL_ZVAL(offset, value);
+
+    if (Z_TYPE_P(offset) == IS_NULL) {
+        ds_deque_push(THIS_DS_DEQUE(), value);
+    } else {
+        if (Z_TYPE_P(offset) != IS_LONG) {
+            INTEGER_INDEX_REQUIRED(offset);
+        } else {
+            ds_deque_set(THIS_DS_DEQUE(), Z_LVAL_P(offset), value);
+        }
+    }
+}
+
+METHOD(offsetUnset)
+{
+    PARSE_LONG(index);
+    ds_deque_remove(THIS_DS_DEQUE(), index, return_value);
 }
 
 void php_ds_register_deque()

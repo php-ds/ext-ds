@@ -55,7 +55,6 @@ static void php_ds_map_write_dimension
         ARRAY_ACCESS_PUSH_NOT_SUPPORTED();
         return;
     }
-
     ZVAL_DEREF(offset);
     ds_htable_put(map->table, offset, value);
 }
@@ -160,5 +159,4 @@ void php_ds_register_map_handlers()
     php_map_handlers.has_dimension      = php_ds_map_has_dimension;
     php_map_handlers.unset_dimension    = php_ds_map_unset_dimension;
     php_map_handlers.cast_object        = php_ds_default_cast_object;
-    // php_map_handlers.get_properties      = ds_map_get_properties;
 }

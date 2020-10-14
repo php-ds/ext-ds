@@ -14,11 +14,6 @@ static zval *php_ds_set_read_dimension
 (zval *obj, zval *offset, int type, zval *rv) {
     ds_set_t *set = Z_DS_SET_P(obj);
 #endif
-    // if (offset == NULL) {
-    //     ds_set_add(set, obj);
-    //     return NULL;
-    // }
-
     if (Z_TYPE_P(offset) != IS_LONG) {
         INTEGER_INDEX_REQUIRED(offset);
         return NULL;
@@ -125,4 +120,6 @@ void php_ds_register_set_handlers()
     php_ds_set_handlers.get_gc          = php_ds_set_get_gc;
     php_ds_set_handlers.read_dimension  = php_ds_set_read_dimension;
     php_ds_set_handlers.write_dimension = php_ds_set_write_dimension;
+    php_ds_set_handlers.unset_dimension = php_ds_unset_dimension_by_key_not_supported;
+    php_ds_set_handlers.has_dimension   = php_ds_has_dimension_by_key_not_supported;
 }
