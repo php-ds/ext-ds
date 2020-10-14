@@ -1,3 +1,4 @@
+#include "../../common.h"
 #include "php_common_handlers.h"
 #include "zend_smart_str.h"
 
@@ -28,4 +29,31 @@ int php_ds_default_cast_object
     }
 
     return FAILURE;
+}
+
+zval *php_ds_read_dimension_by_key_not_supported
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, int type, zval *rv) {
+#else
+(zval *obj, zval *offset, int type, zval *rv) {
+#endif
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+int php_ds_has_dimension_by_key_not_supported
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset, int check_empty) {
+#else
+(zval *obj, zval *offset, int check_empty) {
+#endif
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+void php_ds_unset_dimension_by_key_not_supported
+#if PHP_VERSION_ID >= 80000
+(zend_object *obj, zval *offset) {
+#else
+(zval *obj, zval *offset) {
+#endif
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }

@@ -259,7 +259,40 @@ METHOD(unshift)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+METHOD(offsetExists)
+{
+    PARSE_LONG(index);
+    RETURN_BOOL(ds_vector_isset(THIS_DS_VECTOR(), index, false));
+}
+
+METHOD(offsetGet)
+{
+    PARSE_LONG(index);
+    RETURN_ZVAL_COPY(ds_vector_get(THIS_DS_VECTOR(), index));
+}
+
+METHOD(offsetSet)
+{
+    PARSE_ZVAL_ZVAL(offset, value);
+
+    if (Z_TYPE_P(offset) == IS_NULL) {
+        ds_vector_push(THIS_DS_VECTOR(), value);
+    } else {
+        if (Z_TYPE_P(offset) != IS_LONG) {
+            INTEGER_INDEX_REQUIRED(offset);
+        } else {
+            ds_vector_set(THIS_DS_VECTOR(), Z_LVAL_P(offset), value);
+        }
+    }
+}
+
+METHOD(offsetUnset)
+{
+    PARSE_LONG(index);
+    ds_vector_remove(THIS_DS_VECTOR(), index, return_value);
 }
 
 void php_ds_register_vector()

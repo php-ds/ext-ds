@@ -82,7 +82,6 @@ static int php_ds_vector_has_dimension
     return ds_vector_isset(vector, Z_LVAL_P(offset), check_empty);
 }
 
-
 static void php_ds_vector_unset_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset) {

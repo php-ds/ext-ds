@@ -223,7 +223,35 @@ METHOD(jsonSerialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, ZEND_THIS);
+    ZVAL_COPY(return_value, getThis());
+}
+
+
+METHOD(offsetExists)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+}
+
+METHOD(offsetGet)
+{
+    PARSE_LONG(index);
+    RETURN_ZVAL_COPY(ds_set_get(THIS_DS_SET(), index));
+}
+
+METHOD(offsetSet)
+{
+    PARSE_ZVAL_ZVAL(offset, value);
+
+    if (Z_TYPE_P(offset) == IS_NULL) {
+        ds_set_add_va(THIS_DS_SET(), 1, value);
+    } else {
+        ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+    }
+}
+
+METHOD(offsetUnset)
+{
+    ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
 }
 
 void php_ds_register_set()
@@ -256,6 +284,11 @@ void php_ds_register_set()
         PHP_DS_ME(Set, union)
         PHP_DS_ME(Set, xor)
         PHP_DS_ME(Set, getIterator)
+
+        PHP_DS_ME(Set, offsetExists)
+        PHP_DS_ME(Set, offsetGet) 
+        PHP_DS_ME(Set, offsetSet) 
+        PHP_DS_ME(Set, offsetUnset)
 
         PHP_DS_COLLECTION_ME_LIST(Set)
         PHP_FE_END

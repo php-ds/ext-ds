@@ -159,7 +159,7 @@ int name##_unserialize(                 \
 /** EXCEPTIONS **************************************************************/
 
 #define ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED() ds_throw_exception( \
-    spl_ce_OutOfBoundsException, \
+    zend_ce_error, \
     "Array access by key is not supported")
 
 #define INDEX_OUT_OF_RANGE(index, max) ds_throw_exception( \

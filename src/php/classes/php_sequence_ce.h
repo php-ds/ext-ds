@@ -22,6 +22,10 @@ PHP_DS_SEQUENCE_ME(cls, join) \
 PHP_DS_SEQUENCE_ME(cls, last) \
 PHP_DS_SEQUENCE_ME(cls, map) \
 PHP_DS_SEQUENCE_ME(cls, merge) \
+PHP_DS_SEQUENCE_ME(cls, offsetExists) \
+PHP_DS_SEQUENCE_ME(cls, offsetGet) \
+PHP_DS_SEQUENCE_ME(cls, offsetSet) \
+PHP_DS_SEQUENCE_ME(cls, offsetUnset) \
 PHP_DS_SEQUENCE_ME(cls, pop) \
 PHP_DS_SEQUENCE_ME(cls, push) \
 PHP_DS_SEQUENCE_ME(cls, reduce) \
@@ -35,7 +39,7 @@ PHP_DS_SEQUENCE_ME(cls, slice) \
 PHP_DS_SEQUENCE_ME(cls, sort) \
 PHP_DS_SEQUENCE_ME(cls, sorted) \
 PHP_DS_SEQUENCE_ME(cls, sum) \
-PHP_DS_SEQUENCE_ME(cls, unshift)
+PHP_DS_SEQUENCE_ME(cls, unshift) \
 
 ARGINFO_LONG(                           Sequence_allocate, capacity);
 ARGINFO_CALLABLE(                       Sequence_apply, callback);
@@ -50,6 +54,10 @@ ARGINFO_LONG_VARIADIC_ZVAL(             Sequence_insert, index, values);
 ARGINFO_NONE(                           Sequence_last);
 ARGINFO_CALLABLE_RETURN_DS(             Sequence_map, callback, Sequence);
 ARGINFO_ZVAL_RETURN_DS(                 Sequence_merge, values, Sequence);
+ARGINFO_ZVAL_RETURN_BOOL(              	Sequence_offsetExists, offset);
+ARGINFO_ZVAL(    						Sequence_offsetGet, offset);
+ARGINFO_ZVAL_ZVAL(                      Sequence_offsetSet, offset, value);
+ARGINFO_ZVAL(                  		    Sequence_offsetUnset, offset);
 ARGINFO_NONE(                           Sequence_pop);
 ARGINFO_VARIADIC_ZVAL(                  Sequence_push, values);
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(         Sequence_reduce, callback, initial);

@@ -39,6 +39,11 @@ void php_ds_register_sequence()
     };
 
     INIT_CLASS_ENTRY(ce, PHP_DS_NS(Sequence), methods);
+   
     sequence_ce = zend_register_internal_interface(&ce);
-    zend_class_implements(sequence_ce, 1, collection_ce);
+   
+    zend_class_implements(sequence_ce, 2, 
+        collection_ce,
+        zend_ce_arrayaccess
+    );
 }
