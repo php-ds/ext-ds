@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2020-10-13
+### Fixed
+- ArrayAccess implemented consistently
+- IteratorAggregate implemented consistently
+- A few incorrect return types
+
 ## [1.2.9] - 2019-05-11
 ### Fixed
 - Segfault when iterating an implicit instance of Stack, Queue or PriorityQueue

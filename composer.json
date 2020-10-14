@@ -10,7 +10,7 @@
     ],
     "minimum-stability": "dev",
     "require-dev": {
-        "php-ds/tests": "dev-master"
+        "php-ds/tests": "^1.3.0"
     },
     "scripts": {
         "test"   : "php test.php",
