@@ -17,7 +17,7 @@ function ds_src(dir, files) {
 ARG_ENABLE("ds", "for extended data structure support", "no");
 
 if (PHP_DS != "no") {
-	EXTENSION(DS_EXT_NAME, DS_EXT_API, PHP_DS_SHARED, DS_EXT_FLAGS);
+    EXTENSION(DS_EXT_NAME, DS_EXT_API, PHP_DS_SHARED, DS_EXT_FLAGS);
 
     ds_src("/",
     [
@@ -89,5 +89,11 @@ if (PHP_DS != "no") {
     ]);
 
     ADD_EXTENSION_DEP('ds', 'spl');
-    ADD_EXTENSION_DEP('ds', 'json');
+    var dll = get_define('PHPDLL');
+    if (null != dll.match(/^php7/)) {
+        // only require dynamic json extension for PHP 7
+        // json is built statically in PHP 8
+        // https://github.com/php/php-src/pull/5495
+        ADD_EXTENSION_DEP('ds', 'json');
+    }
 }
