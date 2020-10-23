@@ -152,7 +152,11 @@ void php_ds_register_queue()
     php_ds_queue_ce->unserialize    = php_ds_queue_unserialize;
 
     zend_declare_class_constant_long(php_ds_queue_ce, STR_AND_LEN("MIN_CAPACITY"), DS_DEQUE_MIN_CAPACITY);
-    zend_class_implements(php_ds_queue_ce, 1, collection_ce);
+
+    zend_class_implements(php_ds_queue_ce, 2,
+        collection_ce,
+        zend_ce_arrayaccess
+    );
 
     php_ds_register_queue_handlers();
 }

@@ -309,6 +309,10 @@ void php_ds_register_set()
         DS_HTABLE_MIN_CAPACITY
     );
 
-    zend_class_implements(php_ds_set_ce, 1, collection_ce);
+    zend_class_implements(php_ds_set_ce, 2,
+        collection_ce,
+        zend_ce_arrayaccess
+    );
+
     php_ds_register_set_handlers();
 }
