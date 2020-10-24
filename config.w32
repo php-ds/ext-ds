@@ -1,7 +1,7 @@
 // vim:ft=javascript
 
 var DS_EXT_NAME="ds";
-var DS_EXT_DIR="ext/ds/src";
+var DS_EXT_DIR=configure_module_dirname + "/src";
 var DS_EXT_API="php_ds.c";
 var DS_EXT_FLAGS="/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1 /I" + configure_module_dirname;
 
