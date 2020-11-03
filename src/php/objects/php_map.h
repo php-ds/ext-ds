@@ -3,7 +3,16 @@
 
 #include "../../ds/ds_map.h"
 
-#define Z_DS_MAP(z)   (((php_ds_map_t*)(Z_OBJ(z)))->map)
+typedef struct _php_ds_map_t {
+    ds_map_t    *map;
+    zend_object  std;
+} php_ds_map_t;
+
+static inline php_ds_map_t *php_ds_map_fetch_object(zend_object *obj) {
+	return (php_ds_map_t *)((char*)(obj) - XtOffsetOf(php_ds_map_t, std));
+}
+
+#define Z_DS_MAP(z)   (php_ds_map_fetch_object(Z_OBJ(z))->map)
 #define Z_DS_MAP_P(z) Z_DS_MAP(*z)
 #define THIS_DS_MAP() Z_DS_MAP_P(getThis())
 
@@ -19,11 +28,6 @@ do {                                        \
     }                                       \
     return;                                 \
 } while(0)
-
-typedef struct _php_ds_map_t {
-    zend_object  std;
-    ds_map_t    *map;
-} php_ds_map_t;
 
 zend_object *php_ds_map_create_object_ex(ds_map_t *map);
 zend_object *php_ds_map_create_object(zend_class_entry *ce);

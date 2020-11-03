@@ -3,7 +3,16 @@
 
 #include "../../ds/ds_set.h"
 
-#define Z_DS_SET(z)   (((php_ds_set_t*)(Z_OBJ(z)))->set)
+typedef struct _php_ds_set_t {
+    ds_set_t      *set;
+    zend_object    std;
+} php_ds_set_t;
+
+static inline php_ds_set_t *php_ds_set_fetch_object(zend_object *obj) {
+	return (php_ds_set_t *)((char*)(obj) - XtOffsetOf(php_ds_set_t, std));
+}
+
+#define Z_DS_SET(z)   (php_ds_set_fetch_object(Z_OBJ(z))->set)
 #define Z_DS_SET_P(z) Z_DS_SET(*z)
 #define THIS_DS_SET() Z_DS_SET_P(getThis())
 
@@ -19,11 +28,6 @@ do {                                        \
     }                                       \
     return;                                 \
 } while(0)
-
-typedef struct _php_ds_set_t {
-    zend_object    std;
-    ds_set_t      *set;
-} php_ds_set_t;
 
 zend_object *php_ds_set_create_object_ex(ds_set_t *set);
 zend_object *php_ds_set_create_object(zend_class_entry *ce);

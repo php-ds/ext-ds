@@ -3,7 +3,16 @@
 
 #include "../../ds/ds_deque.h"
 
-#define Z_DS_DEQUE(z)   ((php_ds_deque_t*) Z_OBJ(z))->deque
+typedef struct php_ds_deque {
+    ds_deque_t  *deque;
+    zend_object  std;
+} php_ds_deque_t;
+
+static inline php_ds_deque_t *php_ds_deque_fetch_object(zend_object *obj) {
+	return (php_ds_deque_t *)((char*)(obj) - XtOffsetOf(php_ds_deque_t, std));
+}
+
+#define Z_DS_DEQUE(z)   (php_ds_deque_fetch_object(Z_OBJ(z))->deque)
 #define Z_DS_DEQUE_P(z) Z_DS_DEQUE(*z)
 #define THIS_DS_DEQUE() Z_DS_DEQUE_P(getThis())
 
@@ -20,14 +29,6 @@ do {                                        \
     return;                                 \
 } while(0)
 
-
-/**
- *
- */
-typedef struct php_ds_deque {
-    zend_object  std;
-    ds_deque_t  *deque;
-} php_ds_deque_t;
 
 /**
  * Creates a new zend_object using an existing deque.

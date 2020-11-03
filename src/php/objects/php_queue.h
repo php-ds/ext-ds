@@ -3,7 +3,16 @@
 
 #include "../../ds/ds_queue.h"
 
-#define Z_DS_QUEUE(z)   (((php_ds_queue_t*)(Z_OBJ(z)))->queue)
+typedef struct _php_ds_queue_t {
+    ds_queue_t    *queue;
+    zend_object    std;
+} php_ds_queue_t;
+
+static inline php_ds_queue_t *php_ds_queue_fetch_object(zend_object *obj) {
+	return (php_ds_queue_t *)((char*)(obj) - XtOffsetOf(php_ds_queue_t, std));
+}
+
+#define Z_DS_QUEUE(z)   php_ds_queue_fetch_object(Z_OBJ(z))->queue
 #define Z_DS_QUEUE_P(z) Z_DS_QUEUE(*z)
 #define THIS_DS_QUEUE() Z_DS_QUEUE_P(getThis())
 
@@ -20,11 +29,6 @@ do {                                        \
     }                                       \
     return;                                 \
 } while(0)
-
-typedef struct _php_ds_queue_t {
-    zend_object    std;
-    ds_queue_t    *queue;
-} php_ds_queue_t;
 
 zend_object *php_ds_queue_create_object_ex(ds_queue_t *queue);
 zend_object *php_ds_queue_create_object(zend_class_entry *ce);

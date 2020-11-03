@@ -10,7 +10,7 @@ zend_object_handlers php_queue_handlers;
 static void php_ds_queue_write_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
-    ds_queue_t *queue = ((php_ds_queue_t*)obj)->queue;
+    ds_queue_t *queue = php_ds_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, zval *offset, zval *value) {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
@@ -24,15 +24,15 @@ static void php_ds_queue_write_dimension
 
 static void php_ds_queue_free_object(zend_object *object)
 {
-    php_ds_queue_t *queue = (php_ds_queue_t*) object;
-    zend_object_std_dtor(&queue->std);
+    php_ds_queue_t *queue = php_ds_queue_fetch_object(object);
     ds_queue_free(queue->queue);
+    zend_object_std_dtor(&queue->std);
 }
 
 static int php_ds_queue_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    ds_queue_t *queue = ((php_ds_queue_t*)obj)->queue;
+    ds_queue_t *queue = php_ds_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, zend_long *count) {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
@@ -44,7 +44,7 @@ static int php_ds_queue_count_elements
 static zend_object *php_ds_queue_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    ds_queue_t *queue = ((php_ds_queue_t*)obj)->queue;
+    ds_queue_t *queue = php_ds_queue_fetch_object(obj)->queue;
 #else
 (zval *obj) {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
@@ -55,7 +55,7 @@ static zend_object *php_ds_queue_clone_obj
 static HashTable *php_ds_queue_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_queue_t *queue = ((php_ds_queue_t*)obj)->queue;
+    ds_queue_t *queue = php_ds_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, int *is_temp) {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);
@@ -69,7 +69,7 @@ static HashTable *php_ds_queue_get_debug_info
 static HashTable *php_ds_queue_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
-    ds_queue_t *queue = ((php_ds_queue_t*)obj)->queue;
+    ds_queue_t *queue = php_ds_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, zval **gc_data, int *gc_count) {
     ds_queue_t *queue = Z_DS_QUEUE_P(obj);

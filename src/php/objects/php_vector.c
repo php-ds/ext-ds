@@ -6,7 +6,11 @@
 
 zend_object *php_ds_vector_create_object_ex(ds_vector_t *vector)
 {
-    php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t));
+#if PHP_VERSION_ID < 70300
+    php_ds_vector_t *obj = ecalloc(1, sizeof(php_ds_vector_t) + zend_object_properties_size(php_ds_vector_ce));
+#else
+    php_ds_vector_t *obj = zend_object_alloc(sizeof(php_ds_vector_t), php_ds_vector_ce);
+#endif
     zend_object_std_init(&obj->std, php_ds_vector_ce);
     obj->std.handlers = &php_vector_handlers;
     obj->vector = vector;
