@@ -6,7 +6,11 @@
 
 zend_object *php_ds_deque_create_object_ex(ds_deque_t *deque)
 {
-    php_ds_deque_t *obj = ecalloc(1, sizeof(php_ds_deque_t));
+#if PHP_VERSION_ID < 70300
+	php_ds_deque_t *obj = ecalloc(1, sizeof(php_ds_deque_t) + zend_object_properties_size(php_ds_deque_ce));
+#else
+    php_ds_deque_t *obj = zend_object_alloc(sizeof(php_ds_deque_t), php_ds_deque_ce);
+#endif
     zend_object_std_init(&obj->std, php_ds_deque_ce);
     obj->std.handlers = &php_deque_handlers;
     obj->deque = deque;

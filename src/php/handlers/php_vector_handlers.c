@@ -9,7 +9,7 @@ zend_object_handlers php_vector_handlers;
 static zval *php_ds_vector_read_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int type, zval *return_value) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else
 (zval *obj, zval *offset, int type, zval *return_value) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
@@ -47,7 +47,7 @@ static zval *php_ds_vector_read_dimension
 static void php_ds_vector_write_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else
 (zval *obj, zval *offset, zval *value) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
@@ -69,7 +69,7 @@ static void php_ds_vector_write_dimension
 static int php_ds_vector_has_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int check_empty) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else
 (zval *obj, zval *offset, int check_empty) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
@@ -85,7 +85,7 @@ static int php_ds_vector_has_dimension
 static void php_ds_vector_unset_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else
 (zval *obj, zval *offset) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
@@ -110,7 +110,7 @@ static void php_ds_vector_unset_dimension
 static int php_ds_vector_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    *count = ((php_ds_vector_t*)obj)->vector->size; return SUCCESS;
+    *count = php_ds_vector_fetch_object(obj)->vector->size; return SUCCESS;
 #else 
 (zval *obj, zend_long *count) {
     *count = Z_DS_VECTOR_P(obj)->size; return SUCCESS;
@@ -119,15 +119,15 @@ static int php_ds_vector_count_elements
 
 static void php_ds_vector_free_object(zend_object *obj)
 {
-    php_ds_vector_t *vector = (php_ds_vector_t*) obj;
-    zend_object_std_dtor(&vector->std);
+    php_ds_vector_t *vector = php_ds_vector_fetch_object(obj);
     ds_vector_free(vector->vector);
+    zend_object_std_dtor(&vector->std);
 }
 
 static HashTable *php_ds_vector_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else
 (zval *obj, int *is_temp) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);
@@ -141,7 +141,7 @@ static HashTable *php_ds_vector_get_debug_info
 static zend_object *php_ds_vector_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    return php_ds_vector_create_clone(((php_ds_vector_t*)obj)->vector);
+    return php_ds_vector_create_clone(php_ds_vector_fetch_object(obj)->vector);
 #else 
 (zval *obj) {
     return php_ds_vector_create_clone(Z_DS_VECTOR_P(obj));
@@ -151,7 +151,7 @@ static zend_object *php_ds_vector_clone_obj
 static HashTable *php_ds_vector_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
-    ds_vector_t *vector = ((php_ds_vector_t*)obj)->vector;
+    ds_vector_t *vector = php_ds_vector_fetch_object(obj)->vector;
 #else 
 (zval *obj, zval **gc_data, int *gc_count) {
     ds_vector_t *vector = Z_DS_VECTOR_P(obj);

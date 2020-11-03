@@ -6,7 +6,11 @@
 
 zend_object *php_ds_queue_create_object_ex(ds_queue_t *queue)
 {
-    php_ds_queue_t *obj = ecalloc(1, sizeof(php_ds_queue_t));
+#if PHP_VERSION_ID < 70300
+    php_ds_queue_t *obj = ecalloc(1, sizeof(php_ds_queue_t) + zend_object_properties_size(php_ds_queue_ce));
+#else
+    php_ds_queue_t *obj = zend_object_alloc(sizeof(php_ds_queue_t), php_ds_queue_ce);
+#endif
     zend_object_std_init(&obj->std, php_ds_queue_ce);
     obj->std.handlers = &php_queue_handlers;
     obj->queue = queue;

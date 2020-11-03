@@ -6,7 +6,11 @@
 
 zend_object *php_ds_stack_create_object_ex(ds_stack_t *stack)
 {
-    php_ds_stack_t *obj = ecalloc(1, sizeof(php_ds_stack_t));
+#if PHP_VERSION_ID < 70300
+    php_ds_stack_t *obj = ecalloc(1, sizeof(php_ds_stack_t) + zend_object_properties_size(php_ds_stack_ce));
+#else
+    php_ds_stack_t *obj = zend_object_alloc(sizeof(php_ds_stack_t), php_ds_stack_ce);
+#endif
     zend_object_std_init(&obj->std, php_ds_stack_ce);
     obj->std.handlers = &php_ds_stack_handlers;
     obj->stack = stack;

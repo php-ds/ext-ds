@@ -8,7 +8,7 @@ zend_object_handlers php_ds_stack_handlers;
 static void php_ds_stack_write_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
-    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+    ds_stack_t *stack = php_ds_stack_fetch_object(obj)->stack;
 #else
 (zval *obj, zval *offset, zval *value) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
@@ -22,15 +22,18 @@ static void php_ds_stack_write_dimension
 
 static void php_ds_stack_free_object(zend_object *object)
 {
-    php_ds_stack_t *obj = (php_ds_stack_t*) object;
+    php_ds_stack_t *obj = php_ds_stack_fetch_object(object);
+	if (obj->stack) {
+	    ds_stack_free(obj->stack);
+		obj->stack = NULL;
+	}
     zend_object_std_dtor(&obj->std);
-    ds_stack_free(obj->stack);
 }
 
 static int php_ds_stack_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+    ds_stack_t *stack = php_ds_stack_fetch_object(obj)->stack;
 #else
 (zval *obj, zend_long *count) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
@@ -42,7 +45,7 @@ static int php_ds_stack_count_elements
 static zend_object *php_ds_stack_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+    ds_stack_t *stack = php_ds_stack_fetch_object(obj)->stack;
 #else
 (zval *obj) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
@@ -53,7 +56,7 @@ static zend_object *php_ds_stack_clone_obj
 static HashTable *php_ds_stack_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+    ds_stack_t *stack = php_ds_stack_fetch_object(obj)->stack;
 #else
 (zval *obj, int *is_temp) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
@@ -68,7 +71,7 @@ static HashTable *php_ds_stack_get_debug_info
 static HashTable *php_ds_stack_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
-    ds_stack_t *stack = ((php_ds_stack_t*)obj)->stack;
+    ds_stack_t *stack = php_ds_stack_fetch_object(obj)->stack;
 #else
 (zval *obj, zval **gc_data, int *gc_count) {
     ds_stack_t *stack = Z_DS_STACK_P(obj);
