@@ -38,6 +38,7 @@ zval *php_ds_read_dimension_by_key_not_supported
 (zval *obj, zval *offset, int type, zval *rv) {
 #endif
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+    return NULL;
 }
 
 int php_ds_has_dimension_by_key_not_supported
@@ -47,6 +48,7 @@ int php_ds_has_dimension_by_key_not_supported
 (zval *obj, zval *offset, int check_empty) {
 #endif
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
+    return 0;
 }
 
 void php_ds_unset_dimension_by_key_not_supported

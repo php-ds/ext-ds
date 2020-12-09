@@ -8,19 +8,19 @@ zend_object_handlers php_priority_queue_handlers;
 
 static void php_ds_priority_queue_free_object(zend_object *object)
 {
-    php_ds_priority_queue_t *queue = (php_ds_priority_queue_t*) object;
-    zend_object_std_dtor(&queue->std);
+    php_ds_priority_queue_t *queue = php_ds_priority_queue_fetch_object(object);
     ds_priority_queue_free(queue->queue);
 
     if (queue->gc_data != NULL) {
         efree(queue->gc_data);
     }
+    zend_object_std_dtor(&queue->std);
 }
 
 static int php_ds_priority_queue_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+    ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, zend_long *count) {
     ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
@@ -32,7 +32,7 @@ static int php_ds_priority_queue_count_elements
 static zend_object *php_ds_priority_queue_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+    ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
 #else
 (zval *obj) {
     ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
@@ -43,7 +43,7 @@ static zend_object *php_ds_priority_queue_clone_obj
 static HashTable *php_ds_priority_queue_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+    ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, int *is_temp) {
     ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
@@ -57,7 +57,7 @@ static HashTable *php_ds_priority_queue_get_debug_info
 static HashTable *php_ds_priority_queue_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_size) {
-    ds_priority_queue_t *pq = ((php_ds_priority_queue_t *) obj)->queue;
+    ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
 #else
 (zval *obj, zval **gc_data, int *gc_size) {
     ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);

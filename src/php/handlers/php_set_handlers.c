@@ -9,7 +9,7 @@ zend_object_handlers php_ds_set_handlers;
 static zval *php_ds_set_read_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int type, zval *rv) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj, zval *offset, int type, zval *rv) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -30,7 +30,7 @@ static zval *php_ds_set_read_dimension
 static void php_ds_set_write_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj, zval *offset, zval *value) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -45,7 +45,7 @@ static void php_ds_set_write_dimension
 static int php_ds_set_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj, zend_long *count) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -56,15 +56,15 @@ static int php_ds_set_count_elements
 
 static void php_ds_set_free_object(zend_object *object)
 {
-    php_ds_set_t *obj = (php_ds_set_t*) object;
-    zend_object_std_dtor(&obj->std);
+    php_ds_set_t *obj = php_ds_set_fetch_object(object);
     ds_set_free(obj->set);
+    zend_object_std_dtor(&obj->std);
 }
 
 static HashTable *php_ds_set_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj, int *is_temp) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -79,7 +79,7 @@ static HashTable *php_ds_set_get_debug_info
 static zend_object *php_ds_set_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -90,7 +90,7 @@ static zend_object *php_ds_set_clone_obj
 static HashTable *php_ds_set_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
-    ds_set_t *set = ((php_ds_set_t*)obj)->set;
+    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
 #else
 (zval *obj, zval **gc_data, int *gc_count) {
     ds_set_t *set = Z_DS_SET_P(obj);
@@ -110,7 +110,7 @@ void php_ds_register_set_handlers()
 {
     memcpy(&php_ds_set_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_ds_set_handlers.offset = 0; // XtOffsetOf(php_ds_set_t, std);
+    php_ds_set_handlers.offset = XtOffsetOf(php_ds_set_t, std);
 
     php_ds_set_handlers.cast_object     = php_ds_default_cast_object;
     php_ds_set_handlers.clone_obj       = php_ds_set_clone_obj;

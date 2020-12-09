@@ -8,7 +8,7 @@ zend_object_handlers php_map_handlers;
 static zval *php_ds_map_read_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int type, zval *rv) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zval *offset, int type, zval *rv) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -46,7 +46,7 @@ static zval *php_ds_map_read_dimension
 static void php_ds_map_write_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zval *offset, zval *value) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -62,7 +62,7 @@ static void php_ds_map_write_dimension
 static int php_ds_map_has_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int check_empty) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zval *offset, int check_empty) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -74,7 +74,7 @@ static int php_ds_map_has_dimension
 static void php_ds_map_unset_dimension
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zval *offset) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -86,7 +86,7 @@ static void php_ds_map_unset_dimension
 static int php_ds_map_count_elements
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zend_long *count) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -97,15 +97,15 @@ static int php_ds_map_count_elements
 
 static void php_ds_map_free_object(zend_object *object)
 {
-    php_ds_map_t *intern = (php_ds_map_t*) object;
-    zend_object_std_dtor(&intern->std);
+    php_ds_map_t *intern = php_ds_map_fetch_object(object);
     ds_map_free(intern->map);
+    zend_object_std_dtor(&intern->std);
 }
 
 static HashTable *php_ds_map_get_debug_info
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, int *is_temp) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -117,7 +117,7 @@ static HashTable *php_ds_map_get_debug_info
 static zend_object *php_ds_map_clone_obj
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -128,7 +128,7 @@ static zend_object *php_ds_map_clone_obj
 static HashTable *php_ds_map_get_gc
 #if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_size) {
-    ds_map_t *map = ((php_ds_map_t*)obj)->map;
+    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
 #else
 (zval *obj, zval **gc_data, int *gc_size) {
     ds_map_t *map = Z_DS_MAP_P(obj);
@@ -147,7 +147,7 @@ void php_ds_register_map_handlers()
 {
     memcpy(&php_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_map_handlers.offset             = 0;
+    php_map_handlers.offset             = XtOffsetOf(php_ds_map_t, std);
     php_map_handlers.dtor_obj           = zend_objects_destroy_object;
     php_map_handlers.get_gc             = php_ds_map_get_gc;
     php_map_handlers.free_obj           = php_ds_map_free_object;
