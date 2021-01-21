@@ -45,7 +45,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/php-build
           ./install-dependencies.sh
-          PHP_BUILD_ZTS_ENABLE=${{ matrix.zts }} ./bin/php-build ${{ matrix.php }} ${{ github.workspace}}/php
+          PHP_BUILD_ZTS_ENABLE=${{ matrix.zts }} ./bin/php-build ${{ matrix.php }} ${{ github.workspace }}/php
 
       - name: Install extension
         run: |
@@ -54,6 +54,7 @@ jobs:
           ./configure --with-php-config=${{ github.workspace }}/php/bin/php-config
           make -j8 install
           echo "extension=ds.so" > ${{ github.workspace }}/php/etc/conf.d/ds.ini
+          rm ${{ github.workspace }}/php/etc/conf.d/xdebug.ini || true
 
       - name: Prefix PHP to PATH
         run: echo "${{ github.workspace }}/php/bin" >> $GITHUB_PATH
