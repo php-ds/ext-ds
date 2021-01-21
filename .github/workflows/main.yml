@@ -34,11 +34,13 @@ jobs:
           key: php-build-${{ matrix.php }}-zts-${{ matrix.zts }}
 
       - name: Clone php-build/php-build
-        if: steps.php-build-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
         with:
           repository: php-build/php-build
           path: ${{ github.workspace }}/php-build
+
+      - name: Install PHP dependencies
+        run: ${{ github.workspace }}/php-build/install-dependencies.sh
 
       - name: Compile PHP
         if: steps.php-build-cache.outputs.cache-hit != 'true'
