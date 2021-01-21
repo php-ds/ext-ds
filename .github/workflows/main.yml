@@ -21,7 +21,7 @@ jobs:
           - 7.4.14
           - 8.0.1
         zts: [on, off]
-
+        opcache: [on, off]
     steps:
       - uses: actions/checkout@v2
 
@@ -56,6 +56,9 @@ jobs:
 
       - name: Prefix PHP to PATH
         run: echo "${{ github.workspace }}/php/bin" >> $GITHUB_PATH
+
+      - name: Generate OPcache configuration
+        run: echo "opcache.enable_cli=${{ matrix.opcache }}" >> ${{ github.workspace }}/php/etc/conf.d/opcache.ini
 
       - name: Install Composer
         run: curl -sS https://getcomposer.org/installer | php
