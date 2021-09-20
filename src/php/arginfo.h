@@ -110,7 +110,11 @@ ZEND_END_ARG_INFO()
 		{ (const char*)(zend_uintptr_t)(required_num_args), class_name, IS_OBJECT, pass_by_ref, allow_null, 0 },
 #endif
 
-#if PHP_VERSION_ID >= 80000
+#if PHP_VERSION_ID >= 80100
+#define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, pass_by_ref, required_num_args, type, allow_null) \
+    static const zend_internal_arg_info arginfo_##name[] = { \
+        { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CODE(type, allow_null, _ZEND_ARG_INFO_FLAGS(pass_by_ref, 0, 0)) },
+#elif PHP_VERSION_ID >= 80000
 #define DS_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(name, pass_by_ref, required_num_args, type, allow_null) \
     static const zend_internal_arg_info arginfo_##name[] = { \
         { (const char*)(zend_uintptr_t)(required_num_args), ZEND_TYPE_INIT_CODE(type, allow_null, _ZEND_ARG_INFO_FLAGS(pass_by_ref, 0)) },
