@@ -222,6 +222,17 @@ int name##_unserialize(                 \
     zend_ce_error, \
     "Immutable objects may not be changed")
 
+// https://bugs.php.net/bug.php?id=80816
+#if PHP_VERSION_ID >= 80100
+#define spl_ce_Aggregate     zend_ce_aggregate
+#define spl_ce_ArrayAccess   zend_ce_arrayaccess
+#define spl_ce_Countable     zend_ce_countable
+#define spl_ce_Iterator      zend_ce_iterator
+#define spl_ce_Serializable  zend_ce_serializable
+#define spl_ce_Stringable    zend_ce_stringable
+#define spl_ce_Traversable   zend_ce_traversable
+#endif
+
 /**
  *
  */
