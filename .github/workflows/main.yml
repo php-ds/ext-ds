@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    name: PHP ${{ matrix.php }} ZTS ${{ matrix.zts }} OPcache ${{ matrix.opcache }}
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 7.1.33
+          - 7.2.34
+          - 7.3.26
+          - 7.4.14
+          - 8.0.1
+        zts: [on, off]
+        opcache: [on, off]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Restore PHP build cache
+        id: php-build-cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/php
+          key: php-build-${{ matrix.php }}-zts-${{ matrix.zts }}
+
+      - name: Clone php-build/php-build
+        uses: actions/checkout@v2
+        with:
+          repository: php-build/php-build
+          path: ${{ github.workspace }}/php-build
+
+      - name: Install PHP dependencies
+        run: ${{ github.workspace }}/php-build/install-dependencies.sh
+
+      - name: Compile PHP
+        if: steps.php-build-cache.outputs.cache-hit != 'true'
+        run: |
+          cd ${{ github.workspace }}/php-build
+          ./install-dependencies.sh
+          PHP_BUILD_ZTS_ENABLE=${{ matrix.zts }} ./bin/php-build ${{ matrix.php }} ${{ github.workspace }}/php
+
+      - name: Install extension
+        run: |
+          cd ${{ github.workspace }}
+          ${{ github.workspace }}/php/bin/phpize
+          ./configure --with-php-config=${{ github.workspace }}/php/bin/php-config
+          make -j8 install
+          echo "extension=ds.so" > ${{ github.workspace }}/php/etc/conf.d/ds.ini
+          rm ${{ github.workspace }}/php/etc/conf.d/xdebug.ini || true
+
+      - name: Prefix PHP to PATH
+        run: echo "${{ github.workspace }}/php/bin" >> $GITHUB_PATH
+
+      - name: Generate OPcache configuration
+        run: echo "opcache.enable_cli=${{ matrix.opcache }}" > ${{ github.workspace }}/php/etc/conf.d/opcache.ini
+
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php
+      - name: Restore Composer package cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/composer/files
+            ~/.cache/composer/vcs
+          key: "composer-v2-cache-${{ matrix.php }}-${{ hashFiles('./composer.json') }}"
+          restore-keys: |
+            composer-v2-cache-
+
+      - name: Install Composer dependencies
+        run: php composer.phar install --prefer-dist --no-interaction
+
+      - name: Run PHPUnit tests
+        run: php composer.phar test
