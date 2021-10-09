@@ -37,7 +37,7 @@ install:
 - cmd: choco feature enable -n=allowGlobalConfirmation
 - cmd: cinst wget
 - cmd: mkdir C:\projects\php-ds\bin
-- cmd: wget https://getcomposer.org/composer.phar -O C:\projects\php-ds\bin\composer.phar
+- cmd: cd C:\projects\php-ds\bin && appveyor DownloadFile https://getcomposer.org/composer.phar
 
 build_script:
 - cmd: >-
