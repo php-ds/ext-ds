@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](http://semver.org/).
 
+## [Unreleased] - Future
+### Changed
+- Min PHP version is 7.3
+
 ## [1.3.0] - 2020-10-13
 ### Fixed
 - ArrayAccess implemented consistently
