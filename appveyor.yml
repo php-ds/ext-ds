@@ -14,22 +14,22 @@ environment:
   matrix:
     - ARCH: x86
       INT_SIZE: 32
-      PHP_VER: 7.2
+      PHP_VER: 7.3
       VC_VER: vc15
       ZTS: --enable-zts
     - ARCH: x64
       INT_SIZE: 64
-      PHP_VER: 7.2
+      PHP_VER: 7.3
       VC_VER: vc15
       ZTS: --enable-zts
     - ARCH: x86
       INT_SIZE: 32
-      PHP_VER: 7.2
+      PHP_VER: 7.3
       VC_VER: vc15
       ZTS: --disable-zts
     - ARCH: x64
       INT_SIZE: 64
-      PHP_VER: 7.2
+      PHP_VER: 7.3
       VC_VER: vc15
       ZTS: --disable-zts
 
