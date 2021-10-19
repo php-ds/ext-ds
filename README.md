@@ -1,6 +1,6 @@
 # Data Structures for PHP 7
 
-[![Build Status](https://travis-ci.org/php-ds/ext-ds.svg?branch=master)](https://travis-ci.org/php-ds/ext-ds)
+[![Build Status](https://github.com/php-ds/ext-ds/workflows/CI/badge.svg)](https://github.com/php-ds/ext-ds/actions?query=workflow%3A%22CI%22+branch%3Amaster)
 [![Build status](https://ci.appveyor.com/api/projects/status/9w0xitp3q04hdu1d?svg=true)](https://ci.appveyor.com/project/rtheunissen/ext-ds)
 [![PECL](https://img.shields.io/badge/PECL-1.2.9-blue.svg)](https://pecl.php.net/package/ds)
 
