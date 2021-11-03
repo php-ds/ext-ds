@@ -16,9 +16,9 @@ ARGINFO_NONE(                   Queue_peek);
 ARGINFO_NONE_RETURN_OBJ(		Queue_getIterator, Traversable);
 
 ARGINFO_ZVAL_RETURN_BOOL(       Queue_offsetExists, offset);
-ARGINFO_ZVAL(                   Queue_offsetGet, offset);
-ARGINFO_ZVAL_ZVAL(              Queue_offsetSet, offset, value);
-ARGINFO_ZVAL(                   Queue_offsetUnset, offset);
+ARGINFO_OFFSET_GET(             Queue_offsetGet);
+ARGINFO_OFFSET_SET(             Queue_offsetSet);
+ARGINFO_OFFSET_UNSET(           Queue_offsetUnset);
 
 void php_ds_register_queue();
 

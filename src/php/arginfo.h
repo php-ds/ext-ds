@@ -82,6 +82,75 @@ ZEND_ARG_TYPE_INFO(0, i, IS_LONG, 0) \
 ZEND_ARG_VARIADIC_INFO(0, v) \
 ZEND_END_ARG_INFO()
 
+#if PHP_VERSION_ID >= 80100
+
+#define ARGINFO_OFFSET_GET(name) \
+    ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_##name, 0, 1, IS_MIXED, 0) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_SET(name) \
+    ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_##name, 0, 2, IS_VOID, 0) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_UNSET(name) \
+    ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_##name, 0, 1, IS_VOID, 0) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#elif PHP_VERSION_ID >= 80000
+
+#define ARGINFO_OFFSET_GET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 1) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_SET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 2) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+	ZEND_ARG_TYPE_INFO(0, value, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_UNSET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 1) \
+	ZEND_ARG_TYPE_INFO(0, offset, IS_MIXED, 0) \
+    ZEND_END_ARG_INFO()
+
+#else
+
+#define ARGINFO_OFFSET_GET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 1) \
+    ZEND_ARG_INFO(0, offset) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_SET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 2) \
+    ZEND_ARG_INFO(0, offset) \
+    ZEND_ARG_INFO(0, value) \
+    ZEND_END_ARG_INFO()
+
+#define ARGINFO_OFFSET_UNSET(name) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 1) \
+    ZEND_ARG_INFO(0, offset) \
+    ZEND_END_ARG_INFO()
+
+#endif
+
+#if PHP_VERSION_ID >= 80100
+
+#define ARGINFO_NONE_RETURN_TYPE(name, type) \
+    ZEND_BEGIN_ARG_WITH_TENTATIVE_RETURN_TYPE_INFO_EX(arginfo_##name, 0, 0, type, 0) \
+    ZEND_END_ARG_INFO()
+#else
+
+#define ARGINFO_NONE_RETURN_TYPE(name, type) \
+    ZEND_BEGIN_ARG_INFO_EX(arginfo_##name, 0, 0, 0) \
+    ZEND_END_ARG_INFO()
+
+#endif
+
 #if PHP_VERSION_ID >= 80000
 #define DS_BEGIN_ARG_WITH_RETURN_DS_INFO_EX(name, pass_by_ref, required_num_args, class_name, allow_null) \
     static const zend_internal_arg_info arginfo_##name[] = { \
@@ -182,7 +251,7 @@ ZEND_END_ARG_INFO()
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_OBJ(name, class_name) \
-    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, #class_name, 1) \
+    DS_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(name, 0, 0, #class_name, 0) \
     ZEND_END_ARG_INFO()
 
 #define ARGINFO_NONE_RETURN_BOOL(name) \

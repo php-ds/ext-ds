@@ -27,7 +27,7 @@ ARGINFO_NONE_RETURN_DS(                     Map_keys, Set);
 ARGINFO_NONE_RETURN_DS(                     Map_last, Pair);
 ARGINFO_ZVAL_RETURN_DS(                     Map_merge, values, Map);
 ARGINFO_NONE_RETURN_DS(                     Map_pairs, Sequence);
-ARGINFO_NONE(                               Map_jsonSerialize);
+ARGINFO_NONE_RETURN_TYPE(                   Map_jsonSerialize, IS_MIXED);
 ARGINFO_OPTIONAL_CALLABLE_RETURN_DS(        Map_filter, callback, Map);
 ARGINFO_NONE_RETURN_DS(                     Map_first, Pair);
 ARGINFO_CALLABLE_OPTIONAL_ZVAL(             Map_reduce, callback, initial);
@@ -43,9 +43,9 @@ ARGINFO_DS_RETURN_DS(                       Map_xor, map, Map, Map);
 ARGINFO_NONE_RETURN_OBJ(					Map_getIterator, Traversable);
 
 ARGINFO_ZVAL_RETURN_BOOL(                   Map_offsetExists, offset);
-ARGINFO_ZVAL(                               Map_offsetGet, offset);
-ARGINFO_ZVAL_ZVAL(                          Map_offsetSet, offset, value);
-ARGINFO_ZVAL(                               Map_offsetUnset, offset);
+ARGINFO_OFFSET_GET(                         Map_offsetGet);
+ARGINFO_OFFSET_SET(                         Map_offsetSet);
+ARGINFO_OFFSET_UNSET(                       Map_offsetUnset);
 
 void php_ds_register_map();
 
