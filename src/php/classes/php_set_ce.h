@@ -34,9 +34,9 @@ ARGINFO_NONE(                               Set_sum);
 ARGINFO_NONE_RETURN_OBJ(                    Set_getIterator, Traversable);
 
 ARGINFO_ZVAL_RETURN_BOOL(                   Set_offsetExists, offset);
-ARGINFO_ZVAL(                               Set_offsetGet, offset);
-ARGINFO_ZVAL_ZVAL(                          Set_offsetSet, offset, value);
-ARGINFO_ZVAL(                               Set_offsetUnset, offset);
+ARGINFO_OFFSET_GET( 	                    Set_offsetGet);
+ARGINFO_OFFSET_SET(                         Set_offsetSet);
+ARGINFO_OFFSET_UNSET(                       Set_offsetUnset);
 
 void php_ds_register_set();
 

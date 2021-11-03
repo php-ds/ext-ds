@@ -16,9 +16,9 @@ ARGINFO_NONE(                   Stack_peek);
 ARGINFO_NONE_RETURN_OBJ(        Stack_getIterator, Traversable);
 
 ARGINFO_ZVAL_RETURN_BOOL(       Stack_offsetExists, offset);
-ARGINFO_ZVAL(                   Stack_offsetGet, offset);
-ARGINFO_ZVAL_ZVAL(              Stack_offsetSet, offset, value);
-ARGINFO_ZVAL(                   Stack_offsetUnset, offset);
+ARGINFO_OFFSET_GET(             Stack_offsetGet);
+ARGINFO_OFFSET_SET(             Stack_offsetSet);
+ARGINFO_OFFSET_UNSET(           Stack_offsetUnset);
 
 void php_ds_register_stack();
 
