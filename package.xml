@@ -16,11 +16,11 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2020-10-13</date>
-    <time>21:24:19</time>
+    <date>2021-12-13</date>
+    <time>10:20:14</time>
     <version>
-        <release>1.3.0</release>
-        <api>1.3.0</api>
+        <release>1.4.0</release>
+        <api>1.4.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,9 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - ArrayAccess implemented consistently
-        - IteratorAggregate implemented consistently
-        - A few incorrect return types
+        - Support for PHP 8.1
     </notes>
     <contents>
         <dir name="/">
