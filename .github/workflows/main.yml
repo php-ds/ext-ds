@@ -24,6 +24,7 @@ jobs:
           - 7.4.14
           - 8.0.1
           - 8.1snapshot
+          - 8.2snapshot
         zts: [on, off]
         opcache: [on, off]
     steps:
