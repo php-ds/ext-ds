@@ -84,6 +84,7 @@ do {                    \
 /**
  * Adds the given zval "val" to "sum".
  */
+#if PHP_MAJOR_VERSION < 8 || PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3
 #define DS_ADD_TO_SUM(val, sum)                                         \
 do {                                                                    \
     if (Z_TYPE_P(val) == IS_LONG || Z_TYPE_P(val) == IS_DOUBLE) {       \
@@ -95,6 +96,19 @@ do {                                                                    \
         fast_add_function(sum, sum, &_num);                             \
     }                                                                   \
 } while (0)
+#else
+#define DS_ADD_TO_SUM(val, sum)                                         \
+do {                                                                    \
+    if (Z_TYPE_P(val) == IS_LONG || Z_TYPE_P(val) == IS_DOUBLE) {       \
+        add_function(sum, sum, val);                                    \
+    } else {                                                            \
+        zval _num;                                                      \
+        ZVAL_COPY(&_num, val);                                          \
+        convert_scalar_to_number(&_num);                                \
+        add_function(sum, sum, &_num);                                  \
+    }                                                                   \
+} while (0)
+#endif
 
 /**
  * Used to replace a buffer with a new one.
