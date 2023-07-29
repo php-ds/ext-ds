@@ -85,11 +85,15 @@ METHOD(slice)
 {
     ds_deque_t *deque = THIS_DS_DEQUE();
 
-    if (ZEND_NUM_ARGS() > 1) {
-        PARSE_LONG_AND_LONG(index, length);
-        RETURN_DS_DEQUE(ds_deque_slice(deque, index, length));
+    PARSE_LONG_AND_OPTIONAL_ZVAL(index, length);
+
+    if (ZEND_NUM_ARGS() > 1 && Z_TYPE_P(length) != IS_NULL) {
+        if (Z_TYPE_P(length) != IS_LONG) {
+            INTEGER_LENGTH_REQUIRED(length);
+        } else {
+            RETURN_DS_DEQUE(ds_deque_slice(deque, index, Z_LVAL_P(length)));
+        }
     } else {
-        PARSE_LONG(index);
         RETURN_DS_DEQUE(ds_deque_slice(deque, index, deque->size));
     }
 }

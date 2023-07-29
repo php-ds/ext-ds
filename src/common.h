@@ -216,6 +216,10 @@ int name##_unserialize(                 \
     zend_ce_type_error, \
     "Index must be of type integer, %s given", zend_get_type_by_const(Z_TYPE_P(z)))
 
+#define INTEGER_LENGTH_REQUIRED(z) ds_throw_exception( \
+    zend_ce_type_error, \
+    "Length must be of type integer, %s given", zend_get_type_by_const(Z_TYPE_P(z)))
+
 #define ITERATION_BY_REF_NOT_SUPPORTED() ds_throw_exception( \
     zend_ce_error, \
     "Iterating by reference is not supported")
