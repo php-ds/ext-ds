@@ -246,11 +246,15 @@ METHOD(slice)
 {
     ds_map_t *map = THIS_DS_MAP();
 
-    if (ZEND_NUM_ARGS() > 1) {
-        PARSE_LONG_AND_LONG(index, length);
-        RETURN_DS_MAP(ds_map_slice(map, index, length));
+    PARSE_LONG_AND_OPTIONAL_ZVAL(index, length);
+
+    if (ZEND_NUM_ARGS() > 1 && Z_TYPE_P(length) != IS_NULL) {
+        if (Z_TYPE_P(length) != IS_LONG) {
+            INTEGER_LENGTH_REQUIRED(length);
+        } else {
+            RETURN_DS_MAP(ds_map_slice(map, index, Z_LVAL_P(length)));
+        }
     } else {
-        PARSE_LONG(index);
         RETURN_DS_MAP(ds_map_slice(map, index, DS_MAP_SIZE(map)));
     }
 }
