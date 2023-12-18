@@ -58,6 +58,20 @@ You may include the [polyfill](https://github.com/php-ds/polyfill) as a dependen
 
 ## Contributing
 
+For local development, I'm using Docker:
+
+```
+./dev.sh  # opens a shell into a development environment
+
+phpize
+./configure
+make
+make install
+
+composer install
+composer test
+```
+
 Please see [CONTRIBUTING](CONTRIBUTING.md) for more information.
 
 ## Credits
