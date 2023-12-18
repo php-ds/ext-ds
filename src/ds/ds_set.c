@@ -80,6 +80,7 @@ static inline void add_array_to_set(ds_set_t *set, HashTable *array)
 {
     zval *value;
     ZEND_HASH_FOREACH_VAL(array, value) {
+        ZVAL_DEREF(value);
         ds_set_add(set, value);
     }
     ZEND_HASH_FOREACH_END();
