@@ -1,4 +1,5 @@
 *.
+*.dep
 *.ac
 *.gcda
 *.gcno

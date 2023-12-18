@@ -1,0 +1,8 @@
+services:
+  dev:
+    build:
+      context: "."
+    volumes:
+      - ".:/ext-ds"
+      - "./ext-ds.ini:/usr/local/etc/php/conf.d/ext-ds.ini"
+    working_dir: "/ext-ds"
