@@ -704,10 +704,8 @@ void ds_htable_put(ds_htable_t *table, zval *key, zval *value)
 
     // If found, destruct the current value so that we can replace it.
     if (found) {
-        zval_ptr_dtor(&bucket->value);
-        ZVAL_UNDEF(&bucket->value);
+        DTOR_AND_UNDEF(&bucket->value);
     }
-
     if (value) {
         ZVAL_COPY(&bucket->value, value);
     }
