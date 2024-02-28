@@ -20,7 +20,7 @@ static zval *php_ds_set_read_dimension
     }
 
     // Only support read, not write.
-    if (type != BP_VAR_R) {
+    if (type != BP_VAR_R && type != BP_VAR_IS) {
         return &EG(uninitialized_zval);
     }
 

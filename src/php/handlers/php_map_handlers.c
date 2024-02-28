@@ -35,7 +35,7 @@ static zval *php_ds_map_read_dimension
 
         // If we're accessing by reference we have to create a reference.
         // This is for access like $map[$a][$b] = $c
-        if (value && type != BP_VAR_R) {
+        if (value && type != BP_VAR_R && type != BP_VAR_IS) {
             ZVAL_MAKE_REF(value);
         }
 
