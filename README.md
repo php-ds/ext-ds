@@ -9,7 +9,7 @@ You can read about it in more detail [in this blog post](https://medium.com/p/9d
 
 ## Documentation
 
-Documentation is available on [php.net](http://docs.php.net/manual/en/book.ds.php). You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration.
+Documentation is available on [php.net](https://www.php.net/manual/en/book.ds.php). You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration.
 
 ## Installation
 
@@ -19,11 +19,11 @@ The easiest way to install the extension is to use PECL:
 pecl install ds
 ```
 
-If you're on Windows, you can download a compiled .dll on [PECL](https://pecl.php.net/package/ds) or under [releases](https://github.com/php-ds/extension/releases).
+If you're on Windows, you can download a compiled `.dll` on [PECL](https://pecl.php.net/package/ds) or under [releases](https://github.com/php-ds/extension/releases).
 
 ## Enabling the extension
 
-You'll need to add `extension=ds.so` to your primary *php.ini* file.
+You'll need to add `extension=ds.so` to your primary `php.ini` file.
 
 If you encounter an "undefined symbol" error, see [#2](https://github.com/php-ds/extension/issues/2#issuecomment-181855047).
 
@@ -40,7 +40,7 @@ You can also enable the extension temporarily using the command line:
 php -d extension=ds.so
 ```
 
-**Note**: Windows would use php_ds.dll instead.
+**Note**: Windows would use `php_ds.dll` instead.
 
 ## Testing
 
