@@ -1,4 +1,4 @@
-FROM php:8.3-alpine
+FROM php:8.4-alpine
 
 RUN apk add --no-cache $PHPIZE_DEPS valgrind
 
