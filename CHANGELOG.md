@@ -1,10 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-This project follows [Semantic Versioning](http://semver.org/).
 
-## [Unreleased] - Future
-### Changed
-- Min PHP version is 7.3
+## [1.6.0] - 2025-05-02
+### Added
+- Support for PHP 8.4 @simPod
+
+## [1.5.0] - 2023-12-19
+### Fixed
+- Support for PHP 8.3
+- Fix #194 @nielsdos
+- Fix #200 @nielsdos
+
+## [1.4.0] - 2021-12-13
+### Fixed
+- ArrayAccess implemented consistently
+- IteratorAggregate implemented consistently
+- A few incorrect return types
 
 ## [1.3.0] - 2020-10-13
 ### Fixed

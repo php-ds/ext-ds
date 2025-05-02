@@ -3,7 +3,7 @@
     <name>ds</name>
     <channel>pecl.php.net</channel>
     <summary>Data Structures</summary>
-    <description>Data Structures for PHP 7</description>
+    <description>Data Structures for PHP</description>
     <lead>
         <name>Rudi Theunissen</name>
         <user>rtheunissen</user>
@@ -16,11 +16,11 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2023-12-19</date>
-    <time>17:53:14</time>
+    <date>2025-05-02</date>
+    <time>09:38:00</time>
     <version>
-        <release>1.5.0</release>
-        <api>1.5.0</api>
+        <release>1.6.0</release>
+        <api>1.6.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,9 +28,7 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Support for PHP 8.3
-        - Fix #194 @nielsdos
-        - Fix #200 @nielsdos
+        - Support for PHP 8.4 @simPod
     </notes>
     <contents>
         <dir name="/">
