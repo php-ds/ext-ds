@@ -1,5 +1,7 @@
 {
     "name": "php-ds/extension",
+    "description": "An extension providing efficient data structures for PHP 7",
+    "type": "php-ext",
     "license": "MIT",
     "keywords": [],
     "authors": [
@@ -9,11 +11,17 @@
         }
     ],
     "minimum-stability": "dev",
+    "require": {
+        "php": ">= 7.4.0"
+    },
     "require-dev": {
         "php-ds/tests": "^1.5"
     },
     "scripts": {
         "test"   : "php test.php",
         "memtest": "USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 valgrind php test.php"
+    },
+    "php-ext": {
+        "extension-name": "ds"
     }
 }
