@@ -1,5 +1,5 @@
 {
-    "name": "php-ds/extension",
+    "name": "php-ds/ext-ds",
     "description": "An extension providing efficient data structures for PHP 7",
     "type": "php-ext",
     "license": "MIT",
