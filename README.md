@@ -5,7 +5,7 @@
 [![PECL](https://img.shields.io/badge/PECL-1.6.0-blue.svg)](https://pecl.php.net/package/ds)
 
 A PHP language extension that provides specialized data structures as efficient alternatives to the PHP array.
-You can read about it in more detail [in this blog post](https://medium.com/p/9dda7af674cd) which highlights the API, performance (relative to PHP 7) and other benefits of using the extension.
+You can read about it in more detail [in this blog post](https://medium.com/p/9dda7af674cd) which highlights the API, performance (relative to PHP 7 to PHP 8.4) and other benefits of using the extension.
 
 ## Documentation
 
