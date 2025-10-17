@@ -280,8 +280,11 @@ static uint32_t get_object_hash(zval *obj)
             case IS_DOUBLE:
                 return get_double_hash(&hash);
 
-            case IS_STRING:
-                return get_string_zval_hash(&hash);
+            case IS_STRING: {
+                uint32_t ret = get_string_zval_hash(&hash);
+                zval_ptr_dtor_str(&hash);
+                return ret;
+            }
 
             case IS_TRUE:
                 return 1;
@@ -292,6 +295,7 @@ static uint32_t get_object_hash(zval *obj)
 
             default:
                 OBJ_HASH_MUST_BE_SCALAR(&hash);
+                zval_ptr_dtor(&hash);
                 return 0;
         }
     }
