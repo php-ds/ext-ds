@@ -1,6 +1,6 @@
 {
     "name": "php-ds/ext-ds",
-    "description": "An extension providing efficient internal data structures as an alterantive to arrays",
+    "description": "An extension providing efficient internal data structures as an alternative to arrays",
     "type": "php-ext",
     "license": "MIT",
     "keywords": [],
