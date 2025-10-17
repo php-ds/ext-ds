@@ -188,8 +188,16 @@ static inline bool implements_hashable(zval *key) {
 #else
         zend_call_method_with_1_params(a, Z_OBJCE_P(a), NULL, "equals", &equals, b);
 #endif        
-        return Z_TYPE(equals) == IS_TRUE;
-     }
+        switch (Z_TYPE(equals)) {
+            case IS_TRUE:
+                return true;
+            case IS_FALSE:
+                return false;
+            default:
+                zval_ptr_dtor(&equals);
+                return false;
+        }
+    }
  }
 
 static inline bool key_is_identical(zval *key, zval *other)
@@ -540,7 +548,8 @@ static int user_compare_by_value(const void *a, const void *b)
     DSG(user_compare_fci).retval      = &retval;
 
     if (zend_call_function(&DSG(user_compare_fci), &DSG(user_compare_fci_cache)) == SUCCESS) {
-        return zval_get_long(&retval);
+        convert_to_long(&retval);
+        return Z_LVAL(retval);
     }
 
     return 0;
@@ -559,7 +568,8 @@ static int user_compare_by_key(const void *a, const void *b)
     DSG(user_compare_fci).retval      = &retval;
 
     if (zend_call_function(&DSG(user_compare_fci), &DSG(user_compare_fci_cache)) == SUCCESS) {
-        return zval_get_long(&retval);
+        convert_to_long(&retval);
+        return Z_LVAL(retval);
     }
 
     return 0;
