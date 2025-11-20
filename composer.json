@@ -12,10 +12,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">= 7.4.0"
+        "php": "^8.3"
     },
     "require-dev": {
-        "php-ds/tests": "^1.5"
+        "php-ds/tests": "^1.6"
     },
     "scripts": {
         "test"   : "php test.php",
