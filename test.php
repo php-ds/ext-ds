@@ -16,8 +16,9 @@ if (getenv('ENABLE_OPCACHE')) {
     }
 }
 
-// So that PHPUnit doesn't use "exit"
-$status = \PHPUnit\TextUI\Command::main(false);
+// Run PHPUnit without letting it call exit() itself
+$application = new \PHPUnit\TextUI\Application();
+$status = $application->run($_SERVER['argv']);
 
 // Attempt to collect anything left over from the tests.
 gc_collect_cycles();
