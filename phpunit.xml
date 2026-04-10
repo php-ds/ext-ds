@@ -1,6 +1,6 @@
 <phpunit
-    backupGlobals           = "false"
-    backupStaticAttributes  = "false"
+    backupGlobals="false"
+    failOnWarning="false"
     >
     <testsuites>
         <testsuite name="all">

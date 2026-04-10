@@ -74,7 +74,6 @@ dnl Classes
   PHP_ADD_BUILD_DIR($ext_builddir/src/php/handlers, 1)
 
   PHP_ADD_EXTENSION_DEP(ds, spl)
-  PHP_ADD_EXTENSION_DEP(ds, json)
 fi
 
 

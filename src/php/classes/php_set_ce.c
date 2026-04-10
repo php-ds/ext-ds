@@ -37,6 +37,10 @@ METHOD(join)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_set_allocate(THIS_DS_SET(), capacity);
 }
 
@@ -144,21 +148,28 @@ METHOD(isEmpty)
 
 METHOD(sort)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_set_sort_callback(THIS_DS_SET());
     } else {
         ds_set_sort(THIS_DS_SET());
     }
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
 }
 
 METHOD(sorted)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
-        RETURN_DS_SET(ds_set_sorted_callback(THIS_DS_SET()));
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
+        ds_set_t *result = ds_set_sorted_callback(THIS_DS_SET());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_SET(result);
     } else {
-        RETURN_DS_SET(ds_set_sorted(THIS_DS_SET()));
+        ds_set_t *result = ds_set_sorted(THIS_DS_SET());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_SET(result);
     }
 }
 
@@ -223,6 +234,18 @@ METHOD(jsonSerialize)
 {
     PARSE_NONE;
     ds_set_to_array(THIS_DS_SET(), return_value);
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_set_to_array(THIS_DS_SET(), return_value);
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_set_add_all(THIS_DS_SET(), data);
 }
 
 METHOD(getIterator) {

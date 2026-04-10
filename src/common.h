@@ -184,6 +184,10 @@ int name##_unserialize(                 \
     index, \
     max - 1)
 
+#define CAPACITY_INVALID(n) ds_throw_exception( \
+    spl_ce_OutOfRangeException, \
+    "Capacity must be non-negative, %ld given", (long) n)
+
 #define OFFSET_OUT_OF_BOUNDS() ds_throw_exception( \
     spl_ce_OutOfBoundsException, \
     "Offset out of bounds")
@@ -241,7 +245,6 @@ int name##_unserialize(                 \
     "Immutable objects may not be changed")
 
 // https://bugs.php.net/bug.php?id=80816
-#if PHP_VERSION_ID >= 80100
 #define spl_ce_Aggregate     zend_ce_aggregate
 #define spl_ce_ArrayAccess   zend_ce_arrayaccess
 #define spl_ce_Countable     zend_ce_countable
@@ -249,7 +252,6 @@ int name##_unserialize(                 \
 #define spl_ce_Serializable  zend_ce_serializable
 #define spl_ce_Stringable    zend_ce_stringable
 #define spl_ce_Traversable   zend_ce_traversable
-#endif
 
 /**
  *

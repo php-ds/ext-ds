@@ -27,6 +27,10 @@ METHOD(__construct)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_stack_allocate(THIS_DS_STACK(), capacity);
 }
 
@@ -88,6 +92,18 @@ METHOD(jsonSerialize)
 {
     PARSE_NONE;
     ds_stack_to_array(THIS_DS_STACK(), return_value);
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_vector_to_array(THIS_DS_STACK()->vector, return_value);
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_stack_push_all(THIS_DS_STACK(), data);
 }
 
 METHOD(getIterator) {

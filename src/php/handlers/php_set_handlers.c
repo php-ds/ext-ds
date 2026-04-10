@@ -7,13 +7,8 @@
 zend_object_handlers php_ds_set_handlers;
 
 static zval *php_ds_set_read_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int type, zval *rv) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj, zval *offset, int type, zval *rv) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif
     if (Z_TYPE_P(offset) != IS_LONG) {
         INTEGER_INDEX_REQUIRED(offset);
         return NULL;
@@ -28,13 +23,8 @@ static zval *php_ds_set_read_dimension
 }
 
 static void php_ds_set_write_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj, zval *offset, zval *value) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif
     if (offset == NULL) {
         ds_set_add(set, value);
         return;
@@ -43,13 +33,8 @@ static void php_ds_set_write_dimension
 }
 
 static int php_ds_set_count_elements
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj, zend_long *count) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif    
     *count = DS_SET_SIZE(set);
     return SUCCESS;
 }
@@ -62,13 +47,8 @@ static void php_ds_set_free_object(zend_object *object)
 }
 
 static HashTable *php_ds_set_get_debug_info
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj, int *is_temp) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif    
     zval arr;
     *is_temp = 1;
 
@@ -77,24 +57,14 @@ static HashTable *php_ds_set_get_debug_info
 }
 
 static zend_object *php_ds_set_clone_obj
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif
     return php_ds_set_create_clone(set);
 }
 
 static HashTable *php_ds_set_get_gc
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
     ds_set_t *set = php_ds_set_fetch_object(obj)->set;
-#else
-(zval *obj, zval **gc_data, int *gc_count) {
-    ds_set_t *set = Z_DS_SET_P(obj);
-#endif 
     if (DS_SET_IS_EMPTY(set)) {
         *gc_data  = NULL;
         *gc_count = 0;

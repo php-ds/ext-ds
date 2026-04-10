@@ -89,11 +89,4 @@ if (PHP_DS != "no") {
     ]);
 
     ADD_EXTENSION_DEP('ds', 'spl');
-    var dll = get_define('PHPDLL');
-    if (null != dll.match(/^php7/)) {
-        // only require dynamic json extension for PHP 7
-        // json is built statically in PHP 8
-        // https://github.com/php/php-src/pull/5495
-        ADD_EXTENSION_DEP('ds', 'json');
-    }
 }

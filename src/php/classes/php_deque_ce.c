@@ -37,6 +37,10 @@ METHOD(join)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_deque_allocate(THIS_DS_DEQUE(), capacity);
 }
 
@@ -100,27 +104,31 @@ METHOD(slice)
 
 METHOD(sort)
 {
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
     ds_deque_t *sorted = THIS_DS_DEQUE();
 
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_deque_sort_callback(sorted);
     } else {
         ds_deque_sort(sorted);
     }
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
 }
 
 METHOD(sorted)
 {
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
     ds_deque_t *sorted = ds_deque_clone(THIS_DS_DEQUE());
 
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_deque_sort_callback(sorted);
     } else {
         ds_deque_sort(sorted);
     }
 
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
     RETURN_DS_DEQUE(sorted);
 }
 
@@ -259,6 +267,18 @@ METHOD(jsonSerialize)
 {
     PARSE_NONE;
     ds_deque_to_array(THIS_DS_DEQUE(), return_value);
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_deque_to_array(THIS_DS_DEQUE(), return_value);
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_deque_push_all(THIS_DS_DEQUE(), data);
 }
 
 METHOD(getIterator) {

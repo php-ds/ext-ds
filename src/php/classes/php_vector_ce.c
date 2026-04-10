@@ -27,6 +27,10 @@ METHOD(__construct)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_vector_allocate(THIS_DS_VECTOR(), capacity);
 }
 
@@ -219,27 +223,31 @@ METHOD(slice)
 
 METHOD(sort)
 {
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
     ds_vector_t *vector = THIS_DS_VECTOR();
 
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_vector_sort_callback(vector);
     } else {
         ds_vector_sort(vector);
     }
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
 }
 
 METHOD(sorted)
 {
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
     ds_vector_t *vector = ds_vector_clone(THIS_DS_VECTOR());
 
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_vector_sort_callback(vector);
     } else {
         ds_vector_sort(vector);
     }
 
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
     RETURN_DS_VECTOR(vector);
 }
 
@@ -259,6 +267,18 @@ METHOD(unshift)
 {
     PARSE_VARIADIC_ZVAL();
     ds_vector_unshift_va(THIS_DS_VECTOR(), argc, argv);
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_vector_to_array(THIS_DS_VECTOR(), return_value);
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_vector_push_all(THIS_DS_VECTOR(), data);
 }
 
 METHOD(getIterator) {

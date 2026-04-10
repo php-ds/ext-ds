@@ -16,10 +16,8 @@ if (getenv('ENABLE_OPCACHE')) {
     }
 }
 
-// So that PHPUnit doesn't use "exit"
-$status = \PHPUnit\TextUI\Command::main(false);
-
 // Attempt to collect anything left over from the tests.
-gc_collect_cycles();
+register_shutdown_function('gc_collect_cycles');
 
-exit($status);
+$application = new \PHPUnit\TextUI\Application();
+$application->run($_SERVER['argv'] ?? ['phpunit']);

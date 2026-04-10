@@ -7,13 +7,8 @@
 zend_object_handlers php_deque_handlers;
 
 static zval *php_ds_deque_read_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int type, zval *return_value) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, zval *offset, int type, zval *return_value) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif
     zval *value;
 
     // Dereference the offset if it's a reference.
@@ -45,13 +40,8 @@ static zval *php_ds_deque_read_dimension
 }
 
 static void php_ds_deque_write_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, zval *value) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, zval *offset, zval *value) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif    
     if (offset == NULL) { /* $v[] = ... */
         ds_deque_push(deque, value);
 
@@ -67,13 +57,8 @@ static void php_ds_deque_write_dimension
 }
 
 static int php_ds_deque_has_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset, int check_empty) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, zval *offset, int check_empty) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif
     if (Z_TYPE_P(offset) != IS_LONG) {
         return 0;
     }
@@ -84,17 +69,12 @@ static int php_ds_deque_has_dimension
 }
 
 static void php_ds_deque_unset_dimension
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval *offset) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, zval *offset) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif
     zend_long index = 0;
     ZVAL_DEREF(offset);
 
-    if (Z_TYPE_P(offset) == IS_LONG) {               
+    if (Z_TYPE_P(offset) == IS_LONG) {
         index = Z_LVAL_P(offset);
 
     } else {
@@ -109,13 +89,8 @@ static void php_ds_deque_unset_dimension
 }
 
 static int php_ds_deque_count_elements
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
     *count = php_ds_deque_fetch_object(obj)->deque->size;
-#else
-(zval *obj, zend_long *count) {
-    *count = Z_DS_DEQUE_P(obj)->size;
-#endif
     return SUCCESS;
 }
 
@@ -127,13 +102,8 @@ static void php_ds_deque_free_object(zend_object *object)
 }
 
 static HashTable *php_ds_deque_get_debug_info
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, int *is_temp) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif
     zval arr;
     *is_temp = 1;
     ds_deque_to_array(deque, &arr);
@@ -141,23 +111,13 @@ static HashTable *php_ds_deque_get_debug_info
 }
 
 static zend_object *php_ds_deque_clone_obj
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
     return php_ds_deque_create_clone(php_ds_deque_fetch_object(obj)->deque);
-#else 
-(zval *obj) {
-    return php_ds_deque_create_clone(Z_DS_DEQUE_P(obj));
-#endif    
 }
 
 static HashTable *php_ds_deque_get_gc
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_count) {
     ds_deque_t *deque = php_ds_deque_fetch_object(obj)->deque;
-#else
-(zval *obj, zval **gc_data, int *gc_count) {
-    ds_deque_t *deque = Z_DS_DEQUE_P(obj);
-#endif    
     *gc_data  = deque->buffer;
     *gc_count = (int) (deque->head == 0 ? deque->size : deque->capacity);
 

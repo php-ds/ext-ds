@@ -74,6 +74,22 @@ DSG(user_compare_fci) = empty_fcall_info; \
 DSG(user_compare_fci_cache) = empty_fcall_info_cache; \
 PARSE_2("f", &DSG(user_compare_fci), &DSG(user_compare_fci_cache))
 
+#define PARSE_OPTIONAL_COMPARE_CALLABLE() \
+DSG(user_compare_fci) = empty_fcall_info; \
+DSG(user_compare_fci_cache) = empty_fcall_info_cache; \
+PARSE_2("|f!", &DSG(user_compare_fci), &DSG(user_compare_fci_cache))
+
+#define HAS_COMPARE_CALLABLE() \
+ZEND_FCI_INITIALIZED(DSG(user_compare_fci))
+
+#define SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache) \
+zend_fcall_info saved_fci = DSG(user_compare_fci); \
+zend_fcall_info_cache saved_fci_cache = DSG(user_compare_fci_cache)
+
+#define RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache) \
+DSG(user_compare_fci) = saved_fci; \
+DSG(user_compare_fci_cache) = saved_fci_cache
+
 #define PARSE_ZVAL(z) \
 zval *z = NULL; \
 PARSE_1("z", &z)

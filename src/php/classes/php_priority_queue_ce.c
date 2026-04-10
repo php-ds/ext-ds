@@ -22,6 +22,10 @@ METHOD(__construct)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_priority_queue_allocate(THIS_DS_PRIORITY_QUEUE(), capacity);
 }
 
@@ -83,6 +87,47 @@ METHOD(jsonSerialize)
 {
     PARSE_NONE;
     ds_priority_queue_to_array(THIS_DS_PRIORITY_QUEUE(), return_value);
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_priority_queue_t *queue = THIS_DS_PRIORITY_QUEUE();
+
+    array_init_size(return_value, queue->size);
+
+    if (queue->size > 0) {
+        ds_priority_queue_node_t *nodes = ds_priority_queue_create_sorted_buffer(queue);
+        ds_priority_queue_node_t *pos = nodes;
+        ds_priority_queue_node_t *end = nodes + queue->size;
+
+        for (; pos < end; ++pos) {
+            zval pair;
+            array_init_size(&pair, 2);
+            Z_TRY_ADDREF(pos->value);
+            Z_TRY_ADDREF(pos->priority);
+            add_next_index_zval(&pair, &pos->value);
+            add_next_index_zval(&pair, &pos->priority);
+            add_next_index_zval(return_value, &pair);
+        }
+
+        efree(nodes);
+    }
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_priority_queue_t *queue = THIS_DS_PRIORITY_QUEUE();
+
+    zval *entry;
+    ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(data), entry) {
+        zval *value = zend_hash_index_find(Z_ARRVAL_P(entry), 0);
+        zval *priority = zend_hash_index_find(Z_ARRVAL_P(entry), 1);
+        if (value && priority) {
+            ds_priority_queue_push(queue, value, priority);
+        }
+    } ZEND_HASH_FOREACH_END();
 }
 
 METHOD(getIterator) {

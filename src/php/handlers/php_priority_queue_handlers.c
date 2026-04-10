@@ -18,36 +18,21 @@ static void php_ds_priority_queue_free_object(zend_object *object)
 }
 
 static int php_ds_priority_queue_count_elements
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zend_long *count) {
     ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
-#else
-(zval *obj, zend_long *count) {
-    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
-#endif
     *count = DS_PRIORITY_QUEUE_SIZE(pq);
     return SUCCESS;
 }
 
 static zend_object *php_ds_priority_queue_clone_obj
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj) {
     ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
-#else
-(zval *obj) {
-    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
-#endif
-    return php_ds_priority_queue_create_clone(pq);  
+    return php_ds_priority_queue_create_clone(pq);
 }
 
 static HashTable *php_ds_priority_queue_get_debug_info
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, int *is_temp) {
     ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
-#else
-(zval *obj, int *is_temp) {
-    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
-#endif
     zval arr;
     *is_temp = 1;
     ds_priority_queue_to_array(pq, &arr);
@@ -55,13 +40,8 @@ static HashTable *php_ds_priority_queue_get_debug_info
 }
 
 static HashTable *php_ds_priority_queue_get_gc
-#if PHP_VERSION_ID >= 80000
 (zend_object *obj, zval **gc_data, int *gc_size) {
     ds_priority_queue_t *pq = php_ds_priority_queue_fetch_object(obj)->queue;
-#else
-(zval *obj, zval **gc_data, int *gc_size) {
-    ds_priority_queue_t *pq = Z_DS_PRIORITY_QUEUE_P(obj);
-#endif
     if (DS_PRIORITY_QUEUE_IS_EMPTY(pq)) {
         *gc_data = NULL;
         *gc_size = 0;

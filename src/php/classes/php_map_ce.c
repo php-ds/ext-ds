@@ -30,6 +30,10 @@ METHOD(__construct)
 METHOD(allocate)
 {
     PARSE_LONG(capacity);
+    if (capacity < 0) {
+        CAPACITY_INVALID(capacity);
+        return;
+    }
     ds_map_allocate(THIS_DS_MAP(), capacity);
 }
 
@@ -101,41 +105,55 @@ METHOD(clear)
 
 METHOD(sort)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_map_sort_by_value_callback(THIS_DS_MAP());
     } else {
         ds_map_sort_by_value(THIS_DS_MAP());
     }
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
 }
 
 METHOD(sorted)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
-        RETURN_DS_MAP(ds_map_sorted_by_value_callback(THIS_DS_MAP()));
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
+        ds_map_t *result = ds_map_sorted_by_value_callback(THIS_DS_MAP());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_MAP(result);
     } else {
-        RETURN_DS_MAP(ds_map_sorted_by_value(THIS_DS_MAP()));
+        ds_map_t *result = ds_map_sorted_by_value(THIS_DS_MAP());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_MAP(result);
     }
 }
 
 METHOD(ksort)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
         ds_map_sort_by_key_callback(THIS_DS_MAP());
     } else {
         ds_map_sort_by_key(THIS_DS_MAP());
     }
+    RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
 }
 
 METHOD(ksorted)
 {
-    if (ZEND_NUM_ARGS()) {
-        PARSE_COMPARE_CALLABLE();
-        RETURN_DS_MAP(ds_map_sorted_by_key_callback(THIS_DS_MAP()));
+    SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+    PARSE_OPTIONAL_COMPARE_CALLABLE();
+    if (HAS_COMPARE_CALLABLE()) {
+        ds_map_t *result = ds_map_sorted_by_key_callback(THIS_DS_MAP());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_MAP(result);
     } else {
-        RETURN_DS_MAP(ds_map_sorted_by_key(THIS_DS_MAP()));
+        ds_map_t *result = ds_map_sorted_by_key(THIS_DS_MAP());
+        RESTORE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
+        RETURN_DS_MAP(result);
     }
 }
 
@@ -283,6 +301,43 @@ METHOD(xor)
 {
     PARSE_OBJ(obj, php_ds_map_ce);
     RETURN_DS_MAP(ds_map_xor(THIS_DS_MAP(), Z_DS_MAP_P(obj)));
+}
+
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    ds_map_t *map = THIS_DS_MAP();
+
+    zval *key;
+    zval *value;
+
+    array_init_size(return_value, DS_MAP_SIZE(map));
+
+    DS_HTABLE_FOREACH_KEY_VALUE(map->table, key, value) {
+        zval pair;
+        array_init_size(&pair, 2);
+        Z_TRY_ADDREF_P(key);
+        Z_TRY_ADDREF_P(value);
+        add_next_index_zval(&pair, key);
+        add_next_index_zval(&pair, value);
+        add_next_index_zval(return_value, &pair);
+    }
+    DS_HTABLE_FOREACH_END();
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    ds_map_t *map = THIS_DS_MAP();
+
+    zval *entry;
+    ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(data), entry) {
+        zval *key = zend_hash_index_find(Z_ARRVAL_P(entry), 0);
+        zval *value = zend_hash_index_find(Z_ARRVAL_P(entry), 1);
+        if (key && value) {
+            ds_map_put(map, key, value);
+        }
+    } ZEND_HASH_FOREACH_END();
 }
 
 METHOD(getIterator) {

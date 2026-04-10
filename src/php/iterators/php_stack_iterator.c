@@ -75,11 +75,7 @@ zend_object_iterator *php_ds_stack_get_iterator(zend_class_entry *ce, zval *obje
 
     // Add a reference to the object so that it doesn't get collected when
     // the iterated object is implict, eg. foreach ($obj->getInstance() as $value){ ... }
-#if PHP_VERSION_ID >= 70300
     GC_ADDREF(iterator->object);
-#else
-    ++GC_REFCOUNT(iterator->object);
-#endif
 
     return (zend_object_iterator *) iterator;
 }

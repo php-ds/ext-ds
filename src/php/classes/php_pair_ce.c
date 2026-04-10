@@ -43,6 +43,28 @@ METHOD(jsonSerialize)
     php_ds_pair_to_array(THIS_DS_PAIR(), return_value);
 }
 
+METHOD(__serialize)
+{
+    PARSE_NONE;
+    php_ds_pair_to_array(THIS_DS_PAIR(), return_value);
+}
+
+METHOD(__unserialize)
+{
+    PARSE_ZVAL(data);
+    php_ds_pair_t *pair = THIS_DS_PAIR();
+
+    zval *key = zend_hash_str_find(Z_ARRVAL_P(data), "key", sizeof("key") - 1);
+    zval *value = zend_hash_str_find(Z_ARRVAL_P(data), "value", sizeof("value") - 1);
+
+    if (key) {
+        php_ds_pair_set_key(pair, key);
+    }
+    if (value) {
+        php_ds_pair_set_value(pair, value);
+    }
+}
+
 void php_ds_register_pair()
 {
     zend_class_entry ce;
@@ -52,6 +74,8 @@ void php_ds_register_pair()
         PHP_DS_ME(Pair, copy)
         PHP_DS_ME(Pair, jsonSerialize)
         PHP_DS_ME(Pair, toArray)
+        PHP_DS_ME(Pair, __serialize)
+        PHP_DS_ME(Pair, __unserialize)
         PHP_FE_END
     };
 

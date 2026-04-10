@@ -11,6 +11,8 @@ ARGINFO_OPTIONAL_ZVAL_OPTIONAL_ZVAL(    Pair___construct, key, value);
 ARGINFO_NONE_RETURN_DS(                 Pair_copy, Pair);
 ARGINFO_NONE_RETURN_ARRAY(              Pair_toArray);
 ARGINFO_NONE_RETURN_TYPE(               Pair_jsonSerialize, IS_MIXED);
+ARGINFO_NONE_RETURN_ARRAY(              Pair___serialize);
+ARGINFO_ZVAL(                           Pair___unserialize, data);
 
 void php_ds_register_pair();
 
