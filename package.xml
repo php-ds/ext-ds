@@ -16,11 +16,11 @@
         <email>krakjoe@php.net</email>
         <active>yes</active>
     </lead>
-    <date>2025-05-02</date>
-    <time>09:38:00</time>
+    <date>2026-04-10</date>
+    <time>00:00:00</time>
     <version>
-        <release>1.6.0</release>
-        <api>1.6.0</api>
+        <release>1.8.0</release>
+        <api>1.8.0</api>
     </version>
     <stability>
         <release>stable</release>
@@ -28,7 +28,13 @@
     </stability>
     <license uri="https://opensource.org/licenses/MIT">MIT License</license>
     <notes>
-        - Support for PHP 8.4 @simPod
+        - Drop PHP &lt; 8.2, require PHP &gt;= 8.2
+        - Implement __serialize/__unserialize (O: format), replacing Serializable (C:)
+        - Fix sort/ksort to accept null comparators (#134)
+        - Support nested sort comparators via FCI save/restore (#48)
+        - Guard allocate against negative capacity (#33)
+        - Update CI for PHP 8.2-8.5, PHPUnit 11 (#213)
+        - Remove legacy Serializable and pre-8.2 compat code
     </notes>
     <contents>
         <dir name="/">
