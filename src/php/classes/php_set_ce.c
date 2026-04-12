@@ -8,10 +8,12 @@
 #include "../iterators/php_set_iterator.h"
 #include "../handlers/php_set_handlers.h"
 
-#include "php_collection_ce.h"
+#include "php_ds_ce_common.h"
 #include "php_set_ce.h"
 
 #define METHOD(name) PHP_METHOD(Set, name)
+
+#define SEPARATE() ds_set_separate(THIS_DS_SET())
 
 zend_class_entry *php_ds_set_ce;
 
@@ -20,6 +22,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
+        SEPARATE();
         ds_set_add_all(THIS_DS_SET(), values);
     }
 }
@@ -41,6 +44,7 @@ METHOD(allocate)
         CAPACITY_INVALID(capacity);
         return;
     }
+    SEPARATE();
     ds_set_allocate(THIS_DS_SET(), capacity);
 }
 
@@ -53,12 +57,14 @@ METHOD(capacity)
 METHOD(add)
 {
     PARSE_VARIADIC_ZVAL();
+    SEPARATE();
     ds_set_add_va(THIS_DS_SET(), argc, argv);
 }
 
 METHOD(remove)
 {
     PARSE_VARIADIC_ZVAL();
+    SEPARATE();
     ds_set_remove_va(THIS_DS_SET(), argc, argv);
 }
 
@@ -125,6 +131,7 @@ METHOD(union)
 METHOD(clear)
 {
     PARSE_NONE;
+    SEPARATE();
     ds_set_clear(THIS_DS_SET());
 }
 
@@ -150,6 +157,7 @@ METHOD(sort)
 {
     SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
     PARSE_OPTIONAL_COMPARE_CALLABLE();
+    SEPARATE();
     if (HAS_COMPARE_CALLABLE()) {
         ds_set_sort_callback(THIS_DS_SET());
     } else {
@@ -215,6 +223,7 @@ METHOD(filter)
 METHOD(reverse)
 {
     PARSE_NONE;
+    SEPARATE();
     ds_set_reverse(THIS_DS_SET());
 }
 
@@ -245,6 +254,7 @@ METHOD(__serialize)
 METHOD(__unserialize)
 {
     PARSE_ZVAL(data);
+    SEPARATE();
     ds_set_add_all(THIS_DS_SET(), data);
 }
 
@@ -270,6 +280,7 @@ METHOD(offsetSet)
     PARSE_ZVAL_ZVAL(offset, value);
 
     if (Z_TYPE_P(offset) == IS_NULL) {
+        SEPARATE();
         ds_set_add_va(THIS_DS_SET(), 1, value);
     } else {
         ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
@@ -336,10 +347,11 @@ void php_ds_register_set()
         DS_HTABLE_MIN_CAPACITY
     );
 
-    zend_class_implements(php_ds_set_ce, 2,
-        collection_ce,
-        zend_ce_arrayaccess
-    );
+    zend_class_implements(php_ds_set_ce, 4,
+        spl_ce_Aggregate,
+        spl_ce_Countable,
+        php_json_serializable_ce,
+        zend_ce_arrayaccess);
 
     php_ds_register_set_handlers();
 }

@@ -1,6 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-04-11
+### Added
+- `Ds\Seq` as a unified sequence type, replacing `Ds\Vector` and `Ds\Deque`.
+- `Ds\Heap` with an optional comparator parameter (max-heap by default), replacing `Ds\PriorityQueue`.
+- `Ds\Key` interface for custom key equality (`hash(): mixed`, `equals(mixed $other): bool`), replacing `Ds\Hashable`.
+- Copy-on-write (COW) semantics: cloning and iterating collections is safe during mutation. Clone is O(1), with the actual copy deferred until either side mutates.
+- Functional constructors: `\Ds\seq()`, `\Ds\map()`, `\Ds\set()`, `\Ds\heap()`.
+- `Ds\Pair` is now readonly (properties cannot be set or unset).
+- PHPT tests alongside the existing PHPUnit shared test suite.
+
+### Changed
+- Requires PHP >= 8.2.
+- `Ds\Map::values()` now returns `Ds\Seq` instead of `Ds\Vector`.
+- `Ds\Map::pairs()` now returns `Ds\Seq` instead of `Ds\Vector`.
+- `Ds\Map::keys()` now returns `Ds\Set`.
+
+### Removed
+- `Ds\Vector` (use `Ds\Seq`).
+- `Ds\Deque` (use `Ds\Seq`).
+- `Ds\Stack` (use `Ds\Seq` with `push`/`pop`).
+- `Ds\Queue` (use `Ds\Seq` with `push`/`shift`).
+- `Ds\PriorityQueue` (use `Ds\Heap`).
+- `Ds\Hashable` interface (use `Ds\Key`).
+- `Ds\Collection` interface.
+- `Ds\Sequence` interface.
+- `Ds\Pair::copy()` (use `clone`).
+
 ## [1.6.0] - 2025-05-02
 ### Added
 - Support for PHP 8.4 @simPod

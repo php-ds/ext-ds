@@ -22,6 +22,7 @@ static void php_ds_htable_iterator_dtor(zend_object_iterator *iter)
 {
     ds_htable_iterator_t *iterator = (ds_htable_iterator_t *) iter;
 
+    ds_htable_release(iterator->table);
     OBJ_RELEASE(iterator->obj);
     DTOR_AND_UNDEF(&iterator->intern.data);
 }
@@ -177,6 +178,7 @@ static zend_object_iterator *php_ds_htable_create_htable_iterator(
 
     iterator->intern.funcs  = funcs;
     iterator->table         = table;
+    iterator->table->refs++;  // COW: iterator holds its own reference
     iterator->obj           = Z_OBJ_P(obj);
 
     // Add a reference to the object so that it doesn't get collected when

@@ -21,6 +21,8 @@ ds_set_t *ds_set_clone(ds_set_t *set);
 
 void ds_set_free(ds_set_t *set);
 void ds_set_clear(ds_set_t *set);
+void ds_set_separate(ds_set_t *set);
+void ds_set_release(ds_set_t *set);
 void ds_set_allocate(ds_set_t *set, zend_long capacity);
 
 void ds_set_add(ds_set_t *set, zval *value);

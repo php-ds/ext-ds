@@ -265,6 +265,17 @@ void ds_set_free(ds_set_t *set)
     efree(set);
 }
 
+void ds_set_separate(ds_set_t *set)
+{
+    ds_htable_separate(&set->table);
+}
+
+void ds_set_release(ds_set_t *set)
+{
+    ds_htable_release(set->table);
+    efree(set);
+}
+
 void ds_set_reduce(ds_set_t *set, FCI_PARAMS, zval *initial, zval *return_value)
 {
     zval *value;

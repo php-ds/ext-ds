@@ -24,9 +24,10 @@ static zval *php_ds_set_read_dimension
 
 static void php_ds_set_write_dimension
 (zend_object *obj, zval *offset, zval *value) {
-    ds_set_t *set = php_ds_set_fetch_object(obj)->set;
+    php_ds_set_t *php_obj = php_ds_set_fetch_object(obj);
     if (offset == NULL) {
-        ds_set_add(set, value);
+        ds_set_separate(php_obj->set);
+        ds_set_add(php_obj->set, value);
         return;
     }
     ARRAY_ACCESS_BY_KEY_NOT_SUPPORTED();
@@ -42,7 +43,7 @@ static int php_ds_set_count_elements
 static void php_ds_set_free_object(zend_object *object)
 {
     php_ds_set_t *obj = php_ds_set_fetch_object(object);
-    ds_set_free(obj->set);
+    ds_set_release(obj->set);
     zend_object_std_dtor(&obj->std);
 }
 

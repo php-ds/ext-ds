@@ -5,7 +5,6 @@
 #include "../php/classes/php_set_ce.h"
 
 #include "ds_htable.h"
-#include "ds_vector.h"
 #include "ds_map.h"
 #include "ds_set.h"
 
@@ -349,5 +348,16 @@ void ds_map_sum(ds_map_t *map, zval *return_value)
 void ds_map_free(ds_map_t *map)
 {
     ds_htable_free(map->table);
+    efree(map);
+}
+
+void ds_map_separate(ds_map_t *map)
+{
+    ds_htable_separate(&map->table);
+}
+
+void ds_map_release(ds_map_t *map)
+{
+    ds_htable_release(map->table);
     efree(map);
 }

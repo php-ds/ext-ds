@@ -17,6 +17,8 @@ ds_map_t *ds_map_clone(ds_map_t *map);
 
 void ds_map_clear(ds_map_t *map);
 void ds_map_free(ds_map_t *map);
+void ds_map_separate(ds_map_t *map);
+void ds_map_release(ds_map_t *map);
 
 void ds_map_reverse(ds_map_t *map);
 ds_map_t *ds_map_reversed(ds_map_t *map);
