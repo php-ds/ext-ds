@@ -40,13 +40,14 @@ static zval *php_ds_map_read_dimension
 
 static void php_ds_map_write_dimension
 (zend_object *obj, zval *offset, zval *value) {
-    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
+    php_ds_map_t *php_obj = php_ds_map_fetch_object(obj);
     if (offset == NULL) {
         ARRAY_ACCESS_PUSH_NOT_SUPPORTED();
         return;
     }
+    ds_map_separate(php_obj->map);
     ZVAL_DEREF(offset);
-    ds_htable_put(map->table, offset, value);
+    ds_htable_put(php_obj->map->table, offset, value);
 }
 
 static int php_ds_map_has_dimension
@@ -58,9 +59,10 @@ static int php_ds_map_has_dimension
 
 static void php_ds_map_unset_dimension
 (zend_object *obj, zval *offset) {
-    ds_map_t *map = php_ds_map_fetch_object(obj)->map;
+    php_ds_map_t *php_obj = php_ds_map_fetch_object(obj);
+    ds_map_separate(php_obj->map);
     ZVAL_DEREF(offset);
-    ds_htable_remove(map->table, offset, NULL);
+    ds_htable_remove(php_obj->map->table, offset, NULL);
 }
 
 static int php_ds_map_count_elements
@@ -73,7 +75,7 @@ static int php_ds_map_count_elements
 static void php_ds_map_free_object(zend_object *object)
 {
     php_ds_map_t *intern = php_ds_map_fetch_object(object);
-    ds_map_free(intern->map);
+    ds_map_release(intern->map);
     zend_object_std_dtor(&intern->std);
 }
 

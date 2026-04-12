@@ -156,6 +156,7 @@ typedef struct _ds_htable_t {
     uint32_t             size;          // Number of active buckets in the table
     uint32_t             capacity;      // Length of the bucket buffer
     uint32_t             min_deleted;   // First deleted bucket buffer index
+    uint32_t             refs;          // COW reference count. 0 = sole owner.
 } ds_htable_t;
 
 ds_htable_t *ds_htable();
@@ -189,6 +190,9 @@ ds_htable_t *ds_htable_slice(ds_htable_t *table, zend_long index, zend_long leng
 void ds_htable_clear(ds_htable_t *h);
 bool ds_htable_isset(ds_htable_t *h, zval *key, bool check_empty);
 ds_htable_t *ds_htable_clone(ds_htable_t *source);
+
+void ds_htable_separate(ds_htable_t **table);
+void ds_htable_release(ds_htable_t *table);
 
 zend_string *ds_htable_join_keys(ds_htable_t *table, const char* glue, const size_t len);
 

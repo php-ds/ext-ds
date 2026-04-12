@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: PHP ${{ matrix.php }} PHPTS ${{ matrix.phpts }} OPcache ${{ matrix.opcache }}
-    runs-on: ubuntu-22.04
+  phpt:
+    name: PHPT - PHP ${{ matrix.php }} ${{ matrix.phpts }} OPcache=${{ matrix.opcache }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +23,7 @@ jobs:
         opcache: [1, 0]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -33,15 +33,43 @@ jobs:
         env:
           phpts: ${{ matrix.phpts }}
 
-      - name: Install extension
-        working-directory: ${{ github.workspace }}
+      - name: Build extension
         run: |
           phpize
           ./configure --with-php-config=/usr/bin/php-config
-          sudo make -j8 install
+          make -j$(nproc)
 
-      - name: "Install dependencies with Composer"
-        uses: "ramsey/composer-install@v3"
+      - name: Run PHPT tests
+        run: make test TESTS=tests/ NO_INTERACTION=1
+
+  phpunit:
+    name: PHPUnit - PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Build and install extension
+        run: |
+          phpize
+          ./configure --with-php-config=/usr/bin/php-config
+          sudo make -j$(nproc) install
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v3
         with:
           composer-options: "--prefer-dist"
 

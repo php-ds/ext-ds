@@ -20,7 +20,10 @@ zend_object *php_ds_set_create_object(zend_class_entry *ce)
 
 zend_object *php_ds_set_create_clone(ds_set_t *set)
 {
-    return php_ds_set_create_object_ex(ds_set_clone(set));
+    ds_set_t *clone = ecalloc(1, sizeof(ds_set_t));
+    clone->table = set->table;
+    clone->table->refs++;
+    return php_ds_set_create_object_ex(clone);
 }
 
 int php_ds_set_serialize(zval *object, unsigned char **buffer, size_t *length, zend_serialize_data *data)

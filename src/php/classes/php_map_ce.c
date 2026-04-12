@@ -3,18 +3,20 @@
 #include "../parameters.h"
 #include "../arginfo.h"
 
-#include "../objects/php_vector.h"
 #include "../objects/php_map.h"
 #include "../objects/php_pair.h"
 #include "../objects/php_set.h"
+#include "../objects/php_seq.h"
 
 #include "../iterators/php_map_iterator.h"
 #include "../handlers/php_map_handlers.h"
 
-#include "php_collection_ce.h"
+#include "php_ds_ce_common.h"
 #include "php_map_ce.h"
 
 #define METHOD(name) PHP_METHOD(Map, name)
+
+#define SEPARATE() ds_map_separate(THIS_DS_MAP())
 
 zend_class_entry *php_ds_map_ce;
 
@@ -23,6 +25,7 @@ METHOD(__construct)
     PARSE_OPTIONAL_ZVAL(values);
 
     if (values) {
+        SEPARATE();
         ds_map_put_all(THIS_DS_MAP(), values);
     }
 }
@@ -34,12 +37,14 @@ METHOD(allocate)
         CAPACITY_INVALID(capacity);
         return;
     }
+    SEPARATE();
     ds_map_allocate(THIS_DS_MAP(), capacity);
 }
 
 METHOD(apply)
 {
     PARSE_CALLABLE();
+    SEPARATE();
     ds_map_apply(THIS_DS_MAP(), FCI_ARGS);
 }
 
@@ -52,12 +57,14 @@ METHOD(capacity)
 METHOD(put)
 {
     PARSE_ZVAL_ZVAL(key, value);
+    SEPARATE();
     ds_map_put(THIS_DS_MAP(), key, value);
 }
 
 METHOD(putAll)
 {
     PARSE_ZVAL(values);
+    SEPARATE();
     ds_map_put_all(THIS_DS_MAP(), values);
 }
 
@@ -76,6 +83,7 @@ METHOD(intersect)
 METHOD(remove)
 {
     PARSE_ZVAL_OPTIONAL_ZVAL(key, def);
+    SEPARATE();
     ds_map_remove(THIS_DS_MAP(), key, def, return_value);
 }
 
@@ -100,6 +108,7 @@ METHOD(diff)
 METHOD(clear)
 {
     PARSE_NONE;
+    SEPARATE();
     ds_map_clear(THIS_DS_MAP());
 }
 
@@ -107,6 +116,7 @@ METHOD(sort)
 {
     SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
     PARSE_OPTIONAL_COMPARE_CALLABLE();
+    SEPARATE();
     if (HAS_COMPARE_CALLABLE()) {
         ds_map_sort_by_value_callback(THIS_DS_MAP());
     } else {
@@ -134,6 +144,7 @@ METHOD(ksort)
 {
     SAVE_COMPARE_CALLABLE(saved_fci, saved_fci_cache);
     PARSE_OPTIONAL_COMPARE_CALLABLE();
+    SEPARATE();
     if (HAS_COMPARE_CALLABLE()) {
         ds_map_sort_by_key_callback(THIS_DS_MAP());
     } else {
@@ -179,8 +190,22 @@ METHOD(pairs)
 {
     ds_map_t *map = THIS_DS_MAP();
     PARSE_NONE;
-    RETURN_DS_VECTOR(
-        ds_vector_from_buffer(ds_map_pairs(map), DS_MAP_SIZE(map), DS_MAP_SIZE(map)));
+
+    ds_seq_t *seq = ds_seq();
+    ds_seq_allocate(seq, DS_MAP_SIZE(map));
+
+    zval *key;
+    zval *value;
+
+    DS_HTABLE_FOREACH_KEY_VALUE(map->table, key, value) {
+        zval pair;
+        ZVAL_DS_PAIR(&pair, php_ds_pair_ex(key, value));
+        ds_seq_push(seq, &pair);
+        zval_ptr_dtor(&pair);
+    }
+    DS_HTABLE_FOREACH_END();
+
+    RETURN_DS_SEQ(seq);
 }
 
 METHOD(toArray)
@@ -239,6 +264,7 @@ METHOD(reduce)
 METHOD(reverse)
 {
     PARSE_NONE;
+    SEPARATE();
     ds_map_reverse(THIS_DS_MAP());
 }
 
@@ -293,8 +319,18 @@ METHOD(values)
 {
     ds_map_t *map = THIS_DS_MAP();
     PARSE_NONE;
-    RETURN_DS_VECTOR(
-        ds_vector_from_buffer(ds_map_values(map), DS_MAP_SIZE(map), DS_MAP_SIZE(map)));
+
+    ds_seq_t *seq = ds_seq();
+    ds_seq_allocate(seq, DS_MAP_SIZE(map));
+
+    zval *value;
+
+    DS_HTABLE_FOREACH_VALUE(map->table, value) {
+        ds_seq_push(seq, value);
+    }
+    DS_HTABLE_FOREACH_END();
+
+    RETURN_DS_SEQ(seq);
 }
 
 METHOD(xor)
@@ -328,6 +364,7 @@ METHOD(__serialize)
 METHOD(__unserialize)
 {
     PARSE_ZVAL(data);
+    SEPARATE();
     ds_map_t *map = THIS_DS_MAP();
 
     zval *entry;
@@ -360,12 +397,14 @@ METHOD(offsetGet)
 METHOD(offsetSet)
 {
     PARSE_ZVAL_ZVAL(offset, value);
+    SEPARATE();
     ds_map_put(THIS_DS_MAP(), offset, value);
 }
 
 METHOD(offsetUnset)
 {
     PARSE_ZVAL(offset);
+    SEPARATE();
     ds_map_remove(THIS_DS_MAP(), offset, NULL, return_value);
 }
 
@@ -432,10 +471,11 @@ void php_ds_register_map()
         DS_HTABLE_MIN_CAPACITY
     );
     
-    zend_class_implements(php_ds_map_ce, 2, 
-        collection_ce, 
-        zend_ce_arrayaccess
-    );
+    zend_class_implements(php_ds_map_ce, 4,
+        spl_ce_Aggregate,
+        spl_ce_Countable,
+        php_json_serializable_ce,
+        zend_ce_arrayaccess);
 
     php_ds_register_map_handlers();
 }

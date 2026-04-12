@@ -20,7 +20,10 @@ zend_object *php_ds_map_create_object(zend_class_entry *ce)
 
 zend_object *php_ds_map_create_clone(ds_map_t *map)
 {
-    return php_ds_map_create_object_ex(ds_map_clone(map));
+    ds_map_t *clone = ecalloc(1, sizeof(ds_map_t));
+    clone->table = map->table;
+    clone->table->refs++;
+    return php_ds_map_create_object_ex(clone);
 }
 
 HashTable *ds_map_pairs_to_php_hashtable(ds_map_t *map)

@@ -84,19 +84,6 @@ do {                    \
 /**
  * Adds the given zval "val" to "sum".
  */
-#if PHP_MAJOR_VERSION < 8 || PHP_MAJOR_VERSION == 8 && PHP_MINOR_VERSION < 3
-#define DS_ADD_TO_SUM(val, sum)                                         \
-do {                                                                    \
-    if (Z_TYPE_P(val) == IS_LONG || Z_TYPE_P(val) == IS_DOUBLE) {       \
-        fast_add_function(sum, sum, val);                               \
-    } else {                                                            \
-        zval _num;                                                      \
-        ZVAL_COPY(&_num, val);                                          \
-        convert_scalar_to_number(&_num);                                \
-        fast_add_function(sum, sum, &_num);                             \
-    }                                                                   \
-} while (0)
-#else
 #define DS_ADD_TO_SUM(val, sum)                                         \
 do {                                                                    \
     if (Z_TYPE_P(val) == IS_LONG || Z_TYPE_P(val) == IS_DOUBLE) {       \
@@ -108,7 +95,6 @@ do {                                                                    \
         add_function(sum, sum, &_num);                                  \
     }                                                                   \
 } while (0)
-#endif
 
 /**
  * Used to replace a buffer with a new one.
@@ -235,14 +221,6 @@ int name##_unserialize(                 \
 #define UNSERIALIZE_ERROR() ds_throw_exception( \
     zend_ce_error, \
     "Failed to unserialize data")
-
-#define RECONSTRUCTION_NOT_ALLOWED() ds_throw_exception( \
-    zend_ce_error, \
-    "Immutable objects may not be reconstructed")
-
-#define MUTABILITY_NOT_ALLOWED() ds_throw_exception( \
-    zend_ce_error, \
-    "Immutable objects may not be changed")
 
 // https://bugs.php.net/bug.php?id=80816
 #define spl_ce_Aggregate     zend_ce_aggregate

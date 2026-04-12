@@ -2,9 +2,8 @@
 
 #include "ds_htable.h"
 #include "ds_set.h"
-#include "ds_vector.h"
 
-#include "../php/classes/php_hashable_ce.h"
+#include "../php/classes/php_key_ce.h"
 
 static inline ds_htable_bucket_t *ds_htable_allocate_buckets(uint32_t capacity)
 {
@@ -172,8 +171,25 @@ ds_htable_t *ds_htable_clone(ds_htable_t *src)
     return dst;
 }
 
-static inline bool implements_hashable(zval *key) {
-    return Z_TYPE_P(key) == IS_OBJECT && instanceof_function(Z_OBJCE_P(key), hashable_ce);
+void ds_htable_separate(ds_htable_t **table)
+{
+    if ((*table)->refs > 0) {
+        (*table)->refs--;
+        *table = ds_htable_clone(*table);
+    }
+}
+
+void ds_htable_release(ds_htable_t *table)
+{
+    if (table->refs > 0) {
+        table->refs--;
+    } else {
+        ds_htable_free(table);
+    }
+}
+
+static inline bool implements_key(zval *key) {
+    return Z_TYPE_P(key) == IS_OBJECT && instanceof_function(Z_OBJCE_P(key), key_ce);
 }
 
  static inline bool user_hashable_equals(zval *a, zval *b)
@@ -198,7 +214,7 @@ static inline bool implements_hashable(zval *key) {
 
 static inline bool key_is_identical(zval *key, zval *other)
 {
-    if (Z_TYPE_P(key) == IS_OBJECT && implements_hashable(key)) {
+    if (Z_TYPE_P(key) == IS_OBJECT && implements_key(key)) {
         return Z_TYPE_P(other) == IS_OBJECT && user_hashable_equals(key, other);
     }
 
@@ -269,7 +285,7 @@ static inline uint32_t get_double_hash(zval *value)
 
 static uint32_t get_object_hash(zval *obj)
 {
-    if (implements_hashable(obj)) {
+    if (implements_key(obj)) {
         zval hash;
         zend_call_method_with_0_params(Z_OBJ_P(obj), Z_OBJCE_P(obj), NULL, "hash", &hash);
         

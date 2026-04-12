@@ -7,59 +7,40 @@ if test "$PHP_DS" != "no"; then
   src/common.c                                \
                                               \
 dnl Internal
-  src/ds/ds_vector.c                   \
-  src/ds/ds_deque.c                    \
+  src/ds/ds_seq.c                      \
   src/ds/ds_htable.c                   \
   src/ds/ds_set.c                      \
   src/ds/ds_map.c                      \
-  src/ds/ds_stack.c                    \
-  src/ds/ds_priority_queue.c           \
-  src/ds/ds_queue.c                    \
+  src/ds/ds_heap.c                     \
                                                   \
-  src/php/objects/php_vector.c                    \
-  src/php/objects/php_deque.c                     \
+  src/php/objects/php_seq.c                       \
   src/php/objects/php_map.c                       \
   src/php/objects/php_pair.c                      \
-  src/php/objects/php_priority_queue.c            \
-  src/php/objects/php_queue.c                     \
+  src/php/objects/php_heap.c                      \
   src/php/objects/php_set.c                       \
-  src/php/objects/php_stack.c                     \
                                                   \
 dnl Iterators
-  src/php/iterators/php_vector_iterator.c         \
-  src/php/iterators/php_deque_iterator.c          \
+  src/php/iterators/php_seq_iterator.c            \
   src/php/iterators/php_set_iterator.c            \
   src/php/iterators/php_map_iterator.c            \
-  src/php/iterators/php_stack_iterator.c          \
   src/php/iterators/php_htable_iterator.c         \
-  src/php/iterators/php_priority_queue_iterator.c \
-  src/php/iterators/php_queue_iterator.c          \
+  src/php/iterators/php_heap_iterator.c            \
                                                   \
 dnl Handlers
   src/php/handlers/php_common_handlers.c          \
-  src/php/handlers/php_vector_handlers.c          \
-  src/php/handlers/php_deque_handlers.c           \
+  src/php/handlers/php_seq_handlers.c             \
   src/php/handlers/php_set_handlers.c             \
   src/php/handlers/php_map_handlers.c             \
-  src/php/handlers/php_stack_handlers.c           \
   src/php/handlers/php_pair_handlers.c            \
-  src/php/handlers/php_priority_queue_handlers.c  \
-  src/php/handlers/php_queue_handlers.c           \
-                                                  \
-dnl Interfaces
-  src/php/classes/php_hashable_ce.c               \
-  src/php/classes/php_collection_ce.c             \
-  src/php/classes/php_sequence_ce.c               \
+  src/php/handlers/php_heap_handlers.c             \
                                                   \
 dnl Classes
-  src/php/classes/php_vector_ce.c                 \
-  src/php/classes/php_deque_ce.c                  \
+  src/php/classes/php_key_ce.c                    \
+  src/php/classes/php_seq_ce.c                    \
   src/php/classes/php_set_ce.c                    \
   src/php/classes/php_map_ce.c                    \
-  src/php/classes/php_stack_ce.c                  \
   src/php/classes/php_pair_ce.c                   \
-  src/php/classes/php_priority_queue_ce.c         \
-  src/php/classes/php_queue_ce.c                  \
+  src/php/classes/php_heap_ce.c                    \
                                                   \
   php_ds.c                                        \
                                                   \
@@ -75,5 +56,3 @@ dnl Classes
 
   PHP_ADD_EXTENSION_DEP(ds, spl)
 fi
-
-
