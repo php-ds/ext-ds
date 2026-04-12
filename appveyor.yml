@@ -4,46 +4,45 @@ branches:
   only:
   - master
 
-image: Visual Studio 2017
+image: Visual Studio 2022
 
 clone_folder: c:\projects\php-ds
 
 environment:
-  PHP_SDK_BINARY_TOOLS_VER: php-sdk-2.1.1
+  PHP_SDK_BINARY_TOOLS_VER: php-sdk-2.6.0
 
   matrix:
     - ARCH: x86
       INT_SIZE: 32
       PHP_VER: 8.5
-      VC_VER: vc15
+      VC_VER: vs17
       ZTS: --enable-zts
     - ARCH: x64
       INT_SIZE: 64
       PHP_VER: 8.5
-      VC_VER: vc15
+      VC_VER: vs17
       ZTS: --enable-zts
     - ARCH: x86
       INT_SIZE: 32
       PHP_VER: 8.5
-      VC_VER: vc15
+      VC_VER: vs17
       ZTS: --disable-zts
     - ARCH: x64
       INT_SIZE: 64
       PHP_VER: 8.5
-      VC_VER: vc15
+      VC_VER: vs17
       ZTS: --disable-zts
 
 install:
 - cmd: choco feature enable -n=allowGlobalConfirmation
-- cmd: cinst wget
 - cmd: mkdir C:\projects\php-ds\bin
 - cmd: cd C:\projects\php-ds\bin && appveyor DownloadFile https://getcomposer.org/composer.phar
 
 build_script:
 - cmd: >-
-    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
+    "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCH%
 
-    wget https://github.com/OSTC/php-sdk-binary-tools/archive/%PHP_SDK_BINARY_TOOLS_VER%.zip --no-check-certificate -q -O php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip
+    curl -L -o php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip https://github.com/php/php-sdk-binary-tools/archive/refs/tags/%PHP_SDK_BINARY_TOOLS_VER%.zip
 
     7z x -y php-sdk-binary-tools-%PHP_SDK_BINARY_TOOLS_VER%.zip -oC:\projects
 
