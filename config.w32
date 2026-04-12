@@ -26,66 +26,49 @@ if (PHP_DS != "no") {
 
     ds_src("/ds",
     [
-        "ds_deque.c",
-        "ds_vector.c",
+        "ds_seq.c",
         "ds_htable.c",
         "ds_set.c",
         "ds_map.c",
-        "ds_stack.c",
-        "ds_priority_queue.c",
-        "ds_queue.c",
+        "ds_heap.c",
     ]);
 
     ds_src("/php/objects",
     [
-        "php_deque.c",
-        "php_vector.c",
+        "php_seq.c",
         "php_map.c",
         "php_pair.c",
-        "php_priority_queue.c",
+        "php_heap.c",
         "php_set.c",
-        "php_stack.c",
-        "php_queue.c",
     ]);
 
     ds_src("/php/iterators",
     [
-        "php_vector_iterator.c",
-        "php_deque_iterator.c",
+        "php_seq_iterator.c",
         "php_set_iterator.c",
         "php_map_iterator.c",
-        "php_stack_iterator.c",
         "php_htable_iterator.c",
-        "php_priority_queue_iterator.c",
-        "php_queue_iterator.c",
+        "php_heap_iterator.c",
     ]);
 
     ds_src("/php/handlers",
     [
         "php_common_handlers.c",
-        "php_vector_handlers.c",
-        "php_deque_handlers.c",
+        "php_seq_handlers.c",
         "php_set_handlers.c",
         "php_map_handlers.c",
-        "php_stack_handlers.c",
         "php_pair_handlers.c",
-        "php_priority_queue_handlers.c",
-        "php_queue_handlers.c",
+        "php_heap_handlers.c",
     ]);
 
     ds_src("/php/classes",
     [
-        "php_hashable_ce.c",
-        "php_collection_ce.c",
-        "php_sequence_ce.c",
-        "php_vector_ce.c",
-        "php_deque_ce.c",
+        "php_key_ce.c",
+        "php_seq_ce.c",
         "php_set_ce.c",
         "php_map_ce.c",
-        "php_stack_ce.c",
         "php_pair_ce.c",
-        "php_priority_queue_ce.c",
-        "php_queue_ce.c",
+        "php_heap_ce.c",
     ]);
 
     ADD_EXTENSION_DEP('ds', 'spl');
