@@ -1,7 +1,6 @@
 # Native Data Structures for PHP
 
 [![Build Status](https://github.com/php-ds/ext-ds/workflows/CI/badge.svg)](https://github.com/php-ds/ext-ds/actions?query=workflow%3A%22CI%22+branch%3Amaster)
-[![Build status](https://ci.appveyor.com/api/projects/status/9w0xitp3q04hdu1d?svg=true)](https://ci.appveyor.com/project/rtheunissen/ext-ds)
 [![PECL](https://img.shields.io/badge/PECL-2.0.0-blue.svg)](https://pecl.php.net/package/ds)
 
 A PHP language extension that provides specialized data structures as efficient alternatives to the PHP array.
