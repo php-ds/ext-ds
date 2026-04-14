@@ -1,0 +1,21 @@
+ARG PHP_VERSION=8.4
+ARG PHP_VARIANT=cli
+FROM php:${PHP_VERSION}-${PHP_VARIANT}
+
+WORKDIR /ext-ds
+
+COPY . .
+
+RUN phpize --clean > /dev/null 2>&1 || true \
+    && phpize \
+    && ./configure \
+    && make -j$(nproc) \
+    && make install
+
+ARG OPCACHE=0
+ENV PHP_OPCACHE=${OPCACHE}
+
+CMD php -d opcache.enable_cli=${PHP_OPCACHE} run-tests.php \
+    -d extension=ds.so \
+    -n -q --show-diff \
+    tests/

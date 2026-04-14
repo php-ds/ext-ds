@@ -9,38 +9,35 @@ on:
 
 jobs:
   phpt:
-    name: PHPT - PHP ${{ matrix.php }} ${{ matrix.phpts }} OPcache=${{ matrix.opcache }}
+    name: PHPT - PHP ${{ matrix.php }} ${{ matrix.ts }} ${{ matrix.platform }} opcache=${{ matrix.opcache }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        php:
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-        phpts: ["ts", "nts"]
-        opcache: [1, 0]
-
+        php: ['8.2', '8.3', '8.4', '8.5']
+        platform: [debian, alpine]
+        ts: [nts, ts]
+        opcache: [0, 1]
+        include:
+          - { platform: debian,  dockerfile: Dockerfile.debian }
+          - { platform: alpine,  dockerfile: Dockerfile.alpine }
+          - { ts: nts, variant: cli }
+          - { ts: ts,  variant: zts }
+          - { php: '8.5', tag: '8.5-rc' }
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          ini-values: opcache.enable_cli=${{ matrix.opcache }}
-        env:
-          phpts: ${{ matrix.phpts }}
+      - name: Build
+        run: >
+          docker build
+          -f ${{ matrix.dockerfile }}
+          --build-arg PHP_VERSION=${{ matrix.tag || matrix.php }}
+          --build-arg PHP_VARIANT=${{ matrix.variant }}
+          --build-arg OPCACHE=${{ matrix.opcache }}
+          -t ext-ds .
 
-      - name: Build extension
-        run: |
-          phpize
-          ./configure --with-php-config=/usr/bin/php-config
-          make -j$(nproc)
-
-      - name: Run PHPT tests
-        run: make test TESTS=tests/ NO_INTERACTION=1
+      - name: Test
+        run: docker run --rm ext-ds
 
   phpunit:
     name: PHPUnit - PHP ${{ matrix.php }}
