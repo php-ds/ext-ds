@@ -75,3 +75,36 @@ jobs:
 
       - name: Run PHPUnit tests
         run: composer test
+
+  windows:
+    name: Windows - PHP ${{ matrix.php-version }} ${{ matrix.ts }} ${{ matrix.arch }}
+    needs: get-windows-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-windows-matrix.outputs.matrix) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build the extension
+        uses: php/php-windows-builder/extension@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+          arch: ${{ matrix.arch }}
+          ts: ${{ matrix.ts }}
+          args: --enable-ds
+
+  get-windows-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.extension-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Get the extension matrix
+        id: extension-matrix
+        uses: php/php-windows-builder/extension-matrix@v1
+        with:
+          php-version-list: '8.2, 8.3, 8.4, 8.5'
