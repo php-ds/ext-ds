@@ -39,6 +39,18 @@ jobs:
       - name: Test
         run: docker run --rm ext-ds
 
+  phpt-arch:
+    name: PHPT - Arch Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: docker build -f Dockerfile.arch -t ext-ds .
+
+      - name: Test
+        run: docker run --rm ext-ds
+
   phpunit:
     name: PHPUnit - PHP ${{ matrix.php }}
     runs-on: ubuntu-latest

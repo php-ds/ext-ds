@@ -1,0 +1,22 @@
+FROM archlinux:latest
+
+RUN pacman -Syu --noconfirm \
+    php \
+    autoconf \
+    gcc \
+    make
+
+WORKDIR /ext-ds
+
+COPY . .
+
+RUN phpize --clean > /dev/null 2>&1 || true \
+    && phpize \
+    && ./configure \
+    && make -j$(nproc) \
+    && make install
+
+CMD php run-tests.php \
+    -d extension=ds.so \
+    -n -q --show-diff \
+    tests/
