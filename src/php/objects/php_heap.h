@@ -12,7 +12,7 @@ typedef struct _php_ds_heap_t {
 } php_ds_heap_t;
 
 static inline php_ds_heap_t *php_ds_heap_fetch_object(zend_object *obj) {
-    return (php_ds_heap_t *)((char*)(obj) - XtOffsetOf(php_ds_heap_t, std));
+    return (php_ds_heap_t *)((char*)(obj) - offsetof(php_ds_heap_t, std));
 }
 
 #define Z_DS_HEAP(z)    (php_ds_heap_fetch_object(Z_OBJ(z)))
