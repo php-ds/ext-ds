@@ -26,7 +26,7 @@ void php_ds_register_pair_handlers()
 {
     memcpy(&php_pair_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_pair_handlers.offset = XtOffsetOf(php_ds_pair_t, std);
+    php_pair_handlers.offset = offsetof(php_ds_pair_t, std);
 
     php_pair_handlers.clone_obj               = php_ds_pair_clone_object;
     php_pair_handlers.cast_object             = php_ds_default_cast_object;

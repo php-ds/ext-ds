@@ -9,7 +9,7 @@ typedef struct _php_ds_map_t {
 } php_ds_map_t;
 
 static inline php_ds_map_t *php_ds_map_fetch_object(zend_object *obj) {
-	return (php_ds_map_t *)((char*)(obj) - XtOffsetOf(php_ds_map_t, std));
+	return (php_ds_map_t *)((char*)(obj) - offsetof(php_ds_map_t, std));
 }
 
 #define Z_DS_MAP(z)   (php_ds_map_fetch_object(Z_OBJ(z))->map)

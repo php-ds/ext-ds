@@ -9,7 +9,7 @@ typedef struct php_ds_seq {
 } php_ds_seq_t;
 
 static inline php_ds_seq_t *php_ds_seq_fetch_object(zend_object *obj) {
-	return (php_ds_seq_t *)((char*)(obj) - XtOffsetOf(php_ds_seq_t, std));
+	return (php_ds_seq_t *)((char*)(obj) - offsetof(php_ds_seq_t, std));
 }
 
 #define Z_DS_SEQ(z)   (php_ds_seq_fetch_object(Z_OBJ(z))->seq)
