@@ -132,7 +132,7 @@ void php_ds_register_seq_handlers()
 {
     memcpy(&php_seq_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_seq_handlers.offset = XtOffsetOf(php_ds_seq_t, std);
+    php_seq_handlers.offset = offsetof(php_ds_seq_t, std);
 
     php_seq_handlers.dtor_obj         = zend_objects_destroy_object;
     php_seq_handlers.free_obj         = php_ds_seq_free_object;

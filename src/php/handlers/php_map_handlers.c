@@ -109,7 +109,7 @@ void php_ds_register_map_handlers()
 {
     memcpy(&php_map_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_map_handlers.offset             = XtOffsetOf(php_ds_map_t, std);
+    php_map_handlers.offset             = offsetof(php_ds_map_t, std);
     php_map_handlers.dtor_obj           = zend_objects_destroy_object;
     php_map_handlers.get_gc             = php_ds_map_get_gc;
     php_map_handlers.free_obj           = php_ds_map_free_object;

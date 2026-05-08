@@ -9,7 +9,7 @@ typedef struct _php_ds_set_t {
 } php_ds_set_t;
 
 static inline php_ds_set_t *php_ds_set_fetch_object(zend_object *obj) {
-	return (php_ds_set_t *)((char*)(obj) - XtOffsetOf(php_ds_set_t, std));
+	return (php_ds_set_t *)((char*)(obj) - offsetof(php_ds_set_t, std));
 }
 
 #define Z_DS_SET(z)   (php_ds_set_fetch_object(Z_OBJ(z))->set)

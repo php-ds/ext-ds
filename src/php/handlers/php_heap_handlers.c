@@ -51,7 +51,7 @@ void php_ds_register_heap_handlers()
 {
     memcpy(&php_heap_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_heap_handlers.offset          = XtOffsetOf(php_ds_heap_t, std);
+    php_heap_handlers.offset          = offsetof(php_ds_heap_t, std);
     php_heap_handlers.dtor_obj        = zend_objects_destroy_object;
     php_heap_handlers.free_obj        = php_ds_heap_free_object;
     php_heap_handlers.get_gc          = php_ds_heap_get_gc;
