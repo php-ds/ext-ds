@@ -76,15 +76,18 @@ static void php_ds_seq_unset_dimension
     ds_seq_separate(&php_obj->seq);
     ds_seq_t *seq = php_obj->seq;
     zend_long index = 0;
+    bool is_null = false;
     ZVAL_DEREF(offset);
 
     if (Z_TYPE_P(offset) == IS_LONG) {
         index = Z_LVAL_P(offset);
 
-    } else {
-        if (zend_parse_parameter(ZEND_PARSE_PARAMS_QUIET, 1, offset, "l", &index) == FAILURE) {
-            return;
-        }
+    } else if (Z_TYPE_P(offset) == IS_NULL) {
+        index = 0;
+        php_docref_error(NULL, E_DEPRECATED, "Using null as array offset is deprecated");
+    } else if (!zend_parse_arg_long(offset, &index, &is_null, false, 0)) {
+        INTEGER_INDEX_REQUIRED(offset);
+        return;
     }
 
     if (ds_seq_index_exists(seq, index)) {
