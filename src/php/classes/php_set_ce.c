@@ -260,7 +260,7 @@ METHOD(__unserialize)
 
 METHOD(getIterator) {
     PARSE_NONE;
-    ZVAL_COPY(return_value, getThis());
+    zend_create_internal_iterator_zval(return_value, ZEND_THIS);
 }
 
 

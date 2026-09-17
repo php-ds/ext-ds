@@ -20,6 +20,8 @@ Documentation is available on [php.net](https://www.php.net/manual/en/book.ds.ph
 - **Ds\Pair** -- readonly key-value pair
 - **Ds\Key** -- interface for custom key equality (replaces Hashable)
 
+`getIterator()` on `Seq`, `Map`, `Set`, and `Heap` returns an `InternalIterator` supporting the standard `Iterator` methods.
+
 You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration.
 
 ## Installation
