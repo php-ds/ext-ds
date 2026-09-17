@@ -78,14 +78,7 @@ static void php_ds_seq_unset_dimension
     zend_long index = 0;
     ZVAL_DEREF(offset);
 
-    if (Z_TYPE_P(offset) == IS_LONG) {
-        index = Z_LVAL_P(offset);
-
-    } else {
-        if (zend_parse_parameter(ZEND_PARSE_PARAMS_QUIET, 1, offset, "l", &index) == FAILURE) {
-            return;
-        }
-    }
+    index = zval_get_long_ex(offset, true);
 
     if (ds_seq_index_exists(seq, index)) {
         ds_seq_remove(seq, index, NULL);
@@ -132,7 +125,7 @@ void php_ds_register_seq_handlers()
 {
     memcpy(&php_seq_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
-    php_seq_handlers.offset = XtOffsetOf(php_ds_seq_t, std);
+    php_seq_handlers.offset = offsetof(php_ds_seq_t, std);
 
     php_seq_handlers.dtor_obj         = zend_objects_destroy_object;
     php_seq_handlers.free_obj         = php_ds_seq_free_object;
