@@ -40,7 +40,8 @@ static void php_ds_heap_iterator_set_current(php_ds_heap_iterator_t *iterator)
     DTOR_AND_UNDEF(&iterator->intern.data);
 
     if (!DS_HEAP_IS_EMPTY(iterator->heap)) {
-        ds_heap_pop(iterator->heap, &iterator->intern.data, iterator->compare);
+        ds_heap_pop(iterator->heap, &iterator->intern.data, iterator->compare,
+            php_ds_heap_fetch_object(iterator->object));
     }
 }
 

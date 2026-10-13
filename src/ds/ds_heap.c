@@ -28,7 +28,7 @@ static inline void ds_heap_compact(ds_heap_t *heap)
     }
 }
 
-int ds_heap_default_compare(zval *a, zval *b)
+int ds_heap_default_compare(zval *a, zval *b, void *context)
 {
     zval retval;
     if (compare_function(&retval, a, b) == SUCCESS) {
@@ -104,7 +104,7 @@ zval *ds_heap_peek(ds_heap_t *heap)
     return &heap->nodes[0];
 }
 
-void ds_heap_push(ds_heap_t *heap, zval *value, ds_heap_compare_func_t compare)
+void ds_heap_push(ds_heap_t *heap, zval *value, ds_heap_compare_func_t compare, void *context)
 {
     uint32_t index;
     uint32_t parent;
@@ -117,7 +117,7 @@ void ds_heap_push(ds_heap_t *heap, zval *value, ds_heap_compare_func_t compare)
     for (index = heap->size; index > 0; index = parent) {
         parent = PARENT(index);
 
-        if (compare(value, &heap->nodes[parent]) <= 0) {
+        if (compare(value, &heap->nodes[parent], context) <= 0) {
             break;
         }
 
@@ -129,7 +129,7 @@ void ds_heap_push(ds_heap_t *heap, zval *value, ds_heap_compare_func_t compare)
     heap->size++;
 }
 
-void ds_heap_pop(ds_heap_t *heap, zval *return_value, ds_heap_compare_func_t compare)
+void ds_heap_pop(ds_heap_t *heap, zval *return_value, ds_heap_compare_func_t compare, void *context)
 {
     uint32_t index;
     uint32_t swap;
@@ -165,12 +165,12 @@ void ds_heap_pop(ds_heap_t *heap, zval *return_value, ds_heap_compare_func_t com
         swap = LEFT(index);
 
         // Pick the larger child.
-        if (swap + 1 < heap->size && compare(&heap->nodes[swap], &heap->nodes[swap + 1]) < 0) {
+        if (swap + 1 < heap->size && compare(&heap->nodes[swap], &heap->nodes[swap + 1], context) < 0) {
             swap++;
         }
 
         // If the bottom value is >= the larger child, we're done.
-        if (compare(&bottom, &heap->nodes[swap]) >= 0) {
+        if (compare(&bottom, &heap->nodes[swap], context) >= 0) {
             break;
         }
 
@@ -184,16 +184,17 @@ void ds_heap_pop(ds_heap_t *heap, zval *return_value, ds_heap_compare_func_t com
 typedef struct _ds_heap_push_all_data {
     ds_heap_t               *heap;
     ds_heap_compare_func_t   compare;
+    void                   *context;
 } ds_heap_push_all_data;
 
 static int ds_heap_iterator_add(zend_object_iterator *iterator, void *puser)
 {
     ds_heap_push_all_data *data = (ds_heap_push_all_data *) puser;
-    ds_heap_push(data->heap, iterator->funcs->get_current_data(iterator), data->compare);
+    ds_heap_push(data->heap, iterator->funcs->get_current_data(iterator), data->compare, data->context);
     return ZEND_HASH_APPLY_KEEP;
 }
 
-void ds_heap_push_all(ds_heap_t *heap, zval *values, ds_heap_compare_func_t compare)
+void ds_heap_push_all(ds_heap_t *heap, zval *values, ds_heap_compare_func_t compare, void *context)
 {
     if (!values) {
         return;
@@ -202,14 +203,14 @@ void ds_heap_push_all(ds_heap_t *heap, zval *values, ds_heap_compare_func_t comp
     if (ds_is_array(values)) {
         zval *value;
         ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(values), value) {
-            ds_heap_push(heap, value, compare);
+            ds_heap_push(heap, value, compare, context);
         }
         ZEND_HASH_FOREACH_END();
         return;
     }
 
     if (ds_is_traversable(values)) {
-        ds_heap_push_all_data data = { heap, compare };
+        ds_heap_push_all_data data = { heap, compare, context };
         spl_iterator_apply(values, ds_heap_iterator_add, &data);
         return;
     }
@@ -217,7 +218,7 @@ void ds_heap_push_all(ds_heap_t *heap, zval *values, ds_heap_compare_func_t comp
     ARRAY_OR_TRAVERSABLE_REQUIRED();
 }
 
-void ds_heap_to_array(ds_heap_t *heap, zval *array, ds_heap_compare_func_t compare)
+void ds_heap_to_array(ds_heap_t *heap, zval *array, ds_heap_compare_func_t compare, void *context)
 {
     if (heap->size == 0) {
         array_init(array);
@@ -231,7 +232,7 @@ void ds_heap_to_array(ds_heap_t *heap, zval *array, ds_heap_compare_func_t compa
 
     while (clone->size > 0) {
         zval value;
-        ds_heap_pop(clone, &value, compare);
+        ds_heap_pop(clone, &value, compare, context);
         add_next_index_zval(array, &value);
     }
 

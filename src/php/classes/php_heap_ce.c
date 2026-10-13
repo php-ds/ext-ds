@@ -40,7 +40,7 @@ METHOD(__construct)
     if (values && Z_TYPE_P(values) != IS_NULL) {
         SEPARATE();
         ds_heap_compare_func_t compare = php_ds_heap_get_compare(obj);
-        ds_heap_push_all(obj->heap, values, compare);
+        ds_heap_push_all(obj->heap, values, compare, obj);
     }
 }
 
@@ -70,7 +70,7 @@ METHOD(push)
     SEPARATE();
 
     for (int i = 0; i < argc; i++) {
-        ds_heap_push(obj->heap, &argv[i], compare);
+        ds_heap_push(obj->heap, &argv[i], compare, obj);
     }
 }
 
@@ -79,7 +79,7 @@ METHOD(pop)
     php_ds_heap_t *obj = THIS_DS_HEAP();
     PARSE_NONE;
     SEPARATE();
-    ds_heap_pop(obj->heap, return_value, php_ds_heap_get_compare(obj));
+    ds_heap_pop(obj->heap, return_value, php_ds_heap_get_compare(obj), obj);
 }
 
 METHOD(peek)
@@ -117,14 +117,14 @@ METHOD(toArray)
 {
     php_ds_heap_t *obj = THIS_DS_HEAP();
     PARSE_NONE;
-    ds_heap_to_array(obj->heap, return_value, php_ds_heap_get_compare(obj));
+    ds_heap_to_array(obj->heap, return_value, php_ds_heap_get_compare(obj), obj);
 }
 
 METHOD(jsonSerialize)
 {
     php_ds_heap_t *obj = THIS_DS_HEAP();
     PARSE_NONE;
-    ds_heap_to_array(obj->heap, return_value, php_ds_heap_get_compare(obj));
+    ds_heap_to_array(obj->heap, return_value, php_ds_heap_get_compare(obj), obj);
 }
 
 METHOD(__serialize)
@@ -141,7 +141,7 @@ METHOD(__serialize)
 
     while (clone->size > 0) {
         zval value;
-        ds_heap_pop(clone, &value, compare);
+        ds_heap_pop(clone, &value, compare, obj);
         add_next_index_zval(return_value, &value);
     }
 
@@ -157,7 +157,7 @@ METHOD(__unserialize)
 
     zval *value;
     ZEND_HASH_FOREACH_VAL(Z_ARRVAL_P(data), value) {
-        ds_heap_push(obj->heap, value, compare);
+        ds_heap_push(obj->heap, value, compare, obj);
     } ZEND_HASH_FOREACH_END();
 }
 

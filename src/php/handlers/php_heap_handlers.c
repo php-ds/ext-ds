@@ -35,7 +35,7 @@ static HashTable *php_ds_heap_get_debug_info(zend_object *obj, int *is_temp)
     ds_heap_t *heap = heap_obj->heap;
     zval arr;
     *is_temp = 1;
-    ds_heap_to_array(heap, &arr, php_ds_heap_get_compare(heap_obj));
+    ds_heap_to_array(heap, &arr, php_ds_heap_get_compare(heap_obj), heap_obj);
     return Z_ARRVAL(arr);
 }
 

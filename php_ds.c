@@ -132,7 +132,7 @@ PHP_FUNCTION(heap)
 
     if (values && Z_TYPE_P(values) != IS_NULL) {
         ds_heap_compare_func_t compare = php_ds_heap_get_compare(obj);
-        ds_heap_push_all(heap, values, compare);
+        ds_heap_push_all(heap, values, compare, obj);
     }
 
     ZVAL_OBJ(return_value, obj_zend);
