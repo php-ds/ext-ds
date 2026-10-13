@@ -7,9 +7,11 @@
 typedef struct _php_ds_heap_iterator_t {
     zend_object_iterator       intern;
     zend_object               *object;
+    ds_heap_t                 *snapshot; // Shared heap retained for rewinding.
     ds_heap_t                 *heap;    // Cloned heap — popped during iteration.
     ds_heap_compare_func_t     compare;
     zend_long                  position;
+    bool                       running; // Prevent modification from comparator callbacks.
 } php_ds_heap_iterator_t;
 
 zend_object_iterator *php_ds_heap_get_iterator(zend_class_entry *ce, zval *obj, int by_ref);

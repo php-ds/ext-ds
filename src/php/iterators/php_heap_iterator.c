@@ -8,8 +8,11 @@ static void php_ds_heap_iterator_dtor(zend_object_iterator *iter)
 {
     php_ds_heap_iterator_t *iterator = (php_ds_heap_iterator_t *) iter;
 
-    ds_heap_free(iterator->heap);
+    if (iterator->heap) {
+        ds_heap_free(iterator->heap);
+    }
     DTOR_AND_UNDEF(&iterator->intern.data);
+    ds_heap_release(iterator->snapshot);
     OBJ_RELEASE(iterator->object);
 }
 
@@ -20,36 +23,61 @@ static int php_ds_heap_iterator_valid(zend_object_iterator *iter)
 
 static zval *php_ds_heap_iterator_get_current_data(zend_object_iterator *iter)
 {
-    return &iter->data;
+    return Z_ISUNDEF(iter->data) ? NULL : &iter->data;
 }
 
 static void php_ds_heap_iterator_get_current_key(zend_object_iterator *iter, zval *key)
 {
-    ZVAL_LONG(key, ((php_ds_heap_iterator_t *) iter)->position);
+    if (Z_ISUNDEF(iter->data)) {
+        ZVAL_NULL(key);
+    } else {
+        ZVAL_LONG(key, ((php_ds_heap_iterator_t *) iter)->position);
+    }
 }
 
 static void php_ds_heap_iterator_set_current(php_ds_heap_iterator_t *iterator)
 {
-    if (DS_HEAP_IS_EMPTY(iterator->heap)) {
-        ZVAL_UNDEF(&iterator->intern.data);
-    } else {
+    DTOR_AND_UNDEF(&iterator->intern.data);
+
+    if (!DS_HEAP_IS_EMPTY(iterator->heap)) {
         ds_heap_pop(iterator->heap, &iterator->intern.data, iterator->compare);
-        Z_TRY_DELREF_P(&iterator->intern.data);
     }
 }
 
 static void php_ds_heap_iterator_move_forward(zend_object_iterator *iter)
 {
     php_ds_heap_iterator_t *iterator = (php_ds_heap_iterator_t *) iter;
+
+    if (iterator->running) {
+        ds_throw_exception(spl_ce_RuntimeException,
+            "Cannot modify a heap iterator while it is executing");
+        return;
+    }
+
+    iterator->running = true;
     php_ds_heap_iterator_set_current(iterator);
     iterator->position++;
+    iterator->running = false;
 }
 
 static void php_ds_heap_iterator_rewind(zend_object_iterator *iter)
 {
     php_ds_heap_iterator_t *iterator = (php_ds_heap_iterator_t *) iter;
+
+    if (iterator->running) {
+        ds_throw_exception(spl_ce_RuntimeException,
+            "Cannot modify a heap iterator while it is executing");
+        return;
+    }
+
+    iterator->running = true;
+    if (iterator->heap) {
+        ds_heap_free(iterator->heap);
+    }
+    iterator->heap = ds_heap_clone(iterator->snapshot);
     php_ds_heap_iterator_set_current(iterator);
     iterator->position = 0;
+    iterator->running = false;
 }
 
 static zend_object_iterator_funcs iterator_funcs = {
@@ -79,7 +107,8 @@ zend_object_iterator *php_ds_heap_get_iterator(zend_class_entry *ce, zval *objec
     ZVAL_UNDEF(&iterator->intern.data);
 
     iterator->intern.funcs = &iterator_funcs;
-    iterator->heap         = ds_heap_clone(obj->heap);
+    iterator->snapshot     = obj->heap;
+    iterator->snapshot->refs++;
     iterator->compare      = php_ds_heap_get_compare(obj);
     iterator->object       = Z_OBJ_P(object);
     iterator->position     = 0;
