@@ -3,21 +3,23 @@
 
 #include "php_heap.h"
 
-int ds_heap_user_compare(zval *a, zval *b)
+int ds_heap_user_compare(zval *a, zval *b, void *context)
 {
+    php_ds_heap_t *obj = context;
+    // Keep callback state local so nested heap operations cannot overwrite it.
+    zend_fcall_info fci = obj->fci;
+    zend_fcall_info_cache fci_cache = obj->fci_cache;
     zval params[2];
     zval retval;
 
     ZVAL_COPY_VALUE(&params[0], a);
     ZVAL_COPY_VALUE(&params[1], b);
 
-    DSG(user_compare_fci).param_count = 2;
-    DSG(user_compare_fci).params      = params;
-    DSG(user_compare_fci).retval      = &retval;
+    fci.param_count = 2;
+    fci.params      = params;
+    fci.retval      = &retval;
 
-    if (zend_call_function(
-            &DSG(user_compare_fci),
-            &DSG(user_compare_fci_cache)) == SUCCESS) {
+    if (zend_call_function(&fci, &fci_cache) == SUCCESS) {
         int result = (int) zval_get_long(&retval);
         zval_ptr_dtor(&retval);
         return result;
@@ -29,8 +31,6 @@ int ds_heap_user_compare(zval *a, zval *b)
 ds_heap_compare_func_t php_ds_heap_get_compare(php_ds_heap_t *obj)
 {
     if (obj->has_comparator) {
-        DSG(user_compare_fci)       = obj->fci;
-        DSG(user_compare_fci_cache) = obj->fci_cache;
         return ds_heap_user_compare;
     }
     return ds_heap_default_compare;
@@ -119,7 +119,7 @@ int php_ds_heap_unserialize(zval *object, zend_class_entry *ce, const unsigned c
             goto error;
         }
 
-        ds_heap_push(heap, value, ds_heap_default_compare);
+        ds_heap_push(heap, value, ds_heap_default_compare, NULL);
     }
 
     ZVAL_OBJ(object, php_ds_heap_create_object_ex(heap));

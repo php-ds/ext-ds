@@ -32,15 +32,14 @@ do {                                                                \
 
 /**
  * Returns the compare function for this heap.
- * If the heap has a custom comparator, sets up the module globals
- * and returns the user compare function. Otherwise returns the default.
+ * The heap object must be passed as context when invoking the comparator.
  */
 ds_heap_compare_func_t php_ds_heap_get_compare(php_ds_heap_t *obj);
 
 /**
- * User comparator function that reads from module globals.
+ * User comparator function that reads the callable from the heap object.
  */
-int ds_heap_user_compare(zval *a, zval *b);
+int ds_heap_user_compare(zval *a, zval *b, void *context);
 
 zend_object *php_ds_heap_create_object_ex(ds_heap_t *heap);
 zend_object *php_ds_heap_create_object(zend_class_entry *ce);

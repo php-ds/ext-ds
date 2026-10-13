@@ -24,6 +24,8 @@ Documentation is available on [php.net](https://www.php.net/manual/en/book.ds.ph
 Heap iterators retain a snapshot of the values present when created; `rewind()` restarts that snapshot even if the original heap has changed.
 Calling `next()` or `rewind()` on the same iterator from its comparator throws a `RuntimeException`.
 
+Each `Heap` uses its own comparator, including during nested heap operations and interleaved iteration.
+
 You should also include the [polyfill](https://github.com/php-ds/polyfill) in your project for IDE integration.
 
 ## Installation
